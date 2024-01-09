@@ -1,0 +1,239 @@
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import { Button, Checkbox, Form, Input, message, ConfigProvider } from "antd";
+import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
+import { useHistory } from "react-router";
+import { userLoginmail, userProfile } from "../../api/user";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../store/globalSlice";
+import { BeiAnUI } from "../../components/TabBar/BeiAn";
+import { Link } from "react-router-dom";
+import logoSvg from "../../assets/logo.png";
+import _ from "lodash";
+
+const LoginRoot = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 500px;
+	background-image: url("/assets/background.svg");
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	height: 100%;
+	.container {
+		width: 380px;
+		height: 354px;
+		padding: 28px 42px;
+		border-radius: 10px;
+		background-color: #ffffff;
+
+		.form-content {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			width: 100%;
+			height: 100%;
+			font-size: 12px;
+			font-family: "Harmony_Regular", sans-serif;
+
+			.title {
+				height: 22px;
+				line-height: 22px;
+				display: flex;
+				align-items: center;
+				justify-content: start;
+
+				.logo {
+					.logo-image {
+						width: 22px;
+						height: 22px;
+					}
+				}
+
+				.text {
+					margin: 0px 8px;
+					font-size: 18px;
+				}
+			}
+
+			.subject {
+				height: 11px;
+				color: #86909c;
+				line-height: 11px;
+				padding-top: 28px;
+			}
+
+			.noborder-bg {
+				height: 28px;
+				line-height: 12px;
+				font-size: 12px;
+				font-family: "Harmony_Regular", sans-serif;
+				background-color: #f7f8fa;
+			}
+
+			.active-button {
+				background-color: #5966d6;
+			}
+
+			.register-button {
+				margin-top: 11px;
+				color: #5966d6;
+			}
+
+			.forget-password .ant-form-item-control-input-content {
+				display: flex;
+				justify-content: space-between;
+			}
+		}
+	}
+
+	a {
+		font-size: 12px;
+		font-family: "Harmony_Regular", sans-serif;
+		color: #5966d6;
+	}
+
+	input::placeholder {
+		font-size: 12px;
+		font-family: "Harmony_Regular", sans-serif;
+		color: #86909c;
+	}
+`;
+
+const Login: React.FC = () => {
+	const history = useHistory();
+	const dispatch = useDispatch();
+	const [form] = Form.useForm();
+	const [messageApi, contextHolder] = message.useMessage();
+	useEffect(() => {
+		const email = localStorage.getItem("user_email");
+		if (form && email) {
+			form.setFieldValue("email", email || "");
+		}
+	}, [form]);
+
+	const checkLoginHandler = () => {
+		form
+			.validateFields()
+			.then(async () => {
+				const data = form.getFieldsValue(["email", "password"]);
+				try {
+					const response = (await userLoginmail(data)) as any;
+					if (response.code !== 200) {
+						throw new Error(response.msg);
+					}
+
+					const { token, tokenKey } = response.data;
+					if (token && tokenKey) {
+						localStorage.setItem("Authorization", token);
+						localStorage.setItem("Authorization-key", tokenKey);
+						localStorage.setItem("user_email", data.email);
+
+						const res = await userProfile();
+						console.log("userProfile", res);
+						dispatch(loginSuccess(res.data));
+						messageApi
+							.open({
+								type: "success",
+								content: "登录成功!",
+								duration: 1
+							})
+							.then(() => {
+								history.push("/dashboard");
+							});
+					}
+				} catch (e: any) {
+					console.log(e);
+					messageApi.open({
+						type: "error",
+						content: "登录失败," + e.message,
+						duration: 1
+					});
+				}
+			})
+			.catch(() => {
+				return;
+			});
+	};
+	const checkLogin = _.debounce(checkLoginHandler, 300);
+	const jump2Register = () => {
+		history.push("/register");
+	};
+	const onFinish = (values: any) => {
+		console.log("Received values of form: ", values);
+	};
+	const onFinishFailed = () => {
+		console.error("Submit failed!");
+	};
+
+	return (
+		<ConfigProvider
+			theme={{
+				token: { fontSize: 11, fontFamily: `"Harmony_Regular", sans-serif` },
+				components: {
+					Form: { controlHeight: 28, itemMarginBottom: 0 },
+					Input: { borderRadius: 0 },
+					Checkbox: { colorPrimary: "#5966d6" }
+				} as any
+			}}>
+			<LoginRoot>
+				{contextHolder}
+				<div className="container">
+					<div className="form-content">
+						<div className="title">
+							<div className="logo">
+								<img src={logoSvg} className="logo-image" />
+							</div>
+							<div className="text">登录到MyFlow</div>
+						</div>
+						<div className="subject">使用账户密码登陆</div>
+						<Form
+							form={form}
+							name="normal_login"
+							className="login-form"
+							initialValues={{ remember: true }}
+							onFinish={onFinish}
+							onFinishFailed={onFinishFailed}
+							autoComplete="off">
+							<Form.Item name="email" style={{ margin: "20px 0px" }} rules={[{ required: true, message: "用户名不能为空!" }]}>
+								<Input rootClassName="noborder-bg" bordered={false} placeholder="请输入邮箱地址" />
+							</Form.Item>
+							<Form.Item style={{ marginBottom: "20px" }} name="password" rules={[{ required: true, message: "密码不能为空!" }]}>
+								<Input.Password
+									rootClassName="noborder-bg"
+									bordered={false}
+									placeholder="请输入密码"
+									iconRender={visible => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
+								/>
+							</Form.Item>
+							<Form.Item style={{ marginBottom: "20px" }} className="forget-password">
+								<Form.Item name="remember" valuePropName="checked" noStyle>
+									<Checkbox>自动登录</Checkbox>
+								</Form.Item>
+								<Form.Item noStyle>
+									<Link to="/reset" rel="noreferrer">
+										<span style={{ color: "#5966d6" }}>忘记密码?</span>
+									</Link>
+								</Form.Item>
+							</Form.Item>
+							<div>
+								<Button onClick={checkLogin} type="primary" htmlType="submit" className="active-button" block>
+									登录
+								</Button>
+								<Button block onClick={jump2Register} className="register-button">
+									点击注册
+								</Button>
+							</div>
+						</Form>
+					</div>
+				</div>
+			</LoginRoot>
+			<BeiAnUI />
+		</ConfigProvider>
+	);
+};
+
+export default Login;

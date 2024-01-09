@@ -1,0 +1,7 @@
+{
+  "name": "hi-flow-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

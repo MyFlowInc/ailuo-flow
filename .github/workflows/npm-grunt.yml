@@ -1,0 +1,92 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: ["release_pro"]
+    tags:
+      - v1.*
+      - v2.*
+env:
+  REGISTRY: ""
+  #  IMAGE_NAME: ${{ github.event.repository.name }}  # 使用 GitHub Actions 提供的能力，可以自动获取仓库名
+  IMAGE_NAME: 18260356308/flow-web
+  IMAGE_TAG: latest # Docker Image 的 tag，为了方便我直接设置 latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 2:Check out branch
+        uses: actions/checkout@v3
+
+      - name: 4:Build the Docker image
+        run: docker build . --file Dockerfile --tag ${{ env.IMAGE_NAME }}
+
+        # 登录
+      - name: 6:Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # Extract metadata (tags, labels) for Docker
+          # https://github.com/docker/metadata-action
+      - name: run
+        run: docker images
+
+      - name: 7:Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            # set latest tag for default branch
+                  type=raw,value=latest,enable={{is_default_branch}}
+            # tag event
+                  type=ref,enable=true,priority=600,prefix=,suffix=,event=tag
+
+      # 推送
+      - name: 8:push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      #  //在服务器上拉取镜像并运行
+      - name: 9:Exexute command
+        uses: appleboy/ssh-action@master
+        with:
+          host: 114.55.54.199
+          username: root
+          key: ${{ secrets.SSHKEY99 }}
+          port: 22
+          script: |
+            docker pull ${{ env.IMAGE_NAME }}
+            docker stop flow-web
+            docker rm flow-web
+            docker run -d  -p 82:82  --restart=always  --name flow-web ${{ env.IMAGE_NAME }}:latest
+            docker ps -a
+      #  //在服务器上拉取镜像并运行
+      - name: 10:Exexute command
+        uses: appleboy/ssh-action@master
+        with:
+          host: 114.55.54.199
+          username: root
+          key: ${{ secrets.SSHKEY99 }}
+          port: 22
+          script: |
+            docker pull ${{ env.IMAGE_NAME }}
+            docker stop flow-web
+            docker rm flow-web
+            docker run -d  -p 82:82  --restart=always  --name flow-web ${{ env.IMAGE_NAME }}:latest
+            docker ps -a

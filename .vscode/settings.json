@@ -1,0 +1,63 @@
+{
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true, // 保存时自动格式化
+    "editor.wordWrap": "on", // 是否自动换行
+    /* eslint的配置 */
+    "eslint.enable": true,
+    "eslint.run": "onSave", // 保存后
+    "eslint.validate": ["javascript", "javascriptreact", "vue", "html"],
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "eslint.alwaysShowStatus": true,
+    "javascript.validate.enable": false,
+    "html.validate.scripts": false,
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[vue]": {
+      "editor.defaultFormatter": "octref.vetur"
+    },
+    "[less]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "vscode.html-language-features"
+    },
+    // 文件头部注释
+    "fileheader.customMade": {
+      "description": "描述信息",
+      "author": "Jack Chen @懒人码农",
+      "Date": "Do not edit",
+      "LastEditors": "Jack Chen",
+      "LastEditTime": "Do not Edit"
+    },
+    // 函数注释
+    "fileheader.cursorMode": {
+      "desc": "描述信息",
+      "param": "",
+      "return": ""
+    },
+    // 配置md和json文件不自动添加头部注释
+    "fileheader.configObj": {
+      "prohibitAutoAdd": ["json", "md"]
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    "files.exclude": {
+      "**/.classpath": true,
+      "**/.project": true,
+      "**/.settings": true,
+      "**/.factorypath": true
+    },
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact"
+    },
+    "emmet.triggerExpansionOnTab": true
+  }  

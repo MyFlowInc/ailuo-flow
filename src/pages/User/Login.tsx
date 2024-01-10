@@ -6,11 +6,10 @@ import { useHistory } from "react-router";
 import { userLoginmail, userProfile } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/globalSlice";
-import { BeiAnUI } from "../../components/TabBar/BeiAn";
 import { Link } from "react-router-dom";
 import logoSvg from "../../assets/logo.png";
 import _ from "lodash";
-
+import AiluoLogo from "../../BaseUI/Logo/AiluoLogo";
 const LoginRoot = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -25,15 +24,14 @@ const LoginRoot = styled.div`
 	height: 100%;
 	.container {
 		width: 380px;
-		height: 354px;
-		padding: 28px 42px;
+		padding: 0px 40px 38px 40px;
 		border-radius: 10px;
 		background-color: #ffffff;
 
 		.form-content {
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
+			/* justify-content: space-between; */
 			width: 100%;
 			height: 100%;
 			font-size: 12px;
@@ -60,10 +58,9 @@ const LoginRoot = styled.div`
 			}
 
 			.subject {
-				height: 11px;
+				height: 16px;
 				color: #86909c;
-				line-height: 11px;
-				padding-top: 28px;
+				margin: 16px 0px -4px 0px;
 			}
 
 			.noborder-bg {
@@ -183,11 +180,14 @@ const Login: React.FC = () => {
 				{contextHolder}
 				<div className="container">
 					<div className="form-content">
-						<div className="title">
+						<div className="flex justify-center align-middle" style={{ marginTop: 22 }}>
+							<AiluoLogo />
+						</div>
+						<div className="title" style={{ marginTop: 16 }}>
 							<div className="logo">
 								<img src={logoSvg} className="logo-image" />
 							</div>
-							<div className="text">登录到MyFlow</div>
+							<div className="text">登录到艾罗执行器MyFlow系统</div>
 						</div>
 						<div className="subject">使用账户密码登陆</div>
 						<Form
@@ -223,15 +223,14 @@ const Login: React.FC = () => {
 								<Button onClick={checkLogin} type="primary" htmlType="submit" className="active-button" block>
 									登录
 								</Button>
-								<Button block onClick={jump2Register} className="register-button">
+								{/* <Button block onClick={jump2Register} className="register-button">
 									点击注册
-								</Button>
+								</Button> */}
 							</div>
 						</Form>
 					</div>
 				</div>
 			</LoginRoot>
-			<BeiAnUI />
 		</ConfigProvider>
 	);
 };

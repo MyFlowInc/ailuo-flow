@@ -4,8 +4,8 @@ import { Button, Form, Input, message, ConfigProvider } from "antd";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import { useHistory } from "react-router";
 import { resetPwd, sendCaptcha } from "../../api/user";
-import { BeiAnUI } from "../../components/TabBar/BeiAn";
 import LinePng from "../../assets/line.png";
+import AiluoLogo from "../../BaseUI/Logo/AiluoLogo";
 
 const ResetPwdRoot = styled.div`
 	display: flex;
@@ -13,8 +13,6 @@ const ResetPwdRoot = styled.div`
 	align-items: center;
 	justify-content: center;
 	min-height: 500px;
-
-	// background-image: repeating-radial-gradient(farthest-corner, rgb(10, 30, 57), rgb(50, 35, 105));
 	background-image: url("/assets/background.svg");
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -26,17 +24,17 @@ const ResetPwdRoot = styled.div`
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 384px;
-		height: 380px;
+		width: 380px;
+		padding: 0px 40px 38px 40px;
 		border-radius: 10px;
 		background-color: #ffffff;
 
 		.form-content {
 			display: flex;
 			flex-direction: column;
-			justify-content: space-between;
-			width: 300px;
-			height: 300px;
+			/* justify-content: space-between; */
+			width: 100%;
+			height: 100%;
 			font-size: 12px;
 			font-family: "Harmony_Regular", sans-serif;
 
@@ -54,10 +52,10 @@ const ResetPwdRoot = styled.div`
 			}
 
 			.subject {
-				height: 11px;
+				height: 16px;
 				color: #86909c;
-				line-height: 11px;
-				padding: 28px 0px 20px 0px;
+				margin-top: 18px;
+				margin-bottom: 12px;
 			}
 
 			.noborder-bg {
@@ -207,10 +205,13 @@ const ResetPwd: React.FC = () => {
 				{contextHolder}
 				<div className="container">
 					<div className="form-content">
+						<div className="flex justify-center align-middle" style={{ marginTop: 8, marginBottom: 8 }}>
+							<AiluoLogo />
+						</div>
 						<div className="title">
 							<div className="text">忘记密码</div>
 						</div>
-						<div className="subject">输入注册 MyFlow 使用的邮箱</div>
+						<div className="subject">输入 艾罗执行器MyFlow系统 绑定的邮箱</div>
 						<Form form={form} name="normal_register" className="register-form" initialValues={{ remember: true, prefix: "86" }}>
 							<Form.Item
 								style={{ marginBottom: "20px" }}
@@ -279,7 +280,7 @@ const ResetPwd: React.FC = () => {
 						</Form>
 					</div>
 				</div>
-				<BeiAnUI />
+				{/* <BeiAnUI /> */}
 			</ResetPwdRoot>
 		</ConfigProvider>
 	);

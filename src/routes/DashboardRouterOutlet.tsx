@@ -160,6 +160,10 @@ const DashboardRouterOutlet: React.FC = () => {
 									<Route path="/dashboard/workflow-view/:dstId" exact={true}>
 										<Dashboard />
 									</Route>
+									{/* 报价管理 */}
+									<Route path="/dashboard/quotation-management" exact={true}>
+										<Dashboard />
+									</Route>
 
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />

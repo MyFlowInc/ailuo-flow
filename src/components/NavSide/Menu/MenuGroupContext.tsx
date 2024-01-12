@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { HolderOutlined } from "@ant-design/icons";
 import { useAppSelector } from "../../../store/hooks";
 import { selectCollapsed } from "../../../store/globalSlice";
 import { resetSortWorkFlow } from "../../../api/apitable/ds-table";
@@ -86,12 +85,10 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, workflowList
 									{workflowList.map((item, index) => {
 										const isSelected = curMenuKey === item.dstId || false;
 										return (
-											<Draggable key={`item_${item.id}`} draggableId={item.id} index={index}>
+											<Draggable key={`item_${item.id}`} draggableId={item.id} index={index} isDragDisabled>
 												{(provided, snapshot) => (
 													<MenuItemWrap collapsed={collapsed} {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
-														<div className="menu-drag-icon">
-															<HolderOutlined />
-														</div>
+														<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
 														<MenuItem
 															setCurrentKey={setCurMenuKey}
 															collapsed={collapsed}

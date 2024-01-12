@@ -106,7 +106,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				onClick && onClick();
 				return;
 			case "help":
-				window.open("https://w0be5cxszhi.feishu.cn/share/base/form/shrcnxG9PA1ZxELM34uPUyEcG6D");
+				window.open("https://w0be5cxszhi.feishu.cn/share/base/form/shrcnfIiATacA2QL1NdBlMFALaf");
 				return;
 			case "update":
 				onClick && onClick();

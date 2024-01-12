@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { ConfigProvider } from "antd";
 import NavHead from "./NavHeader";
 import Menu from "./Menu/index";
-import NavAction from "./NavAction";
 import { navsideTheme } from "../../theme/theme";
 
 const NavSideRoot = styled.div`
@@ -28,7 +27,6 @@ const NavSide: React.FC<NavSideProps> = () => {
 		<ConfigProvider theme={navsideTheme}>
 			<NavSideRoot>
 				<NavHead />
-				<NavAction />
 				<Menu />
 			</NavSideRoot>
 		</ConfigProvider>

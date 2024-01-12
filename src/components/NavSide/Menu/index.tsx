@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectCollapsed, selectIsArchive, selectIsMember, setIsOpenDrawer } from "../../../store/globalSlice";
-import { fetchOwerWorkflowList, fetchTeamWorkflowList } from "../../../controller/dsTable";
+import { selectCollapsed, selectIsArchive, setIsOpenDrawer } from "../../../store/globalSlice";
+import { fetchOwerWorkflowList } from "../../../controller/dsTable";
 import MenuItem from "./MenuItem";
 import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
-import CheckCircleFilled from "../../../assets/icons/CheckCircleFilled";
-import { selectAllWorkflowList, selectCurFlowDstId } from "../../../store/workflowSlice";
-import UpdateAndPlan from "./UpdateAndPlan";
+import { selectCurFlowDstId } from "../../../store/workflowSlice";
 import MenuGroupContext from "./MenuGroupContext";
 import MenuGroup from "./MenuGroup";
 
@@ -21,7 +18,7 @@ const MenuRoot = styled.div<{ collapsed: boolean }>`
 	justify-content: space-between;
 	position: relative;
 	width: 100%;
-	height: calc(100% - 102px);
+	height: calc(100%);
 
 	.menu-content {
 		display: flex;
@@ -43,6 +40,14 @@ const MenuRoot = styled.div<{ collapsed: boolean }>`
 		flex-direction: column;
 		width: 100%;
 		padding-left: ${({ collapsed }) => (collapsed ? "8px" : "16px")};
+	}
+	.menu-bottom {
+		font-family: HarmonyOS Sans;
+		font-size: 10px;
+		font-weight: normal;
+		line-height: 22px;
+		letter-spacing: 0px;
+		color: #cdcdcd;
 	}
 
 	.menu-item {
@@ -72,32 +77,23 @@ const Menu: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const curDstId = useAppSelector(selectCurFlowDstId);
 	const collapsed = useAppSelector(selectCollapsed);
-	const isArchive = useAppSelector(selectIsArchive);
-	const allFlowList = useAppSelector(selectAllWorkflowList);
+	const isArchive = useAppSelector(selectIsArchive); // 是否归档
 
 	const [owerFlowList, setOwerFlowList] = useState<WorkFlowInfo[]>([]);
-	const [teamFlowList, setTeamFlowList] = useState<WorkFlowInfo[]>([]);
 
 	const [curMenuKey, setCurMenuKey] = useState<string>(curDstId as string);
-	const [updateOpen, setUpdateOpen] = useState<boolean>(false);
 
 	const showDrawer = () => {
 		dispatch(setIsOpenDrawer(true));
 	};
-
+	// TODO 菜单列表
 	const refetchFlowList = async () => {
 		try {
 			const owerFlowList = await fetchOwerWorkflowList(isArchive);
-			const teamFlowList = await fetchTeamWorkflowList(isArchive);
-			setOwerFlowList(owerFlowList.filter(item => !teamFlowList.some(team => team.dstId === item.dstId)));
-			setTeamFlowList(teamFlowList);
+			setOwerFlowList(owerFlowList);
 		} catch (error) {
 			console.log("error", error);
 		}
-	};
-
-	const showUpdateModal = () => {
-		setUpdateOpen(true);
 	};
 
 	useEffect(() => {
@@ -106,9 +102,8 @@ const Menu: React.FC = () => {
 
 	useEffect(() => {
 		refetchFlowList();
-	}, [isArchive, allFlowList]);
+	}, [isArchive]);
 
-	const isMember = useAppSelector(selectIsMember);
 	return (
 		<MenuRoot collapsed={collapsed}>
 			<div className="menu-content">
@@ -123,7 +118,7 @@ const Menu: React.FC = () => {
 					groupStyle={{ paddingBottom: "18px" }}
 				/>
 
-				<MenuGroupContext
+				{/* <MenuGroupContext
 					workflowList={teamFlowList}
 					setWorkflowList={setTeamFlowList}
 					curMenuKey={curMenuKey}
@@ -131,7 +126,7 @@ const Menu: React.FC = () => {
 					refetch={refetchFlowList}
 					type="teamwork"
 					title="团队项目"
-				/>
+				/> */}
 			</div>
 			<div className="menu-extra">
 				<MenuGroup>
@@ -154,26 +149,9 @@ const Menu: React.FC = () => {
 						icon={<AtFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
 						style={{ marginBottom: "10px" }}
 					/>
-					{isMember ? null : (
-						<MenuItem
-							setCurrentKey={setCurMenuKey}
-							collapsed={collapsed}
-							menuName="升级计划"
-							menuKey="update"
-							onClick={showUpdateModal}
-							icon={<CheckCircleFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
-							isExtraShow={false}
-							isSelected={false}
-							extra={
-								<Button type="link">
-									<span style={{ fontSize: 12, fontFamily: `"Harmony_Regular", sans-serif`, color: "#1D5BD7" }}>了解更多</span>
-								</Button>
-							}
-						/>
-					)}
 				</MenuGroup>
+				{!collapsed && <div className="menu-bottom flex align-middle justify-center">由弗络科技技术驱动</div>}
 			</div>
-			<UpdateAndPlan {...{ open: updateOpen, setOpen: setUpdateOpen }} />
 		</MenuRoot>
 	);
 };

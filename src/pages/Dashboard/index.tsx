@@ -3,7 +3,6 @@ import { ConfigProvider } from "antd";
 import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import { selectUser, selectIsMember } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
-import { createWebSocket } from "../../api/apitable/room-server";
 import { selectCurFlowDstId } from "../../store/workflowSlice";
 import { fetchOwerWorkflowList } from "../../controller/dsTable";
 import { apitableDeveloperUserList } from "../../api/apitable/ds-share";
@@ -55,20 +54,8 @@ const Page: React.FC = () => {
 	useEffect(() => {
 		console.log("Dashboard 初始化");
 		fetchUserList();
-		if (window.ws) {
-			window.ws.close(); // 主动close掉
-			console.log("清除上一个client 连接...");
-		}
-		if (curDstId && user) {
-			console.log("启用新的client 连接...");
-			createWebSocket(user, curDstId);
-		}
 		return () => {
 			console.log("Dashboard 销毁");
-			if (window.ws) {
-				window.ws.close(); // 主动close掉
-				console.log("client 连接已关闭...");
-			}
 		};
 	}, [curDstId]);
 

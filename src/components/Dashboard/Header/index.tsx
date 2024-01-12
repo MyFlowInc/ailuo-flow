@@ -5,8 +5,7 @@ import { selectIsArchiveView } from "../../../store/globalSlice";
 import DefaultHeader from "./DefaultHeader";
 import BatchHeader from "./BatchHeader";
 import ArchiveHeader from "./ArchiveHeader";
-
-import type { FlowItemTableDataType } from "../FlowTable/core";
+import { FlowItemTableDataType } from "../FlowTable";
 
 const HeaderRoot = styled.div`
 	display: flex;

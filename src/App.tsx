@@ -20,7 +20,7 @@ const App: React.FC = () => {
 		<IonApp>
 			<ConfigProvider locale={zhCN}>
 				<IonReactRouter>
-					<IonRouterOutlet>
+					<IonRouterOutlet placeholder="loading...">
 						<Route exact path="/">
 							<Redirect to="/dashboard" />
 						</Route>

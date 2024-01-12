@@ -1,14 +1,12 @@
 import { Route, Switch, useHistory, useLocation } from "react-router";
 import Dashboard from "../pages/Dashboard";
 import { useAppSelector } from "../store/hooks";
-import { selectCollapsed, selectIsOpenDrawer, selectIsShowTour, selectUser, setIsOpenDrawer, setIsShowTour } from "../store/globalSlice";
+import { selectCollapsed, selectIsOpenDrawer, selectUser, setIsOpenDrawer } from "../store/globalSlice";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Tour } from "antd";
 
 import Loading from "../assets/icons/Loading";
-import { delay } from "../util/delay";
 import { setWorkflowList, WorkFlowInfo, updateCurFlowDstId } from "../store/workflowSlice";
 import { LoadingRoot, RouterContainer } from "./style";
 import { Layout, theme, Spin } from "antd";
@@ -26,48 +24,21 @@ const DashboardRouterOutlet: React.FC = () => {
 	useLoginByCache();
 	const dispatch = useDispatch();
 	const user = useAppSelector(selectUser);
-	const isShowTour = useAppSelector(selectIsShowTour);
 	const isEmpty = _.isEmpty(user);
 	const [loading, setLoading] = useState(isEmpty);
 	const location = useLocation();
 	const history = useHistory();
-	// const menuRef = useRef<MenuRef | null>(null);
 	const [showMenu, setShowMenu] = useState<"block" | "none">("none");
 	const {
 		token: { colorBgContainer }
 	} = theme.useToken();
 	const collapsed = useAppSelector(selectCollapsed);
 	const [tourRefs, setTourRefs] = useState([]);
-	// 通知tour
-	const [isOpenTour, setIsOpenTour] = useState<boolean>(false);
+
 	//  通知抽屉
 	const isOpenDrawer = useAppSelector(selectIsOpenDrawer);
 	const onDrawerClose = () => {
 		dispatch(setIsOpenDrawer(false));
-	};
-
-	const getSteps: () => any = () => {
-		const res: any = [];
-		tourRefs.map((item: any) => {
-			if (item.current && item.current.id === "add_flow_menu") {
-				res.push({
-					target: () => item.current,
-					title: "点击这里新建项目",
-					description: "每个项目都是独立的哦",
-					placement: "right"
-				});
-			}
-			if (item.current && item.current.id === "add_flow_item") {
-				res.push({
-					target: () => item.current,
-					title: "点这里开始录入工单",
-					description: "完全的自定义，支持数十种数据类型",
-					placement: "right"
-				});
-			}
-		});
-
-		return res;
 	};
 
 	const getFlowList = async () => {
@@ -102,25 +73,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		getFlowList();
 	}, []);
 
-	useEffect(() => {
-		// console.log('tourRefs', tourRefs)
-		if (isShowTour) {
-			return;
-		}
-		const handle = async () => {
-			await delay(1000);
-			const isShowTour = localStorage.getItem("isShowTour");
-			if (isShowTour !== "1" && tourRefs.length > 0) {
-				setIsOpenTour(true);
-				localStorage.setItem("isShowTour", "1");
-				dispatch(setIsShowTour(true));
-			}
-		};
-		handle();
-	}, [tourRefs]);
-
 	if (loading) {
-		// console.log('render spin')
 		return (
 			<LoadingRoot>
 				<div>
@@ -132,7 +85,7 @@ const DashboardRouterOutlet: React.FC = () => {
 	}
 
 	return (
-		<RouterContainer display={showMenu || "none"} className="router-container">
+		<RouterContainer className="router-container">
 			<TourContext.Provider value={{ tourRefs, setTourRefs }}>
 				<Layout>
 					<Sider
@@ -160,6 +113,7 @@ const DashboardRouterOutlet: React.FC = () => {
 									<Route path="/dashboard/workflow-view/:dstId" exact={true}>
 										<Dashboard />
 									</Route>
+
 									{/* 报价管理 */}
 									<Route path="/dashboard/quotation-management" exact={true}>
 										<Dashboard />
@@ -175,7 +129,6 @@ const DashboardRouterOutlet: React.FC = () => {
 					</Layout>
 				</Layout>
 			</TourContext.Provider>
-			<Tour open={isOpenTour} onClose={() => setIsOpenTour(false)} steps={getSteps()} />
 		</RouterContainer>
 	);
 };

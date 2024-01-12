@@ -10,7 +10,7 @@ export class AxiosFactory {
 				const tokenKey = localStorage.getItem("Authorization-key");
 
 				if (!config.headers) {
-					config.headers = {};
+					config.headers = {} as any;
 				}
 				if (token) {
 					config.headers["Authorization"] = token;
@@ -71,7 +71,7 @@ export class AxiosFactory {
 		return instance;
 	}
 }
-
+// TODO 后续改成配置
 // const baseURL = process.env.REACT_APP_BASE_SERVER_URL;
 // const baseURL = "http://47.101.51.252:9292";
 const baseURL = "http://114.55.54.199:9293";

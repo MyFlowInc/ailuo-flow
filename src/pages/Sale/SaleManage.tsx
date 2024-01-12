@@ -22,6 +22,7 @@ const Page: React.FC = () => {
 
 	const fetchUserList = async () => {
 		const flowList = await fetchOwerWorkflowList(true);
+
 		if (flowList.some((flow: WorkFlowInfo) => flow.dstId === curDstId)) {
 			if (!isVip) {
 				const list = flowList.sort((a, b) => dayjs(a.createTime).diff(dayjs(b.createTime), "seconds")).filter((item, i) => i < 3);
@@ -51,7 +52,11 @@ const Page: React.FC = () => {
 	};
 
 	useEffect(() => {
+		console.log("Dashboard 初始化");
 		fetchUserList();
+		return () => {
+			console.log("Dashboard 销毁");
+		};
 	}, [curDstId]);
 
 	return (

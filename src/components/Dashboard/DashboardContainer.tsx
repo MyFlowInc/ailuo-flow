@@ -1,4 +1,4 @@
-import { useHistory, useParams } from "react-router";
+import { useParams } from "react-router";
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import FlowTableCore, { FlowItemTableDataType } from "./FlowTable/core";
@@ -17,12 +17,9 @@ import { BaseLoading } from "../../BaseUI/BaseLoading";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { delay } from "../../util/delay";
 import { deleteDSCells } from "../../api/apitable/ds-record";
-import { SocketMsgType, sendWebSocketMsg } from "../../api/apitable/ws-msg";
-import { selectUser, setIsArchiveView, setIsStatusSettingModalOpen } from "../../store/globalSlice";
+import { setIsArchiveView, setIsStatusSettingModalOpen } from "../../store/globalSlice";
 import Header from "./Header";
 import EmptyList from "./EmptyList";
-import { GptIcon } from "./Gpt/GptIcon";
-import _ from "lodash";
 
 interface ContainerProps {
 	reader: boolean;
@@ -40,29 +37,11 @@ const DashboardRoot = styled.div`
 		bottom: 0px;
 		right: 0px;
 	}
-
-	@media (max-width: 720px) {
-		.table-list {
-			width: 100%;
-			overflow: hidden;
-			.table-item {
-				width: 100%;
-				overflow: overlay;
-			}
-			.card-table {
-				width: 720px;
-			}
-		}
-	}
 `;
-const checkIsFrank = (email: string) => {
-	return email === "zjyfrank17@gmail.com";
-};
+
 const DashboardContainer: React.FC<ContainerProps> = ({ reader, writer, manager }) => {
 	const curShowMode = useAppSelector(selectCurShowMode);
 	const statusList = useAppSelector(selectCurTableStatusList) || [];
-	const user = useAppSelector(selectUser);
-	const isFrank = checkIsFrank(_.get(user, "email"));
 
 	const curDstId = useAppSelector(selectCurFlowDstId);
 	const curStatusFieldId = useAppSelector(selectCurStatusFieldId) || "";
@@ -71,7 +50,6 @@ const DashboardContainer: React.FC<ContainerProps> = ({ reader, writer, manager 
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<FlowItemTableDataType | undefined>(undefined);
 	const [selectedRows, setSelectedRows] = useState<FlowItemTableDataType[]>([]);
 
-	const history = useHistory();
 	const { dstId } = useParams<{ dstId: string }>();
 	const [loading, setLoading] = useState(true);
 
@@ -88,14 +66,6 @@ const DashboardContainer: React.FC<ContainerProps> = ({ reader, writer, manager 
 		};
 		await deleteDSCells(params);
 		dispatch(freshCurTableRows(dstId!));
-		// 同步 ws
-		sendWebSocketMsg({
-			user,
-			dstId: curDstId!,
-			type: SocketMsgType.DeleteRecords,
-			recordId,
-			row: {}
-		});
 	};
 
 	const freshFlowItem = async () => {
@@ -192,8 +162,6 @@ const DashboardContainer: React.FC<ContainerProps> = ({ reader, writer, manager 
 				/>
 			)}
 			{curShowMode === "status" && <StatusView />}
-
-			{isFrank && <GptIcon user={user} className="gpt-icon" />}
 		</DashboardRoot>
 	);
 };

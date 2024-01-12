@@ -68,10 +68,10 @@ const CooperationPowerContent: React.FC<CooperationPowerContentProps> = ({ user,
 			key === "manager"
 				? { allowManage: 1 }
 				: key === "editor"
-				? { allowManage: 0, allowEdit: 1 }
-				: key === "reader"
-				? { allowManage: 0, allowEdit: 0, allowWatch: 1 }
-				: { allowManage: 0, allowEdit: 0, allowWatch: 0 };
+					? { allowManage: 0, allowEdit: 1 }
+					: key === "reader"
+						? { allowManage: 0, allowEdit: 0, allowWatch: 1 }
+						: { allowManage: 0, allowEdit: 0, allowWatch: 0 };
 
 		await editInviteUser({
 			id: user.id,

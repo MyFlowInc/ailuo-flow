@@ -19,11 +19,7 @@ export const LoadingRoot = styled.div`
 	}
 `;
 
-interface RouterContainerProps {
-	display: "block" | "none";
-}
-
-export const RouterContainer = styled.div<RouterContainerProps>`
+export const RouterContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	height: 100%;
@@ -76,15 +72,6 @@ export const RouterContainer = styled.div<RouterContainerProps>`
 
 	.drawer-body {
 		padding: 0px;
-	}
-
-	@media (max-width: 720px) {
-		.router-content {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			left: ${props => (props.display === "none" ? "0px" : "218px")};
-		}
 	}
 `;
 

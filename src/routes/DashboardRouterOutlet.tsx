@@ -123,7 +123,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		return (
 			<LoadingRoot>
 				<div>
-					<Spin tip="Loading" indicator={<Loading style={{ fontSize: 96 }} />} />
+					<Spin indicator={<Loading style={{ fontSize: 96 }} />} />
 					<div className="loading-title">Loading...</div>
 				</div>
 			</LoadingRoot>
@@ -134,7 +134,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		<RouterContainer className="router-container">
 			<Layout>
 				<Sider theme="light" className={collapsed ? "sider-collapsed" : "sider-uncollapsed"} width={212} trigger={null} collapsedWidth={48} collapsible collapsed={collapsed}>
-					<NavSide path={location.pathname} />
+					<NavSide />
 				</Sider>
 				<Layout className="site-layout">
 					<AppHeader />

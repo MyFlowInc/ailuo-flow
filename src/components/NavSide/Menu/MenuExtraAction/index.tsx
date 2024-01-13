@@ -5,11 +5,9 @@ import { useHistory } from "react-router-dom";
 import { Popover, Button, Modal, message, ConfigProvider } from "antd";
 import { MoreOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import { deleteWorkFlow, updateWorkFlow } from "../../../../api/apitable/ds-table";
+import { deleteWorkFlow } from "../../../../api/apitable/ds-table";
 import { fetchAllWorkflowList } from "../../../../controller/dsTable";
 import { removeWorkflowList, selectCurFlowDstId, selectWorkflowList, updateCurFlowDstId, setWorkflowList } from "../../../../store/workflowSlice";
-import RenameModal from "./RenameModal";
-import StatusSettingModal from "../../../StatusSetting/StatusSettingModal";
 import InvitationModal from "./InvitationModal";
 import CooperationModal from "./CooperationModal";
 
@@ -35,13 +33,12 @@ const ExtraActionDiv = styled.div`
 `;
 
 interface MenuExtraActionProps {
-	refresh: () => void;
 	groupType: "personal" | "teamwork";
 	workflowInfo: WorkFlowInfo;
 	children?: React.ReactNode;
 }
 
-const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo, groupType, refresh }) => {
+const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo }) => {
 	const dispatch = useAppDispatch();
 	const history = useHistory();
 	const flowList = useAppSelector(selectWorkflowList);
@@ -123,11 +120,6 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo, groupTy
 		setIsStatusSettingModalOpen(true);
 	};
 
-	const closeRenameModal = () => {
-		setIsRenameModalOpen(false);
-		refresh();
-	};
-
 	const freshWorkFlowList = async () => {
 		const list = await fetchAllWorkflowList(true);
 
@@ -135,18 +127,8 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo, groupTy
 		return list;
 	};
 
-	// rename work flow
-	const openCooperationModal = () => {
-		if (!workflowInfo) {
-			return;
-		}
-		setIsCooperationModalOpen(true);
-		setDstId(workflowInfo.dstId);
-	};
-
 	const closeCooperationModal = () => {
 		setIsCooperationModalOpen(false);
-		refresh();
 	};
 
 	const openInvitationModal = () => {
@@ -159,81 +141,12 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo, groupTy
 
 	const closeInvitationModal = () => {
 		setIsInviteModalOpen(false);
-		refresh();
 	};
 
-	const setArchiveHandler = async (id: string, archive: number) => {
-		try {
-			await updateWorkFlow({
-				id,
-				archive
-			});
-			await freshWorkFlowList();
-			refresh && refresh();
-		} catch (error) {
-			console.log("error", error);
-		}
-	};
-
-	const archiveHandle = () => {
-		if (!workflowInfo.archive) {
-			Modal.confirm({
-				title: "是否确认归档?",
-				icon: <ExclamationCircleFilled />,
-				content: `【${workflowInfo.dstName}】是否确认归档？其他操作人员将视为归档，查看所有可见！`,
-				okText: "确认",
-				okType: "danger",
-				cancelText: "取消",
-				onOk: async () => {
-					await setArchiveHandler(workflowInfo.id, 1);
-				},
-				onCancel() {
-					// console.log("取消确认归档");
-				}
-			});
-		} else {
-			setArchiveHandler(workflowInfo.id, 0);
-			message.success(`【${workflowInfo.dstName}】已取消归档`);
-		}
-	};
-	const upgradeHandle = () => {
-		setIsModalOpen(true);
-	};
-	const renderCooperation = (groupType: string) => {
-		if (groupType === "teamwork") {
-			return (
-				<Button block type="text" rootClassName="btn-content" onClick={openCooperationModal}>
-					协作及权限管理
-				</Button>
-			);
-		}
-		if (!isMember) {
-			return (
-				<Button block type="text" rootClassName="btn-content" onClick={upgradeHandle}>
-					发起协作
-				</Button>
-			);
-		}
-		return (
-			<Button block type="text" rootClassName="btn-content" onClick={openInvitationModal}>
-				发起协作
-			</Button>
-		);
-	};
 	const content = (
 		<ExtraActionDiv>
-			<Button block type="text" rootClassName="btn-content" onClick={editHandler}>
-				工作流设置
-			</Button>
-			<Button block type="text" rootClassName="btn-content" onClick={openRenameModal}>
-				重命名
-			</Button>
-			{renderCooperation(groupType)}
-			<Button block type="text" rootClassName="btn-content" onClick={archiveHandle}>
-				{workflowInfo.archive ? "取消归档" : "归档"}
-			</Button>
 			<Button block type="text" rootClassName="btn-content" onClick={delConfirm}>
-				删除
+				审批设置
 			</Button>
 		</ExtraActionDiv>
 	);
@@ -250,27 +163,11 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo, groupTy
 				overlayInnerStyle={{ padding: "8px 4px" }}>
 				<MoreOutlined style={{ marginRight: "8px", fontSize: "14px", fontWeight: 800 }} />
 			</Popover>
-
-			{/* 重命名 */}
-			<RenameModal {...{ isRenameModalOpen, closeRenameModal, workflowInfo }} />
-
-			{/* 状态流设置 */}
-
-			<StatusSettingModal
-				{...{
-					isStatusSettingModalOpen,
-					setIsStatusSettingModalOpen,
-					flowInfo: workflowInfo
-				}}
-			/>
-
 			{/* 发起协作 */}
 			<InvitationModal {...{ isInviteModalOpen, closeInvitationModal, workflowInfo, dstId }} />
 
 			{/* 协作及权限管理 */}
 			<CooperationModal {...{ isCooperationModalOpen, closeCooperationModal, workflowInfo, dstId }} />
-			{/* 升级modal */}
-			<UpgradeModal {...{ isModalOpen, setIsModalOpen }} />
 		</React.Fragment>
 	);
 };

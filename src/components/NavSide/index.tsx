@@ -18,7 +18,7 @@ const NavSideRoot = styled.div`
 `;
 
 interface NavSideProps {
-	path: string;
+	path?: string;
 	children?: React.ReactNode;
 }
 

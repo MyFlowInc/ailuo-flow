@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useAppSelector } from "../../../store/hooks";
 import { selectCollapsed } from "../../../store/globalSlice";
-import { resetSortWorkFlow } from "../../../api/apitable/ds-table";
 import MenuItem from "./MenuItem";
 import MenuExtraAction from "./MenuExtraAction";
 import MenuGroup from "./MenuGroup";
@@ -39,17 +38,13 @@ const MenuItemWrap = styled.div<MenuItemWrapProps>`
 
 interface MenuGroupContextProps {
 	title: string;
-	workflowList: WorkFlowInfo[];
-	curMenuKey: string;
-	setCurMenuKey: (k: string) => void;
-	setWorkflowList: (v: WorkFlowInfo[]) => void;
-	refetch: () => void;
+	menuList: any[];
 	type: "personal" | "teamwork";
 	groupStyle?: React.CSSProperties;
 	children?: React.ReactNode;
 }
 
-const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, workflowList, curMenuKey, setCurMenuKey, setWorkflowList, refetch, type, groupStyle }) => {
+const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, type, groupStyle }) => {
 	const collapsed = useAppSelector(selectCollapsed);
 
 	const reorder = async (list: WorkFlowInfo[], startIndex: number, endIndex: number) => {
@@ -61,43 +56,32 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, workflowList
 	};
 
 	const handleDragEnd = async (result: any) => {
-		if (!result.destination) {
-			return;
-		}
-
-		const workflows = await reorder(workflowList, result.source.index, result.destination.index);
-		setWorkflowList(workflows);
-
-		await resetSortWorkFlow({
-			sortType: type,
-			dstIds: workflows.map(item => item.dstId as string)
-		});
+		return;
 	};
 
 	return (
 		<DragDropContext onDragEnd={handleDragEnd}>
-			{workflowList && workflowList.length > 0 && (
-				<MenuGroup title={title} collapsed={collapsed} count={workflowList.length} style={groupStyle}>
+			{menuList && menuList.length > 0 && (
+				<MenuGroup title={title} collapsed={collapsed} count={menuList.length} style={groupStyle}>
 					<Droppable droppableId={`droppable_${type}`} direction="vertical">
 						{(provided, snapshot) => {
 							return (
 								<div ref={provided.innerRef} {...provided.droppableProps}>
-									{workflowList.map((item, index) => {
-										const isSelected = curMenuKey === item.dstId || false;
+									{menuList.map((item, index) => {
+										const isSelected = true;
 										return (
 											<Draggable key={`item_${item.id}`} draggableId={item.id} index={index} isDragDisabled>
 												{(provided, snapshot) => (
 													<MenuItemWrap collapsed={collapsed} {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
 														<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
 														<MenuItem
-															setCurrentKey={setCurMenuKey}
 															collapsed={collapsed}
 															menuKey={`${item.dstId}`}
-															menuName={item.dstName!}
+															menuName={item.title}
 															icon={<div> {item.icon ? item.icon : `🤔`} </div>}
 															isExtraShow
 															isSelected={isSelected}
-															extra={<MenuExtraAction workflowInfo={item} refresh={refetch} groupType={type} />}
+															extra={<MenuExtraAction workflowInfo={item} groupType={type} />}
 														/>
 													</MenuItemWrap>
 												)}

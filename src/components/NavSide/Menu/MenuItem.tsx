@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import data from "@emoji-mart/data";
-import emojiZh from "./emoji-zh.json";
-import Picker from "@emoji-mart/react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { selectAllWorkflowList, updateCurFlowDstId, updateFlowIcon } from "../../../store/workflowSlice";
-import { Popover, message } from "antd";
+import { message } from "antd";
 import _ from "lodash";
 import { updateWorkFlow } from "../../../api/apitable/ds-table";
 
@@ -68,13 +65,12 @@ interface MenuItemProps {
 	extra?: React.ReactNode;
 	isSelected: boolean;
 	isExtraShow?: boolean;
-	setCurrentKey: (k: string) => void;
 	style?: React.CSSProperties;
 	children?: React.ReactNode;
 	onClick?: () => void;
 }
 const MenuKeys = ["notification", "update", "setting", "help"];
-const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon, extra, isSelected, isExtraShow, setCurrentKey, onClick, style }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon, extra, isSelected, isExtraShow, onClick, style }) => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const history = useHistory();
@@ -118,7 +114,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 					history.push(path);
 					setCurFlowDstId(menuKey);
 				}
-				setCurrentKey(menuKey);
+				console.log("setCurrentKey", menuKey);
 		}
 	};
 
@@ -164,16 +160,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				</>
 			) : (
 				<>
-					<Popover
-						open={emojiOpen}
-						onOpenChange={handleOpenChange}
-						placement="bottomLeft"
-						trigger="click"
-						content={<Picker onAddCustomEmoji={null} previewPosition={"none"} i18n={emojiZh} data={data} onEmojiSelect={updateIcon} />}
-						arrow={false}>
-						<div className="menuitem-icon">{icon}</div>
-					</Popover>
-
+					<div className="menuitem-icon">{icon}</div>
 					<div className="menuitem-text" onClick={routerJumpHandler}>
 						{menuName}
 					</div>

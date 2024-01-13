@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Button, Checkbox, Form, Input, message, ConfigProvider } from "antd";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import { useHistory } from "react-router";
-import { userLoginmail, userProfile } from "../../api/user";
+import { userLogin, userProfile } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/globalSlice";
 import { Link } from "react-router-dom";
@@ -106,9 +106,9 @@ const Login: React.FC = () => {
 	const [form] = Form.useForm();
 	const [messageApi, contextHolder] = message.useMessage();
 	useEffect(() => {
-		const email = localStorage.getItem("user_email");
-		if (form && email) {
-			form.setFieldValue("email", email || "");
+		const username = localStorage.getItem("username");
+		if (form && username) {
+			form.setFieldValue("username", username || "");
 		}
 	}, [form]);
 
@@ -116,18 +116,18 @@ const Login: React.FC = () => {
 		form
 			.validateFields()
 			.then(async () => {
-				const data = form.getFieldsValue(["email", "password"]);
+				const data = form.getFieldsValue(["username", "password"]);
 				try {
-					const response = (await userLoginmail(data)) as any;
+					const response = (await userLogin(data)) as any;
 					if (response.code !== 200) {
 						throw new Error(response.msg);
 					}
-
-					const { token, tokenKey } = response.data;
+					console.log("userLogin", response);
+					const { token, tokenKey } = response;
 					if (token && tokenKey) {
 						localStorage.setItem("Authorization", token);
 						localStorage.setItem("Authorization-key", tokenKey);
-						localStorage.setItem("user_email", data.email);
+						localStorage.setItem("username", data.username);
 
 						const res = await userProfile();
 						console.log("userProfile", res);
@@ -156,9 +156,7 @@ const Login: React.FC = () => {
 			});
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
-	const jump2Register = () => {
-		history.push("/register");
-	};
+
 	const onFinish = (values: any) => {
 		console.log("Received values of form: ", values);
 	};
@@ -198,8 +196,8 @@ const Login: React.FC = () => {
 							onFinish={onFinish}
 							onFinishFailed={onFinishFailed}
 							autoComplete="off">
-							<Form.Item name="email" style={{ margin: "20px 0px" }} rules={[{ required: true, message: "用户名不能为空!" }]}>
-								<Input rootClassName="noborder-bg" bordered={false} placeholder="请输入邮箱地址" />
+							<Form.Item name="username" style={{ margin: "20px 0px" }} rules={[{ required: true, message: "用户名不能为空!" }]}>
+								<Input rootClassName="noborder-bg" bordered={false} placeholder="请输入用户名" />
 							</Form.Item>
 							<Form.Item style={{ marginBottom: "20px" }} name="password" rules={[{ required: true, message: "密码不能为空!" }]}>
 								<Input.Password
@@ -223,9 +221,6 @@ const Login: React.FC = () => {
 								<Button onClick={checkLogin} type="primary" htmlType="submit" className="active-button" block>
 									登录
 								</Button>
-								{/* <Button block onClick={jump2Register} className="register-button">
-									点击注册
-								</Button> */}
 							</div>
 						</Form>
 					</div>

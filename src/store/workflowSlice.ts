@@ -127,6 +127,7 @@ export const freshCurTableRows = createAsyncThunk("workflow/freshCurTableRows", 
 	// The value we return becomes the `fulfilled` action payload
 	return rows;
 });
+
 const initCurTableColumn = (state: workflowState, columns: TableColumnItem[]) => {
 	state.curTableColumn = columns;
 	const temp = _.find(columns, { type: 26 });

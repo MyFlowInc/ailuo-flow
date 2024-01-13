@@ -17,8 +17,8 @@ export function saleProjectList(params: saleProjectListParams) {
 
 export function saleProjectAdd(data: saleProjectListParams) {
 	return apiCall({
-		url: "api/sys/projectSaleProcess/page",
-		method: "get",
+		url: "api/sys/projectSaleProcess/save",
+		method: "post",
 		data
 	});
 }

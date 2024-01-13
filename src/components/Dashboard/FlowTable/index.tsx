@@ -4,18 +4,14 @@ import _ from "lodash";
 import { useAppSelector } from "../../../store/hooks";
 import { selectCurTableRows, selectCurTableColumn } from "../../../store/workflowSlice";
 import { selectIsArchiveView } from "../../../store/globalSlice";
-import ArchiveTable from "./ArchiveTable";
 import StandardTable from "./StandardTable";
 import { EditRecordModal } from "../FormModal/RecordModal";
 import { apitableDeveloperUserList } from "../../../api/apitable/ds-share";
-
 import type { DeveloperUser } from "../../../store/globalSlice";
 
 const FlowTableRoot = styled.div`
 	position: relative;
-	overflow: hidden;
 	width: 100%;
-	height: calc(100% - 68px);
 `;
 
 export interface FlowItemTableDataType {
@@ -27,6 +23,8 @@ export interface FlowItemTableDataType {
 
 interface FlowTableProps {
 	dstId: string;
+	statusId?: string; // 当前渲染的状态id
+	statusFieldId?: string; // 从record中获取 statusId
 	freshFlowItem: () => void;
 	editFlowItemRecord: FlowItemTableDataType | undefined;
 	setEditFlowItemRecord: (v: FlowItemTableDataType) => void;
@@ -38,6 +36,7 @@ interface FlowTableProps {
 }
 
 const FlowTable: React.FC<FlowTableProps> = ({ dstId, editFlowItemRecord, freshFlowItem, ...rest }) => {
+	const { statusId, statusFieldId } = rest;
 	const dstColumns = useAppSelector(selectCurTableColumn);
 	const datasource = useAppSelector(selectCurTableRows);
 	// const users = useAppSelector(selectMembers);
@@ -64,13 +63,23 @@ const FlowTable: React.FC<FlowTableProps> = ({ dstId, editFlowItemRecord, freshF
 
 	const [open, setOpen] = useState<boolean>(false);
 
-	const flowDataSource = datasource.filter(item => !item.archive);
-	const archiveDataSource = datasource.filter(item => item.archive);
+	const flowDataSource = datasource.filter(item => {
+		if (!statusId) {
+			return true;
+		}
+		if (!statusFieldId) {
+			return true;
+		}
+		return item[statusFieldId] === statusId;
+	});
+	console.log("flowDataSource", flowDataSource);
+	// 废弃
+	// const archiveDataSource = datasource.filter(item => item.archive);
 
 	return (
 		<FlowTableRoot>
 			<StandardTable datasource={flowDataSource} isArchiveView={isArchiveView} users={users} columns={dstColumns} setOpen={setOpen} {...rest} />
-			<ArchiveTable dstId={dstId} datasource={archiveDataSource} isArchiveView={isArchiveView} users={users} columns={dstColumns} {...rest} />
+			{/* <ArchiveTable dstId={dstId} datasource={archiveDataSource} isArchiveView={isArchiveView} users={users} columns={dstColumns} {...rest} /> */}
 			<EditRecordModal open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} freshFlowItem={freshFlowItem} />
 		</FlowTableRoot>
 	);

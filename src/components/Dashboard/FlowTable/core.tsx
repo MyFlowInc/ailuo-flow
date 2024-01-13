@@ -167,8 +167,6 @@ export const FlowTable: React.FC<Partial<FlowTableProps>> = props => {
 	};
 
 	return (
-		// <FlowTableContainer className={"card-table-container" + " " + className}>
-
 		<Table
 			size="small"
 			components={{

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ConfigProvider } from "antd";
-import DashboardContainer from "../../components/Dashboard/DashboardContainer";
 import { selectUser, selectIsMember } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { selectCurFlowDstId } from "../../store/workflowSlice";
@@ -11,10 +10,6 @@ const Page: React.FC = () => {
 	const curDstId = useAppSelector(selectCurFlowDstId);
 	const user = useAppSelector(selectUser);
 	const isVip = useAppSelector(selectIsMember);
-
-	const [isReader, setIsReader] = useState<boolean>(false);
-	const [isWriter, setIsWriter] = useState<boolean>(false);
-	const [isManager, setIsManager] = useState<boolean>(false);
 
 	// 获取销售列表
 	const fetchSaleList = async () => {
@@ -33,11 +28,7 @@ const Page: React.FC = () => {
 		};
 	}, [curDstId]);
 
-	return (
-		<ConfigProvider theme={dashboardTheme}>
-			<DashboardContainer reader={isReader} writer={isWriter} manager={isManager} />
-		</ConfigProvider>
-	);
+	return <ConfigProvider theme={dashboardTheme}></ConfigProvider>;
 };
 
 export default Page;

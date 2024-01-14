@@ -55,7 +55,6 @@ const AppHeader: React.FC<AppHeaderProps> = props => {
 		const imgPath = getImgByName(component);
 		return <img src={imgPath} />;
 	};
-	console.log("AppHeader", location);
 	return (
 		<Header style={{ height: "34px", lineHeight: "24px", padding: "5px 16px", background: "#ffffff" }}>
 			<UIContent>

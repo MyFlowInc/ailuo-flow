@@ -45,7 +45,6 @@ interface MenuGroupContextProps {
 const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	const collapsed = useAppSelector(selectCollapsed);
 	const location = useLocation();
-	console.log(location, "location");
 
 	const getIcon = (menu: IMenu) => {
 		const { component } = menu;

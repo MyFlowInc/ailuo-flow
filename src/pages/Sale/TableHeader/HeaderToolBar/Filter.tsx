@@ -125,7 +125,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 
 	React.useEffect(() => {
 		form.resetFields();
-		setFirstFieldId(_.get(columns, 0).fieldId);
+		setFirstFieldId(_.get(columns, 0)?.fieldId);
 	}, [records, columns]);
 
 	return (
@@ -152,7 +152,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 				name="conditions"
 				initialValue={[
 					{
-						conditionName: _.get(columns, 0).fieldId,
+						conditionName: _.get(columns, 0)?.fieldId,
 						conditionOperator: "eq"
 					}
 				]}>

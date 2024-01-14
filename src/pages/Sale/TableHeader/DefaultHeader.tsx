@@ -16,7 +16,7 @@ interface DefaultHeaderRootProps {
 const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 	display: flex;
 	align-items: center;
-	justify-content: end;
+	justify-content: space-between;
 	overflow: hidden;
 	opacity: ${({ isShow }) => (isShow ? 0 : 1)};
 	width: ${({ isShow }) => (isShow ? 0 : "100%")};
@@ -25,7 +25,7 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 	transition-duration: 1s;
 
 	.default-header-right {
-		flex: 1;
+		/* flex: 1; */
 		display: flex;
 		justify-content: space-between;
 		margin-left: 12px;

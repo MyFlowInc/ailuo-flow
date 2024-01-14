@@ -91,7 +91,6 @@ const Menu: React.FC = () => {
 			if (menus && menus.length > 0) {
 				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
-			console.log("menus", menus);
 		} catch (error) {
 			console.log("error", error);
 		}

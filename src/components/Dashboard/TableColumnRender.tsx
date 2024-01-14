@@ -109,13 +109,13 @@ interface TableColumnRenderProps {
 }
 
 const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, ...restProps }) => {
+	console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
 	if (column === undefined || record === undefined) {
 		return <td {...restProps}>{children}</td>;
 	}
 
-	const { type, fieldId, fieldConfig } = column;
-	const cloneConfig = _.cloneDeep(fieldConfig);
-	const options = _.get(cloneConfig, "property.options");
+	const { type = "SingleText" } = column;
+	const columnKey = column.key;
 
 	let childNode = children;
 	switch (type) {
@@ -127,39 +127,35 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, r
 			break;
 
 		case NumFieldType.Text:
-			childNode = <MultipleText value={record[fieldId]} />;
+			childNode = <MultipleText value={record[columnKey]} />;
 			break;
 
 		case NumFieldType.OptionStatus:
-			childNode = <SingleSelect value={record[fieldId]} fieldConfig={fieldConfig} />;
+			childNode = <SingleSelect value={record[columnKey]} fieldConfig={{}} />;
 			break;
 
 		case NumFieldType.Attachment:
-			childNode = <Attachment value={record[fieldId]} />;
+			childNode = <Attachment value={record[columnKey]} />;
 			break;
 
 		case NumFieldType.SingleSelect:
-			childNode = <SingleSelect value={record[fieldId]} fieldConfig={fieldConfig} />;
+			childNode = <SingleSelect value={record[columnKey]} fieldConfig={{}} />;
 			break;
 
 		case NumFieldType.MultiSelect:
-			childNode = <MultiSelect value={record[fieldId]} fieldConfig={fieldConfig} />;
+			childNode = <MultiSelect value={record[columnKey]} fieldConfig={{}} />;
 			break;
 
 		case NumFieldType.Link:
-			childNode = <NetAddress value={record[fieldId]} record={record} />;
+			childNode = <NetAddress value={record[columnKey]} record={record} />;
 			break;
 
 		case NumFieldType.Member:
-			childNode = <MemberSelect value={record[fieldId]} userList={users} />;
-			break;
-
-		case NumFieldType.discuss:
-			childNode = <DiscussModalWrap fieldId={fieldId} record={record} reader={reader} writer={writer} manager={manager} />;
+			childNode = <MemberSelect value={record[columnKey]} userList={users} />;
 			break;
 
 		default:
-			childNode = <StringifyTextRender value={record[fieldId]} />;
+			childNode = <StringifyTextRender value={record[columnKey]} />;
 	}
 
 	let styles: React.CSSProperties = {};

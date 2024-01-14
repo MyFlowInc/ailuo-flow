@@ -71,11 +71,12 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 };
 
 interface StandardTableProps {
+	tableDataSource: any[];
 	setOpen: (v: boolean) => void;
 	setEditFlowItemRecord: (v: any) => void;
 	deleteFlowItem: (recordId: string) => void;
 	columns: any[];
-	datasource: any;
+	datasource: any[];
 	setSelectedRows: (v: any[]) => void;
 	children?: React.ReactNode;
 }
@@ -83,7 +84,6 @@ interface StandardTableProps {
 const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setSelectedRows, ...rest }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
 	const getTableColumns = () => {
 		const tColumns: any = [
 			...columns.map((item: any, cIndex: number) => {
@@ -141,7 +141,6 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 			name: record.name
 		})
 	};
-
 	return (
 		<StandardTableRoot>
 			<Table
@@ -154,7 +153,7 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 				}}
 				rowSelection={rowSelection}
 				columns={tableColumns}
-				dataSource={datasource}
+				dataSource={[datasource[0]]}
 				scroll={{ x: true, y: `calc(100vh - 170px)` }}
 			/>
 		</StandardTableRoot>

@@ -109,7 +109,7 @@ interface TableColumnRenderProps {
 }
 
 const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, ...restProps }) => {
-	console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
+	// console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
 	if (column === undefined || record === undefined) {
 		return <td {...restProps}>{children}</td>;
 	}

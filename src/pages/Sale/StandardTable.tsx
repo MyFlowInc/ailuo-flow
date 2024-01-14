@@ -8,6 +8,7 @@ import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
+import _ from "lodash";
 
 const StandardTableRoot = styled.div`
 	position: absolute;
@@ -136,11 +137,12 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 			setSelectedRows(selectedRows);
 			setSelectedRowKeys(selectedRowKeys);
 		},
-		getCheckboxProps: (record: any) => ({
+		getCheckboxProps: (record: any = {}) => ({
 			disabled: record.name === "Disabled User",
 			name: record.name
 		})
 	};
+	if (_.isEmpty(datasource)) return <></>;
 	return (
 		<StandardTableRoot>
 			<Table

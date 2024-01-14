@@ -66,7 +66,6 @@ interface MenuItemProps {
 	children?: React.ReactNode;
 	onClick?: () => void;
 }
-const MenuKeys = ["notification", "update", "setting", "help"];
 const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon, extra, isSelected, isExtraShow, onClick, style }) => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();

@@ -20,6 +20,7 @@ const NavHeadRoot = styled.div<NavHeadRootProps>`
 	padding: ${({ collapsed }) => (collapsed ? "5px 0px 5px 8px" : "5px 0px 5px 16px")};
 	height: 34px;
 	line-height: 34px;
+	margin-bottom: 10px;
 
 	.collapsed {
 		display: ${props => (props.collapsed ? "none" : "block")};

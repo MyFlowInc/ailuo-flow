@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectCollapsed, setIsOpenDrawer } from "../../../store/globalSlice";
+import { selectCollapsed, setIsOpenDrawer, setUserMenus } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
 import MenuGroup from "./MenuGroup";
-
 import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
-import { useHistory, useLocation } from "react-router";
+import { useHistory } from "react-router";
 
 const MenuRoot = styled.div<{ collapsed: boolean }>`
 	display: flex;
@@ -75,9 +74,7 @@ const MenuRoot = styled.div<{ collapsed: boolean }>`
 const Menu: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const collapsed = useAppSelector(selectCollapsed);
-	const location = useLocation();
 	const history = useHistory();
-
 	const [menus, setMenus] = useState<any[]>([]);
 	const showDrawer = () => {
 		dispatch(setIsOpenDrawer(true));
@@ -90,6 +87,7 @@ const Menu: React.FC = () => {
 			menus.sort((a, b) => a.sort - b.sort);
 			// 菜单列表
 			setMenus(menus);
+			dispatch(setUserMenus(menus));
 			if (menus && menus.length > 0) {
 				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Layout } from "antd";
-// import { Emoji } from "emoji-picker-react";
 import { useAppSelector } from "../../store/hooks";
-import { selectCurFlowName, selectCurWorkflow, selectCurFlowDstId } from "../../store/workflowSlice";
 import styled from "styled-components";
+import { selectUserMenus } from "../../store/globalSlice";
+import { useLocation } from "react-router";
+import { IMenu } from "../../api/ailuo/menu";
+import { getImgByName } from "../NavSide/Menu/MenuIconMap";
+import _ from "lodash";
 
 interface AppHeaderProps {}
 
@@ -34,19 +37,31 @@ const UIContent = styled.div`
 `;
 
 const AppHeader: React.FC<AppHeaderProps> = props => {
-	const name = useAppSelector(selectCurFlowName);
-	const curDstId = useAppSelector(selectCurFlowDstId);
-	const curTable = useAppSelector(selectCurWorkflow);
-	const emoji = curTable?.icon || "";
+	const menus = useAppSelector(selectUserMenus);
+	const location = useLocation();
+	const [menu, setMenu] = useState<{ icon?: any; name?: string }>({});
+	useEffect(() => {
+		const { pathname } = location;
+		const arr = pathname.split("/");
+		const menuPath = arr[arr.length - 1];
+		const menu = _.find(menus, { path: "/" + menuPath });
+		if (menu) {
+			setMenu({ icon: getIcon(menu), name: menu.title });
+		}
+	}, [location, menus]);
 
-	if (!curDstId) return <></>;
-
+	const getIcon = (menu: IMenu) => {
+		const { component } = menu;
+		const imgPath = getImgByName(component);
+		return <img src={imgPath} />;
+	};
+	console.log("AppHeader", location);
 	return (
 		<Header style={{ height: "34px", lineHeight: "24px", padding: "5px 16px", background: "#ffffff" }}>
 			<UIContent>
 				<div className="title">
-					<div>{emoji || "🤔"}</div>
-					<div>{name}</div>
+					<div>{menu.icon}</div>
+					<div>{menu.name}</div>
 				</div>
 			</UIContent>
 		</Header>

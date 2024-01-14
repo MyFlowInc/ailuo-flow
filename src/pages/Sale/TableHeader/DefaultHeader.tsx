@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { ConfigProvider, Button } from "antd";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { updateCurShowMode } from "../../../store/workflowSlice";
 import { blueButtonTheme } from "../../../theme/theme";
 import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import type { SegmentedValue } from "antd/es/segmented";
 import { selectIsAddOrderModalOpen, setIsAddOrderModalOpen } from "../../../store/globalSlice";
 
 interface DefaultHeaderRootProps {
@@ -48,24 +46,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, freshFlowIte
 		dispatch(setIsAddOrderModalOpen(value));
 	};
 
-	const [value, setValue] = useState<SegmentedValue>("list");
-
-	const onChangeHandler = (newValue: SegmentedValue) => {
-		dispatch(updateCurShowMode(newValue));
-		setValue(newValue);
-	};
-
-	const segOptions = [
-		{
-			label: <span style={{ padding: "0px 5px" }}>列表视图</span>,
-			value: "list"
-		},
-		{
-			label: <span style={{ padding: "0px 5px" }}>状态视图</span>,
-			value: "status"
-		}
-	];
-
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
 			<ConfigProvider theme={blueButtonTheme}>
@@ -74,7 +54,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, freshFlowIte
 				</Button>
 			</ConfigProvider>
 			<div className="default-header-right">
-				{/* <Segmented options={segOptions} defaultValue={value} onChange={onChangeHandler} /> */}
 				<HeaderToolBar />
 			</div>
 			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} freshFlowItem={freshFlowItem} />

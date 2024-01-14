@@ -4,6 +4,7 @@ import { userProfile } from "../api/user";
 import { userGradeList } from "../api/shop";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { IMenu } from "../api/ailuo/menu";
 
 export interface User {
 	id: string;
@@ -31,6 +32,7 @@ export interface DeveloperUser {
 
 export interface globalState {
 	user: User;
+	userMenus: IMenu[];
 	gradeList: any[];
 	Authorization: string;
 	"Authorization-key": string;
@@ -46,6 +48,7 @@ export interface globalState {
 
 const initialState: globalState = {
 	user: {} as User,
+	userMenus: [],
 	gradeList: [],
 	Authorization: "",
 	"Authorization-key": "",
@@ -73,7 +76,6 @@ export const freshUser = createAsyncThunk("global/freshUser", async () => {
 
 export const freshGradeList = createAsyncThunk("global/freshGradeList", async () => {
 	const res = await userGradeList();
-	// The value we return becomes the `fulfilled` action payload
 	return _.get(res, "data.record") || [];
 });
 
@@ -84,6 +86,10 @@ export const globalSlice = createSlice({
 		setUser: (state, action) => {
 			// console.log('setUser', action)
 			state.user = action.payload;
+		},
+		setUserMenus: (state, action) => {
+			// console.log('setUser', action)
+			state.userMenus = action.payload;
 		},
 		loginSuccess: (state, action) => {
 			console.log("loginSussess", action);
@@ -128,6 +134,7 @@ export const globalSlice = createSlice({
 
 export const {
 	setUser,
+	setUserMenus,
 	loginSuccess,
 	setCollapsed,
 	setIsArchive,
@@ -140,6 +147,7 @@ export const {
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;
+export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
 export const selectIsAddTableModalOpen = (state: RootState) => state.global.isAddTableModalOpen;
 export const selectIsAddOrderModalOpen = (state: RootState) => state.global.isAddOrderModalOpen;

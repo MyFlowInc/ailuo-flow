@@ -5,6 +5,8 @@ import { selectCollapsed } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import MenuExtraAction from "./MenuExtraAction";
 import { useLocation } from "react-router";
+import { IMenu } from "../../../api/ailuo/menu";
+import { getImgByName } from "./MenuIconMap";
 
 interface MenuItemWrapProps {
 	collapsed: boolean;
@@ -35,20 +37,25 @@ const MenuItemWrap = styled.div<MenuItemWrapProps>`
 
 interface MenuGroupContextProps {
 	title: string;
-	menuList: any[];
+	menuList: IMenu[];
 	groupStyle?: React.CSSProperties;
 	children?: React.ReactNode;
 }
 
-const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, groupStyle }) => {
+const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	const collapsed = useAppSelector(selectCollapsed);
-
 	const location = useLocation();
 	console.log(location, "location");
+
+	const getIcon = (menu: IMenu) => {
+		const { component } = menu;
+		const imgPath = getImgByName(component);
+		return <img src={imgPath} />;
+	};
 	return (
 		<div>
 			{menuList.map((item, index) => {
-				const isSelected = true;
+				const isSelected = "/dashboard" + item.path === location.pathname;
 				return (
 					<MenuItemWrap collapsed={collapsed} key={"MenuItemWrap_" + index}>
 						<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
@@ -56,10 +63,10 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, gr
 							collapsed={collapsed}
 							menuKey={`${item.path}`}
 							menuName={item.title}
-							icon={<div> {item.icon ? item.icon : `🤔`} </div>}
+							icon={<div> {getIcon(item)} </div>}
 							isExtraShow
 							isSelected={isSelected}
-							extra={<MenuExtraAction workflowInfo={item} />}
+							extra={<MenuExtraAction menu={item} />}
 						/>
 					</MenuItemWrap>
 				);

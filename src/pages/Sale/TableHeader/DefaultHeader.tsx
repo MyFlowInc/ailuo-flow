@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ConfigProvider, Button, Segmented } from "antd";
+import { ConfigProvider, Button } from "antd";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { updateCurShowMode } from "../../../store/workflowSlice";
@@ -70,11 +70,11 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, freshFlowIte
 		<DefaultHeaderRoot isShow={hasSelected}>
 			<ConfigProvider theme={blueButtonTheme}>
 				<Button type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
-					新建工单
+					新建报价
 				</Button>
 			</ConfigProvider>
 			<div className="default-header-right">
-				<Segmented options={segOptions} defaultValue={value} onChange={onChangeHandler} />
+				{/* <Segmented options={segOptions} defaultValue={value} onChange={onChangeHandler} /> */}
 				<HeaderToolBar />
 			</div>
 			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} freshFlowItem={freshFlowItem} />

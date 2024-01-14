@@ -6,7 +6,6 @@ import { selectCurTableColumn, selectCurTableRecords } from "../../../../store/w
 import Search from "./Search";
 import Filter from "./Filter"; // 筛选
 import Sort from "./Sort"; // 排序
-import Senior from "./Senior";
 import LinePng from "../../../../assets/line.png";
 
 interface HeaderToolBarProps {
@@ -23,8 +22,8 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = () => {
 			<Filter records={records} columns={dstColumns} />
 			<img src={LinePng} style={{ width: "14px", height: "14px" }} />
 			<Sort columns={dstColumns} />
-			<img src={LinePng} style={{ width: "14px", height: "14px" }} />
-			<Senior />
+			{/* <img src={LinePng} style={{ width: "14px", height: "14px" }} /> */}
+			{/* <Senior /> */}
 		</Space>
 	);
 };

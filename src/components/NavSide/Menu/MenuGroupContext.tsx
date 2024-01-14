@@ -36,12 +36,11 @@ const MenuItemWrap = styled.div<MenuItemWrapProps>`
 interface MenuGroupContextProps {
 	title: string;
 	menuList: any[];
-	type: "personal" | "teamwork";
 	groupStyle?: React.CSSProperties;
 	children?: React.ReactNode;
 }
 
-const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, type, groupStyle }) => {
+const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, groupStyle }) => {
 	const collapsed = useAppSelector(selectCollapsed);
 
 	const location = useLocation();
@@ -55,12 +54,12 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ title, menuList, ty
 						<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
 						<MenuItem
 							collapsed={collapsed}
-							menuKey={`${item.dstId}`}
+							menuKey={`${item.path}`}
 							menuName={item.title}
 							icon={<div> {item.icon ? item.icon : `🤔`} </div>}
 							isExtraShow
 							isSelected={isSelected}
-							extra={<MenuExtraAction workflowInfo={item} groupType={type} />}
+							extra={<MenuExtraAction workflowInfo={item} />}
 						/>
 					</MenuItemWrap>
 				);

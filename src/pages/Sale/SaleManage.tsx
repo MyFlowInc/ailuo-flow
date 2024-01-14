@@ -10,7 +10,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 
 const SaleManage: React.FC = () => {
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(undefined);
 	const deleteFlowItemHandler = async (recordId: string) => {};
@@ -41,6 +41,7 @@ const SaleManage: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<DashboardRoot>
+				{/* 表头 */}
 				<TableHeader selectedRows={selectedRows} freshFlowItem={freshFlowItem} setSelectedRows={setSelectedRows} />
 				{loading && <BaseLoading />}
 				{/* 表格主体 */}

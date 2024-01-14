@@ -7,7 +7,6 @@ import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
 import MenuGroup from "./MenuGroup";
 
-import type { WorkFlowInfo } from "../../../store/workflowSlice";
 import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
 import { useHistory, useLocation } from "react-router";
@@ -79,7 +78,6 @@ const Menu: React.FC = () => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const [owerFlowList, setOwerFlowList] = useState<WorkFlowInfo[]>([]);
 	const [menus, setMenus] = useState<any[]>([]);
 	const showDrawer = () => {
 		dispatch(setIsOpenDrawer(true));
@@ -91,10 +89,9 @@ const Menu: React.FC = () => {
 			const menus = res.data || [];
 			menus.sort((a, b) => a.sort - b.sort);
 			// 菜单列表
-
 			setMenus(menus);
 			if (menus && menus.length > 0) {
-				history.push(`/dashboard` + menus[0].path);
+				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
 			console.log("menus", menus);
 		} catch (error) {
@@ -108,7 +105,7 @@ const Menu: React.FC = () => {
 	return (
 		<MenuRoot collapsed={collapsed}>
 			<div className="menu-content">
-				<MenuGroupContext menuList={menus} type="personal" title="销售部" groupStyle={{ paddingBottom: "18px" }} />
+				<MenuGroupContext menuList={menus} title="销售部" groupStyle={{ paddingBottom: "18px" }} />
 			</div>
 			<div className="menu-extra">
 				<MenuGroup>

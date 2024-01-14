@@ -92,7 +92,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				return;
 			default:
 				if (!menuKey) return;
-				const path = "/dashboard/workflow-view/" + menuKey;
+				const path = "/dashboard" + menuKey;
 				if (path !== location.pathname) {
 					history.push(path);
 					setCurFlowDstId(menuKey);

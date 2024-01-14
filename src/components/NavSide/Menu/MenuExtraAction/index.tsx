@@ -30,7 +30,6 @@ const ExtraActionDiv = styled.div`
 `;
 
 interface MenuExtraActionProps {
-	groupType: "personal" | "teamwork";
 	workflowInfo: WorkFlowInfo;
 	children?: React.ReactNode;
 }

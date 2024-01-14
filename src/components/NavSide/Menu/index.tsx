@@ -5,12 +5,12 @@ import { selectCollapsed, setIsOpenDrawer } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
-import MenuGroupContext from "./MenuGroupContext";
 import MenuGroup from "./MenuGroup";
 
 import type { WorkFlowInfo } from "../../../store/workflowSlice";
 import { getUserMenu } from "../../../api/ailuo/menu";
-import { useLocation } from "react-router";
+import MenuGroupContext from "./MenuGroupContext";
+import { useHistory, useLocation } from "react-router";
 
 const MenuRoot = styled.div<{ collapsed: boolean }>`
 	display: flex;
@@ -77,6 +77,8 @@ const Menu: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const collapsed = useAppSelector(selectCollapsed);
 	const location = useLocation();
+	const history = useHistory();
+
 	const [owerFlowList, setOwerFlowList] = useState<WorkFlowInfo[]>([]);
 	const [menus, setMenus] = useState<any[]>([]);
 	const showDrawer = () => {
@@ -87,8 +89,14 @@ const Menu: React.FC = () => {
 		try {
 			const res = await getUserMenu();
 			const menus = res.data || [];
-			console.log("refetchFlowList", menus);
+			menus.sort((a, b) => a.sort - b.sort);
+			// 菜单列表
+
 			setMenus(menus);
+			if (menus && menus.length > 0) {
+				history.push(`/dashboard` + menus[0].path);
+			}
+			console.log("menus", menus);
 		} catch (error) {
 			console.log("error", error);
 		}

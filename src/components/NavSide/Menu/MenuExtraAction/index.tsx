@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import _ from "lodash";
 import { useHistory } from "react-router-dom";
 import { Popover, Button, Modal, message, ConfigProvider } from "antd";
 import { MoreOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { useAppDispatch } from "../../../../store/hooks";
 import { deleteWorkFlow } from "../../../../api/apitable/ds-table";
-import { fetchAllWorkflowList } from "../../../../controller/dsTable";
-import { removeWorkflowList, selectCurFlowDstId, selectWorkflowList, updateCurFlowDstId, setWorkflowList } from "../../../../store/workflowSlice";
+import { removeWorkflowList } from "../../../../store/workflowSlice";
 import InvitationModal from "./InvitationModal";
 import CooperationModal from "./CooperationModal";
 
 import type { WorkFlowInfo } from "../../../../store/workflowSlice";
-import { selectIsMember } from "../../../../store/globalSlice";
 import warningSvg from "../assets/warning.svg";
 import { blueButtonTheme } from "../../../../theme/theme";
 
@@ -41,27 +38,14 @@ interface MenuExtraActionProps {
 const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo }) => {
 	const dispatch = useAppDispatch();
 	const history = useHistory();
-	const flowList = useAppSelector(selectWorkflowList);
-	const curFlowDstId = useAppSelector(selectCurFlowDstId);
-	const isMember = useAppSelector(selectIsMember);
 
 	const [messageApi] = message.useMessage();
 
-	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
-	const [isStatusSettingModalOpen, setIsStatusSettingModalOpen] = useState<boolean>(false);
-
 	const [isInviteModalOpen, setIsInviteModalOpen] = React.useState(false);
+
 	const [isCooperationModalOpen, setIsCooperationModalOpen] = React.useState(false);
+
 	const [dstId, setDstId] = React.useState<string | null>(null);
-
-	// 非会员 点击协作 触发 modal
-	const [isModalOpen, setIsModalOpen] = useState(false);
-
-	const editHandler = (e: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
-		e.stopPropagation();
-		openStatusSettingModal();
-		return;
-	};
 
 	const delConfirm = () => {
 		Modal.confirm({
@@ -84,17 +68,7 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo }) => {
 		try {
 			await deleteWorkFlow(id);
 			dispatch(removeWorkflowList(id));
-			// update flow list
-			const list = await freshWorkFlowList();
-			const curFlowId = _.find(flowList, { dstId: curFlowDstId })?.id;
 
-			if (list.length > 0) {
-				if (curFlowId === id) {
-					const item0 = list[0];
-					history.push(item0.url);
-					dispatch(updateCurFlowDstId(item0.dstId));
-				}
-			}
 			messageApi.open({
 				type: "success",
 				content: "删除成功!",
@@ -105,38 +79,8 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ workflowInfo }) => {
 		}
 	};
 
-	// rename work flow
-	const openRenameModal = () => {
-		if (!workflowInfo) {
-			return;
-		}
-		setIsRenameModalOpen(true);
-	};
-
-	const openStatusSettingModal = () => {
-		if (!workflowInfo) {
-			return;
-		}
-		setIsStatusSettingModalOpen(true);
-	};
-
-	const freshWorkFlowList = async () => {
-		const list = await fetchAllWorkflowList(true);
-
-		dispatch(setWorkflowList(list));
-		return list;
-	};
-
 	const closeCooperationModal = () => {
 		setIsCooperationModalOpen(false);
-	};
-
-	const openInvitationModal = () => {
-		if (!workflowInfo) {
-			return;
-		}
-		setIsInviteModalOpen(true);
-		setDstId(workflowInfo.dstId);
 	};
 
 	const closeInvitationModal = () => {

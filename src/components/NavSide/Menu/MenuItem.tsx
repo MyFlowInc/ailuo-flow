@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectAllWorkflowList, updateCurFlowDstId, updateFlowIcon } from "../../../store/workflowSlice";
-import { message } from "antd";
-import _ from "lodash";
-import { updateWorkFlow } from "../../../api/apitable/ds-table";
+import { useAppDispatch } from "../../../store/hooks";
+import { updateCurFlowDstId } from "../../../store/workflowSlice";
 
 interface MenutItemRootProps {
 	selected: boolean;
@@ -74,20 +71,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const history = useHistory();
-	const allFlowList = useAppSelector(selectAllWorkflowList);
-	const [emojiOpen, setEmojiOpen] = useState(false);
-	const [messageApi, contextHolder] = message.useMessage();
-
-	const hide = () => {
-		setEmojiOpen(false);
-	};
-
-	const handleOpenChange = (v: boolean) => {
-		if (MenuKeys.includes(menuKey || "")) {
-			return;
-		}
-		setEmojiOpen(v);
-	};
 
 	const setCurFlowDstId = (value: string | null) => {
 		dispatch(updateCurFlowDstId(value));
@@ -115,35 +98,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 					setCurFlowDstId(menuKey);
 				}
 				console.log("setCurrentKey", menuKey);
-		}
-	};
-
-	const updateIcon = async (info: { native: string; unified: string }) => {
-		const flow = _.find(allFlowList, { dstId: menuKey });
-		console.log("menuKey", flow);
-		if (!flow) {
-			return;
-		}
-		try {
-			await updateWorkFlow({
-				id: flow.id,
-				icon: info.native
-			});
-			dispatch(
-				updateFlowIcon({
-					dstId: menuKey,
-					icon: info.native
-				})
-			);
-		} catch (error) {
-			console.log("error", error);
-			messageApi.open({
-				type: "error",
-				content: "网络异常",
-				duration: 1
-			});
-		} finally {
-			hide();
 		}
 	};
 

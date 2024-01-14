@@ -149,7 +149,7 @@ const DashboardRouterOutlet: React.FC = () => {
 						<div className="router-content">
 							<Switch>
 								{/* 报价管理 */}
-								<Route path="/dashboard/quotation-management" exact={true}>
+								<Route path="/dashboard/quote-manage" exact={true}>
 									<SaleManage />
 								</Route>
 

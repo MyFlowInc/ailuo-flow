@@ -4,12 +4,12 @@ import CustomModal from "./FormModal/CustomModal";
 
 interface AddRecordModalProps {
 	open: boolean;
+	fetchSaleList: () => void; // 获取销售列表
 	setOpen: (a: boolean) => void;
-	freshFlowItem: () => void;
 }
 
 export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordModalProps) => {
-	const { open, setOpen, freshFlowItem } = props;
+	const { open, setOpen, fetchSaleList } = props;
 
 	const statusList: any = [];
 
@@ -18,7 +18,7 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 		open,
 		setOpen,
 		statusList,
-		freshFlowItem,
+		fetchSaleList,
 		modalType: "add"
 	};
 
@@ -29,13 +29,13 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 
 interface EditRecordModalProps {
 	open: boolean;
+	fetchSaleList: () => void; // 获取销售列表
 	setOpen: (a: boolean) => void;
-	freshFlowItem: () => void;
 	editFlowItemRecord: any | undefined;
 }
 
 export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
-	const { editFlowItemRecord, open, setOpen, freshFlowItem } = props;
+	const { editFlowItemRecord, open, setOpen, fetchSaleList } = props;
 
 	const statusList: any = [];
 
@@ -44,7 +44,7 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
 		open,
 		setOpen,
 		statusList,
-		freshFlowItem,
+		fetchSaleList,
 		modalType: "edit",
 		editFlowItemRecord
 	};

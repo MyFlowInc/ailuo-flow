@@ -23,7 +23,7 @@ interface StandardTableActionProps {
 	text: string;
 	record: any;
 	setOpen: (v: boolean) => void;
-	deleteFlowItem: (recordId: string) => void;
+	deleteFlowItem: (id: number) => void;
 	setEditFlowItemRecord: (v: any) => void;
 	reader?: boolean;
 	writer?: boolean;
@@ -40,7 +40,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 			okType: "danger",
 			cancelText: "取消",
 			onOk() {
-				deleteFlowItem(record.recordId);
+				deleteFlowItem(record.id);
 			},
 			onCancel() {
 				console.log("Cancel");
@@ -73,16 +73,22 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 
 interface StandardTableProps {
 	tableDataSource: any[];
+	fetchSaleList: () => void; // 获取销售列表
+	curPage: React.MutableRefObject<{
+		pageNum: number;
+		pageSize: number;
+		total: number;
+	}>;
 	setOpen: (v: boolean) => void;
 	setEditFlowItemRecord: (v: any) => void;
-	deleteFlowItem: (recordId: string) => void;
+	deleteFlowItem: (id: number) => void;
 	columns: any[];
 	datasource: any[];
 	setSelectedRows: (v: any[]) => void;
 	children?: React.ReactNode;
 }
 
-const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setSelectedRows, ...rest }) => {
+const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetchSaleList, setSelectedRows, curPage, ...rest }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const getTableColumns = () => {
@@ -133,7 +139,12 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 	}, [datasource.length]);
 
 	const pageNumChange = (page: number, pageSize: number) => {
-		console.log();
+		console.log(2222, page, pageSize);
+
+		curPage.current.pageNum = page;
+		setTimeout(() => {
+			fetchSaleList();
+		});
 	};
 
 	const rowSelection: TableRowSelection<any> = {
@@ -167,7 +178,13 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 				scroll={{ x: true, y: `calc(100vh - 170px)` }}
 			/>
 			<div className="flex align-middle justify-end mt-4">
-				<Pagination defaultCurrent={1} total={50} showTotal={total => `共 ${total} 条`} onChange={pageNumChange} />
+				<Pagination
+					current={curPage.current.pageNum}
+					total={curPage.current.total}
+					pageSize={curPage.current.pageSize}
+					showTotal={total => `共 ${total} 条`}
+					onChange={pageNumChange}
+				/>
 			</div>
 		</StandardTableRoot>
 	);

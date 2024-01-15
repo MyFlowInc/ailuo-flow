@@ -31,7 +31,7 @@ const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{chi
 interface HeaderProps {
 	selectedRows: any[];
 	setSelectedRows: (v: any[]) => void;
-	freshFlowItem: () => void;
+	fetchSaleList: () => void; // 获取销售列表
 	children?: React.ReactNode;
 }
 

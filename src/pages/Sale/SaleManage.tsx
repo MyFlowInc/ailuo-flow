@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider } from "antd";
-import { delay } from "../../util/delay";
 
 import { dashboardTheme } from "../../theme/theme";
-import { saleProjectList } from "../../api/ailuo/sale";
+import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
 import { DashboardRoot } from "./styles";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
@@ -13,28 +12,36 @@ import _ from "lodash";
 const SaleManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
-	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(undefined);
-	const deleteFlowItemHandler = async (recordId: string) => {};
-	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
+	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(undefined); // 当前编辑的记录
+	const curPage = useRef({
+		pageNum: 1,
+		pageSize: 50,
+		total: 0
+	});
 
-	const freshFlowItem = async () => {
-		setLoading(true);
-		await delay();
-		setLoading(false);
+	const deleteFlowItemHandler = async (id: number) => {
+		try {
+			await saleProjectRemove(id);
+			await fetchSaleList();
+		} catch (error) {
+			console.log(error);
+		}
 	};
+	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
 	// 获取销售列表
 	const fetchSaleList = async () => {
 		try {
 			const res = await saleProjectList({
-				pageNum: 1,
-				pageSize: 50
+				pageNum: curPage.current.pageNum,
+				pageSize: curPage.current.pageSize
 			});
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;
 			});
 			setTableDataSource(_.get(res, "data.record") || []);
+			curPage.current.total = _.get(res, "data.total");
 		} catch (error) {
 			console.log(error);
 		}
@@ -52,12 +59,13 @@ const SaleManage: React.FC = () => {
 		<ConfigProvider theme={dashboardTheme}>
 			<DashboardRoot>
 				{/* 表头 */}
-				<TableHeader selectedRows={selectedRows} freshFlowItem={freshFlowItem} setSelectedRows={setSelectedRows} />
+				<TableHeader selectedRows={selectedRows} fetchSaleList={fetchSaleList} setSelectedRows={setSelectedRows} />
 				{loading && <BaseLoading />}
 				{/* 表格主体 */}
 				<TableBody
-					tableDataSource={tableDataSource}
-					freshFlowItem={freshFlowItem}
+					tableDataSource={tableDataSource} // 数据源
+					fetchSaleList={fetchSaleList}
+					{...{ curPage }}
 					editFlowItemRecord={editFlowItemRecord}
 					deleteFlowItem={deleteFlowItemHandler}
 					setEditFlowItemRecord={setEditFlowItemRecord}

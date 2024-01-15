@@ -3,6 +3,7 @@ import styled from "styled-components";
 import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
+import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -17,11 +18,16 @@ export interface FlowItemTableDataType {
 }
 
 interface FlowTableProps {
-	tableDataSource: any[];
-	freshFlowItem: () => void;
+	tableDataSource: any[]; // 数据源
+	fetchSaleList: () => void; // 获取销售列表
+	curPage: React.MutableRefObject<{
+		pageNum: number;
+		pageSize: number;
+		total: number;
+	}>;
 	editFlowItemRecord: FlowItemTableDataType | undefined;
 	setEditFlowItemRecord: (v: FlowItemTableDataType) => void;
-	deleteFlowItem: (recordId: string) => void;
+	deleteFlowItem: (id: number) => void;
 	setSelectedRows: (v: FlowItemTableDataType[]) => void;
 }
 
@@ -59,22 +65,31 @@ const columns: any = [
 			);
 		}
 	},
-	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin" },
-	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail" },
-	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail" },
-	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" },
-	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd" }
+	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
+	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail", type: NumFieldType.Attachment },
+	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail", type: NumFieldType.Attachment },
+	{
+		title: "初步选型型号",
+		dataIndex: "typeSelection",
+		key: "typeSelection",
+		render: (text: string, record: any) => {
+			return (
+				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
+					{record.typeSelection || "共0个型号"}
+				</Tag>
+			);
+		}
+	},
+	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime }
 ];
-const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, freshFlowItem, ...rest }) => {
-	const { tableDataSource } = rest;
-	const [dstColumns, setDstColumns] = useState<any>(columns);
-
+const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, ...rest }) => {
+	const { tableDataSource, fetchSaleList } = rest;
+	const [dstColumns] = useState<any>(columns);
 	const [open, setOpen] = useState<boolean>(false);
-
 	return (
 		<FlowTableRoot>
 			<StandardTable datasource={tableDataSource} columns={dstColumns} setOpen={setOpen} {...rest} />
-			<EditRecordModal open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} freshFlowItem={freshFlowItem} />
+			<EditRecordModal fetchSaleList={fetchSaleList} open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} />
 		</FlowTableRoot>
 	);
 };

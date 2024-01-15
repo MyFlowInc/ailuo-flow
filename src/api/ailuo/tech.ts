@@ -1,4 +1,4 @@
-// 表格列
+// 技术审批
 
 import { apiCall } from "../../network";
 
@@ -7,9 +7,9 @@ interface PageParams {
 	pageSize: number;
 }
 
-export function saleProjectList(params: PageParams) {
+export function techProjectList(params: PageParams) {
 	return apiCall({
-		url: "api/sys/projectSaleProcess/page",
+		url: "api/sys/projectTechnicalProcess/page",
 		method: "get",
 		params
 	});
@@ -18,7 +18,7 @@ export function saleProjectList(params: PageParams) {
 interface SaveParams {
 	[key: string]: any;
 }
-export function saleProjectAdd(data: SaveParams) {
+export function techProjectAdd(data: SaveParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/save",
 		method: "post",
@@ -29,7 +29,7 @@ interface EditParams {
 	id: number;
 	[key: string]: any;
 }
-export function saleProjectEdit(data: EditParams) {
+export function techProjectEdit(data: EditParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/edit",
 		method: "PUT",
@@ -37,7 +37,7 @@ export function saleProjectEdit(data: EditParams) {
 	});
 }
 
-export function saleProjectRemove(id: number) {
+export function techProjectRemove(id: number) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/remove",
 		method: "DELETE",

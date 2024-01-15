@@ -54,8 +54,8 @@ const CustomModalRoot = styled.div`
 interface CustomModalProps {
 	title: string;
 	open: boolean;
+	fetchSaleList: () => void; // 获取销售列表
 	setOpen: (value: boolean) => void;
-	freshFlowItem: () => void;
 	statusList: WorkFlowStatusInfo[];
 	modalType: string;
 	editFlowItemRecord?: any | undefined;
@@ -92,7 +92,7 @@ const columns: any = [
 	{ title: "执行机构形式", dataIndex: "mechanismForm", key: "mechanismForm", type: NumFieldType.SingleText },
 	{ title: "货币", dataIndex: "currency", key: "currency", type: NumFieldType.SingleText },
 	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" },
-	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.SingleText },
+	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime },
 	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
 	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },
 	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.MultiSelect },
@@ -100,7 +100,7 @@ const columns: any = [
 	{ title: "关联技术评审", dataIndex: "relateTechProcess", key: "relateTechProcess", type: NumFieldType.SingleText },
 	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText }
 ];
-const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord }) => {
+const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord, fetchSaleList }) => {
 	const dispatch = useAppDispatch();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
@@ -141,10 +141,11 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		console.log(111, form);
 		try {
 			await inputForm.validateFields();
 			await saleProjectAdd(excludeNull(form));
+			await fetchSaleList();
+			setOpen(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -160,6 +161,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		try {
 			await inputForm.validateFields();
 			await saleProjectEdit(excludeNull(params));
+			await fetchSaleList();
 			setOpen(false);
 		} catch (error) {
 			console.log(error);

@@ -34,11 +34,11 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 
 interface DefaultHeaderProps {
 	hasSelected: boolean;
-	freshFlowItem: () => void;
+	fetchSaleList: () => void; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, freshFlowItem }) => {
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleList }) => {
 	const dispatch = useAppDispatch();
 
 	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
@@ -56,7 +56,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, freshFlowIte
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} freshFlowItem={freshFlowItem} />
+			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} fetchSaleList={fetchSaleList} />
 		</DefaultHeaderRoot>
 	);
 };

@@ -1,9 +1,9 @@
 import React from "react";
 import _ from "lodash";
-import { Button, Tag, Avatar } from "antd";
+import { Tag, Avatar } from "antd";
 import { Link } from "react-router-dom";
 
-import { DiscussModal } from "./FormModal/TypeEditor/TypeDiscuss";
+// import { DiscussModal } from "./FormModal/TypeEditor/TypeDiscuss";
 
 import type { DeveloperUser } from "../../store/globalSlice";
 /**
@@ -112,6 +112,9 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, r
 	// console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
 	if (column === undefined || record === undefined) {
 		return <td {...restProps}>{children}</td>;
+	}
+	if (column.render) {
+		return <td {...restProps}>{column.render(null, record)}</td>;
 	}
 
 	const { type = "SingleText" } = column;
@@ -345,25 +348,25 @@ const MemberSelect: React.FC<{
 	);
 };
 
-const DiscussModalWrap: React.FC<{
-	fieldId: string;
-	record: any;
-	reader: boolean;
-	writer: boolean;
-	manager: boolean;
-	children?: React.ReactNode;
-}> = ({ fieldId, record, reader, writer, manager }) => {
-	const [open, setOpen] = React.useState<boolean>(false);
-	return (
-		<div>
-			<Button type="text" onClick={() => setOpen(true)}>
-				查看评论
-			</Button>
+// const DiscussModalWrap: React.FC<{
+// 	fieldId: string;
+// 	record: any;
+// 	reader: boolean;
+// 	writer: boolean;
+// 	manager: boolean;
+// 	children?: React.ReactNode;
+// }> = ({ fieldId, record, reader, writer, manager }) => {
+// 	const [open, setOpen] = React.useState<boolean>(false);
+// 	return (
+// 		<div>
+// 			<Button type="text" onClick={() => setOpen(true)}>
+// 				查看评论
+// 			</Button>
 
-			<DiscussModal fieldId={fieldId} record={record} open={open} close={() => setOpen(false)} reader={reader} writer={writer} manager={manager} />
-		</div>
-	);
-};
+// 			<DiscussModal fieldId={fieldId} record={record} open={open} close={() => setOpen(false)} reader={reader} writer={writer} manager={manager} />
+// 		</div>
+// 	);
+// };
 
 const StringifyTextRender: React.FC<{
 	value: any;

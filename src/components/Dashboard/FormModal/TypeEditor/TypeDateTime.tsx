@@ -19,13 +19,13 @@ interface TypeDateTimeProps {
 const TypeDateTime: React.FC<TypeDateTimeProps> = (props: TypeDateTimeProps) => {
 	const { cell, form, setForm } = props;
 
-	const value = form[cell.fieldId] || null;
+	const value = form[cell.key] || null;
 
 	const onChange: DatePickerProps["onChange"] = (date, dateString) => {
 		console.log(date, dateString);
 		setForm({
 			...form,
-			[cell.fieldId]: dateString
+			[cell.key]: dateString
 		});
 	};
 

@@ -39,6 +39,7 @@ export interface TableColumnItem {
 	dataIndex: string;
 	key: string;
 	fieldConfig: any; // 当前field的配置
+	dictCode?: string;
 }
 
 export interface MetaData {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Table, Space, Button, Modal } from "antd";
+import { Table, Space, Button, Modal, Pagination } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 
@@ -89,11 +89,15 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 		const tColumns: any = [
 			...columns.map((item: any, cIndex: number) => {
 				const params = { column: item, cIndex, view: "standard" };
-				return {
+				const res = {
 					...item,
 					ellipsis: true,
 					onCell: (record: any, rIndex: number) => ({ rIndex, record, ...params })
 				};
+				if (item.render) {
+					res.render = item.render;
+				}
+				return res;
 			}),
 			{
 				title: "操作",
@@ -128,6 +132,10 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 		setSelectedRowKeys([]);
 	}, [datasource.length]);
 
+	const pageNumChange = (page: number, pageSize: number) => {
+		console.log();
+	};
+
 	const rowSelection: TableRowSelection<any> = {
 		hideSelectAll: true,
 		type: "checkbox",
@@ -155,9 +163,12 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, setS
 				}}
 				rowSelection={rowSelection}
 				columns={tableColumns}
-				dataSource={[datasource[0]]}
+				dataSource={datasource}
 				scroll={{ x: true, y: `calc(100vh - 170px)` }}
 			/>
+			<div className="flex align-middle justify-end mt-4">
+				<Pagination defaultCurrent={1} total={50} showTotal={total => `共 ${total} 条`} onChange={pageNumChange} />
+			</div>
 		</StandardTableRoot>
 	);
 };

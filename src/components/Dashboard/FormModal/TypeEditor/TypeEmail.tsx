@@ -22,9 +22,9 @@ const TypeEmail: React.FC<TypeEmailProps> = (props: TypeEmailProps) => {
 		if (el.current) {
 			const input = el.current.input;
 
-			input.value = form[cell.fieldId] || "";
+			input.value = form[cell.key] || "";
 
-			input.setAttribute("value", form[cell.fieldId] || "");
+			input.setAttribute("value", form[cell.key] || "");
 		}
 	};
 
@@ -33,7 +33,7 @@ const TypeEmail: React.FC<TypeEmailProps> = (props: TypeEmailProps) => {
 		const value = target.value;
 		setForm({
 			...form,
-			[cell.fieldId]: value
+			[cell.key]: value
 		});
 	};
 

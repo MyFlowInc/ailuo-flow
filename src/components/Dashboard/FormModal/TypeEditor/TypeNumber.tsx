@@ -20,11 +20,11 @@ const TypeNumber: React.FC<TypeNumberProps> = (props: TypeNumberProps) => {
 	const onChangeContent = (value: number | null) => {
 		setForm({
 			...form,
-			[cell.fieldId]: value
+			[cell.key]: value
 		});
 	};
 
-	return <InputNumber value={_.get(form, cell.fieldId)} placeholder="请输入" onChange={onChangeContent} style={{ width: "100%" }} />;
+	return <InputNumber value={_.get(form, cell.key)} placeholder="请输入" onChange={onChangeContent} style={{ width: "100%" }} />;
 };
 
 export default TypeNumber;

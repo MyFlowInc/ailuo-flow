@@ -96,7 +96,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 		const dstId = cell.dstId;
 		const temp: UpdateDSMetaParams = {
 			dstId: cell.dstId,
-			fieldId: cell.fieldId,
+			fieldId: cell.key,
 			name: cell.name,
 			type: k,
 			property: {
@@ -110,7 +110,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 	// 初始化
 	useEffect(() => {
 		fetchUserList();
-		const temp = _.get(form, cell.fieldId);
+		const temp = _.get(form, cell.key);
 		if (!temp) {
 			setValue([]);
 		} else {
@@ -122,7 +122,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 		setValue(value);
 		setForm({
 			...form,
-			[cell.fieldId]: value
+			[cell.key]: value
 		});
 	};
 

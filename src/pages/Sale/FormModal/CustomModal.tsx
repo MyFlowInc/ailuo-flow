@@ -3,12 +3,12 @@ import styled from "styled-components";
 import { ConfigProvider, Form, Button, Tag } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import { useAppDispatch } from "../../../store/hooks";
-import { addDSCells } from "../../../api/apitable/ds-record";
 import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme } from "../../../theme/theme";
 
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
+import { saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -61,6 +61,16 @@ interface CustomModalProps {
 	editFlowItemRecord?: any | undefined;
 	children?: React.ReactNode;
 }
+const excludeNull = (obj: any) => {
+	const result: any = {};
+	Object.keys(obj).forEach(key => {
+		if (obj[key] === undefined || obj[key] === null) {
+			return;
+		}
+		result[key] = obj[key];
+	});
+	return result;
+};
 const columns: any = [
 	{
 		title: "项目名称",
@@ -70,9 +80,9 @@ const columns: any = [
 		fixed: "left",
 		type: NumFieldType.SingleText
 	},
-	{ title: "状态", dataIndex: "status", key: "status", type: NumFieldType.SingleSelect },
-	{ title: "单位名称", dataIndex: "company", key: "company", type: NumFieldType.SingleSelect },
-	{ title: "销售经理", dataIndex: "salesManager", key: "salesManager", type: NumFieldType.SingleSelect },
+	// { title: "状态", dataIndex: "status", key: "status", type: NumFieldType.SingleSelect },
+	{ title: "单位名称", dataIndex: "company", key: "company", type: NumFieldType.SingleSelect, dictCode: "company" },
+	{ title: "销售经理", dataIndex: "salesManager", key: "salesManager", type: NumFieldType.SingleSelect, dictCode: "salesManager" },
 	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
 	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail", type: NumFieldType.Attachment },
 	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail", type: NumFieldType.Attachment },
@@ -81,20 +91,20 @@ const columns: any = [
 	{ title: "其他技术要求", dataIndex: "otherTechnicalRequirements", key: "otherTechnicalRequirements", type: NumFieldType.Text },
 	{ title: "执行机构形式", dataIndex: "mechanismForm", key: "mechanismForm", type: NumFieldType.SingleText },
 	{ title: "货币", dataIndex: "currency", key: "currency", type: NumFieldType.SingleText },
+	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" },
 	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.SingleText },
 	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
 	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },
-	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.SingleText },
-	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.SingleText },
+	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.MultiSelect },
+	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.MultiSelect },
 	{ title: "关联技术评审", dataIndex: "relateTechProcess", key: "relateTechProcess", type: NumFieldType.SingleText },
-	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText },
-	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" }
+	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText }
 ];
 const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord }) => {
 	const dispatch = useAppDispatch();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
-	const [form, setForm] = useState<{ [id: string]: string }>({});
+	const [form, setForm] = useState<any>({});
 
 	// esc handler
 	useEffect(() => {
@@ -111,7 +121,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			document.removeEventListener("keydown", keydownHandler, true);
 		};
 	}, [open]);
-
+	//
 	useEffect(() => {
 		if (!open) {
 			return;
@@ -128,26 +138,28 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		}
 	}, [open]);
 
+	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		const params: any = {};
+		console.log(111, form);
 		try {
 			await inputForm.validateFields();
-
-			await addDSCells(params);
-			setOpen(false);
+			await saleProjectAdd(excludeNull(form));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-
+	// 更新记录
 	const updateRecord = async () => {
 		const { recordId, id, ...rest } = form;
 		inputForm.setFieldsValue(rest);
-		const params: any = {};
+		const params = {
+			id,
+			...rest
+		};
 		try {
 			await inputForm.validateFields();
-
+			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -185,7 +197,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 						{"未启动"}
 					</Tag>
 				</div>
-				<div className="flex">
+				<div className="hidden">
 					<div className="mr-2">操作: </div>
 					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
 						{"开始处理"}

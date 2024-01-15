@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Divider, Input, Select, Space, message } from "antd";
-import { ReverSedNumFieldType } from "../../TableColumnRender";
-import { TableColumnItem, freshCurMetaData } from "../../../../store/workflowSlice";
-import { UpdateDSMetaParams, updateDSMeta } from "../../../../api/apitable/ds-meta";
-import { useAppDispatch } from "../../../../store/hooks";
+import { TableColumnItem } from "../../../../store/workflowSlice";
 import CloseFilled from "../../../../assets/icons/CloseFilled";
 import _ from "lodash";
 
 import type { InputRef } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { dictAdd, dictPage, dictRemove } from "../../../../api/ailuo/dict";
 
 const LabelRoot = styled.div`
 	display: flex;
@@ -30,11 +28,32 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 
 	const [items, setItems] = useState<string[]>([]);
 	const [name, setName] = useState("");
-
 	const [value, setValue] = useState<string[] | string>([]);
-
 	const inputRef = useRef<InputRef>(null);
-	const dispatch = useAppDispatch();
+
+	// 初始化
+	useEffect(() => {
+		if (!_.get(cell, "dictCode")) {
+			return;
+		}
+		fetchOptions(_.get(cell, "dictCode")!);
+	}, []);
+	// 刷新受控值
+	useEffect(() => {
+		const temp = _.get(form, cell.key);
+		if (!temp) {
+			mode === "multiple" ? setValue([]) : setValue("");
+		} else {
+			setValue(temp);
+		}
+	}, [form, items]);
+
+	const fetchOptions = async (dictCode: string, fresh: boolean = false) => {
+		const res = await dictPage(dictCode, fresh);
+		const record = _.get(res, "data.record");
+		// key value 值相等
+		setItems(record.map((item: any) => item.value));
+	};
 
 	const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setName(event.target.value);
@@ -42,10 +61,15 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 
 	const removeItem = async (e: React.MouseEvent | React.KeyboardEvent, value: string) => {
 		e.stopPropagation();
-		const options = items.filter(item => !(item === value));
+		if (!_.get(cell, "dictCode")) {
+			return;
+		}
+		const res = await dictPage(cell.dictCode!);
+		const record = _.get(res, "data.record");
+		const item = _.find(record, { value });
 		try {
-			await updateField(options);
-			setItems(options);
+			await dictRemove(item.id);
+			await fetchOptions(cell.dictCode!, true);
 			setName("");
 			setTimeout(() => {
 				inputRef.current?.focus();
@@ -53,6 +77,54 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 		} catch (error) {}
 	};
 
+	const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+		e && e.preventDefault();
+		e && e.stopPropagation();
+		if (!_.get(cell, "dictCode")) {
+			return;
+		}
+		const text = name || `选项${index++}`;
+		if (items.some(item => item === text)) {
+			message.warning("选项已存在");
+			return false;
+		}
+		const options = [...items, text];
+		try {
+			await addDict(text);
+			setItems(options);
+			setName("");
+			setTimeout(() => {
+				inputRef.current?.focus();
+			}, 0);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	// 更新字段值
+	const addDict = async (text: string) => {
+		if (!cell.dictCode) {
+			return;
+		}
+		try {
+			await dictAdd({
+				code: cell.dictCode,
+				label: text,
+				value: text
+			});
+			await fetchOptions(cell.dictCode, true);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const handleSelectChange = (value: string[] | string) => {
+		setValue(value);
+		setForm({
+			...form,
+			[cell.key]: value
+		});
+	};
 	const Label: React.FC<{ item: string; children?: React.ReactNode }> = ({ item }) => {
 		return (
 			<LabelRoot>
@@ -63,69 +135,6 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 			</LabelRoot>
 		);
 	};
-
-	const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-		e && e.preventDefault();
-		e && e.stopPropagation();
-		const text = name || `选项${index++}`;
-
-		if (items.some(item => item === text)) {
-			message.warning("选项已存在");
-			return false;
-		}
-
-		const options = [...items, text];
-		try {
-			await updateField(options);
-			setItems(options);
-			setName("");
-			setTimeout(() => {
-				inputRef.current?.focus();
-			}, 0);
-		} catch (error) {}
-	};
-
-	// 更新字段值
-	const updateField = async (options: string[]) => {
-		const k = ReverSedNumFieldType[cell.type as unknown as keyof typeof ReverSedNumFieldType] || "NotSupport";
-		const dstId = cell.dstId;
-		const temp: UpdateDSMetaParams = {
-			dstId: cell.dstId,
-			fieldId: cell.fieldId,
-			name: cell.name,
-			type: k,
-			property: {
-				options: options
-			}
-		};
-		await updateDSMeta(temp);
-		await dispatch(freshCurMetaData(dstId));
-	};
-	// 初始化
-	useEffect(() => {
-		// console.log('useEffect--TypeSelectEditor === ', cell, 'form == =',form)
-		const options = _.get(cell, "fieldConfig.property.options");
-		if (options) {
-			setItems(options);
-		}
-		const temp = _.get(form, cell.fieldId);
-		if (!temp) {
-			mode === "multiple" ? setValue([]) : setValue("");
-		} else {
-			setValue(temp);
-		}
-	}, [form]);
-
-	const handleSelectChange = (value: string[] | string) => {
-		console.log("value", value);
-		setValue(value);
-
-		setForm({
-			...form,
-			[cell.fieldId]: value
-		});
-	};
-
 	return (
 		<Select
 			style={{ width: "100%" }}
@@ -146,7 +155,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 					</Space>
 				</>
 			)}
-			options={items.map(item => ({ label: <Label item={item} />, value: item }))}
+			options={items.map((item: any) => ({ label: <Label item={item} />, value: item }))}
 		/>
 	);
 };

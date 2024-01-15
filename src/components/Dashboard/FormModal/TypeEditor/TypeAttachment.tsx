@@ -59,7 +59,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProp
 		setFileName(fileName);
 		setForm({
 			...form,
-			[cell.fieldId]: url
+			[cell.key]: url
 		});
 	};
 

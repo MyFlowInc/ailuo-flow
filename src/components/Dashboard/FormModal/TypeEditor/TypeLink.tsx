@@ -23,12 +23,12 @@ const TypeLink: React.FC<TypeLinkProps> = (props: TypeLinkProps) => {
 		const value = target.value;
 		setForm({
 			...form,
-			[cell.fieldId]: value
+			[cell.key]: value
 		});
 		// console.log("onChangeContent", form);
 	};
 
-	return <Input key={"key_" + cell.name} placeholder="请输入" defaultValue="" value={_.get(form, cell.fieldId)} onChange={onChangeContent} suffix={<LinkOutlined />} />;
+	return <Input key={"key_" + cell.name} placeholder="请输入" defaultValue="" value={_.get(form, cell.key)} onChange={onChangeContent} suffix={<LinkOutlined />} />;
 };
 
 export default TypeLink;

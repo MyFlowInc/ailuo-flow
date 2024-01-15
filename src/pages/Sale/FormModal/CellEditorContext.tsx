@@ -49,7 +49,7 @@ const CellEditor: React.FC<CellEditorProps> = props => {
 	return (
 		<CellEditorRoot>
 			<Form.Item name={cell.key} rules={rules}>
-				<TypeEditor {...{ cell, form, setForm, modalType }} />
+				<TypeEditor {...{ cell, form, setForm }} />
 			</Form.Item>
 		</CellEditorRoot>
 	);

@@ -7,7 +7,7 @@ import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import { selectIsAddOrderModalOpen, setIsAddOrderModalOpen } from "../../../store/globalSlice";
+import { selectIsShowSaleModal, setIsShowSaleModal } from "../../../store/globalSlice";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -41,9 +41,9 @@ interface DefaultHeaderProps {
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleList }) => {
 	const dispatch = useAppDispatch();
 
-	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
+	const isShowSaleModal = useAppSelector(selectIsShowSaleModal);
 	const setOpen = (value: boolean) => {
-		dispatch(setIsAddOrderModalOpen(value));
+		dispatch(setIsShowSaleModal(value));
 	};
 
 	return (
@@ -56,7 +56,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleLis
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} fetchSaleList={fetchSaleList} />
+			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} fetchSaleList={fetchSaleList} />
 		</DefaultHeaderRoot>
 	);
 };

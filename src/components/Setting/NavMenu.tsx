@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { LeftOutlined } from "@ant-design/icons";
 import PersonalFilled from "../../assets/icons/PersonalFilled";
 import SecurityFilled from "../../assets/icons/SecurityFilled";
-import UpgradeFilled from "../../assets/icons/UpgradeFilled";
 
 const NavMenuRoot = styled.div`
 	display: flex;
@@ -97,7 +96,8 @@ const NavMenu: React.FC<NavMenuProps> = () => {
 				</div>
 				<div className="menuitem-text">账号安全</div>
 			</MenuItem>
-			<MenuItem
+
+			{/* <MenuItem
 				selected={curMenuKey === "upgrade"}
 				onClick={() => {
 					history.replace("/setting/upgrade");
@@ -106,7 +106,7 @@ const NavMenu: React.FC<NavMenuProps> = () => {
 					<UpgradeFilled style={{ color: "#707683", fontSize: 14 }} />
 				</div>
 				<div className="menuitem-text">升级</div>
-			</MenuItem>
+			</MenuItem> */}
 		</NavMenuRoot>
 	);
 };

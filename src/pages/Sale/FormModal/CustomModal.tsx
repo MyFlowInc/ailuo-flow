@@ -80,7 +80,6 @@ const columns: any = [
 		fixed: "left",
 		type: NumFieldType.SingleText
 	},
-	// { title: "状态", dataIndex: "status", key: "status", type: NumFieldType.SingleSelect },
 	{ title: "单位名称", dataIndex: "company", key: "company", type: NumFieldType.SingleSelect, dictCode: "company" },
 	{ title: "销售经理", dataIndex: "salesManager", key: "salesManager", type: NumFieldType.SingleSelect, dictCode: "salesManager" },
 	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
@@ -95,8 +94,8 @@ const columns: any = [
 	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime },
 	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
 	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },
-	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.MultiSelect },
-	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.MultiSelect },
+	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.MultiSelect, dictCode: "tarde_mode" },
+	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.MultiSelect, dictCode: "pay" },
 	{ title: "关联技术评审", dataIndex: "relateTechProcess", key: "relateTechProcess", type: NumFieldType.SingleText },
 	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText }
 ];

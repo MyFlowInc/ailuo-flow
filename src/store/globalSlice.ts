@@ -42,6 +42,7 @@ export interface globalState {
 	is_show_tour: boolean; // 导航
 	isAddTableModalOpen: boolean; // 新建项目modal
 	isAddOrderModalOpen: boolean; // 新建工单modal
+	isShowSaleModal: boolean; // 新建报价
 	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知
 }
@@ -58,6 +59,7 @@ const initialState: globalState = {
 	collapsed: false,
 	isAddTableModalOpen: false, // 新建项目modal
 	isAddOrderModalOpen: false, // 新建工单modal
+	isShowSaleModal: false,
 	isStatusSettingModalOpen: false, //  状态流设置modal
 	isOpenDrawer: false // 是否打开通知
 };
@@ -115,6 +117,9 @@ export const globalSlice = createSlice({
 		setIsAddOrderModalOpen: (state, action) => {
 			state.isAddOrderModalOpen = action.payload;
 		},
+		setIsShowSaleModal: (state, action) => {
+			state.isShowSaleModal = action.payload;
+		},
 		setIsStatusSettingModalOpen: (state, action) => {
 			state.isStatusSettingModalOpen = action.payload;
 		},
@@ -142,6 +147,7 @@ export const {
 	setIsShowTour,
 	setIsAddTableModalOpen,
 	setIsAddOrderModalOpen,
+	setIsShowSaleModal,
 	setIsStatusSettingModalOpen,
 	setIsOpenDrawer
 } = globalSlice.actions;
@@ -151,6 +157,7 @@ export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
 export const selectIsAddTableModalOpen = (state: RootState) => state.global.isAddTableModalOpen;
 export const selectIsAddOrderModalOpen = (state: RootState) => state.global.isAddOrderModalOpen;
+export const selectIsShowSaleModal = (state: RootState) => state.global.isShowSaleModal;
 export const selectIsStatusSettingModalOpen = (state: RootState) => state.global.isStatusSettingModalOpen;
 export const selectIsOpenDrawer = (state: RootState) => state.global.isOpenDrawer;
 

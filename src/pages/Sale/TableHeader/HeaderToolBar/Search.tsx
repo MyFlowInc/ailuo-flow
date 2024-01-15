@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
-import type { TableColumnItem } from "../../../../store/workflowSlice";
 
 import SearchFilled from "../../../../assets/icons/SearchFilled";
 
@@ -11,25 +10,13 @@ const SearchRoot = styled.div`
 `;
 
 interface SearchProps {
-	columns: TableColumnItem[];
+	columns: any[];
 	children?: React.ReactNode;
 }
 
 const Search: React.FC<SearchProps> = ({ columns }) => {
 	const [form] = Form.useForm();
-	const rows = [];
-
-	const count = <div>123</div>;
-	const options = [
-		{
-			value: "name",
-			label: "项目名称"
-		},
-		{
-			value: "status",
-			label: "状态"
-		}
-	];
+	const options = columns;
 
 	return (
 		<SearchRoot>

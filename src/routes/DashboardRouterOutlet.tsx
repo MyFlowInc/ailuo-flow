@@ -152,6 +152,10 @@ const DashboardRouterOutlet: React.FC = () => {
 								<Route path="/dashboard/quote-manage" exact={true}>
 									<SaleManage />
 								</Route>
+								{/* 报价技术反馈 */}
+								<Route path="/dashboard/quote-tech-feedback" exact={true}>
+									<SaleManage />
+								</Route>
 
 								<Route path="/dashboard/setting" exact={true}>
 									<Setting />

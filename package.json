@@ -28,7 +28,7 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/store": "^2.0.2",
     "@types/styled-components": "^5.1.26",
-    "antd": "^5.10.0",
+    "antd": "^5.13.0",
     "axios": "^1.2.0",
     "dayjs": "^1.11.9",
     "docx-preview": "^0.1.18",

@@ -22,8 +22,6 @@ import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
 
-import type { WorkFlowFieldInfo } from "../../../../store/workflowSlice";
-
 export const FieldTypeList = [
 	{
 		key: "SingleText",
@@ -94,7 +92,7 @@ export const FieldTypeList = [
 ];
 
 interface TypeEditorProps {
-	cell: WorkFlowFieldInfo;
+	cell: any;
 	form: { [id: string]: string };
 	setForm: (value: any) => void;
 	children?: React.ReactNode;

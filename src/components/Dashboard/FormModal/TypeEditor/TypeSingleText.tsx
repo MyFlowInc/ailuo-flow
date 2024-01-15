@@ -4,11 +4,10 @@
 
 import React, { useRef, useEffect, SyntheticEvent } from "react";
 import { Input } from "antd";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 
 interface TypeMultiSelectEditorProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: { key: string; dataIndex: string; name: string };
 	form: any;
 	setForm: any;
 }
@@ -27,7 +26,7 @@ const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (props: TypeMultiSe
 		const value = target.value;
 		setForm({
 			...form,
-			[cell.fieldId]: value
+			[cell.dataIndex]: value
 		});
 		// console.log("onChangeContent", form);
 	};
@@ -36,9 +35,9 @@ const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (props: TypeMultiSe
 		if (el.current) {
 			const input = el.current.input;
 
-			input.value = form[cell.fieldId] || "";
+			input.value = form[cell.dataIndex] || "";
 
-			input.setAttribute("value", form[cell.fieldId] || "");
+			input.setAttribute("value", form[cell.dataIndex] || "");
 		}
 	};
 

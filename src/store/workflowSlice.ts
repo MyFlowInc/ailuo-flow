@@ -37,6 +37,7 @@ export interface TableColumnItem {
 	type: number;
 	name: string;
 	dataIndex: string;
+	key: string;
 	fieldConfig: any; // 当前field的配置
 }
 

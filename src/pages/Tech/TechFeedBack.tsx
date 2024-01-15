@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider } from "antd";
 import { dashboardTheme } from "../../theme/theme";
-import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
 import { DashboardRoot } from "./styles";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
+import { techProjectList, techProjectRemove } from "../../api/ailuo/tech";
 
 const TechFeedBack: React.FC = () => {
 	const [loading, setLoading] = useState(false);
@@ -20,18 +20,18 @@ const TechFeedBack: React.FC = () => {
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
-			await saleProjectRemove(id);
-			await fetchSaleList();
+			await techProjectRemove(id);
+			await fetchTechFeedbackList();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
-	// 获取销售列表
-	const fetchSaleList = async () => {
+	// 获取技术反馈列表
+	const fetchTechFeedbackList = async () => {
 		try {
-			const res = await saleProjectList({
+			const res = await techProjectList({
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize
 			});
@@ -48,7 +48,7 @@ const TechFeedBack: React.FC = () => {
 
 	useEffect(() => {
 		console.log("SaleManage 初始化");
-		fetchSaleList();
+		fetchTechFeedbackList();
 		return () => {
 			console.log("SaleManage 销毁");
 		};
@@ -58,12 +58,12 @@ const TechFeedBack: React.FC = () => {
 		<ConfigProvider theme={dashboardTheme}>
 			<DashboardRoot>
 				{/* 表头 */}
-				<TableHeader selectedRows={selectedRows} fetchSaleList={fetchSaleList} setSelectedRows={setSelectedRows} />
+				<TableHeader selectedRows={selectedRows} fetchTechFeedbackList={fetchTechFeedbackList} setSelectedRows={setSelectedRows} />
 				{loading && <BaseLoading />}
 				{/* 表格主体 */}
 				<TableBody
 					tableDataSource={tableDataSource} // 数据源
-					fetchSaleList={fetchSaleList}
+					fetchTechFeedbackList={fetchTechFeedbackList}
 					{...{ curPage }}
 					editFlowItemRecord={editFlowItemRecord}
 					deleteFlowItem={deleteFlowItemHandler}

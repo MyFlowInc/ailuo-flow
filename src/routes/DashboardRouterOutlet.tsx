@@ -15,6 +15,7 @@ import NavSide from "../components/NavSide";
 import NotifyDrawer from "../pages/Notify/NotifyDrawer";
 import { useLoginByCache } from "../hooks";
 import SaleManage from "../pages/Sale/SaleManage";
+import TechFeedBack from "../pages/Tech/TechFeedBack";
 
 const { Sider, Content } = Layout;
 const DashboardRouterOutlet: React.FC = () => {
@@ -154,7 +155,7 @@ const DashboardRouterOutlet: React.FC = () => {
 								</Route>
 								{/* 报价技术反馈 */}
 								<Route path="/dashboard/quote-tech-feedback" exact={true}>
-									<SaleManage />
+									<TechFeedBack />
 								</Route>
 
 								<Route path="/dashboard/setting" exact={true}>

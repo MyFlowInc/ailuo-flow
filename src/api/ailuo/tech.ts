@@ -20,7 +20,7 @@ interface SaveParams {
 }
 export function techProjectAdd(data: SaveParams) {
 	return apiCall({
-		url: "api/sys/projectSaleProcess/save",
+		url: "api/sys/projectTechnicalProcess/save",
 		method: "post",
 		data
 	});
@@ -31,7 +31,7 @@ interface EditParams {
 }
 export function techProjectEdit(data: EditParams) {
 	return apiCall({
-		url: "api/sys/projectSaleProcess/edit",
+		url: "api/sys/projectTechnicalProcess/edit",
 		method: "PUT",
 		data
 	});
@@ -39,7 +39,7 @@ export function techProjectEdit(data: EditParams) {
 
 export function techProjectRemove(id: number) {
 	return apiCall({
-		url: "api/sys/projectSaleProcess/remove",
+		url: "api/sys/projectTechnicalProcess/remove",
 		method: "DELETE",
 		params: { id }
 	});

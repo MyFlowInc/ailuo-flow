@@ -4,12 +4,12 @@ import CustomModal from "./FormModal/CustomModal";
 
 interface AddRecordModalProps {
 	open: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	setOpen: (a: boolean) => void;
 }
 
 export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordModalProps) => {
-	const { open, setOpen, fetchSaleList } = props;
+	const { open, setOpen, fetchTechFeedbackList } = props;
 
 	const statusList: any = [];
 
@@ -18,7 +18,7 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 		open,
 		setOpen,
 		statusList,
-		fetchSaleList,
+		fetchTechFeedbackList,
 		modalType: "add"
 	};
 
@@ -29,22 +29,22 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 
 interface EditRecordModalProps {
 	open: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	setOpen: (a: boolean) => void;
 	editFlowItemRecord: any | undefined;
 }
 
 export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
-	const { editFlowItemRecord, open, setOpen, fetchSaleList } = props;
+	const { editFlowItemRecord, open, setOpen, fetchTechFeedbackList } = props;
 
 	const statusList: any = [];
 
 	const params = {
-		title: "编辑报价",
+		title: "报价技术反馈",
 		open,
 		setOpen,
 		statusList,
-		fetchSaleList,
+		fetchTechFeedbackList,
 		modalType: "edit",
 		editFlowItemRecord
 	};

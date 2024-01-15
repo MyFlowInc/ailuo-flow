@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import styled from "styled-components";
-import { useAppDispatch } from "../../../store/hooks";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import TypeEditor from "../../../components/Dashboard/FormModal/TypeEditor";
 
@@ -109,10 +108,7 @@ interface CellEditorContextProps {
 }
 
 const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
-	const dispatch = useAppDispatch();
-
 	const [columns, setColumns] = useState<any[]>(dstColumns);
-
 	useEffect(() => {
 		console.log("CellEditorContext", form, modalType);
 		setColumns(dstColumns);

@@ -73,7 +73,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 
 interface StandardTableProps {
 	tableDataSource: any[];
-	fetchSaleList: () => void; // 获取销售列表
+	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -88,7 +88,7 @@ interface StandardTableProps {
 	children?: React.ReactNode;
 }
 
-const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetchSaleList, setSelectedRows, curPage, ...rest }) => {
+const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetchTechFeedbackList, setSelectedRows, curPage, ...rest }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const getTableColumns = () => {
@@ -143,7 +143,7 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 
 		curPage.current.pageNum = page;
 		setTimeout(() => {
-			fetchSaleList();
+			fetchTechFeedbackList();
 		});
 	};
 

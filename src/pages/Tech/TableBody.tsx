@@ -3,7 +3,6 @@ import styled from "styled-components";
 import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
-import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -19,7 +18,7 @@ export interface FlowItemTableDataType {
 
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
-	fetchSaleList: () => void; // 获取销售列表
+	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -39,12 +38,22 @@ const columns: any = [
 		key: "name",
 		fixed: "left"
 	},
-	{ title: "状态", dataIndex: "status", key: "status", type: "sale_status" },
 	{
-		title: "单位名称",
-		dataIndex: "company",
-		key: "company",
-		type: "company",
+		title: "状态",
+		dataIndex: "status",
+		key: "status",
+		render: (text: string, record: any) => {
+			return (
+				<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+					{"未启动"}
+				</Tag>
+			);
+		}
+	},
+	{
+		title: "分析结果",
+		dataIndex: "result",
+		key: "result",
 		render: (text: string, record: any) => {
 			return (
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
@@ -53,43 +62,18 @@ const columns: any = [
 			);
 		}
 	},
-	{
-		title: "销售经理",
-		dataIndex: "salesManager",
-		key: "salesManager",
-		render: (text: string, record: any) => {
-			return (
-				<Tag color={"#F3F7FF"} style={{ color: "#000" }}>
-					{record.salesManager || ""}
-				</Tag>
-			);
-		}
-	},
-	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
-	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail", type: NumFieldType.Attachment },
-	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail", type: NumFieldType.Attachment },
-	{
-		title: "初步选型型号",
-		dataIndex: "typeSelection",
-		key: "typeSelection",
-		render: (text: string, record: any) => {
-			return (
-				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
-					{record.typeSelection || "共0个型号"}
-				</Tag>
-			);
-		}
-	},
-	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime }
+	{ title: "选型分析", dataIndex: "status", key: "status", type: "sale_status" },
+	{ title: "生产分析", dataIndex: "status", key: "status", type: "sale_status" },
+	{ title: "附件", dataIndex: "status", key: "status", type: "sale_status" }
 ];
 const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, ...rest }) => {
-	const { tableDataSource, fetchSaleList } = rest;
+	const { tableDataSource, fetchTechFeedbackList } = rest;
 	const [dstColumns] = useState<any>(columns);
 	const [open, setOpen] = useState<boolean>(false);
 	return (
 		<FlowTableRoot>
 			<StandardTable datasource={tableDataSource} columns={dstColumns} setOpen={setOpen} {...rest} />
-			<EditRecordModal fetchSaleList={fetchSaleList} open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} />
+			<EditRecordModal fetchTechFeedbackList={fetchTechFeedbackList} open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} />
 		</FlowTableRoot>
 	);
 };

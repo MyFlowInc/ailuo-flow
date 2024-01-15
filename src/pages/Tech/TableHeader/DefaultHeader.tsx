@@ -1,9 +1,6 @@
 import React from "react";
-import { ConfigProvider, Button } from "antd";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { blueButtonTheme } from "../../../theme/theme";
-import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
@@ -16,7 +13,7 @@ interface DefaultHeaderRootProps {
 const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-end;
 	overflow: hidden;
 	opacity: ${({ isShow }) => (isShow ? 0 : 1)};
 	width: ${({ isShow }) => (isShow ? 0 : "100%")};
@@ -34,11 +31,11 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 
 interface DefaultHeaderProps {
 	hasSelected: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	children?: React.ReactNode;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleList }) => {
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchTechFeedbackList }) => {
 	const dispatch = useAppDispatch();
 
 	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
@@ -48,15 +45,15 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleLis
 
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
-			<ConfigProvider theme={blueButtonTheme}>
-				<Button type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
+			{/* <ConfigProvider theme={blueButtonTheme}>
+				<Button className="hidden" type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
 					新建报价
 				</Button>
-			</ConfigProvider>
+			</ConfigProvider> */}
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} fetchSaleList={fetchSaleList} />
+			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} fetchTechFeedbackList={fetchTechFeedbackList} />
 		</DefaultHeaderRoot>
 	);
 };

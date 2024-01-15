@@ -5,4 +5,7 @@ export const DashboardRoot = styled.div`
 	height: 100%;
 	position: relative;
 	overflow: auto;
+	.ant-modal {
+		height: 100vh;
+	}
 `;

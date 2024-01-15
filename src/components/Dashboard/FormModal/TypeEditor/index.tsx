@@ -21,7 +21,6 @@ import TypeMember from "./TypeMember";
 import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
-import TypeDiscuss from "./TypeDiscuss";
 
 import type { WorkFlowFieldInfo } from "../../../../store/workflowSlice";
 
@@ -134,9 +133,6 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 			break;
 		case NumFieldType.Phone:
 			CellEditor = <TypePhone cell={cell} {...rest} />;
-			break;
-		case NumFieldType.discuss:
-			CellEditor = <TypeDiscuss cell={cell} {...rest} />;
 			break;
 
 		default:

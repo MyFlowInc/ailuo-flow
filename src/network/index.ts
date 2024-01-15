@@ -13,10 +13,10 @@ export class AxiosFactory {
 					config.headers = {} as any;
 				}
 				if (token) {
-					config.headers["Authorization"] = token;
+					config.headers!["Authorization"] = token;
 				}
 				if (tokenKey) {
-					config.headers["Authorization-key"] = tokenKey;
+					config.headers!["Authorization-key"] = tokenKey;
 				}
 				return config;
 			},

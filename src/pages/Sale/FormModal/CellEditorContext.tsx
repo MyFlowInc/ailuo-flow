@@ -1,27 +1,108 @@
 import React, { useState, useEffect } from "react";
+import { Form } from "antd";
 import styled from "styled-components";
-import _ from "lodash";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { saveDSMeta } from "../../../api/apitable/ds-meta";
-import { selectCurFlowDstId, selectCurMetaId, setCurTableColumn, selectCurMetaData } from "../../../store/workflowSlice";
+import { useAppDispatch } from "../../../store/hooks";
+import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
+import TypeEditor from "../../../components/Dashboard/FormModal/TypeEditor";
 
-import type { WorkFlowFieldInfo } from "../../../store/workflowSlice";
-import type { TableColumnItem } from "../../../store/workflowSlice";
-import CellLabel from "../../../components/Dashboard/FormModal/CellLabel";
-import CellEditor from "../../../components/Dashboard/FormModal/CellEditor";
+const CellEditorRoot = styled.div`
+	color: #848484;
+	flex-grow: 1;
+`;
 
-const CellEditorWrap = styled.div<{ cell: TableColumnItem }>`
+interface CellEditorProps {
+	cell: any;
+	form: { [id: string]: string };
+	setForm: (value: any) => void;
+	modalType: string;
+}
+
+const CellEditor: React.FC<CellEditorProps> = props => {
+	const { cell, form, setForm, modalType } = props;
+	let rules: any;
+
+	switch (cell.type) {
+		case NumFieldType.OptionStatus:
+			return <div className="hidden"></div>;
+		case NumFieldType.Email:
+			rules = [{ type: "email", message: "请输入有效的邮箱地址." }];
+			break;
+		case NumFieldType.Phone:
+			rules = [
+				{
+					pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+					message: "请输入有效的手机号码."
+				}
+			];
+			break;
+		case NumFieldType.Member:
+		case NumFieldType.MultiSelect:
+			rules = [{ type: "array" }];
+			break;
+		case NumFieldType.Number:
+			rules = [{ type: "number" }];
+			break;
+
+		default:
+	}
+
+	return (
+		<CellEditorRoot>
+			<Form.Item name={cell.key} rules={rules}>
+				<TypeEditor {...{ cell, form, setForm, modalType }} />
+			</Form.Item>
+		</CellEditorRoot>
+	);
+};
+
+const CellLabelRoot = styled.div`
 	display: flex;
 	align-items: center;
-	height: ${({ cell }) => (cell.type === 27 ? "400px" : "12px")};
+	justify-content: space-between;
+
+	.cell-label-title {
+		display: flex;
+
+		.cell-drag-icon {
+			display: flex;
+			align-items: center;
+			opacity: 0;
+			margin: 0 4px;
+
+			:hover {
+				cursor: move;
+			}
+		}
+
+		.cell-drag-text {
+			width: 100px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+		}
+	}
+
+	.cell-label-action {
+		display: flex;
+		align-items: center;
+		margin-right: 8px;
+	}
+
+	:hover .cell-drag-icon {
+		opacity: 1;
+	}
+`;
+const CellEditorWrap = styled.div`
+	display: flex;
+	align-items: center;
+	height: "12px";
 	line-height: 12px;
-	margin: 12px 0 24px 8px;
+	margin: 12px 0 24px 0px;
 	padding: 0;
 `;
 
 interface CellEditorContextProps {
-	dstColumns: WorkFlowFieldInfo[]; // 筛选 移除type=26
+	dstColumns: any[];
 	form: { [id: string]: string };
 	setForm: (value: any) => void;
 	modalType: string;
@@ -29,85 +110,31 @@ interface CellEditorContextProps {
 
 const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
 	const dispatch = useAppDispatch();
-	const metaId = useAppSelector(selectCurMetaId);
-	const curDstId = useAppSelector(selectCurFlowDstId);
-	const curMetaData = useAppSelector(selectCurMetaData);
 
-	const [columns, setColumns] = useState<WorkFlowFieldInfo[]>(dstColumns);
+	const [columns, setColumns] = useState<any[]>(dstColumns);
 
 	useEffect(() => {
+		console.log("CellEditorContext", form, modalType);
 		setColumns(dstColumns);
 	}, [dstColumns]);
 
-	const reorder = async (list: WorkFlowFieldInfo[], startIndex: number, endIndex: number) => {
-		const result = Array.from(list);
-		const [removed] = result.splice(startIndex, 1);
-		result.splice(endIndex, 0, removed);
-
-		return result;
-	};
-
-	// 更新
-	const updateDsMeta = async (newDstColumns: WorkFlowFieldInfo[]) => {
-		const meta_data = _.cloneDeep(curMetaData);
-		const temp = _.get(meta_data, "views.0") as any;
-		if (temp && meta_data) {
-			temp.columns = newDstColumns.map((item: any) => {
-				return {
-					fieldId: item.fieldId
-				};
-			});
-		}
-
-		await saveDSMeta({
-			id: metaId!,
-			dstId: curDstId!,
-			metaData: JSON.stringify(meta_data),
-			revision: 0,
-			deleted: false,
-			sort: null,
-			tenantId: null
-		});
-		// 同步状态
-		dispatch(setCurTableColumn(newDstColumns));
-	};
-
-	const handleDragEnd = async (result: any) => {
-		if (!result.destination) {
-			return;
-		}
-
-		const resort = await reorder(columns, result.source.index, result.destination.index);
-		setColumns(resort);
-		await updateDsMeta(resort);
-	};
-
 	return (
-		<DragDropContext onDragEnd={handleDragEnd}>
-			<Droppable droppableId="droppable" type="common">
-				{(provided, snapshot) => {
-					return (
-						<div {...provided.droppableProps} ref={provided.innerRef}>
-							{columns.map((item, index) => {
-								return (
-									<Draggable key={"field_" + item.fieldId} draggableId={"field_" + item.fieldId} index={index} isDragDisabled={length === 1}>
-										{(provided, snapshot) => {
-											return (
-												<CellEditorWrap cell={item} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-													<CellLabel cell={item} />
-													<CellEditor cell={item} form={form} setForm={setForm} modalType={modalType} />
-												</CellEditorWrap>
-											);
-										}}
-									</Draggable>
-								);
-							})}
-							{provided.placeholder}
-						</div>
-					);
-				}}
-			</Droppable>
-		</DragDropContext>
+		<div>
+			{columns.map((item, index) => {
+				return (
+					<CellEditorWrap key={"field_" + item.key}>
+						<CellLabelRoot>
+							<div className="cell-label-title">
+								<div className="cell-drag-text">
+									<div>{item.title}</div>
+								</div>
+							</div>
+						</CellLabelRoot>
+						<CellEditor cell={item} form={form} setForm={setForm} modalType={modalType} />
+					</CellEditorWrap>
+				);
+			})}
+		</div>
 	);
 };
 

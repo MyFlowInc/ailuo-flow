@@ -24,7 +24,7 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528}></Modal>;
+	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
 };
 
 interface EditRecordModalProps {
@@ -51,5 +51,5 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528}></Modal>;
+	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
 };

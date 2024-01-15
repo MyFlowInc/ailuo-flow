@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { PlusOutlined } from "@ant-design/icons";
-import { ConfigProvider, Form, Button } from "antd";
+import { ConfigProvider, Form, Button, Tag } from "antd";
 import { NoFieldData } from "./NoFieldData";
-import CloseFilled from "../../../assets/icons/CloseFilled";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { StatusTag } from "./StatusTag";
-import { selectCurTableColumn, freshCurTableRows, selectCurFlowDstId, freshCurMetaData } from "../../../store/workflowSlice";
-import { addDSCells, updateDSCells } from "../../../api/apitable/ds-record";
-import { updateDSMeta } from "../../../api/apitable/ds-meta";
+import { useAppDispatch } from "../../../store/hooks";
+import { addDSCells } from "../../../api/apitable/ds-record";
 import CellEditorContext from "./CellEditorContext";
-import { selectUser } from "../../../store/globalSlice";
 import { blueButtonTheme } from "../../../theme/theme";
-import { SocketMsgType, sendWebSocketMsg } from "../../../api/apitable/ws-msg";
 
-import type { UpdateDSMetaParams } from "../../../api/apitable/ds-meta";
-import type { AddDSCellsParams, UpdateDSCellsParams } from "../../../api/apitable/ds-record";
-import type { TableColumnItem, WorkFlowStatusInfo } from "../../../store/workflowSlice";
+import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
+import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 const CustomModalRoot = styled.div`
 	position: relative;
-	padding: 24px 24px 24px 0;
+	padding: 24px 40px 24px 40px;
 	border-radius: 8px;
 	background-color: #ffffff;
 	box-shadow:
@@ -28,22 +20,26 @@ const CustomModalRoot = styled.div`
 		0 3px 6px -4px rgb(0 0 0 / 12%),
 		0 9px 28px 8px rgb(0 0 0 / 5%);
 	pointer-events: auto;
-
+	max-height: 80%;
+	overflow: hidden;
 	.header {
 		height: 18px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin: 0 0 12px 24px;
 
 		.title {
 			font-size: 18px;
 			font-family: "Harmony_Sans_Medium", sans-serif;
 		}
 	}
-
+	.status-operate {
+		margin-top: 8px;
+		margin-bottom: 16px;
+	}
 	.content {
-		max-height: 420px;
+		height: 600px;
+		max-width: 600px;
 		overflow: auto;
 	}
 
@@ -62,26 +58,43 @@ interface CustomModalProps {
 	freshFlowItem: () => void;
 	statusList: WorkFlowStatusInfo[];
 	modalType: string;
-
 	editFlowItemRecord?: any | undefined;
 	children?: React.ReactNode;
 }
-const filterColumns = (arr: TableColumnItem[]) => {
-	return arr.filter(item => {
-		return item.type !== 26;
-	});
-};
+const columns: any = [
+	{
+		title: "项目名称",
+		width: 200,
+		dataIndex: "name",
+		key: "name",
+		fixed: "left",
+		type: NumFieldType.SingleText
+	},
+	{ title: "状态", dataIndex: "status", key: "status", type: NumFieldType.SingleSelect },
+	{ title: "单位名称", dataIndex: "company", key: "company", type: NumFieldType.SingleSelect },
+	{ title: "销售经理", dataIndex: "salesManager", key: "salesManager", type: NumFieldType.SingleSelect },
+	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
+	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail", type: NumFieldType.Attachment },
+	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail", type: NumFieldType.Attachment },
+	{ title: "其他技术文件", dataIndex: "otherFile", key: "otherFile", type: NumFieldType.Attachment },
+	{ title: "扭矩/推力", dataIndex: "torqueThrust", key: "torquehrust", type: NumFieldType.SingleText },
+	{ title: "其他技术要求", dataIndex: "otherTechnicalRequirements", key: "otherTechnicalRequirements", type: NumFieldType.Text },
+	{ title: "执行机构形式", dataIndex: "mechanismForm", key: "mechanismForm", type: NumFieldType.SingleText },
+	{ title: "货币", dataIndex: "currency", key: "currency", type: NumFieldType.SingleText },
+	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.SingleText },
+	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
+	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },
+	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.SingleText },
+	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.SingleText },
+	{ title: "关联技术评审", dataIndex: "relateTechProcess", key: "relateTechProcess", type: NumFieldType.SingleText },
+	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText },
+	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" }
+];
 const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord }) => {
 	const dispatch = useAppDispatch();
-	const user = useAppSelector(selectUser);
-	const dstColumns = useAppSelector(selectCurTableColumn);
-	const [showDstColumns, setShowDstColumns] = useState(filterColumns(dstColumns));
-	const curDstId = useAppSelector(selectCurFlowDstId);
+	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<{ [id: string]: string }>({});
-	useEffect(() => {
-		setShowDstColumns(filterColumns(dstColumns));
-	}, [dstColumns]);
 
 	// esc handler
 	useEffect(() => {
@@ -115,47 +128,13 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		}
 	}, [open]);
 
-	const handleAddField = async () => {
-		if (!curDstId) {
-			return;
-		}
-		const param: UpdateDSMetaParams = {
-			dstId: curDstId,
-			name: "字段" + (showDstColumns.length + 1),
-			type: "SingleText"
-		};
-		try {
-			await updateDSMeta(param);
-			await dispatch(freshCurMetaData(curDstId));
-		} catch (error) {
-			console.log("updateFieldHandler error", error);
-		}
-	};
-
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		const params: AddDSCellsParams = {
-			dstId: curDstId!,
-			fieldKey: "id",
-			records: [
-				{
-					fields: form
-				}
-			]
-		};
+		const params: any = {};
 		try {
 			await inputForm.validateFields();
-			await addDSCells(params);
-			dispatch(freshCurTableRows(curDstId!));
 
-			// 同步 ws
-			sendWebSocketMsg({
-				user,
-				dstId: curDstId!,
-				type: SocketMsgType.AddRecords,
-				recordId: "",
-				row: {}
-			});
+			await addDSCells(params);
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -165,28 +144,10 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	const updateRecord = async () => {
 		const { recordId, id, ...rest } = form;
 		inputForm.setFieldsValue(rest);
-		const params: UpdateDSCellsParams = {
-			dstId: curDstId!,
-			fieldKey: "id",
-			records: [
-				{
-					recordId,
-					fields: rest
-				}
-			]
-		};
+		const params: any = {};
 		try {
 			await inputForm.validateFields();
-			await updateDSCells(params);
-			dispatch(freshCurTableRows(curDstId!));
-			// 同步
-			sendWebSocketMsg({
-				user,
-				dstId: curDstId!,
-				type: SocketMsgType.SetRecords,
-				recordId,
-				row: rest
-			});
+
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -194,7 +155,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	};
 
 	const handleSaveRecord = () => {
-		// console.log("saveTableRecord", form);
 		inputForm.setFieldsValue(form);
 		if (modalType === "add") {
 			createRecord();
@@ -206,10 +166,30 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	return (
 		<CustomModalRoot>
 			<div className="header">
-				<Button type="text" icon={<CloseFilled style={{ fontSize: "12px", color: "#707683" }} />} onClick={() => setOpen(false)} />
 				<div className="title">{title}</div>
 				<div>
-					<StatusTag statusList={statusList} {...{ form, setForm }} />
+					<Button style={{ fontSize: "12px", background: "#F2F3F5", marginRight: "18px" }} onClick={() => setOpen(false)}>
+						取消
+					</Button>
+					<ConfigProvider theme={blueButtonTheme}>
+						<Button type="primary" onClick={handleSaveRecord}>
+							{modalType === "add" ? "创建" : "修改"}
+						</Button>
+					</ConfigProvider>
+				</div>
+			</div>
+			<div className="status-operate flex">
+				<div className="flex">
+					<div className="mr-2">状态: </div>
+					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+						{"未启动"}
+					</Tag>
+				</div>
+				<div className="flex">
+					<div className="mr-2">操作: </div>
+					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+						{"开始处理"}
+					</Tag>
 				</div>
 			</div>
 			<div className="content">
@@ -217,16 +197,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 					{showDstColumns.length > 0 ? <CellEditorContext form={form} setForm={setForm} dstColumns={showDstColumns} modalType={modalType} /> : <NoFieldData />}
 				</Form>
 			</div>
-			<div className="footer">
-				<Button icon={<PlusOutlined style={{ fontSize: "12px", color: "#707683" }} />} onClick={handleAddField}>
-					添加
-				</Button>
-				<ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary" onClick={handleSaveRecord}>
-						{modalType === "add" ? "创建" : "修改"}
-					</Button>
-				</ConfigProvider>
-			</div>
+			<div className="footer"></div>
 		</CustomModalRoot>
 	);
 };

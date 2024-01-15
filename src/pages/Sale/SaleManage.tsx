@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Pagination } from "antd";
 import { delay } from "../../util/delay";
 
 import { dashboardTheme } from "../../theme/theme";
@@ -35,7 +35,6 @@ const SaleManage: React.FC = () => {
 				item.key = item.id;
 			});
 			setTableDataSource(_.get(res, "data.record") || []);
-			console.log("fetchSaleList", _.get(res, "data.record"));
 		} catch (error) {
 			console.log(error);
 		}
@@ -64,6 +63,7 @@ const SaleManage: React.FC = () => {
 					setEditFlowItemRecord={setEditFlowItemRecord}
 					setSelectedRows={setSelectedRows}
 				/>
+				<Pagination defaultCurrent={1} total={50} showTotal={total => `共 ${total} 条`} />
 			</DashboardRoot>
 		</ConfigProvider>
 	);

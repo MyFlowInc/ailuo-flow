@@ -13,7 +13,20 @@ interface HeaderToolBarProps {
 const HeaderToolBar: React.FC<HeaderToolBarProps> = () => {
 	// const dstColumns = useAppSelector(selectCurTableColumn);
 	// const records = useAppSelector(selectCurTableRecords);
-	const dstColumns = [] as any;
+	const dstColumns = [
+		{ label: "项目名称", key: "name" },
+		{ label: "单位名称", key: "company" },
+		{ label: "销售经理", key: "salesManager" },
+		{ label: "报价开始日期", key: "quotationBegin" },
+		{ label: "扭矩/推力", key: "torqueThrust" },
+		{ label: "其他技术要求", key: "otherTechnicalRequirements" },
+		{ label: "执行机构形式", key: "mechanismForm" },
+		{ label: "货币", key: "currency" },
+		{ label: "交期", key: "quotationEnd" },
+		{ label: "质保", key: "qualityTime" },
+		{ label: "贸易方式", key: "modeTrade" },
+		{ label: "付款方式", key: "payMode" }
+	];
 	const records = [] as any;
 	return (
 		<Space>

@@ -4,13 +4,9 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
 
 import FilterFilled from "../../../../assets/icons/FilterFilled";
-import { useAppDispatch } from "../../../../store/hooks";
-import { setCurTableRows } from "../../../../store/workflowSlice";
 import CloseFilled from "../../../../assets/icons/CloseFilled";
 import { greyButtonTheme2 } from "../../../../theme/theme";
-
 import type { SelectProps } from "antd";
-import type { TableColumnItem } from "../../../../store/workflowSlice";
 
 function encode(keyword: string) {
 	const reg = /[\[\(\$\^\.\]\*\\\?\+\{\}\\|\)]/gi;
@@ -26,15 +22,14 @@ interface ConditionType {
 interface FilterTableProps {
 	setFiltering: (v: boolean) => void;
 	records: any[];
-	columns: TableColumnItem[];
+	columns: any[];
 	children?: React.ReactNode;
 }
 
 const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFiltering }) => {
 	const [form] = Form.useForm();
-	const dispatch = useAppDispatch();
-
-	const [firstFieldId, setFirstFieldId] = React.useState<string>();
+	console.log(11, columns);
+	const [firstKey, setFirstKey] = React.useState<string>();
 	const [relation, SetRelation] = React.useState<"either" | "every">("either");
 	const [conditions, SetConditions] = React.useState<ConditionType[]>([]);
 
@@ -87,8 +82,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 				}
 			}
 		});
-
-		dispatch(setCurTableRows(filterRecords));
+		console.log(filterRecords);
 	};
 
 	const handleRelationChange = (value: "either" | "every") => {
@@ -98,7 +92,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 	const handleValuesChanged = (changedValues: any, allValues: any) => {
 		const values = allValues.conditions
 			.map((condition: any) => {
-				const conditionName = condition && condition.conditionName ? condition.conditionName : firstFieldId;
+				const conditionName = condition && condition.conditionName ? condition.conditionName : firstKey;
 				const conditionOperator = condition && condition.conditionOperator ? condition.conditionOperator : "eq";
 				const conditionValue = condition && condition.conditionValue ? condition.conditionValue : undefined;
 				return { conditionName, conditionOperator, conditionValue };
@@ -115,7 +109,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 	};
 
 	const init = () => {
-		conditions.length > 0 ? handleFilter() : dispatch(setCurTableRows(records));
+		conditions.length > 0 ? handleFilter() : console.log("no filter");
 		conditions.length > 0 ? setFiltering(true) : setFiltering(false);
 	};
 
@@ -125,7 +119,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 
 	React.useEffect(() => {
 		form.resetFields();
-		setFirstFieldId(_.get(columns, 0)?.fieldId);
+		setFirstKey(_.get(columns, 0)?.key);
 	}, [records, columns]);
 
 	return (
@@ -152,7 +146,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 				name="conditions"
 				initialValue={[
 					{
-						conditionName: _.get(columns, 0)?.fieldId,
+						conditionName: _.get(columns, 0)?.key,
 						conditionOperator: "eq"
 					}
 				]}>
@@ -162,8 +156,8 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 							{fields.map(({ key, name, ...restField }) => {
 								const options: SelectProps["options"] = columns.map((item: any) => {
 									return {
-										label: item.name,
-										value: item.fieldId
+										label: item.label,
+										value: item.key
 									};
 								});
 
@@ -198,7 +192,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 											onClick={() =>
 												add(
 													{
-														conditionName: firstFieldId,
+														conditionName: firstKey,
 														conditionOperator: "eq"
 													},
 													fields.length
@@ -221,7 +215,7 @@ const FilterTable: React.FC<FilterTableProps> = ({ records, columns, setFilterin
 
 interface FilterProps {
 	records: any[];
-	columns: TableColumnItem[];
+	columns: any[];
 	children?: React.ReactNode;
 }
 

@@ -2,14 +2,10 @@ import React, { useEffect, useState } from "react";
 import { ConfigProvider, Button, Popover, Form, Typography, Select, Segmented } from "antd";
 import SortFilled from "../../../../assets/icons/SortFilled";
 import ArrowRightFilled from "../../../../assets/icons/ArrowRightFilled";
-import { useAppSelector, useAppDispatch } from "../../../../store/hooks";
-import { setCurTableRows, selectCurTableRows } from "../../../../store/workflowSlice";
 import styled from "styled-components";
 import _ from "lodash";
 import { greyButtonTheme2 } from "../../../../theme/theme";
-
 import type { SelectProps } from "antd";
-import type { TableColumnItem } from "../../../../store/workflowSlice";
 import CloseFilled from "../../../../assets/icons/CloseFilled";
 import { NumFieldType } from "../../../../components/Dashboard/TableColumnRender";
 
@@ -49,22 +45,21 @@ SortSegmented.defaultProps = {
 
 interface SearchContentProps {
 	setFiltering: (v: boolean) => void;
-	columns: TableColumnItem[];
+	columns: any[];
 	children?: React.ReactNode;
 }
 
 const SortContent: React.FC<SearchContentProps> = ({ columns, setFiltering }) => {
 	const [form] = Form.useForm();
-	const records = useAppSelector(selectCurTableRows);
-	const dispatch = useAppDispatch();
+	const records = [] as any;
 
 	const [c, setConditionValue] = useState<string | "">("");
 	const [s, setSortValue] = useState<string | "">("");
 
 	const options: SelectProps["options"] = columns.map((item: any) => {
 		return {
-			label: item.name,
-			value: item.fieldId
+			label: item.label,
+			value: item.key
 		};
 	});
 
@@ -86,29 +81,29 @@ const SortContent: React.FC<SearchContentProps> = ({ columns, setFiltering }) =>
 		}
 	};
 
-	const sort = (field: string, sortType: string = s) => {
-		if (field) {
+	const sort = (key: string, sortType: string = s) => {
+		if (key) {
 			setFiltering(true);
-			const currents = columns.filter(column => column.fieldId === field);
+			const currents = columns.filter(column => column.key === key);
 			const current = _.get(currents, 0);
 
 			const sortRecords = records.slice().sort((a: any, b: any) => {
 				if (current) {
 					switch (current.type) {
 						case NumFieldType.Attachment:
-							const attachmentA = a[field] && getFileName(a[field]);
-							const attachmentB = b[field] && getFileName(b[field]);
+							const attachmentA = a[key] && getFileName(a[key]);
+							const attachmentB = b[key] && getFileName(b[key]);
 							return compare(attachmentA, attachmentB, sortType);
 
 						default:
-							return compare(a[field], b[field], sortType);
+							return compare(a[key], b[key], sortType);
 					}
 				} else {
-					return compare(a[field], b[field], sortType);
+					return compare(a[key], b[key], sortType);
 				}
 			});
 
-			dispatch(setCurTableRows(sortRecords));
+			console.log("sortRecords", sortRecords);
 		}
 	};
 
@@ -174,7 +169,7 @@ const SortContent: React.FC<SearchContentProps> = ({ columns, setFiltering }) =>
 };
 
 interface SortProps {
-	columns: TableColumnItem[];
+	columns: any[];
 	children?: React.ReactNode;
 }
 

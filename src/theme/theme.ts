@@ -18,6 +18,17 @@ export const dashboardTheme = {
 	}
 };
 
+export const TableTheme = {
+	token: { controlHeight: 27, fontSize: 12, fontFamily: `"Harmony_Sans_Medium", sans-serif` },
+	components: {
+		Table: {
+			fontSize: 12,
+			headerBg: "#F2F3F5",
+			headerColor: "#3D3D3D"
+		}
+	}
+};
+
 export const navsideTheme = {
 	token: { controlHeight: 27, fontSize: 12, fontFamily: `"Harmony_Sans_Medium", sans-serif` },
 	components: {

@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button, Form, Input, Popconfirm, Table } from "antd";
+import React, { useContext, useRef, useState } from "react";
+import { Button, ConfigProvider, Form, Input, Table } from "antd";
+import { TableTheme } from "../../theme/theme";
+import { CloseCircleFilled } from "@ant-design/icons";
 
 type InputRef = any;
 type FormInstance<T> = any;
@@ -8,9 +10,11 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface Item {
 	key: string;
-	name: string;
-	age: string;
-	address: string;
+	mode: string;
+	force: string;
+	num: number;
+	price: number;
+	total: number;
 }
 
 interface EditableRowProps {
@@ -38,25 +42,16 @@ interface EditableCellProps {
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
-	const [editing, setEditing] = useState(false);
 	const inputRef = useRef<InputRef>(null);
 	const form = useContext(EditableContext)!;
 
-	useEffect(() => {
-		if (editing) {
-			inputRef.current!.focus();
-		}
-	}, [editing]);
-
 	const toggleEdit = () => {
-		setEditing(!editing);
 		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
 	};
 
 	const save = async () => {
 		try {
 			const values = await form.validateFields();
-
 			toggleEdit();
 			handleSave({ ...record, ...values });
 		} catch (errInfo) {
@@ -67,17 +62,19 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 	let childNode = children;
 
 	if (editable) {
-		childNode = editing ? (
+		childNode = 1 ? (
 			<Form.Item
 				style={{ margin: 0 }}
 				name={dataIndex}
-				rules={[
-					{
-						required: true,
-						message: `${title} is required.`
-					}
-				]}>
-				<Input ref={inputRef} onPressEnter={save} onBlur={save} />
+				rules={
+					[
+						// {
+						// 	required: true,
+						// 	message: `${title} is required.`
+						// }
+					]
+				}>
+				<Input ref={inputRef} onInput={save} />
 			</Form.Item>
 		) : (
 			<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
@@ -86,33 +83,35 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 		);
 	}
 
-	return <td {...restProps}>{childNode}</td>;
+	return (
+		<td {...restProps} className="pd-4">
+			{childNode}
+		</td>
+	);
 };
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
 	key: React.Key;
-	name: string;
-	age: string;
-	address: string;
+	mode: string;
+	force: string;
+	num: number;
+	price: number;
+	total: number;
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
-const App: React.FC = () => {
+const ModeSelectTable: React.FC = () => {
 	const [dataSource, setDataSource] = useState<DataType[]>([
 		{
 			key: "0",
-			name: "Edward King 0",
-			age: "32",
-			address: "London, Park Lane no. 0"
-		},
-		{
-			key: "1",
-			name: "Edward King 1",
-			age: "32",
-			address: "London, Park Lane no. 1"
+			mode: "",
+			force: "",
+			num: 0,
+			price: 0,
+			total: 0
 		}
 	]);
 
@@ -125,38 +124,48 @@ const App: React.FC = () => {
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
-			title: "name",
-			dataIndex: "name",
-			width: "30%",
+			title: "初步选型型号",
+			dataIndex: "mode",
 			editable: true
 		},
 		{
-			title: "age",
-			dataIndex: "age"
+			title: "额定扭矩/推力",
+			editable: true,
+			dataIndex: "force"
 		},
 		{
-			title: "address",
-			dataIndex: "address"
+			title: "数量",
+			editable: true,
+			dataIndex: "num"
 		},
 		{
-			title: "operation",
-			dataIndex: "operation",
-			// @ts-ignore
-			render: (a, record: { key: React.Key }) =>
-				dataSource.length >= 1 ? (
-					<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
-						<a>Delete</a>
-					</Popconfirm>
-				) : null
+			editable: true,
+			title: "单价",
+			dataIndex: "price"
+		},
+		{
+			title: "总价",
+			width: 100,
+			dataIndex: "total",
+			render: (text, record: any) => {
+				return (
+					<div className="flex align-middle justify-around">
+						{+record.num * +record.price}
+						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
+					</div>
+				);
+			}
 		}
 	];
 
 	const handleAdd = () => {
 		const newData: DataType = {
 			key: count,
-			name: `Edward King ${count}`,
-			age: "32",
-			address: `London, Park Lane no. ${count}`
+			mode: "",
+			force: "",
+			num: 0,
+			price: 0,
+			total: 0
 		};
 		setDataSource([...dataSource, newData]);
 		setCount(count + 1);
@@ -197,13 +206,17 @@ const App: React.FC = () => {
 	});
 
 	return (
-		<div>
-			<Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-				Add a row
-			</Button>
-			<Table components={components} rowClassName={() => "editable-row"} bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+		<div style={{ width: "480px" }}>
+			<div className="flex  justify-end">
+				<Button className="mr-4" onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
+					新增
+				</Button>
+			</div>
+			<ConfigProvider theme={TableTheme}>
+				<Table size="small" pagination={false} components={components} rowClassName={() => "editable-row"} bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+			</ConfigProvider>
 		</div>
 	);
 };
 
-export default App;
+export default ModeSelectTable;

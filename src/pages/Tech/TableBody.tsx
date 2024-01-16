@@ -3,6 +3,8 @@ import styled from "styled-components";
 import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
+import { FlowStatus } from "../../api/ailuo/dict";
+import _ from "lodash";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -46,9 +48,14 @@ const columns: any = [
 		dataIndex: "status",
 		key: "status",
 		render: (text: string, record: any) => {
+			const { status } = record;
+			let item = _.find(FlowStatus, { value: status });
+			if (!item) {
+				item = FlowStatus[0];
+			}
 			return (
-				<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-					{"未启动"}
+				<Tag color={item.color} style={{ color: "#000" }}>
+					{item.label}
 				</Tag>
 			);
 		}

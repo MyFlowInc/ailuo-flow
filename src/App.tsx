@@ -12,6 +12,7 @@ import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import ResetPwd from "./pages/User/ResetPwd";
 import Setting from "./pages/Setting";
+import ModeSelectTable from "./pages/Sale/ModeSelectTable";
 
 setupIonicReact();
 
@@ -41,6 +42,9 @@ const App: React.FC = () => {
 
 						<Route path="/reset" exact={true}>
 							<ResetPwd />
+						</Route>
+						<Route path="/test" exact={true}>
+							<ModeSelectTable />
 						</Route>
 					</IonRouterOutlet>
 				</IonReactRouter>

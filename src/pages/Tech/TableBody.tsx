@@ -36,7 +36,10 @@ const columns: any = [
 		width: 200,
 		dataIndex: "name",
 		key: "name",
-		fixed: "left"
+		fixed: "left",
+		render: (text: string, record: any) => {
+			return <span>{record.name}</span>;
+		}
 	},
 	{
 		title: "状态",

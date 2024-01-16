@@ -33,6 +33,7 @@ export function dictAdd(data: any) {
 		}
 	});
 }
+
 export function dictRemove(id: string) {
 	return apiCall({
 		url: "api/sys/dict/data/remove",
@@ -41,4 +42,59 @@ export function dictRemove(id: string) {
 			id
 		}
 	});
+}
+export interface IFlowStatus {
+	value: string;
+	label: string;
+	id: string;
+	color: string;
+}
+
+// code :  flow_status
+export const FlowStatus = [
+	{
+		value: "not_started",
+		label: "未启动",
+		id: "1746847549987905538",
+		color: "#E8F2FF"
+	},
+	{
+		value: "processing",
+		label: "处理中",
+		id: "1746847583802384385",
+		color: "#FFEEE3"
+	},
+	{
+		value: "technical_review",
+		label: "技术审核中",
+		id: "1746847658217725954",
+		color: "#FFEEE3"
+	},
+	{
+		value: "review_completed",
+		label: "技术审核完成",
+		id: "1746847896856846338",
+		color: "#E8FFEA"
+	},
+	{
+		value: "quotation_review",
+		label: "报价终审中",
+		id: "1746847836731498498",
+		color: "#FFEEE3"
+	},
+	{
+		value: "approved",
+		label: "审批通过",
+		id: "1746847974359195650",
+		color: "#E8FFEA"
+	},
+	{
+		value: "review_failed",
+		label: "审批驳回",
+		id: "1746848020739809282",
+		color: "#FF9F9F"
+	}
+];
+export function dictFlowStatus(): Promise<IFlowStatus[]> {
+	return Promise.resolve(FlowStatus);
 }

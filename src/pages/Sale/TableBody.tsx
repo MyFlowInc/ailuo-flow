@@ -4,6 +4,8 @@ import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
+import { FlowStatus } from "../../api/ailuo/dict";
+import _ from "lodash";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -42,7 +44,23 @@ const columns: any = [
 			return <span>{record.name}</span>;
 		}
 	},
-	{ title: "状态", dataIndex: "status", key: "status", type: "sale_status" },
+	{
+		title: "状态",
+		dataIndex: "status",
+		key: "status",
+		render: (text: string, record: any) => {
+			const { status } = record;
+			let item = _.find(FlowStatus, { value: status });
+			if (!item) {
+				item = FlowStatus[0];
+			}
+			return (
+				<Tag color={item.color} style={{ color: "#000" }}>
+					{item.label}
+				</Tag>
+			);
+		}
+	},
 	{
 		title: "单位名称",
 		dataIndex: "company",

@@ -5,6 +5,7 @@ import { userGradeList } from "../api/shop";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { IMenu } from "../api/ailuo/menu";
+import { IFlowStatus, dictFlowStatus } from "../api/ailuo/dict";
 
 export interface User {
 	id: string;
@@ -44,7 +45,8 @@ export interface globalState {
 	isAddOrderModalOpen: boolean; // 新建工单modal
 	isShowSaleModal: boolean; // 新建报价
 	isStatusSettingModalOpen: boolean;
-	isOpenDrawer: boolean; // 是否打开通知
+	isOpenDrawer: boolean; // 是否打开通知,
+	flowStatus: IFlowStatus[];
 }
 
 const initialState: globalState = {
@@ -61,14 +63,15 @@ const initialState: globalState = {
 	isAddOrderModalOpen: false, // 新建工单modal
 	isShowSaleModal: false,
 	isStatusSettingModalOpen: false, //  状态流设置modal
-	isOpenDrawer: false // 是否打开通知
+	isOpenDrawer: false, // 是否打开通知
+	flowStatus: []
 };
-// // 检查用户信息
-// export const freshUserProfile = createAsyncThunk("global/freshUser", async () => {
-// 	const res = await userProfile();
-// 	// The value we return becomes the `fulfilled` action payload
-// 	return res.data;
-// });
+
+export const fetchFlowStatus = createAsyncThunk("global/fetchFlowStatus", async () => {
+	const res = await dictFlowStatus();
+	// The value we return becomes the `fulfilled` action payload
+	return res;
+});
 
 export const freshUser = createAsyncThunk("global/freshUser", async () => {
 	const res = await userProfile();
@@ -128,6 +131,9 @@ export const globalSlice = createSlice({
 		}
 	},
 	extraReducers: builder => {
+		builder.addCase(fetchFlowStatus.fulfilled, (state, action) => {
+			state.flowStatus = action.payload;
+		});
 		builder.addCase(freshUser.fulfilled, (state, action) => {
 			state.user = action.payload;
 		});

@@ -1,7 +1,8 @@
-import React, { useContext, useRef, useState } from "react";
-import { Button, ConfigProvider, Form, Input, Table } from "antd";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Button, ConfigProvider, Form, Input, InputNumber, Table, Typography } from "antd";
 import { TableTheme } from "../../theme/theme";
 import { CloseCircleFilled } from "@ant-design/icons";
+import _ from "lodash";
 
 type InputRef = any;
 type FormInstance<T> = any;
@@ -42,10 +43,18 @@ interface EditableCellProps {
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
+	const [editing, setEditing] = useState(false);
 	const inputRef = useRef<InputRef>(null);
 	const form = useContext(EditableContext)!;
+	const numKeys = ["num", "price"];
+	useEffect(() => {
+		if (editing) {
+			inputRef.current!.focus();
+		}
+	}, [editing]);
 
 	const toggleEdit = () => {
+		setEditing(!editing);
 		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
 	};
 
@@ -53,6 +62,7 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 		try {
 			const values = await form.validateFields();
 			toggleEdit();
+			console.log("Received values of form: ", record, values);
 			handleSave({ ...record, ...values });
 		} catch (errInfo) {
 			console.log("Save failed:", errInfo);
@@ -62,7 +72,7 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 	let childNode = children;
 
 	if (editable) {
-		childNode = 1 ? (
+		childNode = editing ? (
 			<Form.Item
 				style={{ margin: 0 }}
 				name={dataIndex}
@@ -74,17 +84,18 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 						// }
 					]
 				}>
-				<Input ref={inputRef} onInput={save} />
+				{numKeys.includes(dataIndex) && <InputNumber size="small" style={{ width: "56px" }} ref={inputRef} onPressEnter={save} onBlur={save} />}
+				{!numKeys.includes(dataIndex) && <Input size="small" style={{ width: "56px" }} ref={inputRef} onPressEnter={save} onBlur={save} />}
 			</Form.Item>
 		) : (
-			<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
-				{children}
+			<div className="editable-cell-value-wrap" style={{ paddingRight: 12 }} onClick={toggleEdit}>
+				{_.get(children, "1") ? children : "点击输入"}
 			</div>
 		);
 	}
 
 	return (
-		<td {...restProps} className="pd-4">
+		<td {...restProps} className="overflow-hidden">
 			{childNode}
 		</td>
 	);
@@ -120,6 +131,7 @@ const ModeSelectTable: React.FC = () => {
 	const handleDelete = (key: React.Key) => {
 		const newData = dataSource.filter(item => item.key !== key);
 		setDataSource(newData);
+		console.log("do update");
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -169,17 +181,22 @@ const ModeSelectTable: React.FC = () => {
 		};
 		setDataSource([...dataSource, newData]);
 		setCount(count + 1);
+		console.log("do update");
 	};
 
 	const handleSave = (row: DataType) => {
 		const newData = [...dataSource];
 		const index = newData.findIndex(item => row.key === item.key);
 		const item = newData[index];
+		// hack
+		row.total = row.num * row.price;
+
 		newData.splice(index, 1, {
 			...item,
 			...row
 		});
 		setDataSource(newData);
+		console.log("do update");
 	};
 
 	const components = {
@@ -213,9 +230,37 @@ const ModeSelectTable: React.FC = () => {
 				</Button>
 			</div>
 			<ConfigProvider theme={TableTheme}>
-				<Table size="small" pagination={false} components={components} rowClassName={() => "editable-row"} bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+				<Table
+					size="small"
+					pagination={false}
+					components={components}
+					rowClassName={() => "editable-row"}
+					bordered
+					dataSource={dataSource}
+					columns={columns as ColumnTypes}
+					summary={summary}
+				/>
 			</ConfigProvider>
 		</div>
+	);
+};
+
+const { Text } = Typography;
+const summary = (pageData: any) => {
+	console.log(pageData);
+	let totalBorrow = 0;
+	// @ts-ignore
+	pageData.forEach(({ total }) => {
+		totalBorrow += total;
+	});
+
+	return (
+		<Table.Summary.Row>
+			<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
+			<Table.Summary.Cell index={1} colSpan={4}>
+				<Text>{totalBorrow}</Text>
+			</Table.Summary.Cell>
+		</Table.Summary.Row>
 	);
 };
 

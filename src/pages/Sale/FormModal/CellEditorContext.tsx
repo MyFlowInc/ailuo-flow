@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form } from "antd";
 import styled from "styled-components";
-import { useAppDispatch } from "../../../store/hooks";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import TypeEditor from "../../../components/Dashboard/FormModal/TypeEditor";
 
@@ -14,11 +13,10 @@ interface CellEditorProps {
 	cell: any;
 	form: { [id: string]: string };
 	setForm: (value: any) => void;
-	modalType: string;
 }
 
 const CellEditor: React.FC<CellEditorProps> = props => {
-	const { cell, form, setForm, modalType } = props;
+	const { cell, form, setForm } = props;
 	let rules: any;
 
 	switch (cell.type) {
@@ -109,8 +107,6 @@ interface CellEditorContextProps {
 }
 
 const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
-	const dispatch = useAppDispatch();
-
 	const [columns, setColumns] = useState<any[]>(dstColumns);
 
 	useEffect(() => {
@@ -121,6 +117,9 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 	return (
 		<div>
 			{columns.map((item, index) => {
+				if (item.render) {
+					return item.render(item, form, setForm);
+				}
 				return (
 					<CellEditorWrap key={"field_" + item.key}>
 						<CellLabelRoot>
@@ -130,7 +129,7 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 								</div>
 							</div>
 						</CellLabelRoot>
-						<CellEditor cell={item} form={form} setForm={setForm} modalType={modalType} />
+						<CellEditor cell={item} form={form} setForm={setForm} />
 					</CellEditorWrap>
 				);
 			})}

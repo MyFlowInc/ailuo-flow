@@ -90,7 +90,14 @@ const columns: any = [
 	{ title: "其他技术要求", dataIndex: "otherTechnicalRequirements", key: "otherTechnicalRequirements", type: NumFieldType.Text },
 	{ title: "执行机构形式", dataIndex: "mechanismForm", key: "mechanismForm", type: NumFieldType.SingleText },
 	{ title: "货币", dataIndex: "currency", key: "currency", type: NumFieldType.SingleText },
-	{ title: "初步选型型号", dataIndex: "typeSelection", key: "typeSelection" },
+	{
+		title: "初步选型型号",
+		dataIndex: "typeSelection",
+		key: "typeSelection",
+		render: (text: any) => {
+			return <Tag color={"#E8F2FF"}>{text}</Tag>;
+		}
+	},
 	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime },
 	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
 	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },

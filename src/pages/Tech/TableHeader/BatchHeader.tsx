@@ -2,9 +2,8 @@ import React from "react";
 import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
-import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
+import { greyButtonTheme } from "../../../theme/theme";
 import { useAppDispatch } from "../../../store/hooks";
-import FolderFilled from "../../../assets/icons/FolderFilled";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
 
 interface BatchHeaderRootProps {
@@ -77,11 +76,11 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 						删除
 					</Button>
 				</ConfigProvider>
-				<ConfigProvider theme={blueButtonTheme}>
+				{/* <ConfigProvider theme={blueButtonTheme}>
 					<Button type="primary" icon={<FolderFilled style={{ fontSize: "12px", color: "#ffffff" }} />} onClick={handleBatchArchive}>
 						归档
 					</Button>
-				</ConfigProvider>
+				</ConfigProvider> */}
 			</Space>
 		</BatchHeaderRoot>
 	);

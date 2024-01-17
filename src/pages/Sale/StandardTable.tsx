@@ -13,8 +13,8 @@ import _ from "lodash";
 const StandardTableRoot = styled.div`
 	position: absolute;
 	opacity: 1;
-	width: "100%";
-	height: "100%";
+	width: 100%;
+	height: 100%;
 	transition-property: height, opacity;
 	transition-duration: 1s;
 `;

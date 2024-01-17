@@ -94,9 +94,14 @@ const columns: any = [
 		dataIndex: "typeSelection",
 		key: "typeSelection",
 		render: (text: string, record: any) => {
+			const { typeSelection } = record;
+			let len = 0;
+			try {
+				len = JSON.parse(typeSelection).length;
+			} catch (error) {}
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
-					{record.typeSelection || "共0个型号"}
+					{`共${len}个型号`}
 				</Tag>
 			);
 		}

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button, ConfigProvider, Form, Input, InputNumber, Table, Typography } from "antd";
+import { ConfigProvider, Form, Input, InputNumber, Table, Typography } from "antd";
 import { TableTheme } from "../../theme/theme";
-import { CloseCircleFilled } from "@ant-design/icons";
+import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
 
 type InputRef = any;
@@ -100,6 +100,23 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 		</td>
 	);
 };
+const { Text } = Typography;
+const summary = (pageData: any) => {
+	let totalBorrow = 0;
+	// @ts-ignore
+	pageData.forEach(({ total }) => {
+		totalBorrow += total;
+	});
+
+	return (
+		<Table.Summary.Row>
+			<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
+			<Table.Summary.Cell index={1} colSpan={4}>
+				<Text>{totalBorrow}</Text>
+			</Table.Summary.Cell>
+		</Table.Summary.Row>
+	);
+};
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -113,25 +130,36 @@ interface DataType {
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
+const item = {
+	key: "0",
+	mode: "",
+	force: "",
+	num: 0,
+	price: 0,
+	total: 0
+};
+const ModeSelectTable: React.FC = (props: any) => {
+	const { column, form, setForm } = props;
+	console.log("form", column, form);
 
-const ModeSelectTable: React.FC = () => {
-	const [dataSource, setDataSource] = useState<DataType[]>([
-		{
-			key: "0",
-			mode: "",
-			force: "",
-			num: 0,
-			price: 0,
-			total: 0
-		}
-	]);
+	const records = _.get(form, column.dataIndex) || [];
+	const [dataSource, setDataSource] = useState<DataType[]>(records);
+	const [count, setCount] = useState(records.length + 1);
 
-	const [count, setCount] = useState(2);
+	const debouncedSetForm = _.debounce(setForm, 300);
+	useEffect(() => {
+		setDataSource(records);
+		setCount(records.length + 1);
+	}, [form.typeSelection]);
 
 	const handleDelete = (key: React.Key) => {
 		const newData = dataSource.filter(item => item.key !== key);
 		setDataSource(newData);
-		console.log("do update");
+		// console.log("do update");
+		debouncedSetForm({
+			...form,
+			[column.dataIndex]: newData
+		});
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -180,8 +208,13 @@ const ModeSelectTable: React.FC = () => {
 			total: 0
 		};
 		setDataSource([...dataSource, newData]);
+		debouncedSetForm({
+			// typeSelection
+			...form,
+			[column.dataIndex]: [...dataSource, newData]
+		});
 		setCount(count + 1);
-		console.log("do update");
+		// console.log("do update");
 	};
 
 	const handleSave = (row: DataType) => {
@@ -196,7 +229,11 @@ const ModeSelectTable: React.FC = () => {
 			...row
 		});
 		setDataSource(newData);
-		console.log("do update");
+		debouncedSetForm({
+			...form,
+			[column.dataIndex]: newData
+		});
+		// console.log("do update");
 	};
 
 	const components = {
@@ -223,44 +260,29 @@ const ModeSelectTable: React.FC = () => {
 	});
 
 	return (
-		<div style={{ width: "480px" }}>
-			<div className="flex  justify-end">
-				<Button className="mr-4" onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-					新增
-				</Button>
+		<div className="w-full">
+			<div className="flex mb-4">
+				<div style={{ width: "100px" }}>初步选型型号</div>
+				<div className="flex align-middle" onClick={handleAdd}>
+					<PlusCircleFilled size={14} />
+					<div className="ml-2">添加型号</div>
+				</div>
 			</div>
-			<ConfigProvider theme={TableTheme}>
-				<Table
-					size="small"
-					pagination={false}
-					components={components}
-					rowClassName={() => "editable-row"}
-					bordered
-					dataSource={dataSource}
-					columns={columns as ColumnTypes}
-					summary={summary}
-				/>
-			</ConfigProvider>
+			<div className="w-full overflow-hidden overflow-x-auto">
+				<ConfigProvider theme={TableTheme}>
+					<Table
+						size="small"
+						pagination={false}
+						components={components}
+						rowClassName={() => "editable-row"}
+						bordered
+						dataSource={dataSource}
+						columns={columns as ColumnTypes}
+						summary={summary}
+					/>
+				</ConfigProvider>
+			</div>
 		</div>
-	);
-};
-
-const { Text } = Typography;
-const summary = (pageData: any) => {
-	console.log(pageData);
-	let totalBorrow = 0;
-	// @ts-ignore
-	pageData.forEach(({ total }) => {
-		totalBorrow += total;
-	});
-
-	return (
-		<Table.Summary.Row>
-			<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
-			<Table.Summary.Cell index={1} colSpan={4}>
-				<Text>{totalBorrow}</Text>
-			</Table.Summary.Cell>
-		</Table.Summary.Row>
 	);
 };
 

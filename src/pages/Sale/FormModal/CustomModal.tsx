@@ -95,10 +95,10 @@ const columns: any = [
 		title: "初步选型型号",
 		dataIndex: "typeSelection",
 		key: "typeSelection",
-		render: (column: any, key: string) => {
+		render: (column: any, key: string, form: any, setForm: (value: any) => void) => {
 			return (
-				<div key={key}>
-					<ModeSelectTable />
+				<div key={key} className="w-full">
+					<ModeSelectTable key={"ModeSelectTable" + key} {...{ column, form, setForm }} />
 				</div>
 			);
 		}
@@ -138,7 +138,14 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			return;
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
-			const { key, flowItemId, statusId, ...temp } = editFlowItemRecord;
+			const { key, ...temp } = editFlowItemRecord;
+			try {
+				// 处理初步选型型号
+				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+			} catch (error) {
+				temp.typeSelection = [];
+			}
+			console.log(11, temp);
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
@@ -154,6 +161,10 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		inputForm.setFieldsValue(form);
 		try {
 			await inputForm.validateFields();
+			console.log("Received values of form: ", form);
+			try {
+				form.typeSelection = JSON.stringify(form.typeSelection);
+			} catch (error) {}
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -171,6 +182,9 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		};
 		try {
 			await inputForm.validateFields();
+			try {
+				params.typeSelection = JSON.stringify(params.typeSelection);
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);

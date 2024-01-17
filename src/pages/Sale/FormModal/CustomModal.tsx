@@ -9,6 +9,7 @@ import { blueButtonTheme } from "../../../theme/theme";
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
+import ModeSelectTable from "../ModeSelectTable";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -94,8 +95,12 @@ const columns: any = [
 		title: "初步选型型号",
 		dataIndex: "typeSelection",
 		key: "typeSelection",
-		render: (text: any) => {
-			return <Tag color={"#E8F2FF"}>{text}</Tag>;
+		render: (column: any, key: string) => {
+			return (
+				<div key={key}>
+					<ModeSelectTable />
+				</div>
+			);
 		}
 	},
 	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime },

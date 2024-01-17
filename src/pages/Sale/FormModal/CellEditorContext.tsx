@@ -118,7 +118,7 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 		<div>
 			{columns.map((item, index) => {
 				if (item.render) {
-					return item.render(item, form, setForm);
+					return item.render(item, "field_" + item.key, form, setForm);
 				}
 				return (
 					<CellEditorWrap key={"field_" + item.key}>

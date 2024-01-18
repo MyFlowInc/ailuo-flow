@@ -8,7 +8,7 @@ import { blueButtonTheme } from "../../../theme/theme";
 
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
-import { saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
+import { changeStatus, saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 
 const CustomModalRoot = styled.div`
@@ -157,7 +157,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			} catch (error) {
 				temp.payType = [];
 			}
-			console.log("进入编辑处理", temp, temp.status);
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
@@ -174,6 +173,9 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		try {
 			await inputForm.validateFields();
 			console.log("Received values of form: ", form);
+			if (!form.status) {
+				form.status = "not_started";
+			}
 			try {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
@@ -215,7 +217,61 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			updateRecord();
 		}
 	};
-
+	//
+	const changeProcess = async (form: any) => {
+		try {
+			const { id } = form;
+			await changeStatus({ id, status: "technical_review" });
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const StatusView = () => {
+		if (!form) {
+			return;
+		}
+		console.log("  form =", form);
+		const { id, status } = form;
+		if (id && (status === "not_started" || !status)) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"未启动"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={() => {
+								changeProcess(form);
+							}}>
+							{"开始处理"}
+						</Tag>
+					</div>
+				</div>
+			);
+		}
+		return (
+			<div className="status-operate flex">
+				<div className="flex">
+					<div className="mr-2">状态: </div>
+					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+						{"未启动"}
+					</Tag>
+				</div>
+				<div className="hidden">
+					<div className="mr-2">操作: </div>
+					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+						{"开始处理"}
+					</Tag>
+				</div>
+			</div>
+		);
+	};
 	return (
 		<CustomModalRoot>
 			<div className="header">
@@ -231,20 +287,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 					</ConfigProvider>
 				</div>
 			</div>
-			<div className="status-operate flex">
-				<div className="flex">
-					<div className="mr-2">状态: </div>
-					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"未启动"}
-					</Tag>
-				</div>
-				<div className="hidden">
-					<div className="mr-2">操作: </div>
-					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-						{"开始处理"}
-					</Tag>
-				</div>
-			</div>
+			{StatusView()}
 			<div className="content">
 				<Form form={inputForm} name="recordForm" colon={false} wrapperCol={{ flex: 1 }} preserve={false}>
 					{showDstColumns.length > 0 ? <CellEditorContext form={form} setForm={setForm} dstColumns={showDstColumns} modalType={modalType} /> : <NoFieldData />}

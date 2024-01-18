@@ -97,7 +97,6 @@ export const globalSlice = createSlice({
 			state.userMenus = action.payload;
 		},
 		loginSuccess: (state, action) => {
-			console.log("loginSussess", action);
 			state.user = action.payload;
 		},
 		setIsArchive: (state, action) => {

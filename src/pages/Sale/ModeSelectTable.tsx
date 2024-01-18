@@ -62,7 +62,7 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 		try {
 			const values = await form.validateFields();
 			toggleEdit();
-			console.log("Received values of form: ", record, values);
+			// console.log("Received values of form: ", record, values);
 			handleSave({ ...record, ...values });
 		} catch (errInfo) {
 			console.log("Save failed:", errInfo);

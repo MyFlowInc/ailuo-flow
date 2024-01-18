@@ -157,9 +157,7 @@ const Login: React.FC = () => {
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
 
-	const onFinish = (values: any) => {
-		console.log("Received values of form: ", values);
-	};
+	const onFinish = (values: any) => {};
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
 	};

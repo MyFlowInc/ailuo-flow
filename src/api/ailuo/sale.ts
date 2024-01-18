@@ -44,3 +44,11 @@ export function saleProjectRemove(id: number) {
 		params: { id }
 	});
 }
+
+export function changeStatus(data: { id: number; status: "technical_review" }) {
+	return apiCall({
+		url: "api/sys/projectSaleProcess/changeStatus",
+		method: "post",
+		data
+	});
+}

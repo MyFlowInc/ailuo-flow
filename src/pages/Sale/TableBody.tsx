@@ -6,6 +6,7 @@ import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import { FlowStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
+import dayjs from "dayjs";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -86,7 +87,16 @@ const columns: any = [
 			);
 		}
 	},
-	{ title: "报价开始日期", dataIndex: "quotationBegin", key: "quotationBegin", type: NumFieldType.DateTime },
+	{
+		title: "报价开始日期",
+		dataIndex: "quotationBegin",
+		key: "quotationBegin",
+		type: NumFieldType.DateTime,
+		render: (text: string, record: any) => {
+			const format = record.quotationBegin ? dayjs(record.quotationBegin).format("YYYY-MM-DD") : "";
+			return <div>{format}</div>;
+		}
+	},
 	{ title: "产品规格书", dataIndex: "specificationDetail", key: "specificationDetail", type: NumFieldType.Attachment },
 	{ title: "阀门参数", dataIndex: "valveDetail", key: "valveDetail", type: NumFieldType.Attachment },
 	{
@@ -106,7 +116,16 @@ const columns: any = [
 			);
 		}
 	},
-	{ title: "交期", dataIndex: "quotationEnd", key: "quotationEnd", type: NumFieldType.DateTime }
+	{
+		title: "交期",
+		dataIndex: "quotationEnd",
+		key: "quotationEnd",
+		type: NumFieldType.DateTime,
+		render: (text: string, record: any) => {
+			const format = record.quotationBegin ? dayjs(record.quotationBegin).format("YYYY-MM-DD") : "";
+			return <div>{format}</div>;
+		}
+	}
 ];
 const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, ...rest }) => {
 	const { tableDataSource, fetchSaleList } = rest;

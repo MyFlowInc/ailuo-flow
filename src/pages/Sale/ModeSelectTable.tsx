@@ -140,7 +140,6 @@ const item = {
 };
 const ModeSelectTable: React.FC = (props: any) => {
 	const { column, form, setForm } = props;
-	console.log("form", column, form);
 
 	const records = _.get(form, column.dataIndex) || [];
 	const [dataSource, setDataSource] = useState<DataType[]>(records);

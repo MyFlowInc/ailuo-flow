@@ -25,7 +25,7 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = () => {
 		{ label: "交期", key: "quotationEnd" },
 		{ label: "质保", key: "qualityTime" },
 		{ label: "贸易方式", key: "modeTrade" },
-		{ label: "付款方式", key: "payMode" }
+		{ label: "付款方式", key: "payType" }
 	];
 	const records = [] as any;
 	return (

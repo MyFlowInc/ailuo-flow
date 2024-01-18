@@ -107,7 +107,7 @@ const columns: any = [
 	{ title: "质保", dataIndex: "qualityTime", key: "qualityTime", type: NumFieldType.SingleText },
 	{ title: "出口项目", dataIndex: "exportItem", key: "exportItem", type: NumFieldType.SingleText },
 	{ title: "贸易方式", dataIndex: "modeTrade", key: "modeTrade", type: NumFieldType.MultiSelect, dictCode: "tarde_mode" },
-	{ title: "付款方式", dataIndex: "payMode", key: "payMode", type: NumFieldType.MultiSelect, dictCode: "pay" },
+	{ title: "付款方式", dataIndex: "payType", key: "payType", type: NumFieldType.MultiSelect, dictCode: "pay" },
 	{ title: "关联技术评审", dataIndex: "relateTechProcess", key: "relateTechProcess", type: NumFieldType.SingleText },
 	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText }
 ];
@@ -145,6 +145,18 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			} catch (error) {
 				temp.typeSelection = [];
 			}
+			try {
+				// 处理modeTrade
+				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
+			} catch (error) {
+				temp.modeTrade = [];
+			}
+			try {
+				// 处理payType
+				temp.payType = JSON.parse(temp.payType || "[]");
+			} catch (error) {
+				temp.payType = [];
+			}
 			console.log(11, temp);
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
@@ -164,6 +176,8 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			console.log("Received values of form: ", form);
 			try {
 				form.typeSelection = JSON.stringify(form.typeSelection);
+				form.modeTrade = JSON.stringify(form.modeTrade);
+				form.payType = JSON.stringify(form.payType);
 			} catch (error) {}
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();

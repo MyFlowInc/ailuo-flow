@@ -110,7 +110,6 @@ interface CellEditorContextProps {
 const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
 	const [columns, setColumns] = useState<any[]>(dstColumns);
 	useEffect(() => {
-		console.log("CellEditorContext", form, modalType);
 		setColumns(dstColumns);
 	}, [dstColumns]);
 

@@ -157,7 +157,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			} catch (error) {
 				temp.payType = [];
 			}
-			console.log(11, temp);
+			console.log("进入编辑处理", temp, temp.status);
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}

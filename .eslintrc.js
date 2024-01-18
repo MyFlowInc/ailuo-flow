@@ -21,8 +21,6 @@ module.exports = {
 	},
 	extends: [
 		"plugin:react/recommended",
-		"prettier",
-		"plugin:prettier/recommended",
 		"plugin:@typescript-eslint/recommended" // 使用来自@typescript-eslint/eslint-plugin的推荐规则
 	],
 	plugins: ["react", "prettier", "unused-imports"],
@@ -42,7 +40,6 @@ module.exports = {
 		"unused-imports/no-unused-imports-ts": 2,
 		"unused-imports/no-unused-imports": "error",
 		"@typescript-eslint/no-explicit-any": "off",
-		"prettier/prettier": 2,
 		"no-console": process.env.NODE_ENV === "production" ? "off" : "off", // 只有开发环境可以使用console
 		"no-debugger": process.env.NODE_ENV === "production" ? "error" : "off", // 只有开发环境可以使用debugger
 		"accessor-pairs": 2, // 应同时设置setter和getter

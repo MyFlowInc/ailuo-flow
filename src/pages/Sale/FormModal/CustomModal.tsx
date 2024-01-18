@@ -10,6 +10,7 @@ import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { changeStatus, saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
+import { MainStatus } from "../../../api/ailuo/dict";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -180,7 +181,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -200,7 +201,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			await inputForm.validateFields();
 			try {
 				params.typeSelection = JSON.stringify(params.typeSelection);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -218,10 +219,12 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		}
 	};
 	//
-	const changeProcess = async (form: any) => {
+	const changeProcess = async (form: any, status: MainStatus[keyof MainStatus]) => {
 		try {
 			const { id } = form;
-			await changeStatus({ id, status: "technical_review" });
+			await changeStatus({ id, status });
+			setOpen(false);
+			await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -230,7 +233,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		if (!form) {
 			return;
 		}
-		console.log("  form =", form);
+		console.log("  form =", form.status);
 		const { id, status } = form;
 		if (id && (status === "not_started" || !status)) {
 			return (
@@ -247,9 +250,32 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-								changeProcess(form);
+								changeProcess(form, MainStatus.Processing);
 							}}>
 							{"开始处理"}
+						</Tag>
+					</div>
+				</div>
+			);
+		}
+		if (id && (status === "processing")) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"处理中"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={() => {
+								changeProcess(form, MainStatus.TechnicalReview);
+							}}>
+							{"提交技术审核"}
 						</Tag>
 					</div>
 				</div>

@@ -1,6 +1,7 @@
 // 表格列
 
 import { apiCall } from "../../network";
+import { MainStatus } from "./dict";
 
 interface PageParams {
 	pageNum: number;
@@ -45,7 +46,7 @@ export function saleProjectRemove(id: number) {
 	});
 }
 
-export function changeStatus(data: { id: number; status: "technical_review" }) {
+export function changeStatus(data: { id: number; status: MainStatus[keyof MainStatus] }) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/changeStatus",
 		method: "post",

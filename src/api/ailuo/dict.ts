@@ -95,6 +95,17 @@ export const FlowStatus = [
 		color: "#FF9F9F"
 	}
 ];
+
+export enum MainStatus {
+	NotStarted = "not_started",
+	Processing = "processing",
+	TechnicalReview = "technical_review",
+	ReviewCompleted = "review_completed",
+	QuotationReview = "quotation_review",
+	Approved = "approved",
+	ReviewFailed = "review_failed"
+}
+
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
 	return Promise.resolve(FlowStatus);
 }

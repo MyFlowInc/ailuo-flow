@@ -18,6 +18,7 @@ export interface User {
 	endTime: string;
 	email: string;
 	isInvite: number;
+	roles: Array<{id: string, name: string, code: string}>
 }
 
 export interface DeveloperUser {
@@ -171,6 +172,21 @@ export const selectIsArchiveView = (state: RootState) => state.global.is_archive
 export const selectIsShowTour = (state: RootState) => state.global.is_show_tour;
 export const selectGradeList = (state: RootState) => state.global.gradeList;
 
+export const selectIsManager = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user
+	let res = false
+	if (!roles) {
+		return res
+	}
+	roles.forEach(item => {
+		if (item.code === "manage") {
+			res = true
+		}
+	})
+	return res
+}
+
 // 是否是会员
 export const selectIsMember = (state: RootState) => {
 	const { user } = state.global;
@@ -197,4 +213,6 @@ export const selectIsExpired = (state: RootState) => {
 	const p2 = d1.isAfter(d2);
 	return p1 && p2;
 };
+
 export default globalSlice.reducer;
+

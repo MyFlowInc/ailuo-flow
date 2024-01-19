@@ -71,7 +71,7 @@ export const FlowStatus = [
 		color: "#FFEEE3"
 	},
 	{
-		value: "review_completed",
+		value: "technical_over",
 		label: "技术审核完成",
 		id: "1746847896856846338",
 		color: "#E8FFEA"
@@ -100,10 +100,36 @@ export enum MainStatus {
 	NotStarted = "not_started",
 	Processing = "processing",
 	TechnicalReview = "technical_review",
-	ReviewCompleted = "review_completed",
+	TechnicalOver = "technical_over",
 	QuotationReview = "quotation_review",
 	Approved = "approved",
 	ReviewFailed = "review_failed"
+}
+
+export const TechStatus = [
+	{
+			"value": "t_todo",
+			"label": "待开始",
+			"id": "1747826125270597134",
+			"color": "#E8F2FF"
+	},
+	{
+			"value": "t_processing",
+			"label": "处理中",
+			"id": "1747826896261599234",
+			"color": "#E8F2FF"
+	},
+	{
+			"value": "t_over",
+			"label": "处理完成",
+			"id": "1747826967833202689",
+			"color": "#E8F2FF"
+	}
+]
+export enum ITechStatus {
+	Todo = "t_todo",
+	Processing = "t_processing",
+	Over = "t_over"
 }
 
 export function dictFlowStatus(): Promise<IFlowStatus[]> {

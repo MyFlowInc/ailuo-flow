@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../store/hooks";
-import { selectCollapsed } from "../../../store/globalSlice";
+import { selectCollapsed, selectIsManager } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import MenuExtraAction from "./MenuExtraAction";
 import { useLocation } from "react-router";
 import { IMenu } from "../../../api/ailuo/menu";
 import { getImgByName } from "./MenuIconMap";
+import ApproveSetting from "../ApproveSetting";
 
 interface MenuItemWrapProps {
 	collapsed: boolean;
@@ -44,13 +45,26 @@ interface MenuGroupContextProps {
 
 const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	const collapsed = useAppSelector(selectCollapsed);
+	const isManager = useAppSelector(selectIsManager);
 	const location = useLocation();
+	// 审批设置
+	const [approveModalVisible, setApproveModalVisible] = useState<boolean>(false);
+	const [approveMenuItem, setApproveMenuItem] = useState<any>({});
 
 	const getIcon = (menu: IMenu) => {
 		const { component } = menu;
 		const imgPath = getImgByName(component);
 		return <img src={imgPath} />;
 	};
+	const chooseMenu = (menu: IMenu) => {
+		console.log("chooseMenu", menu);
+		setApproveMenuItem(menu);
+		setApproveModalVisible(true);
+	}
+	const extra = (menu: IMenu) => {
+		return	isManager ? <MenuExtraAction {...{ menu, chooseMenu }}/> : null;
+	}
+
 	return (
 		<div>
 			{menuList.map((item, index) => {
@@ -65,11 +79,12 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 							icon={<div> {getIcon(item)} </div>}
 							isExtraShow
 							isSelected={isSelected}
-							extra={<MenuExtraAction menu={item} />}
+							extra={extra(item)}
 						/>
 					</MenuItemWrap>
 				);
 			})}
+			<ApproveSetting {...{ approveModalVisible, setApproveModalVisible }}/>
 		</div>
 	);
 };

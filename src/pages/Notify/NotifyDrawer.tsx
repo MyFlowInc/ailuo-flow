@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { getInviteList } from "../../api/apitable/ds-share";
 import _ from "lodash";
-import { Button, Drawer, Empty } from "antd";
+import { Drawer, Empty } from "antd";
 import notifyPng from "../../components/Notify/assets/notify.png";
 import NotifyItem from "./NotifyItem";
 const UIROOT = styled.div`
@@ -76,9 +76,9 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 						<img className="img" src={notifyPng} />
 						<div className="text">通知</div>
 					</div>
-					<Button style={{ background: "#5966D6" }} type="primary">
+					{/* <Button style={{ background: "#5966D6" }} type="primary">
 						全部已读
-					</Button>
+					</Button> */}
 				</div>
 				<div className="content">
 					{inviteList.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}

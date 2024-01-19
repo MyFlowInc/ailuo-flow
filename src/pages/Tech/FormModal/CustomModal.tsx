@@ -9,6 +9,8 @@ import { blueButtonTheme } from "../../../theme/theme";
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
+import { ITechStatus } from "../../../api/ailuo/dict";
+import { changeStatus } from "../../../api/ailuo/tech";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -166,7 +168,99 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			updateRecord();
 		}
 	};
-
+	const changeProcess = async (form: any, status: ITechStatus[keyof ITechStatus]) => {
+		try {
+			const { id } = form;
+			await changeStatus({ id, status });
+			setOpen(false);
+			await fetchTechFeedbackList();
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const StatusView = () => {
+		if (!form) {
+			return;
+		}
+		console.log("tech  form =", form.status);
+		const { id, status } = form;
+		if (id && (status === ITechStatus.Todo || !status)) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"未启动"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={() => {
+								changeProcess(form, ITechStatus.Processing);
+							}}>
+							{"开始审阅"}
+						</Tag>
+					</div>
+				</div>
+			);
+		}
+		if (id && (status === ITechStatus.Processing)) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"进行中"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={() => {
+								changeProcess(form, ITechStatus.Over);
+							}}>
+							{"完成审核"}
+						</Tag>
+					</div>
+				</div>
+			);
+		}
+		if (id && (status === ITechStatus.Over)) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+							{"已完成"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+					</div>
+				</div>
+			);
+		}
+		return (
+			<div className="status-operate flex">
+				<div className="flex">
+					<div className="mr-2">状态: </div>
+					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+						{"未启动"}
+					</Tag>
+				</div>
+				<div className="hidden">
+					<div className="mr-2">操作: </div>
+					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+						{"开始处理"}
+					</Tag>
+				</div>
+			</div>
+		);
+	};
 	return (
 		<CustomModalRoot>
 			<div className="header">
@@ -182,20 +276,8 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 					</ConfigProvider>
 				</div>
 			</div>
-			<div className="status-operate flex">
-				<div className="flex">
-					<div className="mr-2">状态: </div>
-					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"未启动"}
-					</Tag>
-				</div>
-				<div className="hidden">
-					<div className="mr-2">操作: </div>
-					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-						{"开始处理"}
-					</Tag>
-				</div>
-			</div>
+			{StatusView()}
+
 			<div className="content">
 				<Form form={inputForm} name="recordForm" colon={false} wrapperCol={{ flex: 1 }} preserve={false}>
 					{showDstColumns.length > 0 ? <CellEditorContext form={form} setForm={setForm} dstColumns={showDstColumns} modalType={modalType} /> : <NoFieldData />}

@@ -1,6 +1,7 @@
 // 技术审批
 
 import { apiCall } from "../../network";
+import { ITechStatus } from "./dict";
 
 interface PageParams {
 	pageNum: number;
@@ -44,3 +45,12 @@ export function techProjectRemove(id: number) {
 		params: { id }
 	});
 }
+
+export function changeStatus(data: { id: number; status: ITechStatus[keyof ITechStatus] }) {
+	return apiCall({
+		url: "api/sys/projectTechnicalProcess/edit",
+		method: "put",
+		data
+	});
+}
+

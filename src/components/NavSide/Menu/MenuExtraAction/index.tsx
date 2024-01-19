@@ -24,9 +24,10 @@ const ExtraActionDiv = styled.div`
 interface MenuExtraActionProps {
 	menu: IMenu;
 	children?: React.ReactNode;
+	chooseMenu: any
 }
 
-const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ menu }) => {
+const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ menu, chooseMenu }) => {
 	const content = (
 		<ExtraActionDiv>
 			<Button
@@ -34,7 +35,7 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ menu }) => {
 				type="text"
 				rootClassName="btn-content"
 				onClick={() => {
-					console.log("审批设置");
+					chooseMenu(menu)
 				}}>
 				审批设置
 			</Button>

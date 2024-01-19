@@ -1,6 +1,6 @@
 {
     "editor.tabSize": 2,
-    "editor.formatOnSave": true, // 保存时自动格式化
+    "editor.formatOnSave": false, // 保存时自动格式化
     "editor.wordWrap": "on", // 是否自动换行
     /* eslint的配置 */
     "eslint.enable": true,
@@ -9,24 +9,7 @@
     "editor.codeActionsOnSave": {
       "source.fixAll": "explicit"
     },
-    "eslint.alwaysShowStatus": true,
-    "javascript.validate.enable": false,
-    "html.validate.scripts": false,
-    "[javascript]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[vue]": {
-      "editor.defaultFormatter": "octref.vetur"
-    },
-    "[less]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[scss]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[html]": {
-      "editor.defaultFormatter": "vscode.html-language-features"
-    },
+
     // 文件头部注释
     "fileheader.customMade": {
       "description": "描述信息",

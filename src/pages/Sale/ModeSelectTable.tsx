@@ -188,7 +188,7 @@ const ModeSelectTable: React.FC = (props: any) => {
 			dataIndex: "total",
 			render: (text, record: any) => {
 				return (
-					<div className="flex align-middle justify-around">
+					<div className="flex items-center justify-around">
 						{+record.num * +record.price}
 						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
 					</div>
@@ -262,7 +262,7 @@ const ModeSelectTable: React.FC = (props: any) => {
 		<div className="w-full">
 			<div className="flex mb-4">
 				<div style={{ width: "100px" }}>初步选型型号</div>
-				<div className="flex align-middle" onClick={handleAdd}>
+				<div className="flex items-center" onClick={handleAdd}>
 					<PlusCircleFilled size={14} />
 					<div className="ml-2">添加型号</div>
 				</div>

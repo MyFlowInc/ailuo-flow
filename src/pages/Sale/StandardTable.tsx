@@ -177,7 +177,7 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 				dataSource={datasource}
 				scroll={{ x: true, y: `calc(100vh - 170px)` }}
 			/>
-			<div className="flex align-middle justify-end mt-4">
+			<div className="flex items-center justify-end mt-4">
 				<Pagination
 					current={curPage.current.pageNum}
 					total={curPage.current.total}

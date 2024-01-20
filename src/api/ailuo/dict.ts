@@ -1,5 +1,3 @@
-// 表格列
-
 import { apiCall } from "../../network";
 
 const cache: any = {};
@@ -108,22 +106,22 @@ export enum MainStatus {
 
 export const TechStatus = [
 	{
-			"value": "t_todo",
-			"label": "待开始",
-			"id": "1747826125270597134",
-			"color": "#E8F2FF"
+		"value": "t_todo",
+		"label": "待开始",
+		"id": "1747826125270597134",
+		"color": "#E8F2FF"
 	},
 	{
-			"value": "t_processing",
-			"label": "处理中",
-			"id": "1747826896261599234",
-			"color": "#E8F2FF"
+		"value": "t_processing",
+		"label": "处理中",
+		"id": "1747826896261599234",
+		"color": "#E8F2FF"
 	},
 	{
-			"value": "t_over",
-			"label": "处理完成",
-			"id": "1747826967833202689",
-			"color": "#E8F2FF"
+		"value": "t_over",
+		"label": "处理完成",
+		"id": "1747826967833202689",
+		"color": "#E8F2FF"
 	}
 ]
 export enum ITechStatus {

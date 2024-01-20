@@ -96,7 +96,7 @@ const CaptchaCodeText = styled(({ text, ...rest }) => (
 		</div>
 		<div>{text}</div>
 	</div>
-))<CaptchaCodeTextProps>`
+)) <CaptchaCodeTextProps>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -205,7 +205,7 @@ const ResetPwd: React.FC = () => {
 				{contextHolder}
 				<div className="container">
 					<div className="form-content">
-						<div className="flex justify-center align-middle" style={{ marginTop: 8, marginBottom: 8 }}>
+						<div className="flex justify-center items-center" style={{ marginTop: 8, marginBottom: 8 }}>
 							<AiluoLogo />
 						</div>
 						<div className="title">

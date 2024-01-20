@@ -62,7 +62,7 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 		setApproveModalVisible(true);
 	}
 	const extra = (menu: IMenu) => {
-		return	isManager ? <MenuExtraAction {...{ menu, chooseMenu }}/> : null;
+		return isManager ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	}
 
 	return (
@@ -84,7 +84,7 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 					</MenuItemWrap>
 				);
 			})}
-			<ApproveSetting {...{ approveModalVisible, setApproveModalVisible }}/>
+			<ApproveSetting {...{ approveModalVisible, setApproveModalVisible, curMenu: approveMenuItem }} />
 		</div>
 	);
 };

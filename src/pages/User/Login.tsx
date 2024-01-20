@@ -157,7 +157,7 @@ const Login: React.FC = () => {
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
 
-	const onFinish = (values: any) => {};
+	const onFinish = (values: any) => { };
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
 	};
@@ -176,7 +176,7 @@ const Login: React.FC = () => {
 				{contextHolder}
 				<div className="container">
 					<div className="form-content">
-						<div className="flex justify-center align-middle" style={{ marginTop: 22 }}>
+						<div className="flex justify-center items-center" style={{ marginTop: 22 }}>
 							<AiluoLogo />
 						</div>
 						<div className="title" style={{ marginTop: 16 }}>

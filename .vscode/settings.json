@@ -1,9 +1,9 @@
 {
     "editor.tabSize": 2,
-    "editor.formatOnSave": false, // 保存时自动格式化
+    "editor.formatOnSave": true, // 保存时自动格式化
     "editor.wordWrap": "on", // 是否自动换行
     /* eslint的配置 */
-    "eslint.enable": true,
+    "eslint.enable": false,
     "eslint.run": "onSave", // 保存后
     "eslint.validate": ["javascript", "javascriptreact", "vue", "html"],
     "editor.codeActionsOnSave": {

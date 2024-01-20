@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Tag } from "antd";
+import { accountList } from "../../api/user";
+import _ from "lodash";
 
 const FormRoot = styled.div`
 	display: flex;
-	justify-content: center;
-	padding-top: 24px;
-	padding-left: 24px;
+	flex-direction: column;
 	width: 100%;
-	.ml-16 {
-		margin-left: 16px;
-	}
+ 
 `;
 
 const ApproveSetting: React.FC<any> = ({
@@ -19,7 +17,23 @@ const ApproveSetting: React.FC<any> = ({
 }) => {
 	const [form] = Form.useForm();
 	const [loading, setLoading] = useState(false);
+	const [userList, setUserList] = useState([]);
 
+	useEffect(() => {
+		fetchUserList()
+	}, [])
+	const fetchUserList = async () => {
+		try {
+			const res = await accountList()
+			let record = _.get(res, "data.record", [])
+			record = record.filter((item: any) => item.code === "manage")
+			console.log(record)
+			setUserList(record)
+		} catch (error) {
+			console.log(error)
+		}
+
+	}
 	const handleRenameMenu = () => {
 		setLoading(true);
 		form.validateFields().then(async () => {
@@ -44,7 +58,26 @@ const ApproveSetting: React.FC<any> = ({
 			initForm();
 		}
 	}, [approveModalVisible]);
+	const ListItem = (item: any) => {
+		let { avatar, nickname, deptName } = item
+		return <div className="flex  " key={'item_' + item.id}>
+			<div className="flex items-center">
+				<img style={{ width: '30px', height: '30px', borderRadius: '100px' }} src={avatar} />
+				<span style={{ fontSize: '14px' }} className="ml-4">
+					{nickname}
+				</span>
+				<div className="ml-4">
+					<Tag color={"#E8F2FF"} style={{ color: "#5966D6" }}>
+						{deptName}
+					</Tag>
+				</div>
+			</div>
 
+			<div className="options">
+				<img src="" />
+			</div>
+		</div>
+	}
 	return (
 		<Modal
 			title="审批设置"
@@ -58,49 +91,15 @@ const ApproveSetting: React.FC<any> = ({
 			destroyOnClose={true}
 		>
 			<FormRoot>
-				<Form
-					layout={"horizontal"}
-					form={form}
-					style={{ width: "100%" }}
-					preserve={false}
-				>
-					<Form.Item
-						label="名称"
-						name="dstName"
-						rules={[{ required: true, message: "请输入工作流名字" }]}
-						style={{ marginBottom: "24px" }}
-					>
-						<Input />
-					</Form.Item>
-					<Form.Item>
-						<div style={{ display: "flex", justifyContent: "flex-end" }}>
-							<Button
-								className="ml-16"
-								style={{
-									background: "#2845D4",
-									marginLeft: "24px"
-								}}
-								type="primary"
-								onClick={setApproveModalVisible}
-							>
-								取消
-							</Button>
-							<Button
-								className="ml-16 tw-text-white"
-								style={{
-									background: "#2845D4",
-									color: "#fff !important"
-								}}
-								type="primary"
-								onClick={handleRenameMenu}
-								loading={loading}
-								disabled={loading}
-							>
-								更新
-							</Button>
-						</div>
-					</Form.Item>
-				</Form>
+				<div>
+					当前审批人员
+				</div>
+				<div className="avatar-list">
+					{userList.map((item: any) => {
+						return ListItem(item)
+					})}
+				</div>
+				<div>添加审核人员</div>
 			</FormRoot>
 		</Modal>
 	);

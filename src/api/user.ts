@@ -16,8 +16,7 @@ class AnotherAxiosFactory extends AxiosFactory {
 	}
 }
 
-// const baseURL = process.env.REACT_APP_BASE_SERVER_URL;
-const baseURL = "http://47.101.51.252:9292";
+const baseURL = process.env.REACT_APP_BASE_SERVER_URL;
 const flowConfig: CreateAxiosDefaults = {
 	timeout: 5000,
 	withCredentials: true,
@@ -139,5 +138,17 @@ export function logout() {
 	return apiCall({
 		url: "api/logout",
 		method: "get"
+	});
+}
+
+// 用户列表
+export function accountList() {
+	return apiCall({
+		url: "api/sys/user/page",
+		method: "get",
+		params: {
+			pageNum: 1,
+			pageSize: 999
+		}
 	});
 }

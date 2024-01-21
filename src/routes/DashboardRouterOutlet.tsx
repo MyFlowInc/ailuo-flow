@@ -13,6 +13,7 @@ import NotifyDrawer from "../pages/Notify/NotifyDrawer";
 import { useLoginByCache } from "../hooks";
 import SaleManage from "../pages/Sale/SaleManage";
 import TechFeedBack from "../pages/Tech/TechFeedBack";
+import MyQuoteProcess from "../pages/Sale/MyQuoteProcess";
 
 const { Sider, Content } = Layout;
 const DashboardRouterOutlet: React.FC = () => {
@@ -73,7 +74,10 @@ const DashboardRouterOutlet: React.FC = () => {
 								<Route path="/dashboard/quote-tech-feedback" exact={true}>
 									<TechFeedBack />
 								</Route>
-
+								{/* 我的报价审核 */}
+								<Route path="/dashboard/my-quote-process" exact={true}>
+									<MyQuoteProcess />
+								</Route>
 								<Route path="/dashboard/setting" exact={true}>
 									<Setting />
 								</Route>

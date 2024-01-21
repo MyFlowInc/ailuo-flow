@@ -77,8 +77,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 
 	// menu router jump
 	const routerJumpHandler = () => {
-		console.log("menuKey", menuKey);
-
 		switch (menuKey) {
 			case "notification":
 				onClick && onClick();

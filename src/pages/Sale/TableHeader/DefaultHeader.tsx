@@ -8,6 +8,7 @@ import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
 import { selectIsShowSaleModal, setIsShowSaleModal } from "../../../store/globalSlice";
+import { useLocation } from "react-router";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -40,19 +41,27 @@ interface DefaultHeaderProps {
 
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleList }) => {
 	const dispatch = useAppDispatch();
+	const location = useLocation();
+	const { pathname } = location
 
 	const isShowSaleModal = useAppSelector(selectIsShowSaleModal);
 	const setOpen = (value: boolean) => {
 		dispatch(setIsShowSaleModal(value));
 	};
-
-	return (
-		<DefaultHeaderRoot isShow={hasSelected}>
-			<ConfigProvider theme={blueButtonTheme}>
+	const HeaderButtonView = () => {
+		if (pathname === '/dashboard/quote-manage') {
+			return <ConfigProvider theme={blueButtonTheme}>
 				<Button type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
 					新建报价
 				</Button>
 			</ConfigProvider>
+		}
+		return <div></div>
+
+	}
+	return (
+		<DefaultHeaderRoot isShow={hasSelected}>
+			{HeaderButtonView()}
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>

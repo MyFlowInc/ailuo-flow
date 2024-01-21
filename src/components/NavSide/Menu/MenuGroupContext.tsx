@@ -62,7 +62,8 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 		setApproveModalVisible(true);
 	}
 	const extra = (menu: IMenu) => {
-		return isManager ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
+		const { path } = menu
+		return isManager && path === '/quote-manage' ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	}
 
 	return (

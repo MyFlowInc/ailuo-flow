@@ -84,7 +84,7 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 					</MenuItemWrap>
 				);
 			})}
-			<ApproveSetting {...{ approveModalVisible, setApproveModalVisible, curMenu: approveMenuItem }} />
+			{isManager && <ApproveSetting {...{ approveModalVisible, setApproveModalVisible, curMenu: approveMenuItem }} />}
 		</div>
 	);
 };

@@ -5,6 +5,7 @@ import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
 import { TechStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
+import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -50,7 +51,6 @@ const columns: any = [
 		render: (text: string, record: any) => {
 			const { status } = record;
 			let item = _.find(TechStatus, { value: status });
-			console.log("item", status, item);
 			if (!item) {
 				item = TechStatus[0];
 			}
@@ -68,14 +68,14 @@ const columns: any = [
 		render: (text: string, record: any) => {
 			return (
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.company || ""}
+					{record.result === '1' ? '常规产品' : '非常规产品'}
 				</Tag>
 			);
 		}
 	},
-	{ title: "选型分析", dataIndex: "status", key: "status", type: "sale_status" },
-	{ title: "生产分析", dataIndex: "status", key: "status", type: "sale_status" },
-	{ title: "附件", dataIndex: "status", key: "status", type: "sale_status" }
+	{ title: "选型分析", dataIndex: "selectionAnalysis", key: "selectionAnalysis", },
+	{ title: "生产分析", dataIndex: "productionAnalysis", key: "productionAnalysis", },
+	{ title: "附件", dataIndex: "attach", key: "attach", type: NumFieldType.Attachment }
 ];
 const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, ...rest }) => {
 	const { tableDataSource, fetchTechFeedbackList } = rest;

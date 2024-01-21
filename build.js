@@ -17,7 +17,7 @@ exec(deleteCommand, (err, stdout, stderr) => {
 		console.log(`Delete Errors: ${stderr}`);
 		// 如果删除完成，开始上传新的 build 文件夹
 		const uploadCommand = `
-scp -r /Users/alex/code/myflowinc/ailuo-flow/build root@47.101.51.252:/opt/www/html/workflow/ailuo/front
+scp -r ${__dirname}/build root@47.101.51.252:/opt/www/html/workflow/ailuo/front
 `;
 		exec(uploadCommand, (uploadErr, uploadStdout, uploadStderr) => {
 			if (uploadErr) {

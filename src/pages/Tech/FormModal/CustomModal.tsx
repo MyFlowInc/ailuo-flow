@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Tag } from "antd";
+import { ConfigProvider, Form, Button, Tag, Radio, Space } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import { useAppDispatch } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
@@ -8,9 +8,9 @@ import { blueButtonTheme } from "../../../theme/theme";
 
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
-import { saleProjectAdd, saleProjectEdit } from "../../../api/ailuo/sale";
 import { ITechStatus } from "../../../api/ailuo/dict";
-import { changeStatus } from "../../../api/ailuo/tech";
+import { changeStatus, techProjectEdit } from "../../../api/ailuo/tech";
+import _ from "lodash";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -73,28 +73,100 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = [
-	{
-		title: "项目名称",
-		width: 200,
-		dataIndex: "name",
-		key: "name",
-		fixed: "left",
-		type: NumFieldType.SingleText
-	},
-	{
-		title: "分析结果",
-		width: 200,
-		dataIndex: "result",
-		key: "result",
-		type: NumFieldType.SingleText
-	},
+const columns: any = (mode: '1' | '2', setMode: any, setShowDstColumns: any) => {
 
-	{ title: "关联报价", dataIndex: "relateQuote", key: "relateQuote", type: NumFieldType.SingleText }
-];
+	const defaultColumns = [
+		{
+			title: "项目名称",
+			width: 200,
+			dataIndex: "name",
+			key: "name",
+			fixed: "left",
+			type: NumFieldType.SingleText
+		},
+		{
+			title: "分析结果",
+			width: 200,
+			dataIndex: "result",
+			key: "result",
+			type: NumFieldType.SingleText,
+			render: (column: any, key: string, form: any, setForm: any) => {
+				const onChange = (e: any) => {
+					setMode(e.target.value)
+					setForm({ ...form, result: e.target.value })
+				}
+				return (
+					<div className="w-full" key={'result_' + key}>
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>分析结果</div>
+							<Radio.Group onChange={onChange} value={mode}>
+								<Space direction="vertical">
+									<Radio value={'1'}>常规产品，无特殊改动</Radio>
+									<Radio value={'2'}>非常规产品，填写分析意见</Radio>
+								</Space>
+							</Radio.Group>
+						</div>
+					</div>
+				)
+			}
+		},
+		{
+			title: "关联报价", dataIndex: "relateQuote", key: "relateQuote",
+			type: NumFieldType.SingleText,
+			render: (column: any, key: string, form: any, setForm: any) => {
+				return (
+					<div className="w-full" key={key}>
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>关联报价</div>
+							<Tag color="blue">关联报价</Tag>
+						</div>
+					</div>
+				)
+			}
+		},
+	]
+	if (mode === '1') {
+		return defaultColumns
+	}
+	if (mode === '2') {
+		const idx = _.findIndex(defaultColumns, { title: '分析结果' })
+		const extraColumns: any = [
+			{
+				title: "选型分析",
+				dataIndex: "selectionAnalysis",
+				key: "selectionAnalysis",
+				type: NumFieldType.SingleText
+			},
+			{
+				title: "生产分析",
+				dataIndex: "productionAnalysis",
+				key: "productionAnalysis",
+				type: NumFieldType.SingleText
+			},
+			{
+				title: "附件",
+				dataIndex: "attach",
+				key: "attach",
+				type: NumFieldType.Attachment
+			},
+		]
+
+		defaultColumns.splice(idx + 1, 0, ...extraColumns)
+		return defaultColumns
+	}
+	return defaultColumns
+};
+
+
 const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord, fetchTechFeedbackList }) => {
 	const dispatch = useAppDispatch();
-	const [showDstColumns, setShowDstColumns] = useState(columns);
+	const [showDstColumns, setShowDstColumns] = useState<any>([]);
+	const [mode, setMode] = useState<'1' | '2'>('1');
+
+	useEffect(() => {
+		setShowDstColumns(columns(mode, setMode, setShowDstColumns))
+	}, [mode])
+
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 
@@ -113,14 +185,18 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			document.removeEventListener("keydown", keydownHandler, true);
 		};
 	}, [open]);
-	//
+	// 初始化form
 	useEffect(() => {
 		if (!open) {
 			return;
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
-			const { key, flowItemId, statusId, ...temp } = editFlowItemRecord;
+			console.log(11, editFlowItemRecord);
+			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
+			if (temp.result) {
+				setMode(temp.result)
+			}
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
@@ -134,10 +210,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
 		try {
-			await inputForm.validateFields();
-			await saleProjectAdd(excludeNull(form));
-			await fetchTechFeedbackList();
-			setOpen(false);
+			return
 		} catch (error) {
 			console.log(error);
 		}
@@ -152,7 +225,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		};
 		try {
 			await inputForm.validateFields();
-			await saleProjectEdit(excludeNull(params));
+			await techProjectEdit(excludeNull(params));
 			await fetchTechFeedbackList();
 			setOpen(false);
 		} catch (error) {

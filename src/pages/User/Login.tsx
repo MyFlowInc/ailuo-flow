@@ -122,7 +122,6 @@ const Login: React.FC = () => {
 					if (response.code !== 200) {
 						throw new Error(response.msg);
 					}
-					console.log("userLogin", response);
 					const { token, tokenKey } = response;
 					if (token && tokenKey) {
 						localStorage.setItem("Authorization", token);
@@ -130,7 +129,6 @@ const Login: React.FC = () => {
 						localStorage.setItem("username", data.username);
 
 						const res = await userProfile();
-						console.log("userProfile", res);
 						dispatch(loginSuccess(res.data));
 						messageApi
 							.open({

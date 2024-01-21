@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
 
 import SearchFilled from "../../../../assets/icons/SearchFilled";
+import { IfetchSaleList } from "../../types";
 
 const SearchRoot = styled.div`
 	display: flex;
@@ -11,20 +12,32 @@ const SearchRoot = styled.div`
 
 interface SearchProps {
 	columns: any[];
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const Search: React.FC<SearchProps> = ({ columns }) => {
+const Search: React.FC<SearchProps> = ({ columns, fetchSaleList }) => {
 	const [form] = Form.useForm();
 	const options = columns;
+	const [inputValue, setInputValue] = useState<string>("");
+	const [selectValue, setSelectValue] = useState<string>("name");
 
+	const handleSearch = async () => {
+		console.log("search", inputValue, selectValue);
+		await fetchSaleList({
+			search: {
+				[selectValue]: inputValue.trim()
+			}
+		});
+
+	};
 	return (
 		<SearchRoot>
-			<Form layout="inline" form={form} name="SearchForm" onValuesChange={() => {}}>
+			<Form layout="inline" form={form} name="SearchForm" onValuesChange={() => { }}>
 				<Form.Item name="searchField" style={{ margin: 0, padding: 0 }}>
 					<Space.Compact>
-						<Select defaultValue="name" options={options} style={{ width: "120px" }} />
-						<Input placeholder="请输入搜索内容" suffix={<SearchFilled style={{ fontSize: "16px", color: "#707683" }} />} style={{ width: 280 }} />
+						<Select value={selectValue} onChange={(e: string) => setSelectValue(e)} options={options} style={{ width: "120px" }} />
+						<Input value={inputValue} onInput={(e: any) => setInputValue(e.target.value)} placeholder="请输入搜索内容" suffix={<SearchFilled style={{ fontSize: "16px", color: "#707683" }} onClick={handleSearch} />} style={{ width: 280 }} onPressEnter={handleSearch} />
 					</Space.Compact>
 				</Form.Item>
 			</Form>

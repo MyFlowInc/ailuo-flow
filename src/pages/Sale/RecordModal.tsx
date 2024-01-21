@@ -1,10 +1,11 @@
 import React from "react";
 import { Modal } from "antd";
 import CustomModal from "./FormModal/CustomModal";
+import { IfetchSaleList } from "./types";
 
 interface AddRecordModalProps {
 	open: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	setOpen: (a: boolean) => void;
 }
 
@@ -29,7 +30,7 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 
 interface EditRecordModalProps {
 	open: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	setOpen: (a: boolean) => void;
 	editFlowItemRecord: any | undefined;
 }

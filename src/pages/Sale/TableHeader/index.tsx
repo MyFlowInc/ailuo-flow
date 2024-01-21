@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DefaultHeader from "./DefaultHeader";
 import BatchHeader from "./BatchHeader";
+import { IfetchSaleList } from "../types";
 
 const HeaderRoot = styled.div`
 	display: flex;
@@ -18,7 +19,7 @@ interface DefaultHeaderGroupProps {
 	children?: React.ReactNode;
 }
 
-const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{children}</div>)<DefaultHeaderGroupProps>`
+const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{children}</div>) <DefaultHeaderGroupProps>`
 	display: flex;
 	overflow: hidden;
 	opacity: ${({ toggle }) => (toggle ? 0 : 1)};
@@ -31,7 +32,7 @@ const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{chi
 interface HeaderProps {
 	selectedRows: any[];
 	setSelectedRows: (v: any[]) => void;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 

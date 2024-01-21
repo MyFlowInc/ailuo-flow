@@ -9,6 +9,7 @@ import { AddRecordModal } from "../RecordModal";
 
 import { selectIsShowSaleModal, setIsShowSaleModal } from "../../../store/globalSlice";
 import { useLocation } from "react-router";
+import { IfetchSaleList } from "../types";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -35,7 +36,7 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 
 interface DefaultHeaderProps {
 	hasSelected: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
@@ -63,7 +64,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleLis
 		<DefaultHeaderRoot isShow={hasSelected}>
 			{HeaderButtonView()}
 			<div className="default-header-right">
-				<HeaderToolBar />
+				<HeaderToolBar fetchSaleList={fetchSaleList} />
 			</div>
 			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} fetchSaleList={fetchSaleList} />
 		</DefaultHeaderRoot>

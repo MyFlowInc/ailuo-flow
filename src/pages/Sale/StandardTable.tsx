@@ -9,6 +9,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
+import { IfetchSaleList } from "./types";
 
 const StandardTableRoot = styled.div`
 	position: absolute;
@@ -73,7 +74,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 
 interface StandardTableProps {
 	tableDataSource: any[];
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;

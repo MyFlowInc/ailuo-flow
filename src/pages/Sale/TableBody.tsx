@@ -7,6 +7,7 @@ import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import { FlowStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { IfetchSaleList } from "./types";
 
 const FlowTableRoot = styled.div`
 	position: relative;
@@ -22,7 +23,7 @@ export interface FlowItemTableDataType {
 
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -108,7 +109,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) {}
+			} catch (error) { }
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}

@@ -94,7 +94,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 					history.push(path);
 					setCurFlowDstId(menuKey);
 				}
-				console.log("setCurrentKey", menuKey);
 		}
 	};
 

@@ -15,6 +15,7 @@ import {
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
+import { IfetchSaleList } from "../types";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -60,7 +61,7 @@ const CustomModalRoot = styled.div`
 interface CustomModalProps {
 	title: string;
 	open: boolean;
-	fetchSaleList: () => void; // 获取销售列表
+	fetchSaleList: IfetchSaleList; // 获取销售列表
 	setOpen: (value: boolean) => void;
 	statusList: WorkFlowStatusInfo[];
 	modalType: string;
@@ -290,7 +291,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -310,7 +311,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			await inputForm.validateFields();
 			try {
 				params.typeSelection = JSON.stringify(params.typeSelection);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -484,7 +485,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</Button>
 					<ConfigProvider theme={blueButtonTheme}>
 						<Button type="primary" onClick={handleSaveRecord}>
-							{modalType === "add" ? "创建" : "修改"}
+							{modalType === "add" ? "创建" : "保存"}
 						</Button>
 					</ConfigProvider>
 				</div>

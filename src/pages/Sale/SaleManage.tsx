@@ -8,6 +8,7 @@ import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
+import { IfetchSaleList } from "./types";
 
 const SaleManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ const SaleManage: React.FC = () => {
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
 	// 获取销售列表
-	const fetchSaleList = async (options: any = {}) => {
+	const fetchSaleList: IfetchSaleList = async (options: any = {}) => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
@@ -38,6 +39,12 @@ const SaleManage: React.FC = () => {
 			}
 			if (options.status) {
 				params.status = options.status
+			}
+			if (options.search) {
+				params = {
+					...params,
+					...options.search
+				}
 			}
 			const res = await saleProjectList(params);
 			const list = _.get(res, "data.record") || [];

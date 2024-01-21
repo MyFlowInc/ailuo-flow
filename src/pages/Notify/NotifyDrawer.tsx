@@ -50,11 +50,7 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 	const [inviteList, setInviteList] = useState<any[]>([]);
 
 	const fetchInviteList = async () => {
-		const res1 = await getInviteList({});
-		const list1 = _.get(res1, "data.record") || [];
-		const res2 = await getInviteList({ ignoreMsg: 1 });
-		const list2 = _.get(res2, "data.record") || [];
-		setInviteList([...list1, ...list2]);
+		setInviteList([]);
 	};
 
 	const freshInviteList = async () => {

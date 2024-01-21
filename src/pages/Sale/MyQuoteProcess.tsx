@@ -8,6 +8,7 @@ import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
+import { MainStatus } from "../../api/ailuo/dict";
 
 const MyQuoteProcess: React.FC = () => {
 	const [loading, setLoading] = useState(false);
@@ -34,7 +35,8 @@ const MyQuoteProcess: React.FC = () => {
 		try {
 			const res = await saleProjectList({
 				pageNum: curPage.current.pageNum,
-				pageSize: curPage.current.pageSize
+				pageSize: curPage.current.pageSize,
+				status: MainStatus.QuotationReview
 			});
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {

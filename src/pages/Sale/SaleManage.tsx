@@ -30,12 +30,16 @@ const SaleManage: React.FC = () => {
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
 	// 获取销售列表
-	const fetchSaleList = async () => {
+	const fetchSaleList = async (options: any = {}) => {
 		try {
-			const res = await saleProjectList({
+			let params: any = {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize
-			});
+			}
+			if (options.status) {
+				params.status = options.status
+			}
+			const res = await saleProjectList(params);
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;

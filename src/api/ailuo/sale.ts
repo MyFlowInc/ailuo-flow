@@ -6,6 +6,7 @@ import { MainStatus } from "./dict";
 interface PageParams {
 	pageNum: number;
 	pageSize: number;
+	status?: string
 }
 
 export function saleProjectList(params: PageParams) {

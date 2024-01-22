@@ -2,13 +2,12 @@
  * type=3
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { myFlowUpload } from "../../../../api/upload";
 
 interface TypeAttachmentProps {
-	mode?: "multiple";
 	cell: TableColumnItem;
 	form: any;
 	setForm: any;
@@ -17,6 +16,16 @@ interface TypeAttachmentProps {
 const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProps) => {
 	const { cell, form, setForm } = props;
 	const [fileName, setFileName] = useState("");
+	// 初始化
+	useEffect(() => {
+		const url = form[cell.key];
+		if (!url) { return }
+		const file = url.split("/").pop();
+		if (file) {
+			const fileName = file?.split("-")[1] || "";
+			setFileName(fileName);
+		}
+	}, [form])
 
 	const uploadHandler = async () => {
 		console.log(111, "uploadHandler");
@@ -48,11 +57,6 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProp
 			}
 		};
 	};
-	// 初始化
-	// useEffect(() => {
-	//   console.log('?????', mode, cell, form, setForm )
-	// }, [form])
-
 	const onUrlChange = (url: string) => {
 		const file = url.split("/").pop();
 		const fileName = file?.split("-")[1] || "";

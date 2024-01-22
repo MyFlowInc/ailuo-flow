@@ -115,7 +115,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 			CellEditor = <TypeSelectEditor mode="multiple" cell={cell} {...rest} />;
 			break;
 		case NumFieldType.Attachment:
-			CellEditor = <TypeAttachment mode="multiple" cell={cell} {...rest} />;
+			CellEditor = <TypeAttachment cell={cell} {...rest} />;
 			break;
 		case NumFieldType.DateTime:
 			CellEditor = <TypeDateTime cell={cell} {...rest} />;

@@ -23,7 +23,6 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 	const { fetchTechFeedbackList } = useContext(TechFeedBackContext) as any;
 
 	const handleSearch = async () => {
-		console.log("search", inputValue, selectValue);
 		await fetchTechFeedbackList({
 			search: {
 				[selectValue]: inputValue.trim(),

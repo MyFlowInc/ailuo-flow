@@ -165,6 +165,9 @@ const Login: React.FC = () => {
 	const onFinish = (values: any) => {};
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
+		setTimeout(() => {
+			setButtonLoading(false);
+		}, 1000);
 	};
 
 	return (

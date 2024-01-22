@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Tag } from "antd";
+import { ConfigProvider, Form, Button, Tag, Modal, Popover, Input } from "antd";
 import { NoFieldData } from "./NoFieldData";
-import { useAppDispatch } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
-import { blueButtonTheme } from "../../../theme/theme";
-
+import {
+	blueButtonTheme,
+	greyButtonTheme,
+	redButtonTheme,
+} from "../../../theme/theme";
 import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import {
 	changeStatus,
 	saleProjectAdd,
-	saleProjectEdit
+	saleProjectEdit,
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
 import { IfetchSaleList } from "../types";
-
+import { useLocation } from "react-router";
+import warnSvg from "../assets/warning.svg";
+const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 40px 24px 40px;
@@ -85,69 +89,69 @@ const columns: any = [
 		dataIndex: "name",
 		key: "name",
 		fixed: "left",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "单位名称",
 		dataIndex: "company",
 		key: "company",
 		type: NumFieldType.SingleSelect,
-		dictCode: "company"
+		dictCode: "company",
 	},
 	{
 		title: "销售经理",
 		dataIndex: "salesManager",
 		key: "salesManager",
 		type: NumFieldType.SingleSelect,
-		dictCode: "salesManager"
+		dictCode: "salesManager",
 	},
 	{
 		title: "报价开始日期",
 		dataIndex: "quotationBegin",
 		key: "quotationBegin",
-		type: NumFieldType.DateTime
+		type: NumFieldType.DateTime,
 	},
 	{
 		title: "产品规格书",
 		dataIndex: "specificationDetail",
 		key: "specificationDetail",
-		type: NumFieldType.Attachment
+		type: NumFieldType.Attachment,
 	},
 	{
 		title: "阀门参数",
 		dataIndex: "valveDetail",
 		key: "valveDetail",
-		type: NumFieldType.Attachment
+		type: NumFieldType.Attachment,
 	},
 	{
 		title: "其他技术文件",
 		dataIndex: "otherFile",
 		key: "otherFile",
-		type: NumFieldType.Attachment
+		type: NumFieldType.Attachment,
 	},
 	{
 		title: "扭矩/推力",
 		dataIndex: "torqueThrust",
 		key: "torquehrust",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "其他技术要求",
 		dataIndex: "otherTechnicalRequirements",
 		key: "otherTechnicalRequirements",
-		type: NumFieldType.Text
+		type: NumFieldType.Text,
 	},
 	{
 		title: "执行机构形式",
 		dataIndex: "mechanismForm",
 		key: "mechanismForm",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "货币",
 		dataIndex: "currency",
 		key: "currency",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "初步选型型号",
@@ -157,7 +161,7 @@ const columns: any = [
 			column: any,
 			key: string,
 			form: any,
-			setForm: (value: any) => void
+			setForm: (value: any) => void,
 		) => {
 			return (
 				<div key={key} className="w-full">
@@ -167,53 +171,188 @@ const columns: any = [
 					/>
 				</div>
 			);
-		}
+		},
 	},
 	{
 		title: "交期",
 		dataIndex: "quotationEnd",
 		key: "quotationEnd",
-		type: NumFieldType.DateTime
+		type: NumFieldType.DateTime,
 	},
 	{
 		title: "质保",
 		dataIndex: "qualityTime",
 		key: "qualityTime",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "出口项目",
 		dataIndex: "exportItem",
 		key: "exportItem",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "贸易方式",
 		dataIndex: "modeTrade",
 		key: "modeTrade",
 		type: NumFieldType.MultiSelect,
-		dictCode: "tarde_mode"
+		dictCode: "tarde_mode",
 	},
 	{
 		title: "付款方式",
 		dataIndex: "payType",
 		key: "payType",
 		type: NumFieldType.MultiSelect,
-		dictCode: "pay"
+		dictCode: "pay",
 	},
 	{
 		title: "关联技术评审",
 		dataIndex: "relateTechProcess",
 		key: "relateTechProcess",
-		type: NumFieldType.SingleText
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relateQuote",
 		key: "relateQuote",
-		type: NumFieldType.SingleText
-	}
+		type: NumFieldType.SingleText,
+	},
 ];
+const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
+	const { form, changeProcess } = useContext(CustomModalContext)! as any;
+
+	return (
+		<div className="flex flex-col items-center" style={{ width: "300px" }}>
+			<div className="flex mb-4 mt-4">
+				<img src={warnSvg} />
+				<div>审批通过后，本项目将进入下一阶段</div>;
+			</div>
+			<div className="flex mb-4">
+				<ConfigProvider theme={greyButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						className="mr-8"
+						onClick={() => {
+							setApproveModal(false);
+						}}
+					>
+						取消
+					</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						onClick={() => {
+							setApproveModal(false);
+							changeProcess(form, MainStatus.Approved);
+						}}
+					>
+						通过
+					</Button>
+				</ConfigProvider>
+			</div>
+		</div>
+	);
+};
+const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
+	return (
+		<div className="flex flex-col" style={{ width: "300px" }}>
+			<div
+				className="mb-4 mt-4"
+				style={{
+					fontFamily: "HarmonyOS Sans",
+					fontSize: "14px",
+				}}
+			>
+				填写驳回理由
+			</div>
+			<div>
+				<TextArea rows={4} />
+			</div>
+			<div className="flex justify-center mb-4 mt-4">
+				<ConfigProvider theme={greyButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						className="mr-8"
+						onClick={() => {
+							setRejectModal(false);
+						}}
+					>
+						取消
+					</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={redButtonTheme}>
+					<Button style={{ width: "80px" }} type="primary" onClick={() => {}}>
+						驳回
+					</Button>
+				</ConfigProvider>
+			</div>
+		</div>
+	);
+};
+const FootView = (props: any) => {
+	if (location.pathname !== "/dashboard/my-quote-process") {
+		return <div></div>;
+	}
+	const [approveModal, setApproveModal] = useState(false);
+	const [rejectModal, setRejectModal] = useState(false);
+
+	return (
+		<div className="w-full flex justify-center">
+			<ConfigProvider theme={redButtonTheme}>
+				<Popover
+					open={rejectModal}
+					onOpenChange={(newOpen: boolean) => {
+						setRejectModal(newOpen);
+					}}
+					content={() => {
+						return RejectConfirm({ rejectModal, setRejectModal });
+					}}
+					trigger="click"
+				>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						className="mr-8"
+						onClick={() => {
+							setRejectModal(true);
+						}}
+					>
+						驳回
+					</Button>
+				</Popover>
+			</ConfigProvider>
+			<ConfigProvider theme={blueButtonTheme}>
+				<Popover
+					open={approveModal}
+					onOpenChange={(newOpen: boolean) => {
+						setApproveModal(newOpen);
+					}}
+					content={() => {
+						return ApproveConfirm({ approveModal, setApproveModal });
+					}}
+					trigger="click"
+				>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						onClick={() => {
+							setApproveModal(true);
+						}}
+					>
+						通过
+					</Button>
+				</Popover>
+			</ConfigProvider>
+		</div>
+	);
+};
+
+const CustomModalContext = React.createContext({});
+
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
 	statusList,
@@ -221,28 +360,28 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	editFlowItemRecord,
-	fetchSaleList
+	fetchSaleList,
 }) => {
-	const dispatch = useAppDispatch();
+	const location = useLocation();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 
-	// esc handler
-	useEffect(() => {
-		if (!open) {
-			return;
-		}
-		const keydownHandler = (e: KeyboardEvent) => {
-			if (e.code === "Escape") {
-				setOpen(false);
-			}
-		};
-		document.addEventListener("keydown", keydownHandler, true);
-		return () => {
-			document.removeEventListener("keydown", keydownHandler, true);
-		};
-	}, [open]);
+	// // esc handler
+	// useEffect(() => {
+	// 	if (!open) {
+	// 		return;
+	// 	}
+	// 	const keydownHandler = (e: KeyboardEvent) => {
+	// 		if (e.code === "Escape") {
+	// 			setOpen(false);
+	// 		}
+	// 	};
+	// 	document.addEventListener("keydown", keydownHandler, true);
+	// 	return () => {
+	// 		document.removeEventListener("keydown", keydownHandler, true);
+	// 	};
+	// }, [open]);
 	//
 	useEffect(() => {
 		if (!open) {
@@ -291,7 +430,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -305,13 +444,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		inputForm.setFieldsValue(rest);
 		const params = {
 			id,
-			...rest
+			...rest,
 		};
 		try {
 			await inputForm.validateFields();
 			try {
 				params.typeSelection = JSON.stringify(params.typeSelection);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -331,7 +470,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	//
 	const changeProcess = async (
 		form: any,
-		status: MainStatus[keyof MainStatus]
+		status: MainStatus[keyof MainStatus],
 	) => {
 		try {
 			const { id } = form;
@@ -468,6 +607,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			</div>
 		);
 	};
+
 	return (
 		<CustomModalRoot>
 			<div className="header">
@@ -477,7 +617,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						style={{
 							fontSize: "12px",
 							background: "#F2F3F5",
-							marginRight: "18px"
+							marginRight: "18px",
 						}}
 						onClick={() => setOpen(false)}
 					>
@@ -511,7 +651,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					)}
 				</Form>
 			</div>
-			<div className="footer"></div>
+			<div className="footer">
+				<CustomModalContext.Provider value={{ form, changeProcess }}>
+					<FootView />
+				</CustomModalContext.Provider>
+			</div>
 		</CustomModalRoot>
 	);
 };

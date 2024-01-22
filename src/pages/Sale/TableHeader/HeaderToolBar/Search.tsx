@@ -23,21 +23,41 @@ const Search: React.FC<SearchProps> = ({ columns, fetchSaleList }) => {
 	const [selectValue, setSelectValue] = useState<string>("name");
 
 	const handleSearch = async () => {
-		console.log("search", inputValue, selectValue);
 		await fetchSaleList({
 			search: {
-				[selectValue]: inputValue.trim()
-			}
+				[selectValue]: inputValue.trim(),
+			},
 		});
-
 	};
 	return (
 		<SearchRoot>
-			<Form layout="inline" form={form} name="SearchForm" onValuesChange={() => { }}>
+			<Form
+				layout="inline"
+				form={form}
+				name="SearchForm"
+				onValuesChange={() => {}}
+			>
 				<Form.Item name="searchField" style={{ margin: 0, padding: 0 }}>
 					<Space.Compact>
-						<Select value={selectValue} onChange={(e: string) => setSelectValue(e)} options={options} style={{ width: "120px" }} />
-						<Input value={inputValue} onInput={(e: any) => setInputValue(e.target.value)} placeholder="请输入搜索内容" suffix={<SearchFilled style={{ fontSize: "16px", color: "#707683" }} onClick={handleSearch} />} style={{ width: 280 }} onPressEnter={handleSearch} />
+						<Select
+							value={selectValue}
+							onChange={(e: string) => setSelectValue(e)}
+							options={options}
+							style={{ width: "120px" }}
+						/>
+						<Input
+							value={inputValue}
+							onInput={(e: any) => setInputValue(e.target.value)}
+							placeholder="请输入搜索内容"
+							suffix={
+								<SearchFilled
+									style={{ fontSize: "16px", color: "#707683" }}
+									onClick={handleSearch}
+								/>
+							}
+							style={{ width: 280 }}
+							onPressEnter={handleSearch}
+						/>
 					</Space.Compact>
 				</Form.Item>
 			</Form>

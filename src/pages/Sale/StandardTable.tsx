@@ -12,10 +12,10 @@ import _ from "lodash";
 import { IfetchSaleList } from "./types";
 
 const StandardTableRoot = styled.div`
-	position: absolute;
 	opacity: 1;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 	transition-property: height, opacity;
 	transition-duration: 1s;
 `;
@@ -220,7 +220,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 				rowSelection={rowSelection}
 				columns={tableColumns}
 				dataSource={datasource}
-				scroll={{ x: true, y: `calc(100vh - 170px)` }}
+				scroll={{ x: true, y: `calc(100vh - 240px)` }}
 			/>
 			<div className="flex items-center justify-end mt-4">
 				<Pagination

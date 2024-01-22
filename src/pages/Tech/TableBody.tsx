@@ -8,8 +8,9 @@ import _ from "lodash";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
 const FlowTableRoot = styled.div`
-	position: relative;
 	width: 100%;
+	height: calc(100% - 52px);
+	overflow: hidden;
 `;
 
 export interface FlowItemTableDataType {
@@ -42,7 +43,7 @@ const columns: any = [
 		fixed: "left",
 		render: (text: string, record: any) => {
 			return <span>{record.name}</span>;
-		}
+		},
 	},
 	{
 		title: "状态",
@@ -59,7 +60,7 @@ const columns: any = [
 					{item.label}
 				</Tag>
 			);
-		}
+		},
 	},
 	{
 		title: "分析结果",
@@ -68,23 +69,49 @@ const columns: any = [
 		render: (text: string, record: any) => {
 			return (
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.result === '1' ? '常规产品' : '非常规产品'}
+					{record.result === "1" ? "常规产品" : "非常规产品"}
 				</Tag>
 			);
-		}
+		},
 	},
-	{ title: "选型分析", dataIndex: "selectionAnalysis", key: "selectionAnalysis", },
-	{ title: "生产分析", dataIndex: "productionAnalysis", key: "productionAnalysis", },
-	{ title: "附件", dataIndex: "attach", key: "attach", type: NumFieldType.Attachment }
+	{
+		title: "选型分析",
+		dataIndex: "selectionAnalysis",
+		key: "selectionAnalysis",
+	},
+	{
+		title: "生产分析",
+		dataIndex: "productionAnalysis",
+		key: "productionAnalysis",
+	},
+	{
+		title: "附件",
+		dataIndex: "attach",
+		key: "attach",
+		type: NumFieldType.Attachment,
+	},
 ];
-const TableBody: React.FC<FlowTableProps> = ({ editFlowItemRecord, ...rest }) => {
+const TableBody: React.FC<FlowTableProps> = ({
+	editFlowItemRecord,
+	...rest
+}) => {
 	const { tableDataSource, fetchTechFeedbackList } = rest;
 	const [dstColumns] = useState<any>(columns);
 	const [open, setOpen] = useState<boolean>(false);
 	return (
 		<FlowTableRoot>
-			<StandardTable datasource={tableDataSource} columns={dstColumns} setOpen={setOpen} {...rest} />
-			<EditRecordModal fetchTechFeedbackList={fetchTechFeedbackList} open={open} setOpen={setOpen} editFlowItemRecord={editFlowItemRecord} />
+			<StandardTable
+				datasource={tableDataSource}
+				columns={dstColumns}
+				setOpen={setOpen}
+				{...rest}
+			/>
+			<EditRecordModal
+				fetchTechFeedbackList={fetchTechFeedbackList}
+				open={open}
+				setOpen={setOpen}
+				editFlowItemRecord={editFlowItemRecord}
+			/>
 		</FlowTableRoot>
 	);
 };

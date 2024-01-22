@@ -14,10 +14,14 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = () => {
 	// const dstColumns = useAppSelector(selectCurTableColumn);
 	// const records = useAppSelector(selectCurTableRecords);
 	const dstColumns = [
-		{ label: "项目名称", key: "name" },
-		{ label: "分析结果", key: "result" },
-		{ label: "选型分析", key: "status" },
-		{ label: "生产分析", key: "status" }
+		{ label: "项目名称", key: "name", value: "name" },
+		{ label: "分析结果", key: "result", value: "result" },
+		{ label: "选型分析", key: "selectionAnalysis", value: "selectionAnalysis" },
+		{
+			label: "生产分析",
+			key: "productionAnalysis",
+			value: "productionAnalysis",
+		},
 	];
 	const records = [] as any;
 	return (

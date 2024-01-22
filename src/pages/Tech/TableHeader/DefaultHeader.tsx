@@ -4,7 +4,10 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import { selectIsAddOrderModalOpen, setIsAddOrderModalOpen } from "../../../store/globalSlice";
+import {
+	selectIsAddOrderModalOpen,
+	setIsAddOrderModalOpen,
+} from "../../../store/globalSlice";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -35,7 +38,10 @@ interface DefaultHeaderProps {
 	children?: React.ReactNode;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchTechFeedbackList }) => {
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({
+	hasSelected,
+	fetchTechFeedbackList,
+}) => {
 	const dispatch = useAppDispatch();
 
 	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
@@ -45,15 +51,14 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchTechFee
 
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
-			{/* <ConfigProvider theme={blueButtonTheme}>
-				<Button className="hidden" type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
-					新建报价
-				</Button>
-			</ConfigProvider> */}
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isAddTableModalOpen} setOpen={setOpen} fetchTechFeedbackList={fetchTechFeedbackList} />
+			<AddRecordModal
+				open={isAddTableModalOpen}
+				setOpen={setOpen}
+				fetchTechFeedbackList={fetchTechFeedbackList}
+			/>
 		</DefaultHeaderRoot>
 	);
 };

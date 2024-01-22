@@ -104,7 +104,7 @@ const Login: React.FC = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
-	const [buttonDisable, setButtonDisable] = useState(false);
+	const [buttonLoading, setButtonLoading] = useState(false);
 	const [messageApi, contextHolder] = message.useMessage();
 	useEffect(() => {
 		const username = localStorage.getItem("username");
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
 	}, [form]);
 
 	const checkLoginHandler = () => {
-		setButtonDisable(true);
+		setButtonLoading(true);
 		form
 			.validateFields()
 			.then(async () => {
@@ -132,9 +132,7 @@ const Login: React.FC = () => {
 
 						const res = await userProfile();
 						dispatch(loginSuccess(res.data));
-						setTimeout(() => {
-							setButtonDisable(false);
-						}, 2000);
+
 						messageApi
 							.open({
 								type: "success",
@@ -152,6 +150,10 @@ const Login: React.FC = () => {
 						content: "登录失败," + e.message,
 						duration: 1,
 					});
+				} finally {
+					setTimeout(() => {
+						setButtonLoading(false);
+					}, 1000);
 				}
 			})
 			.catch(() => {
@@ -243,7 +245,7 @@ const Login: React.FC = () => {
 							<div>
 								<Button
 									onClick={checkLogin}
-									disabled={buttonDisable}
+									loading={buttonLoading}
 									type="primary"
 									htmlType="submit"
 									className="active-button"

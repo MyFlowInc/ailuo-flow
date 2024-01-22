@@ -32,7 +32,16 @@ interface StandardTableActionProps {
 	children?: React.ReactNode;
 }
 
-const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record, reader, writer, manager, setOpen, deleteFlowItem, setEditFlowItemRecord }) => {
+const StandardTableAction: React.FC<StandardTableActionProps> = ({
+	text,
+	record,
+	reader,
+	writer,
+	manager,
+	setOpen,
+	deleteFlowItem,
+	setEditFlowItemRecord,
+}) => {
 	const handleDeleteRecord = async (text: string, record: any) => {
 		Modal.confirm({
 			title: "是否确认删除?",
@@ -45,7 +54,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 			},
 			onCancel() {
 				console.log("Cancel");
-			}
+			},
 		});
 	};
 
@@ -58,13 +67,27 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({ text, record,
 		<Space>
 			<Button
 				type="text"
-				icon={<EditFilled style={{ fontSize: "12px", color: `${!manager && !writer ? "#d9d9d9" : "#707683"}` }} />}
+				icon={
+					<EditFilled
+						style={{
+							fontSize: "12px",
+							color: `${!manager && !writer ? "#d9d9d9" : "#707683"}`,
+						}}
+					/>
+				}
 				disabled={!manager && !writer}
 				onClick={() => handleEditRecord(text, record)}
 			/>
 			<Button
 				type="text"
-				icon={<DeleteFilled style={{ fontSize: "12px", color: `${!manager ? "#d9d9d9" : "#707683"}` }} />}
+				icon={
+					<DeleteFilled
+						style={{
+							fontSize: "12px",
+							color: `${!manager ? "#d9d9d9" : "#707683"}`,
+						}}
+					/>
+				}
 				disabled={!manager}
 				onClick={() => handleDeleteRecord(text, record)}
 			/>
@@ -89,7 +112,14 @@ interface StandardTableProps {
 	children?: React.ReactNode;
 }
 
-const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetchSaleList, setSelectedRows, curPage, ...rest }) => {
+const StandardTable: React.FC<StandardTableProps> = ({
+	columns,
+	datasource,
+	fetchSaleList,
+	setSelectedRows,
+	curPage,
+	...rest
+}) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const getTableColumns = () => {
@@ -99,7 +129,11 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 				const res = {
 					...item,
 					ellipsis: true,
-					onCell: (record: any, rIndex: number) => ({ rIndex, record, ...params })
+					onCell: (record: any, rIndex: number) => ({
+						rIndex,
+						record,
+						...params,
+					}),
 				};
 				if (item.render) {
 					res.render = item.render;
@@ -109,8 +143,17 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 			{
 				title: "操作",
 				dataIndex: "actions",
-				render: (text: string, record: any) => <StandardTableAction reader={true} writer={true} manager={true} text={text} record={record} {...rest} />
-			}
+				render: (text: string, record: any) => (
+					<StandardTableAction
+						reader={true}
+						writer={true}
+						manager={true}
+						text={text}
+						record={record}
+						{...rest}
+					/>
+				),
+			},
 		];
 
 		tColumns.forEach((item: any, index: number) => {
@@ -159,10 +202,11 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 		},
 		getCheckboxProps: (record: any = {}) => ({
 			disabled: record.name === "Disabled User",
-			name: record.name
-		})
+			name: record.name,
+		}),
 	};
-	if (_.isEmpty(datasource)) return <></>;
+	// if (_.isEmpty(datasource)) return <></>;
+
 	return (
 		<StandardTableRoot>
 			<Table
@@ -170,8 +214,8 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 				pagination={false}
 				components={{
 					body: {
-						cell: TableColumnRender
-					}
+						cell: TableColumnRender,
+					},
 				}}
 				rowSelection={rowSelection}
 				columns={tableColumns}
@@ -183,7 +227,7 @@ const StandardTable: React.FC<StandardTableProps> = ({ columns, datasource, fetc
 					current={curPage.current.pageNum}
 					total={curPage.current.total}
 					pageSize={curPage.current.pageSize}
-					showTotal={total => `共 ${total} 条`}
+					showTotal={(total) => `共 ${total} 条`}
 					onChange={pageNumChange}
 				/>
 			</div>

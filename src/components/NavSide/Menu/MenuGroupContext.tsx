@@ -48,7 +48,8 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	const isManager = useAppSelector(selectIsManager);
 	const location = useLocation();
 	// 审批设置
-	const [approveModalVisible, setApproveModalVisible] = useState<boolean>(false);
+	const [approveModalVisible, setApproveModalVisible] =
+		useState<boolean>(false);
 	const [approveMenuItem, setApproveMenuItem] = useState<any>({});
 
 	const getIcon = (menu: IMenu) => {
@@ -57,14 +58,15 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 		return <img src={imgPath} />;
 	};
 	const chooseMenu = (menu: IMenu) => {
-		console.log("chooseMenu", menu);
 		setApproveMenuItem(menu);
 		setApproveModalVisible(true);
-	}
+	};
 	const extra = (menu: IMenu) => {
-		const { path } = menu
-		return isManager && path === '/quote-manage' ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
-	}
+		const { path } = menu;
+		return isManager && path === "/quote-manage" ? (
+			<MenuExtraAction {...{ menu, chooseMenu }} />
+		) : null;
+	};
 
 	return (
 		<div>
@@ -85,7 +87,15 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 					</MenuItemWrap>
 				);
 			})}
-			{isManager && <ApproveSetting {...{ approveModalVisible, setApproveModalVisible, curMenu: approveMenuItem }} />}
+			{isManager && (
+				<ApproveSetting
+					{...{
+						approveModalVisible,
+						setApproveModalVisible,
+						curMenu: approveMenuItem,
+					}}
+				/>
+			)}
 		</div>
 	);
 };

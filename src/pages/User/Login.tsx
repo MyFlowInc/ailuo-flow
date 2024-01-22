@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Button, Checkbox, Form, Input, message, ConfigProvider } from "antd";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
@@ -104,6 +104,7 @@ const Login: React.FC = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const [form] = Form.useForm();
+	const [buttonDisable, setButtonDisable] = useState(false);
 	const [messageApi, contextHolder] = message.useMessage();
 	useEffect(() => {
 		const username = localStorage.getItem("username");
@@ -113,6 +114,7 @@ const Login: React.FC = () => {
 	}, [form]);
 
 	const checkLoginHandler = () => {
+		setButtonDisable(true);
 		form
 			.validateFields()
 			.then(async () => {
@@ -130,11 +132,14 @@ const Login: React.FC = () => {
 
 						const res = await userProfile();
 						dispatch(loginSuccess(res.data));
+						setTimeout(() => {
+							setButtonDisable(false);
+						}, 2000);
 						messageApi
 							.open({
 								type: "success",
 								content: "登录成功!",
-								duration: 1
+								duration: 1,
 							})
 							.then(() => {
 								history.push("/dashboard");
@@ -145,7 +150,7 @@ const Login: React.FC = () => {
 					messageApi.open({
 						type: "error",
 						content: "登录失败," + e.message,
-						duration: 1
+						duration: 1,
 					});
 				}
 			})
@@ -155,7 +160,7 @@ const Login: React.FC = () => {
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
 
-	const onFinish = (values: any) => { };
+	const onFinish = (values: any) => {};
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
 	};
@@ -167,14 +172,18 @@ const Login: React.FC = () => {
 				components: {
 					Form: { controlHeight: 28, itemMarginBottom: 0 },
 					Input: { borderRadius: 0 },
-					Checkbox: { colorPrimary: "#5966d6" }
-				} as any
-			}}>
+					Checkbox: { colorPrimary: "#5966d6" },
+				} as any,
+			}}
+		>
 			<LoginRoot>
 				{contextHolder}
 				<div className="container">
 					<div className="form-content">
-						<div className="flex justify-center items-center" style={{ marginTop: 22 }}>
+						<div
+							className="flex justify-center items-center"
+							style={{ marginTop: 22 }}
+						>
 							<AiluoLogo />
 						</div>
 						<div className="title" style={{ marginTop: 16 }}>
@@ -191,19 +200,37 @@ const Login: React.FC = () => {
 							initialValues={{ remember: true }}
 							onFinish={onFinish}
 							onFinishFailed={onFinishFailed}
-							autoComplete="off">
-							<Form.Item name="username" style={{ margin: "20px 0px" }} rules={[{ required: true, message: "用户名不能为空!" }]}>
-								<Input rootClassName="noborder-bg" bordered={false} placeholder="请输入用户名" />
+							autoComplete="off"
+						>
+							<Form.Item
+								name="username"
+								style={{ margin: "20px 0px" }}
+								rules={[{ required: true, message: "用户名不能为空!" }]}
+							>
+								<Input
+									rootClassName="noborder-bg"
+									bordered={false}
+									placeholder="请输入用户名"
+								/>
 							</Form.Item>
-							<Form.Item style={{ marginBottom: "20px" }} name="password" rules={[{ required: true, message: "密码不能为空!" }]}>
+							<Form.Item
+								style={{ marginBottom: "20px" }}
+								name="password"
+								rules={[{ required: true, message: "密码不能为空!" }]}
+							>
 								<Input.Password
 									rootClassName="noborder-bg"
 									bordered={false}
 									placeholder="请输入密码"
-									iconRender={visible => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
+									iconRender={(visible) =>
+										visible ? <EyeFilled /> : <EyeInvisibleFilled />
+									}
 								/>
 							</Form.Item>
-							<Form.Item style={{ marginBottom: "20px" }} className="forget-password">
+							<Form.Item
+								style={{ marginBottom: "20px" }}
+								className="forget-password"
+							>
 								<Form.Item name="remember" valuePropName="checked" noStyle>
 									<Checkbox>自动登录</Checkbox>
 								</Form.Item>
@@ -214,7 +241,14 @@ const Login: React.FC = () => {
 								</Form.Item>
 							</Form.Item>
 							<div>
-								<Button onClick={checkLogin} type="primary" htmlType="submit" className="active-button" block>
+								<Button
+									onClick={checkLogin}
+									disabled={buttonDisable}
+									type="primary"
+									htmlType="submit"
+									className="active-button"
+									block
+								>
 									登录
 								</Button>
 							</div>

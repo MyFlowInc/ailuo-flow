@@ -5,15 +5,17 @@
 import React, { useRef, useEffect, SyntheticEvent } from "react";
 import { Input } from "antd";
 
-interface TypeMultiSelectEditorProps {
+interface TypeSingleTextEditorProps {
 	mode?: "multiple";
 	cell: { key: string; dataIndex: string; name: string };
 	form: any;
 	setForm: any;
 }
 
-const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (props: TypeMultiSelectEditorProps) => {
-	const { mode, cell, form, setForm } = props;
+const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
+	props: TypeSingleTextEditorProps,
+) => {
+	const { cell, form, setForm } = props;
 	const el = useRef<any>(null);
 
 	useEffect(() => {
@@ -26,7 +28,7 @@ const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (props: TypeMultiSe
 		const value = target.value;
 		setForm({
 			...form,
-			[cell.dataIndex]: value
+			[cell.dataIndex]: value,
 		});
 		// console.log("onChangeContent", form);
 	};
@@ -34,16 +36,14 @@ const TypeSingleText: React.FC<TypeMultiSelectEditorProps> = (props: TypeMultiSe
 	const forceSetValue = () => {
 		if (el.current) {
 			const input = el.current.input;
-
 			input.value = form[cell.dataIndex] || "";
-
 			input.setAttribute("value", form[cell.dataIndex] || "");
 		}
 	};
 
 	return (
 		<Input
-			ref={input => {
+			ref={(input) => {
 				if (!input) {
 					return;
 				}

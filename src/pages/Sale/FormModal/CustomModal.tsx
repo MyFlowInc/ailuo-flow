@@ -20,6 +20,7 @@ import { MainStatus } from "../../../api/ailuo/dict";
 import { IfetchSaleList } from "../types";
 import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
+import ProjectName from "../ProjectName";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -85,11 +86,23 @@ const excludeNull = (obj: any) => {
 const columns: any = [
 	{
 		title: "项目名称",
-		width: 200,
 		dataIndex: "name",
 		key: "name",
-		fixed: "left",
-		type: NumFieldType.SingleText,
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={key} className="w-full">
+					<ProjectName
+						key={"ProjectName" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
 	},
 	{
 		title: "单位名称",
@@ -257,6 +270,8 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
+	const { form, changeProcess } = useContext(CustomModalContext)! as any;
+
 	return (
 		<div className="flex flex-col" style={{ width: "300px" }}>
 			<div
@@ -285,7 +300,14 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 					</Button>
 				</ConfigProvider>
 				<ConfigProvider theme={redButtonTheme}>
-					<Button style={{ width: "80px" }} type="primary" onClick={() => {}}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						onClick={() => {
+							setRejectModal(false);
+							changeProcess(form, MainStatus.ReviewFailed);
+						}}
+					>
 						驳回
 					</Button>
 				</ConfigProvider>

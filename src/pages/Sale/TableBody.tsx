@@ -8,6 +8,7 @@ import { FlowStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { IfetchSaleList } from "./types";
+import TurnView from "./TurnView";
 
 const FlowTableRoot = styled.div`
 	width: 100%;
@@ -21,7 +22,6 @@ export interface FlowItemTableDataType {
 	statusId: string;
 	[propName: string]: any;
 }
-
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
 	fetchSaleList: IfetchSaleList; // 获取销售列表
@@ -44,7 +44,12 @@ const columns: any = [
 		key: "name",
 		fixed: "left",
 		render: (text: string, record: any) => {
-			return <span>{record.name}</span>;
+			return (
+				<div>
+					<span>{record.name}</span>
+					<TurnView turnTime={record.turnTime} />
+				</div>
+			);
 		},
 	},
 	{

@@ -6,14 +6,14 @@ import { MainStatus } from "./dict";
 interface PageParams {
 	pageNum: number;
 	pageSize: number;
-	status?: string
+	status?: string;
 }
 
 export function saleProjectList(params: PageParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/page",
 		method: "get",
-		params
+		params,
 	});
 }
 
@@ -24,7 +24,7 @@ export function saleProjectAdd(data: SaveParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/save",
 		method: "post",
-		data
+		data,
 	});
 }
 interface EditParams {
@@ -35,7 +35,7 @@ export function saleProjectEdit(data: EditParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/edit",
 		method: "PUT",
-		data
+		data,
 	});
 }
 
@@ -43,14 +43,28 @@ export function saleProjectRemove(id: number) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/remove",
 		method: "DELETE",
-		params: { id }
+		params: { id },
 	});
 }
 
-export function changeStatus(data: { id: number; status: MainStatus[keyof MainStatus] }) {
+export function changeStatus(data: {
+	id: number;
+	status: MainStatus[keyof MainStatus];
+}) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/changeStatus",
 		method: "post",
-		data
+		data,
+	});
+}
+
+// 查询轮数
+export function fetchTurnTime(name: string) {
+	return apiCall({
+		url: "api/sys/projectSaleProcess/turnTime",
+		method: "get",
+		params: {
+			name,
+		},
 	});
 }

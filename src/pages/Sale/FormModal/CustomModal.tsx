@@ -598,6 +598,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</div>
 			);
 		}
+		// 报价终审中
 		if (id && status === MainStatus.QuotationReview) {
 			return (
 				<div className="status-operate flex">
@@ -608,6 +609,47 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</Tag>
 					</div>
 					<div className="flex cursor-pointer"></div>
+				</div>
+			);
+		}
+		// 审批通过
+		if (id && status === MainStatus.Approved) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+							{"终审通过"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+							{"发起合同流程"}
+						</Tag>
+					</div>
+				</div>
+			);
+		}
+		// 审批驳回
+		if (id && status === MainStatus.ReviewFailed) {
+			return (
+				<div className="status-operate flex">
+					<div className="flex">
+						<div className="mr-2">状态: </div>
+						<Tag color={"#FF9F9F"} style={{ color: "#000" }}>
+							{"审批驳回"}
+						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						<div className="mr-2">操作: </div>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+							{"新一轮报价（需技术审批）"}
+						</Tag>
+						<Tag className="ml-2" color={"#D4F3F2"} style={{ color: "#000" }}>
+							{"新一轮报价（无需技术审批）"}
+						</Tag>
+					</div>
 				</div>
 			);
 		}

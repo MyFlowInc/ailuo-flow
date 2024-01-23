@@ -72,7 +72,9 @@ const SaleManage: React.FC = () => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<SaleManageContext.Provider value={{ fetchSaleList }}>
+			<SaleManageContext.Provider
+				value={{ fetchSaleList, tableDataSource, setTableDataSource }}
+			>
 				<DashboardRoot>
 					{/* 表头 */}
 					<TableHeader

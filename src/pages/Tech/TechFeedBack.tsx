@@ -8,7 +8,7 @@ import TableBody from "./TableBody";
 import _ from "lodash";
 import { techProjectList, techProjectRemove } from "../../api/ailuo/tech";
 
-export const TechFeedBackContext = React.createContext({});
+export const TechFeedBackContext = React.createContext<any>({});
 
 const TechFeedBack: React.FC = () => {
 	const [loading, setLoading] = useState(false);

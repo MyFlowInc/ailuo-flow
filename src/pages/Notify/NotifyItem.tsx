@@ -87,7 +87,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 		try {
 			let c = JSON.parse(info.content);
 			setContent(c);
-		} catch (error) {}
+		} catch (error) { }
 	}, [info]);
 
 	const deleteHandle = async () => {
@@ -152,8 +152,11 @@ const NotifyItem = (props: NotifyItemProps) => {
 					style={{ fontWeight: !info.isRead ? "bold" : "400" }}
 				>
 					<Paragraph
+						style={{
+							whiteSpace: 'pre-line'
+						}}
 						ellipsis={{
-							rows: 2,
+							rows: 4,
 							expandable: true,
 						}}
 					>

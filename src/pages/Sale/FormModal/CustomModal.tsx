@@ -274,8 +274,21 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { form, changeProcess } = useContext(CustomModalContext)! as any;
-
+	const { form, setForm, changeProcess } = useContext(CustomModalContext)! as any;
+	const [rejectReason, setRejectReason] = useState("");
+	const rejectHandle = () => {
+		setForm(
+			{
+				...form,
+				remark: rejectReason,
+			},
+		)
+		setRejectModal(false);
+		changeProcess({
+			...form,
+			remark: rejectReason,
+		}, MainStatus.ReviewFailed);
+	};
 	return (
 		<div className="flex flex-col" style={{ width: "300px" }}>
 			<div
@@ -288,7 +301,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 				填写驳回理由
 			</div>
 			<div>
-				<TextArea rows={4} />
+				<TextArea rows={4} value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
 			</div>
 			<div className="flex justify-center mb-4 mt-4">
 				<ConfigProvider theme={greyButtonTheme}>
@@ -308,8 +321,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 						style={{ width: "80px" }}
 						type="primary"
 						onClick={() => {
-							setRejectModal(false);
-							changeProcess(form, MainStatus.ReviewFailed);
+							rejectHandle()
 						}}
 					>
 						驳回
@@ -545,7 +557,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					content: {
 						status: status,
 						msg: `您的工单: <${form.name}> 已被驳回
-							    驳回理由: xxxxxx`,
+							    驳回理由: ${form.remark}`,
 						saleId: form.id,
 					},
 				};
@@ -564,7 +576,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	) => {
 		try {
 			const { id } = form;
-			await changeStatus({ id, status });
+			if (status === MainStatus.ReviewFailed) {
+				await changeStatus({ id, status, remark: form.remark } as any);
+			} else {
+				await changeStatus({ id, status });
+			}
 			await notifyHandler(form, status);
 			await setOpen(false);
 			await fetchSaleList();
@@ -784,7 +800,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</Form>
 			</div>
 			<div className="footer">
-				<CustomModalContext.Provider value={{ form, changeProcess }}>
+				<CustomModalContext.Provider value={{ form, setForm, changeProcess }}>
 					<FootView />
 				</CustomModalContext.Provider>
 			</div>

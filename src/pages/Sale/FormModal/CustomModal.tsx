@@ -54,7 +54,7 @@ const CustomModalRoot = styled.div`
 		margin-bottom: 16px;
 	}
 	.content {
-		height: calc(100% - 40px);
+		height: calc(100% - 80px);
 		max-width: 600px;
 		overflow: overlay;
 	}
@@ -99,12 +99,12 @@ const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={key} className="w-full">
+				<div key={'name_' + key} className="w-full" >
 					<ProjectName
 						key={"ProjectName" + key}
 						{...{ column, form, setForm }}
 					/>
-				</div>
+				</div >
 			);
 		},
 	},
@@ -387,10 +387,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	setOpen,
 	editFlowItemRecord,
 }) => {
-	const location = useLocation();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+
 	const { fetchSaleList } = useContext(SaleManageContext);
 
 	// // esc handler
@@ -456,7 +456,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -478,7 +478,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -521,9 +521,37 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				});
 				await Promise.all(allP);
 			}
+			// 同意后 通知报价单创建人
 			if (status === MainStatus.Approved) {
+				const { createBy } = form // 创建人id
+				if (!createBy) return
+				const params: any = {
+					recipientId: createBy,
+					content: {
+						status: status,
+						msg: `您的工单: <${form.name}> 审批通过`,
+						saleId: form.id,
+					},
+				};
+				params.content = JSON.stringify(params.content);
+				await noticeAdd(params);
 			}
+			// 审批拒绝 通知报价单创建人
 			if (status === MainStatus.ReviewFailed) {
+				const { createBy } = form // 创建人id
+				if (!createBy) return
+				const params: any = {
+					recipientId: createBy,
+					content: {
+						status: status,
+						msg: `您的工单: <${form.name}> 已被驳回
+							    驳回理由: xxxxxx`,
+						saleId: form.id,
+					},
+				};
+				params.content = JSON.stringify(params.content);
+				await noticeAdd(params);
+
 			}
 		} catch (error) {
 			console.log(error);
@@ -536,10 +564,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	) => {
 		try {
 			const { id } = form;
-			// await changeStatus({ id, status });
+			await changeStatus({ id, status });
 			await notifyHandler(form, status);
-			// await setOpen(false);
-			// await fetchSaleList();
+			await setOpen(false);
+			await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -664,7 +692,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

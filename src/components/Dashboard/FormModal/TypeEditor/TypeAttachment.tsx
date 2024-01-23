@@ -13,19 +13,23 @@ interface TypeAttachmentProps {
 	setForm: any;
 }
 
-const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProps) => {
+const TypeAttachment: React.FC<TypeAttachmentProps> = (
+	props: TypeAttachmentProps,
+) => {
 	const { cell, form, setForm } = props;
 	const [fileName, setFileName] = useState("");
 	// 初始化
 	useEffect(() => {
 		const url = form[cell.key];
-		if (!url) { return }
+		if (!url) {
+			return;
+		}
 		const file = url.split("/").pop();
 		if (file) {
 			const fileName = file?.split("-")[1] || "";
 			setFileName(fileName);
 		}
-	}, [form])
+	}, [form]);
 
 	const uploadHandler = async () => {
 		console.log(111, "uploadHandler");
@@ -39,8 +43,8 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProp
 				if (inputTag.files && inputTag.files[0]) {
 					const file = inputTag.files[0];
 					const fileSizeInMB = file.size / (1024 * 1024);
-					if (fileSizeInMB > 4) {
-						alert("文件大小超过限制，请选择小于4MB的文件");
+					if (fileSizeInMB > 10) {
+						alert("文件大小超过限制，请选择小于10MB的文件");
 						return;
 					}
 					console.log(inputTag.files);
@@ -63,7 +67,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProp
 		setFileName(fileName);
 		setForm({
 			...form,
-			[cell.key]: url
+			[cell.key]: url,
 		});
 	};
 
@@ -74,8 +78,9 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (props: TypeAttachmentProp
 				style={{
 					color: "#1677ff",
 					cursor: "pointer",
-					transition: "color 0.3s"
-				}}>
+					transition: "color 0.3s",
+				}}
+			>
 				{fileName || "上传"}
 			</span>
 		</div>

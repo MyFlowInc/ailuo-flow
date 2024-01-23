@@ -7,7 +7,6 @@ import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import { FlowStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
-import { IfetchSaleList } from "./types";
 import TurnView from "./TurnView";
 
 const FlowTableRoot = styled.div`

@@ -9,7 +9,6 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import { IfetchSaleList } from "./types";
 import { SaleManageContext } from "./SaleManage";
 
 const StandardTableRoot = styled.div`

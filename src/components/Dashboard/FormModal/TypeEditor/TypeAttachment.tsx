@@ -26,7 +26,12 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 		}
 		const file = url.split("/").pop();
 		if (file) {
-			const fileName = file?.split("-")[1] || "";
+			let fileName;
+			if (file.includes("-")) {
+				fileName = file?.split("-")[1] || "";
+			} else {
+				fileName = file;
+			}
 			setFileName(fileName);
 		}
 	}, [form]);

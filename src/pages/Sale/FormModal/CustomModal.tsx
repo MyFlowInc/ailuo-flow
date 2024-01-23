@@ -17,7 +17,6 @@ import {
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
-import { IfetchSaleList } from "../types";
 import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";

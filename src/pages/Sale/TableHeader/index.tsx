@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DefaultHeader from "./DefaultHeader";
 import BatchHeader from "./BatchHeader";
-import { IfetchSaleList } from "../types";
 
 const HeaderRoot = styled.div`
 	display: flex;

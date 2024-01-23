@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
-
 import SearchFilled from "../../../../assets/icons/SearchFilled";
-import { IfetchSaleList } from "../../types";
 import { SaleManageContext } from "../../SaleManage";
 
 const SearchRoot = styled.div`

@@ -12,7 +12,6 @@ import {
 	setIsShowSaleModal,
 } from "../../../store/globalSlice";
 import { useLocation } from "react-router";
-import { IfetchSaleList } from "../types";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;

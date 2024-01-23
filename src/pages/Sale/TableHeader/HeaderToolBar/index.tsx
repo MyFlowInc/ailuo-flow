@@ -5,7 +5,6 @@ import Search from "./Search";
 import Filter from "./Filter"; // 筛选
 import Sort from "./Sort"; // 排序
 import LinePng from "../../../../assets/line.png";
-import { IfetchSaleList } from "../../types";
 
 interface HeaderToolBarProps {
 	children?: React.ReactNode;

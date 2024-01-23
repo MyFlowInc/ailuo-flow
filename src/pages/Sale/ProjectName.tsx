@@ -55,8 +55,9 @@ const ProjectName: React.FC = (props: any) => {
 		<div className="w-full">
 			<div className="flex mb-4">
 				<div style={{ width: "100px" }}>项目名称</div>
-				<div className="flex items-center" onClick={() => {}}>
+				<div className="flex-1 flex items-center" onClick={() => {}}>
 					<Input
+						className="flex-1"
 						onBlur={(e) => {
 							getTurnTime(e);
 						}}
@@ -71,7 +72,7 @@ const ProjectName: React.FC = (props: any) => {
 						placeholder="请输入"
 						onChange={onChangeContent}
 					/>
-					<div style={{ width: "100px" }}>
+					<div style={{ width: "auto" }}>
 						<TurnView turnTime={form.turnTime} />
 					</div>
 				</div>

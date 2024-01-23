@@ -33,6 +33,7 @@ const CustomModalRoot = styled.div`
 		0 9px 28px 8px rgb(0 0 0 / 5%);
 	pointer-events: auto;
 	max-height: 80%;
+	height: 100%;
 	overflow: hidden;
 	.header {
 		height: 18px;
@@ -50,9 +51,9 @@ const CustomModalRoot = styled.div`
 		margin-bottom: 16px;
 	}
 	.content {
-		height: 600px;
+		height: calc(100% - 40px);
 		max-width: 600px;
-		overflow: auto;
+		overflow: overlay;
 	}
 
 	.footer {

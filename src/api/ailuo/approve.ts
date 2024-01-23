@@ -4,7 +4,7 @@ import { apiCall } from "../../network";
 export function approveInfo(projectSaleId?: string) {
 	let params: any = {
 		pageNum: 1,
-		pageSize: 10,
+		pageSize: 99,
 	};
 	if (projectSaleId) {
 		params.projectSaleId = projectSaleId;

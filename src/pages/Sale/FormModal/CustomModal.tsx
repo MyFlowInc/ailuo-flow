@@ -21,6 +21,9 @@ import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";
+import { approveInfo } from "../../../api/ailuo/approve";
+import _ from "lodash";
+import { noticeAdd } from "../../../api/ailuo/notice";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -492,16 +495,51 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			updateRecord();
 		}
 	};
-	//
+
+	// 通知模块
+	const notifyHandler = async (
+		form: any,
+		status: MainStatus[keyof MainStatus],
+	) => {
+		try {
+			// 通知 终审人员
+			if (status === MainStatus.QuotationReview) {
+				const res = await approveInfo(); // 审批信息
+				let list = _.get(res, "data.record", []);
+				const allP = list.map((item: any) => {
+					const params: any = {
+						recipientId: item.relationUserId,
+						content: {
+							status: status,
+							msg: `您的工单: <${form.name}> 需要审批`,
+							saleId: form.id,
+						},
+					};
+					console.log(11, params);
+					params.content = JSON.stringify(params.content);
+					return noticeAdd(params);
+				});
+				await Promise.all(allP);
+			}
+			if (status === MainStatus.Approved) {
+			}
+			if (status === MainStatus.ReviewFailed) {
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	// 修改审批状态
 	const changeProcess = async (
 		form: any,
 		status: MainStatus[keyof MainStatus],
 	) => {
 		try {
 			const { id } = form;
-			await changeStatus({ id, status });
-			setOpen(false);
-			await fetchSaleList();
+			// await changeStatus({ id, status });
+			await notifyHandler(form, status);
+			// await setOpen(false);
+			// await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		}

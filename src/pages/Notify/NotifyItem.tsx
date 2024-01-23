@@ -1,9 +1,10 @@
 import styled from "styled-components";
-import { deleteInviteRecord, readMessage, respondInvite } from "../../api/apitable/ds-share";
-import { useAppSelector } from "../../store/hooks";
-import { selectUser } from "../../store/globalSlice";
-import { Button, Checkbox, Popconfirm, Typography, message } from "antd";
+import { Button, ConfigProvider, Popconfirm, Typography, message } from "antd";
 import delPng from "../../components/Notify/assets/del.svg";
+import { noticeEdit, noticeRemove } from "../../api/ailuo/notice";
+import { useEffect, useState } from "react";
+import { MainStatus } from "../../api/ailuo/dict";
+import { lightBlueButtonTheme } from "../../theme/theme";
 const { Paragraph } = Typography;
 
 const NotifyItemRoot = styled.div`
@@ -43,7 +44,7 @@ const NotifyItemRoot = styled.div`
 			font-size: 12px;
 			line-height: 18px;
 			letter-spacing: 0px;
-			text-indent: 1em;
+			/* text-indent: 1em; */
 		}
 	}
 	.buttons {
@@ -70,134 +71,109 @@ const NotifyItemRoot = styled.div`
 `;
 
 interface NotifyItemProps {
-	freshInviteList: () => void;
+	freshList: () => void;
 	info: {
 		id: string;
 		content: string;
 		createTime: string;
-		dstId: string;
-		enable: 0 | 1 | 2; // enable:1 同意 enabe:2拒绝 enable:0 未处理 ignore:0 1未读/已读
-		type: 1 | 2; // 1系统 2邀请
-		ignoreMsg: 0 | 1; // 0 未读 1 已读
+		isRead: any;
 	};
 }
 
 const NotifyItem = (props: NotifyItemProps) => {
-	const { info, freshInviteList } = props;
-	console.log("info", info);
-	const ignoreMsg = info.ignoreMsg;
-	const infoType = info.type;
-	const curUser = useAppSelector(selectUser);
-	const agreeHandle = async () => {
+	const { info, freshList } = props;
+	const [content, setContent] = useState<any>({});
+	useEffect(() => {
 		try {
-			await respondInvite({
-				userId: curUser.id,
-				dstId: info.dstId,
-				enable: 1
-			});
-			await freshInviteList();
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const rejectHandle = async () => {
-		try {
-			await respondInvite({
-				userId: curUser.id,
-				dstId: info.dstId,
-				enable: 2
-			});
-			await freshInviteList();
-		} catch (error) {
-			console.log(error);
-		}
-	};
+			let c = JSON.parse(info.content);
+			setContent(c);
+		} catch (error) {}
+	}, [info]);
+
 	const deleteHandle = async () => {
 		try {
-			await deleteInviteRecord({
-				id: info.id
-			});
-			await freshInviteList();
+			await noticeRemove(info.id);
+			await freshList();
 			message.success("删除成功");
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	// 已读设置
-	const readHandle = async () => {
+	// 已读消息
+	const readHandle = async (id: string) => {
 		try {
-			console.log("readHandle", info);
-			await readMessage({
-				id: info.id,
-				ignoreMsg: 1
+			await noticeEdit({
+				id,
+				isRead: 1,
 			});
-			await freshInviteList();
+			await freshList();
 		} catch (error) {
 			console.log(error);
 		}
 	};
-	const renderButtons = () => {
-		if (1) {
-			return;
+	const { status, msg, saleId } = content;
+	const TitleView = () => {
+		if (content.status === MainStatus.QuotationReview) {
+			return <div className="text">审批提醒</div>;
 		}
-		return (
-			<div className="buttons">
-				{info.enable === 1 && (
-					<div>
-						<Button style={{ background: "#5966D6" }} type="primary">
-							已接受
-						</Button>
-					</div>
-				)}
-				{info.enable === 2 && (
-					<div>
-						<Button style={{ background: "#FF0000" }} className="reject" type="primary">
-							已拒绝
-						</Button>
-					</div>
-				)}
-				{!info.enable && (
-					<div>
-						<Button style={{ background: "#5966D6" }} type="primary" onClick={agreeHandle}>
-							接受
-						</Button>
-						<Button style={{ background: "#FF0000" }} className="reject" type="primary" onClick={rejectHandle}>
-							拒绝
-						</Button>
-					</div>
-				)}
-			</div>
-		);
+		if (content.status === MainStatus.Approved) {
+			return <div className="text">审批提醒</div>;
+		}
+		if (content.status === MainStatus.ReviewFailed) {
+			return <div className="text">审批驳回</div>;
+		}
+
+		return <div className="text">系统消息</div>;
 	};
 	return (
 		<NotifyItemRoot>
 			<div className="title">
 				<div className="type">
-					<Checkbox className="check"></Checkbox>
-					<div className="text">{infoType === 1 ? "系统通知" : "协作消息"}</div>
+					{/* <Checkbox className="check"></Checkbox> */}
+					{TitleView()}
 				</div>
-				<Popconfirm title="是否删除这条通知？" onConfirm={deleteHandle} okText="确认" cancelText="取消">
+				<Popconfirm
+					title="是否删除这条通知？"
+					onConfirm={deleteHandle}
+					okText="确认"
+					cancelText="取消"
+				>
 					<img src={delPng} />
 				</Popconfirm>
 			</div>
-			<div className="middle">
+			<div className="middle mt-4">
 				<div
 					className="text"
 					onClick={() => {
-						readHandle();
+						if (!info.isRead) {
+							readHandle(info.id);
+						}
 					}}
-					style={{ fontWeight: ignoreMsg === 0 ? "bold" : "400" }}>
-					{/* {info.content.replace("系统通知：", "")} */}
+					style={{ fontWeight: !info.isRead ? "bold" : "400" }}
+				>
 					<Paragraph
 						ellipsis={{
 							rows: 2,
-							expandable: true
-						}}>
-						{info.content.replace("系统通知：", "")}
+							expandable: true,
+						}}
+					>
+						{content.msg}
 					</Paragraph>
+					<div className="flex justify-center">
+						<div
+							style={{
+								background: "#F3F7FF",
+								color: "#5966D6",
+								padding: "4px 8px",
+								borderRadius: "5px",
+							}}
+							className="flex justify-center"
+						>
+							<span>显示工单</span>
+						</div>
+					</div>
 				</div>
 			</div>
-			{renderButtons()}
 			<div className="time">
 				<div className="text">{info.createTime}</div>
 			</div>

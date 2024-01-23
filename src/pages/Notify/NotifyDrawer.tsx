@@ -5,6 +5,9 @@ import _ from "lodash";
 import { Drawer, Empty } from "antd";
 import notifyPng from "../../components/Notify/assets/notify.png";
 import NotifyItem from "./NotifyItem";
+import { noticeListFetch } from "../../api/ailuo/notice";
+import { useAppSelector } from "../../store/hooks";
+import { selectUser } from "../../store/globalSlice";
 const UIROOT = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -47,40 +50,63 @@ interface NotifyDrawerProps {
 }
 const NotifyDrawer = (props: NotifyDrawerProps) => {
 	const { isOpenDrawer, onDrawerClose } = props;
-	const [inviteList, setInviteList] = useState<any[]>([]);
+	const [noticeList, setNoticeList] = useState([]);
+	const user = useAppSelector(selectUser);
 
-	const fetchInviteList = async () => {
-		setInviteList([]);
+	const fetchNoticeList = async () => {
+		if (!user) {
+			return;
+		}
+		try {
+			const res = await noticeListFetch(user.id);
+			const record = _.get(res, "data.record");
+			console.log("fetchNoticeList", res);
+			setNoticeList(record || []);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
-	const freshInviteList = async () => {
-		await fetchInviteList();
+	const freshList = async () => {
+		await fetchNoticeList();
 	};
 
 	useEffect(() => {
 		if (!isOpenDrawer) {
 			return;
 		}
-		fetchInviteList();
+		fetchNoticeList();
 	}, [isOpenDrawer]);
 
 	return (
-		<Drawer placement="left" classNames={{ body: "drawer-body" }} closable={false} onClose={onDrawerClose} open={isOpenDrawer} getContainer={false}>
+		<Drawer
+			placement="left"
+			classNames={{ body: "drawer-body" }}
+			closable={false}
+			onClose={onDrawerClose}
+			open={isOpenDrawer}
+			getContainer={false}
+		>
 			<UIROOT className="notify">
 				<div className="header">
 					<div className="left">
 						<img className="img" src={notifyPng} />
 						<div className="text">通知</div>
 					</div>
-					{/* <Button style={{ background: "#5966D6" }} type="primary">
-						全部已读
-					</Button> */}
 				</div>
 				<div className="content">
-					{inviteList.length === 0 && <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-					{inviteList.length > 0 &&
-						inviteList.map((item, index) => {
-							return <NotifyItem key={"invite_list_" + index} info={item} freshInviteList={freshInviteList} />;
+					{noticeList.length === 0 && (
+						<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+					)}
+					{noticeList.length > 0 &&
+						noticeList.map((item, index) => {
+							return (
+								<NotifyItem
+									key={"invite_list_" + index}
+									info={item}
+									freshList={freshList}
+								/>
+							);
 						})}
 				</div>
 			</UIROOT>

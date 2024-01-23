@@ -224,7 +224,6 @@ const ApproveSetting: React.FC<any> = ({
 		try {
 			const allP = diffIds.map((id) => {
 				return approvePersonAdd({
-					projectSaleId: curMenu.id,
 					carbonUserId: id,
 					relationUserId: id,
 				});

@@ -19,7 +19,9 @@ interface DefaultHeaderGroupProps {
 	children?: React.ReactNode;
 }
 
-const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{children}</div>) <DefaultHeaderGroupProps>`
+const DefaultHeaderGroup = styled(({ children, ...rest }) => (
+	<div {...rest}>{children}</div>
+))<DefaultHeaderGroupProps>`
 	display: flex;
 	overflow: hidden;
 	opacity: ${({ toggle }) => (toggle ? 0 : 1)};
@@ -32,11 +34,14 @@ const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{chi
 interface HeaderProps {
 	selectedRows: any[];
 	setSelectedRows: (v: any[]) => void;
-	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({ selectedRows, setSelectedRows, ...rest }) => {
+const Header: React.FC<HeaderProps> = ({
+	selectedRows,
+	setSelectedRows,
+	...rest
+}) => {
 	const isArchiveView = false;
 	const [hasSelected, setHasSelected] = useState<boolean>(false);
 
@@ -48,7 +53,11 @@ const Header: React.FC<HeaderProps> = ({ selectedRows, setSelectedRows, ...rest 
 		<HeaderRoot>
 			<DefaultHeaderGroup toggle={Number(isArchiveView)}>
 				<DefaultHeader hasSelected={hasSelected} {...rest} />
-				<BatchHeader hasSelected={hasSelected} selectedRows={selectedRows} setSelectedRows={setSelectedRows} />
+				<BatchHeader
+					hasSelected={hasSelected}
+					selectedRows={selectedRows}
+					setSelectedRows={setSelectedRows}
+				/>
 			</DefaultHeaderGroup>
 		</HeaderRoot>
 	);

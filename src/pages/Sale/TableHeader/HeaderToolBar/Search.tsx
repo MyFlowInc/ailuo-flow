@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
 
 import SearchFilled from "../../../../assets/icons/SearchFilled";
 import { IfetchSaleList } from "../../types";
+import { SaleManageContext } from "../../SaleManage";
 
 const SearchRoot = styled.div`
 	display: flex;
@@ -12,16 +13,15 @@ const SearchRoot = styled.div`
 
 interface SearchProps {
 	columns: any[];
-	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const Search: React.FC<SearchProps> = ({ columns, fetchSaleList }) => {
+const Search: React.FC<SearchProps> = ({ columns }) => {
 	const [form] = Form.useForm();
 	const options = columns;
 	const [inputValue, setInputValue] = useState<string>("");
 	const [selectValue, setSelectValue] = useState<string>("name");
-
+	const { fetchSaleList } = useContext(SaleManageContext);
 	const handleSearch = async () => {
 		await fetchSaleList({
 			search: {

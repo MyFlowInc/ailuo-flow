@@ -24,7 +24,7 @@ export interface FlowItemTableDataType {
 }
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
-	fetchSaleList: IfetchSaleList; // 获取销售列表
+
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -152,7 +152,7 @@ const TableBody: React.FC<FlowTableProps> = ({
 	editFlowItemRecord,
 	...rest
 }) => {
-	const { tableDataSource, fetchSaleList } = rest;
+	const { tableDataSource } = rest;
 	const [dstColumns] = useState<any>(columns);
 	const [open, setOpen] = useState<boolean>(false);
 	return (
@@ -164,7 +164,6 @@ const TableBody: React.FC<FlowTableProps> = ({
 				{...rest}
 			/>
 			<EditRecordModal
-				fetchSaleList={fetchSaleList}
 				open={open}
 				setOpen={setOpen}
 				editFlowItemRecord={editFlowItemRecord}

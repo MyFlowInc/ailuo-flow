@@ -9,15 +9,18 @@ import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
 import { MainStatus } from "../../api/ailuo/dict";
+import { SaleManageContext } from "./SaleManage";
 
 const MyQuoteProcess: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
-	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(undefined); // 当前编辑的记录
+	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
+		undefined,
+	); // 当前编辑的记录
 	const curPage = useRef({
 		pageNum: 1,
 		pageSize: 50,
-		total: 0
+		total: 0,
 	});
 
 	const deleteFlowItemHandler = async (id: number) => {
@@ -36,7 +39,7 @@ const MyQuoteProcess: React.FC = () => {
 			const res = await saleProjectList({
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
-				status: MainStatus.QuotationReview
+				status: MainStatus.QuotationReview,
 			});
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
@@ -59,21 +62,25 @@ const MyQuoteProcess: React.FC = () => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<DashboardRoot>
-				{/* 表头 */}
-				<TableHeader selectedRows={selectedRows} fetchSaleList={fetchSaleList} setSelectedRows={setSelectedRows} />
-				{loading && <BaseLoading />}
-				{/* 表格主体 */}
-				<TableBody
-					tableDataSource={tableDataSource} // 数据源
-					fetchSaleList={fetchSaleList}
-					{...{ curPage }}
-					editFlowItemRecord={editFlowItemRecord}
-					deleteFlowItem={deleteFlowItemHandler}
-					setEditFlowItemRecord={setEditFlowItemRecord}
-					setSelectedRows={setSelectedRows}
-				/>
-			</DashboardRoot>
+			<SaleManageContext.Provider value={{ fetchSaleList }}>
+				<DashboardRoot>
+					{/* 表头 */}
+					<TableHeader
+						selectedRows={selectedRows}
+						setSelectedRows={setSelectedRows}
+					/>
+					{loading && <BaseLoading />}
+					{/* 表格主体 */}
+					<TableBody
+						tableDataSource={tableDataSource} // 数据源
+						{...{ curPage }}
+						editFlowItemRecord={editFlowItemRecord}
+						deleteFlowItem={deleteFlowItemHandler}
+						setEditFlowItemRecord={setEditFlowItemRecord}
+						setSelectedRows={setSelectedRows}
+					/>
+				</DashboardRoot>
+			</SaleManageContext.Provider>
 		</ConfigProvider>
 	);
 };

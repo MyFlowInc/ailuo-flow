@@ -21,6 +21,7 @@ import { IfetchSaleList } from "../types";
 import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
+import { SaleManageContext } from "../SaleManage";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -67,7 +68,7 @@ const CustomModalRoot = styled.div`
 interface CustomModalProps {
 	title: string;
 	open: boolean;
-	fetchSaleList: IfetchSaleList; // 获取销售列表
+
 	setOpen: (value: boolean) => void;
 	statusList: WorkFlowStatusInfo[];
 	modalType: string;
@@ -383,12 +384,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	editFlowItemRecord,
-	fetchSaleList,
 }) => {
 	const location = useLocation();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const { fetchSaleList } = useContext(SaleManageContext);
 
 	// // esc handler
 	// useEffect(() => {
@@ -473,6 +474,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			await inputForm.validateFields();
 			try {
 				params.typeSelection = JSON.stringify(params.typeSelection);
+				params.modeTrade = JSON.stringify(params.modeTrade);
+				params.payType = JSON.stringify(params.payType);
 			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
@@ -508,7 +511,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (!form) {
 			return;
 		}
-		console.log("form =", form.status);
 		const { id, status } = form;
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {

@@ -7,7 +7,10 @@ import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import { selectIsShowSaleModal, setIsShowSaleModal } from "../../../store/globalSlice";
+import {
+	selectIsShowSaleModal,
+	setIsShowSaleModal,
+} from "../../../store/globalSlice";
 import { useLocation } from "react-router";
 import { IfetchSaleList } from "../types";
 
@@ -36,37 +39,41 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 
 interface DefaultHeaderProps {
 	hasSelected: boolean;
-	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected, fetchSaleList }) => {
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
-	const { pathname } = location
+	const { pathname } = location;
 
 	const isShowSaleModal = useAppSelector(selectIsShowSaleModal);
 	const setOpen = (value: boolean) => {
 		dispatch(setIsShowSaleModal(value));
 	};
 	const HeaderButtonView = () => {
-		if (pathname === '/dashboard/quote-manage') {
-			return <ConfigProvider theme={blueButtonTheme}>
-				<Button type="primary" icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />} onClick={() => setOpen(true)}>
-					新建报价
-				</Button>
-			</ConfigProvider>
+		if (pathname === "/dashboard/quote-manage") {
+			return (
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						type="primary"
+						icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />}
+						onClick={() => setOpen(true)}
+					>
+						新建报价
+					</Button>
+				</ConfigProvider>
+			);
 		}
-		return <div></div>
-
-	}
+		return <div></div>;
+	};
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
 			{HeaderButtonView()}
 			<div className="default-header-right">
-				<HeaderToolBar fetchSaleList={fetchSaleList} />
+				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} fetchSaleList={fetchSaleList} />
+			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} />
 		</DefaultHeaderRoot>
 	);
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -10,6 +10,7 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { IfetchSaleList } from "./types";
+import { SaleManageContext } from "./SaleManage";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -97,7 +98,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 interface StandardTableProps {
 	tableDataSource: any[];
-	fetchSaleList: IfetchSaleList; // 获取销售列表
+
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -115,13 +116,15 @@ interface StandardTableProps {
 const StandardTable: React.FC<StandardTableProps> = ({
 	columns,
 	datasource,
-	fetchSaleList,
+
 	setSelectedRows,
 	curPage,
 	...rest
 }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+	const { fetchSaleList } = useContext(SaleManageContext);
+
 	const getTableColumns = () => {
 		const tColumns: any = [
 			...columns.map((item: any, cIndex: number) => {

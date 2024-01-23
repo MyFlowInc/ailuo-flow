@@ -8,11 +8,10 @@ import LinePng from "../../../../assets/line.png";
 import { IfetchSaleList } from "../../types";
 
 interface HeaderToolBarProps {
-	fetchSaleList: IfetchSaleList; // 获取销售列表
 	children?: React.ReactNode;
 }
 
-const HeaderToolBar: React.FC<HeaderToolBarProps> = ({ fetchSaleList }) => {
+const HeaderToolBar: React.FC<HeaderToolBarProps> = ({}) => {
 	// const dstColumns = useAppSelector(selectCurTableColumn);
 	// const records = useAppSelector(selectCurTableRecords);
 	const dstColumns = [
@@ -21,18 +20,22 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = ({ fetchSaleList }) => {
 		{ label: "销售经理", key: "salesManager", value: "salesManager" },
 		{ label: "报价开始日期", key: "quotationBegin", value: "quotationBegin" },
 		{ label: "扭矩/推力", key: "torqueThrust", value: "torqueThrust" },
-		{ label: "其他技术要求", key: "otherTechnicalRequirements", value: "otherTechnicalRequirements" },
+		{
+			label: "其他技术要求",
+			key: "otherTechnicalRequirements",
+			value: "otherTechnicalRequirements",
+		},
 		{ label: "执行机构形式", key: "mechanismForm", value: "mechanismForm" },
 		{ label: "货币", key: "currency", value: "currency" },
 		{ label: "交期", key: "quotationEnd", value: "quotationEnd" },
 		{ label: "质保", key: "qualityTime", value: "qualityTime" },
 		{ label: "贸易方式", key: "modeTrade", value: "modeTrade" },
-		{ label: "付款方式", key: "payType", value: "payType" }
+		{ label: "付款方式", key: "payType", value: "payType" },
 	];
 	const records = [] as any;
 	return (
 		<Space>
-			<Search columns={dstColumns} fetchSaleList={fetchSaleList} />
+			<Search columns={dstColumns} />
 			<Filter records={records} columns={dstColumns} />
 			<img src={LinePng} style={{ width: "14px", height: "14px" }} />
 			<Sort columns={dstColumns} />

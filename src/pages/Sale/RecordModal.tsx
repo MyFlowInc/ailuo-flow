@@ -5,12 +5,13 @@ import { IfetchSaleList } from "./types";
 
 interface AddRecordModalProps {
 	open: boolean;
-	fetchSaleList: IfetchSaleList; // 获取销售列表
 	setOpen: (a: boolean) => void;
 }
 
-export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordModalProps) => {
-	const { open, setOpen, fetchSaleList } = props;
+export const AddRecordModal: React.FC<AddRecordModalProps> = (
+	props: AddRecordModalProps,
+) => {
+	const { open, setOpen } = props;
 
 	const statusList: any = [];
 
@@ -19,24 +20,31 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 		open,
 		setOpen,
 		statusList,
-		fetchSaleList,
-		modalType: "add"
+		modalType: "add",
 	};
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
+	return (
+		<Modal
+			open={open}
+			modalRender={modalRender}
+			width={528}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
+	);
 };
 
 interface EditRecordModalProps {
 	open: boolean;
-	fetchSaleList: IfetchSaleList; // 获取销售列表
+
 	setOpen: (a: boolean) => void;
 	editFlowItemRecord: any | undefined;
 }
 
-export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
-	const { editFlowItemRecord, open, setOpen, fetchSaleList } = props;
+export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
+	const { editFlowItemRecord, open, setOpen } = props;
 
 	const statusList: any = [];
 
@@ -45,12 +53,20 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
 		open,
 		setOpen,
 		statusList,
-		fetchSaleList,
+
 		modalType: "edit",
-		editFlowItemRecord
+		editFlowItemRecord,
 	};
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
+	return (
+		<Modal
+			open={open}
+			modalRender={modalRender}
+			width={528}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
+	);
 };

@@ -10,14 +10,18 @@ import TableBody from "./TableBody";
 import _ from "lodash";
 import { IfetchSaleList } from "./types";
 
+export const SaleManageContext = React.createContext<any>({});
+
 const SaleManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
-	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(undefined); // 当前编辑的记录
+	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
+		undefined,
+	); // 当前编辑的记录
 	const curPage = useRef({
 		pageNum: 1,
 		pageSize: 50,
-		total: 0
+		total: 0,
 	});
 
 	const deleteFlowItemHandler = async (id: number) => {
@@ -35,16 +39,16 @@ const SaleManage: React.FC = () => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
-				pageSize: curPage.current.pageSize
-			}
+				pageSize: curPage.current.pageSize,
+			};
 			if (options.status) {
-				params.status = options.status
+				params.status = options.status;
 			}
 			if (options.search) {
 				params = {
 					...params,
-					...options.search
-				}
+					...options.search,
+				};
 			}
 			const res = await saleProjectList(params);
 			const list = _.get(res, "data.record") || [];
@@ -68,21 +72,25 @@ const SaleManage: React.FC = () => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<DashboardRoot>
-				{/* 表头 */}
-				<TableHeader selectedRows={selectedRows} fetchSaleList={fetchSaleList} setSelectedRows={setSelectedRows} />
-				{loading && <BaseLoading />}
-				{/* 表格主体 */}
-				<TableBody
-					tableDataSource={tableDataSource} // 数据源
-					fetchSaleList={fetchSaleList}
-					{...{ curPage }}
-					editFlowItemRecord={editFlowItemRecord}
-					deleteFlowItem={deleteFlowItemHandler}
-					setEditFlowItemRecord={setEditFlowItemRecord}
-					setSelectedRows={setSelectedRows}
-				/>
-			</DashboardRoot>
+			<SaleManageContext.Provider value={{ fetchSaleList }}>
+				<DashboardRoot>
+					{/* 表头 */}
+					<TableHeader
+						selectedRows={selectedRows}
+						setSelectedRows={setSelectedRows}
+					/>
+					{loading && <BaseLoading />}
+					{/* 表格主体 */}
+					<TableBody
+						tableDataSource={tableDataSource} // 数据源
+						{...{ curPage }}
+						editFlowItemRecord={editFlowItemRecord}
+						deleteFlowItem={deleteFlowItemHandler}
+						setEditFlowItemRecord={setEditFlowItemRecord}
+						setSelectedRows={setSelectedRows}
+					/>
+				</DashboardRoot>
+			</SaleManageContext.Provider>
 		</ConfigProvider>
 	);
 };

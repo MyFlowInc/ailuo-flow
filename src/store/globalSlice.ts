@@ -18,7 +18,7 @@ export interface User {
 	endTime: string;
 	email: string;
 	isInvite: number;
-	roles: Array<{id: string, name: string, code: string}>
+	roles: Array<{ id: string, name: string, code: string }>
 }
 
 export interface DeveloperUser {
@@ -35,7 +35,6 @@ export interface DeveloperUser {
 export interface globalState {
 	user: User;
 	userMenus: IMenu[];
-	gradeList: any[];
 	Authorization: string;
 	"Authorization-key": string;
 	collapsed: boolean; // side menu
@@ -48,12 +47,12 @@ export interface globalState {
 	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知,
 	flowStatus: IFlowStatus[];
+
 }
 
 const initialState: globalState = {
 	user: {} as User,
 	userMenus: [],
-	gradeList: [],
 	Authorization: "",
 	"Authorization-key": "",
 	is_archive: false,
@@ -137,9 +136,7 @@ export const globalSlice = createSlice({
 		builder.addCase(freshUser.fulfilled, (state, action) => {
 			state.user = action.payload;
 		});
-		builder.addCase(freshGradeList.fulfilled, (state, action) => {
-			state.gradeList = action.payload;
-		});
+
 	}
 });
 
@@ -170,7 +167,6 @@ export const selectIsOpenDrawer = (state: RootState) => state.global.isOpenDrawe
 export const selectIsArchive = (state: RootState) => state.global.is_archive;
 export const selectIsArchiveView = (state: RootState) => state.global.is_archive_view;
 export const selectIsShowTour = (state: RootState) => state.global.is_show_tour;
-export const selectGradeList = (state: RootState) => state.global.gradeList;
 
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;

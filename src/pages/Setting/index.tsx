@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Layout, ConfigProvider } from "antd";
 import NavMenu from "../../components/Setting/NavMenu";
 import Personal from "./Personal";
-import Upgrade from "./Upgrade";
 import Security from "./Security";
 import { useLoginByCache } from "../../hooks";
 
@@ -56,9 +55,7 @@ const Setting: React.FC = () => {
 								<Route path="/setting/security" exact={true}>
 									<Security />
 								</Route>
-								<Route path="/setting/upgrade" exact={true}>
-									<Upgrade />
-								</Route>
+
 							</Switch>
 						</Layout.Content>
 					</Layout>

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useAppDispatch } from "../../../store/hooks";
 import { updateCurFlowDstId } from "../../../store/workflowSlice";
+import { Badge } from "antd";
+import { MenuContext } from ".";
 
 interface MenutItemRootProps {
 	selected: boolean;
@@ -67,14 +69,9 @@ interface MenuItemProps {
 	onClick?: () => void;
 }
 const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon, extra, isSelected, isExtraShow, onClick, style }) => {
-	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const history = useHistory();
-
-	const setCurFlowDstId = (value: string | null) => {
-		dispatch(updateCurFlowDstId(value));
-	};
-
+	const { totalInfo } = useContext(MenuContext)
 	// menu router jump
 	const routerJumpHandler = () => {
 		switch (menuKey) {
@@ -92,11 +89,32 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				const path = "/dashboard" + menuKey;
 				if (path !== location.pathname) {
 					history.push(path);
-					setCurFlowDstId(menuKey);
 				}
 		}
 	};
-
+	const TimeView = (menuName: string) => {
+		const myQuote = totalInfo?.myQuote
+		const notice = totalInfo?.notice
+		if (menuKey === '/my-quote-process' && myQuote) {
+			return (
+				<div className="flex items-center">
+					<div>{menuName}</div>
+					<Badge className="ml-2" count={myQuote}>
+					</Badge>
+				</div>
+			)
+		}
+		if (menuKey === 'notification' && notice) {
+			return (
+				<div className="flex items-center">
+					<div>{menuName}</div>
+					<Badge className="ml-2" count={notice}>
+					</Badge>
+				</div>
+			)
+		}
+		return menuName
+	}
 	return (
 		<MenutItemRoot collapsed={collapsed} selected={isSelected} style={style}>
 			{collapsed ? (
@@ -112,7 +130,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				<>
 					<div className="menuitem-icon">{icon}</div>
 					<div className="menuitem-text" onClick={routerJumpHandler}>
-						{menuName}
+						{TimeView(menuName)}
 					</div>
 					<div className="menuitem-extra">{extra}</div>
 				</>

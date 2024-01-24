@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectCollapsed, setIsOpenDrawer, setUserMenus } from "../../../store/globalSlice";
+import { selectCollapsed, selectUser, setIsOpenDrawer, setUserMenus } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
@@ -9,6 +9,10 @@ import MenuGroup from "./MenuGroup";
 import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
 import { useHistory } from "react-router";
+import { saleProjectList } from "../../../api/ailuo/sale";
+import { MainStatus } from "../../../api/ailuo/dict";
+import _ from "lodash";
+import { noticeListFetch } from "../../../api/ailuo/notice";
 
 const MenuRoot = styled.div<{ collapsed: boolean }>`
 	display: flex;
@@ -71,11 +75,71 @@ const MenuRoot = styled.div<{ collapsed: boolean }>`
 	}
 `;
 
+export const MenuContext = React.createContext<any>({});
+
 const Menu: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const collapsed = useAppSelector(selectCollapsed);
 	const history = useHistory();
+	const user = useAppSelector(selectUser);
 	const [menus, setMenus] = useState<any[]>([]);
+	// 轮训获取次数
+	const [totalInfo, setTotalInfo] = useState<{}>({
+		myQuote: 0,
+		notice: 0,
+	});
+
+	const handleQuote = async () => {
+		try {
+			const res = await saleProjectList({
+				pageNum: 1,
+				pageSize: 20,
+				status: MainStatus.QuotationReview,
+			});
+			const list = _.get(res, "data.record") || [];
+			return list.length;
+		} catch (error) {
+
+		}
+
+	};
+	const handleNotice = async () => {
+		try {
+			const res = await noticeListFetch(user.id);
+			const record = _.get(res, "data.record");
+			console.log("fetchNoticeList", res);
+			const unRead = record.filter((item: any) => !item.isRead)
+			return unRead.length;
+		} catch (error) {
+
+		}
+
+	}
+	const handlePolling = async () => {
+		const myQuote = await handleQuote() || 0;
+		const notice = await handleNotice() || 0;
+		console.log("handlePolling", myQuote, notice);
+		setTotalInfo({
+			myQuote,
+			notice,
+		});
+
+	}
+	useEffect(() => {
+		if (!_.isEmpty(user)) {
+			setTimeout(() => {
+				handlePolling();
+			}, 2 * 1000)
+			const timer = setInterval(async () => {
+				// 访问的API地址部分，按你实际情况编写
+				await handlePolling();
+			}, 60 * 1000);
+			return () => clearInterval(timer);
+		}
+
+	}, [user]);
+
+
 	const showDrawer = () => {
 		dispatch(setIsOpenDrawer(true));
 	};
@@ -100,33 +164,36 @@ const Menu: React.FC = () => {
 	}, []);
 
 	return (
-		<MenuRoot collapsed={collapsed}>
-			<div className="menu-content">
-				<MenuGroupContext menuList={menus} title="销售部" groupStyle={{ paddingBottom: "18px" }} />
-			</div>
-			<div className="menu-extra">
-				<MenuGroup>
-					<MenuItem
-						collapsed={collapsed}
-						menuKey="notification"
-						menuName="通知"
-						onClick={showDrawer}
-						isSelected={false}
-						icon={<BellFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
-						style={{ marginBottom: "10px" }}
-					/>
-					<MenuItem
-						collapsed={collapsed}
-						menuName="帮助与支持"
-						menuKey="help"
-						isSelected={false}
-						icon={<AtFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
-						style={{ marginBottom: "10px" }}
-					/>
-				</MenuGroup>
-				{!collapsed && <div className="menu-bottom flex align-middle justify-center">由弗络科技技术驱动</div>}
-			</div>
-		</MenuRoot>
+		<MenuContext.Provider value={{ totalInfo }}>
+			<MenuRoot collapsed={collapsed}>
+				<div className="menu-content">
+					<MenuGroupContext menuList={menus} title="销售部" groupStyle={{ paddingBottom: "18px" }} />
+				</div>
+				<div className="menu-extra">
+					<MenuGroup>
+						<MenuItem
+							collapsed={collapsed}
+							menuKey="notification"
+							menuName="通知"
+							onClick={showDrawer}
+							isSelected={false}
+							icon={<BellFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
+							style={{ marginBottom: "10px" }}
+						/>
+						<MenuItem
+							collapsed={collapsed}
+							menuName="帮助与支持"
+							menuKey="help"
+							isSelected={false}
+							icon={<AtFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
+							style={{ marginBottom: "10px" }}
+						/>
+					</MenuGroup>
+					{!collapsed && <div className="menu-bottom flex align-middle justify-center">由弗络科技技术驱动</div>}
+				</div>
+			</MenuRoot>
+		</MenuContext.Provider>
+
 	);
 };
 

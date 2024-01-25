@@ -6,6 +6,7 @@ import { DashboardRoot } from "./styles";
 import _ from "lodash";
 import { IfetchSaleList } from "./types";
 import CustomModal from "./FormModal/CustomModal";
+import PublicAddEditor from "./FormModal/PublicAddEditor";
 
 export const PublicAddQuoteContext = React.createContext<any>({});
 
@@ -26,7 +27,7 @@ const PublicAddQuote: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<PublicAddQuoteContext.Provider value={{}}>
-				<CustomModal {...{ props }} />
+				<PublicAddEditor />
 			</PublicAddQuoteContext.Provider>
 		</ConfigProvider>
 	);

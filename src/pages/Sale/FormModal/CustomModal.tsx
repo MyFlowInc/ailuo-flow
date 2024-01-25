@@ -84,7 +84,7 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = [
+export const columns: any = [
 	{
 		title: "项目名称",
 		dataIndex: "name",
@@ -475,7 +475,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -497,7 +497,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -714,7 +714,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

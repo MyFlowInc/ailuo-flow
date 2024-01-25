@@ -233,7 +233,7 @@ const columns: any = [
 		title: "关联报价",
 		dataIndex: "relateQuote",
 		key: "relateQuote",
-		type: NumFieldType.SingleText,
+		type: NumFieldType.RelationView,
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {

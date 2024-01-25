@@ -65,7 +65,7 @@ interface CustomModalProps {
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
-	Object.keys(obj).forEach(key => {
+	Object.keys(obj).forEach((key) => {
 		if (obj[key] === undefined || obj[key] === null) {
 			return;
 		}
@@ -73,8 +73,11 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = (mode: '1' | '2', setMode: any, setShowDstColumns: any) => {
-
+const columns: any = (
+	mode: "1" | "2",
+	setMode: any,
+	setShowDstColumns: any,
+) => {
 	const defaultColumns = [
 		{
 			title: "项目名称",
@@ -82,7 +85,7 @@ const columns: any = (mode: '1' | '2', setMode: any, setShowDstColumns: any) => 
 			dataIndex: "name",
 			key: "name",
 			fixed: "left",
-			type: NumFieldType.SingleText
+			type: NumFieldType.SingleText,
 		},
 		{
 			title: "分析结果",
@@ -92,80 +95,79 @@ const columns: any = (mode: '1' | '2', setMode: any, setShowDstColumns: any) => 
 			type: NumFieldType.SingleText,
 			render: (column: any, key: string, form: any, setForm: any) => {
 				const onChange = (e: any) => {
-					setMode(e.target.value)
-					setForm({ ...form, result: e.target.value })
-				}
+					setMode(e.target.value);
+					setForm({ ...form, result: e.target.value });
+				};
 				return (
-					<div className="w-full" key={'result_' + key}>
+					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
 							<Radio.Group onChange={onChange} value={mode}>
 								<Space direction="vertical">
-									<Radio value={'1'}>常规产品，无特殊改动</Radio>
-									<Radio value={'2'}>非常规产品，填写分析意见</Radio>
+									<Radio value={"1"}>常规产品，无特殊改动</Radio>
+									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
 								</Space>
 							</Radio.Group>
 						</div>
 					</div>
-				)
-			}
+				);
+			},
 		},
 		{
-			title: "关联报价", dataIndex: "relateQuote", key: "relateQuote",
-			type: NumFieldType.SingleText,
-			render: (column: any, key: string, form: any, setForm: any) => {
-				return (
-					<div className="w-full" key={key}>
-						<div className="flex mb-4">
-							<div style={{ width: "100px" }}>关联报价</div>
-							<Tag color="blue">关联报价</Tag>
-						</div>
-					</div>
-				)
-			}
+			title: "关联报价",
+			dataIndex: "relateQuote",
+			key: "relateQuote",
+			type: NumFieldType.RelationView,
 		},
-	]
-	if (mode === '1') {
-		return defaultColumns
+	];
+	if (mode === "1") {
+		return defaultColumns;
 	}
-	if (mode === '2') {
-		const idx = _.findIndex(defaultColumns, { title: '分析结果' })
+	if (mode === "2") {
+		const idx = _.findIndex(defaultColumns, { title: "分析结果" });
 		const extraColumns: any = [
 			{
 				title: "选型分析",
 				dataIndex: "selectionAnalysis",
 				key: "selectionAnalysis",
-				type: NumFieldType.Text
+				type: NumFieldType.Text,
 			},
 			{
 				title: "生产分析",
 				dataIndex: "productionAnalysis",
 				key: "productionAnalysis",
-				type: NumFieldType.Text
+				type: NumFieldType.Text,
 			},
 			{
 				title: "附件",
 				dataIndex: "attach",
 				key: "attach",
-				type: NumFieldType.Attachment
+				type: NumFieldType.Attachment,
 			},
-		]
+		];
 
-		defaultColumns.splice(idx + 1, 0, ...extraColumns)
-		return defaultColumns
+		defaultColumns.splice(idx + 1, 0, ...extraColumns);
+		return defaultColumns;
 	}
-	return defaultColumns
+	return defaultColumns;
 };
 
-
-const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType, open, setOpen, editFlowItemRecord, fetchTechFeedbackList }) => {
+const CustomModal: React.FC<CustomModalProps> = ({
+	title,
+	statusList,
+	modalType,
+	open,
+	setOpen,
+	editFlowItemRecord,
+	fetchTechFeedbackList,
+}) => {
 	const dispatch = useAppDispatch();
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
-	const [mode, setMode] = useState<'1' | '2'>('1');
+	const [mode, setMode] = useState<"1" | "2">("1");
 
 	useEffect(() => {
-		setShowDstColumns(columns(mode, setMode, setShowDstColumns))
-	}, [mode])
+		setShowDstColumns(columns(mode, setMode, setShowDstColumns));
+	}, [mode]);
 
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -194,7 +196,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
 			if (temp.result) {
-				setMode(temp.result)
+				setMode(temp.result);
 			}
 			inputForm.setFieldsValue(temp);
 		}
@@ -209,7 +211,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
 		try {
-			return
+			return;
 		} catch (error) {
 			console.log(error);
 		}
@@ -220,7 +222,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		inputForm.setFieldsValue(rest);
 		const params = {
 			id,
-			...rest
+			...rest,
 		};
 		try {
 			await inputForm.validateFields();
@@ -240,7 +242,10 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			updateRecord();
 		}
 	};
-	const changeProcess = async (form: any, status: ITechStatus[keyof ITechStatus]) => {
+	const changeProcess = async (
+		form: any,
+		status: ITechStatus[keyof ITechStatus],
+	) => {
 		try {
 			const { id } = form;
 			await changeStatus({ id, status });
@@ -271,14 +276,15 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 							style={{ color: "#000" }}
 							onClick={() => {
 								changeProcess(form, ITechStatus.Processing);
-							}}>
+							}}
+						>
 							{"开始审阅"}
 						</Tag>
 					</div>
 				</div>
 			);
 		}
-		if (id && (status === ITechStatus.Processing)) {
+		if (id && status === ITechStatus.Processing) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -294,14 +300,15 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 							style={{ color: "#000" }}
 							onClick={() => {
 								changeProcess(form, ITechStatus.Over);
-							}}>
+							}}
+						>
 							{"完成审核"}
 						</Tag>
 					</div>
 				</div>
 			);
 		}
-		if (id && (status === ITechStatus.Over)) {
+		if (id && status === ITechStatus.Over) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -310,8 +317,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 							{"已完成"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
-					</div>
+					<div className="flex cursor-pointer"></div>
 				</div>
 			);
 		}
@@ -337,7 +343,14 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			<div className="header">
 				<div className="title">{title}</div>
 				<div>
-					<Button style={{ fontSize: "12px", background: "#F2F3F5", marginRight: "18px" }} onClick={() => setOpen(false)}>
+					<Button
+						style={{
+							fontSize: "12px",
+							background: "#F2F3F5",
+							marginRight: "18px",
+						}}
+						onClick={() => setOpen(false)}
+					>
 						取消
 					</Button>
 					<ConfigProvider theme={blueButtonTheme}>
@@ -350,8 +363,23 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			{StatusView()}
 
 			<div className="content">
-				<Form form={inputForm} name="recordForm" colon={false} wrapperCol={{ flex: 1 }} preserve={false}>
-					{showDstColumns.length > 0 ? <CellEditorContext form={form} setForm={setForm} dstColumns={showDstColumns} modalType={modalType} /> : <NoFieldData />}
+				<Form
+					form={inputForm}
+					name="recordForm"
+					colon={false}
+					wrapperCol={{ flex: 1 }}
+					preserve={false}
+				>
+					{showDstColumns.length > 0 ? (
+						<CellEditorContext
+							form={form}
+							setForm={setForm}
+							dstColumns={showDstColumns}
+							modalType={modalType}
+						/>
+					) : (
+						<NoFieldData />
+					)}
 				</Form>
 			</div>
 			<div className="footer"></div>

@@ -142,8 +142,8 @@ const Menu: React.FC = () => {
 	const fetchMenu = async () => {
 		try {
 			const res = await getUserMenu();
-			const menus = res.data || [];
-			menus.sort((a, b) => a.sort - b.sort);
+			const menus: any = _.get(res, "data.0.children") || [];
+			menus.sort((a: any, b: any) => a.sort - b.sort);
 			// 菜单列表
 			setMenus(menus);
 			dispatch(setUserMenus(menus));

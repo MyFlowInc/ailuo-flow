@@ -22,74 +22,75 @@ import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
 import TypeText from "./TypeText";
+import TypeRelationView from "./TypeRelationView";
 
 export const FieldTypeList = [
 	{
 		key: "SingleText",
 		label: "文本",
 		type: NumFieldType.SingleText,
-		icon: <img src={labelSvg} width={12} height={12} />
+		icon: <img src={labelSvg} width={12} height={12} />,
 	},
 	{
 		key: "Number",
 		label: "数字",
 		type: NumFieldType.Number,
-		icon: <img src={numSvg} width={12} height={12} />
+		icon: <img src={numSvg} width={12} height={12} />,
 	},
 	{
 		key: "SingleSelect",
 		label: "单选",
 		type: NumFieldType.SingleSelect,
-		icon: <img src={singleSvg} width={12} height={12} />
+		icon: <img src={singleSvg} width={12} height={12} />,
 	},
 	{
 		key: "MultiSelect",
 		label: "多选",
 		type: NumFieldType.MultiSelect,
-		icon: <img src={multiSvg} width={12} height={12} />
+		icon: <img src={multiSvg} width={12} height={12} />,
 	},
 	{
 		key: "DateTime",
 		label: "日期",
 		type: NumFieldType.DateTime,
-		icon: <img src={dateSvg} width={12} height={12} />
+		icon: <img src={dateSvg} width={12} height={12} />,
 	},
 	{
 		key: "Member",
 		label: "成员",
 		type: NumFieldType.Member,
-		icon: <img src={memberSvg} width={12} height={12} />
+		icon: <img src={memberSvg} width={12} height={12} />,
 	},
 	{
 		key: "Attachment",
 		label: "媒体或文件",
 		type: NumFieldType.Attachment,
-		icon: <img src={mediaSvg} width={12} height={12} />
+		icon: <img src={mediaSvg} width={12} height={12} />,
 	},
 	{
 		key: "Link",
 		label: "网址链接",
 		type: NumFieldType.Link,
-		icon: <img src={linkSvg} width={12} height={12} />
+		icon: <img src={linkSvg} width={12} height={12} />,
 	},
 	{
 		key: "Email",
 		label: "邮箱",
 		type: NumFieldType.Email,
-		icon: <img src={mailSvg} width={12} height={12} />
+		icon: <img src={mailSvg} width={12} height={12} />,
 	},
 	{
 		key: "Phone",
 		label: "电话",
 		type: NumFieldType.Phone,
-		icon: <img src={phoneSvg} width={12} height={12} />
+		icon: <img src={phoneSvg} width={12} height={12} />,
 	},
 	{
 		key: "Discuss",
 		label: "评论",
 		type: NumFieldType.discuss,
-		icon: <EditFilled style={{ fontSize: "10px" }} />
-	}
+		icon: <EditFilled style={{ fontSize: "10px" }} />,
+	},
 ];
 
 interface TypeEditorProps {
@@ -140,7 +141,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 		case NumFieldType.Phone:
 			CellEditor = <TypePhone cell={cell} {...rest} />;
 			break;
-
+		case NumFieldType.RelationView:
+			CellEditor = <TypeRelationView cell={cell} {...rest} />;
+			break;
 		default:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;
 	}

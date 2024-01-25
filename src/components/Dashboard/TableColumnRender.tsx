@@ -62,7 +62,9 @@ export const NumFieldType = {
 	OptionStatus: 26,
 	discuss: 27,
 	SingleFixSelect: 28,
-	DeniedField: 999 // no permission column
+	RelationView: 29, // 关联报价
+
+	DeniedField: 999, // no permission column
 };
 export const ReverSedNumFieldType = {
 	"0": "NotSupport",
@@ -92,7 +94,7 @@ export const ReverSedNumFieldType = {
 	"25": "Cascader",
 	"26": "OptionStatus",
 	"27": "discuss",
-	"999": "DeniedField"
+	"999": "DeniedField",
 };
 
 interface TableColumnRenderProps {
@@ -109,7 +111,20 @@ interface TableColumnRenderProps {
 	children: React.ReactNode;
 }
 
-const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, ...restProps }) => {
+const TableColumnRender: React.FC<TableColumnRenderProps> = ({
+	rIndex,
+	cIndex,
+	record,
+	column,
+	reader,
+	writer,
+	manager,
+	searchText,
+	users,
+	view,
+	children,
+	...restProps
+}) => {
 	// console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
 	if (column === undefined || record === undefined) {
 		return <td {...restProps}>{children}</td>;
@@ -164,7 +179,10 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, r
 
 	let styles: React.CSSProperties = {};
 	if (cIndex === 0) {
-		styles = { position: "sticky", left: `${view === "standard" ? "29.5px" : "0px"}` };
+		styles = {
+			position: "sticky",
+			left: `${view === "standard" ? "29.5px" : "0px"}`,
+		};
 	}
 
 	return (
@@ -178,16 +196,32 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({ rIndex, cIndex, r
 
 export default TableColumnRender;
 
-const SingleText: React.FC<{ value: any; children?: React.ReactNode }> = ({ value }) => {
+const SingleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
+	value,
+}) => {
 	if (_.isArray(value)) {
-		return <div>{value && value.map && value.map((item: any, i: number) => <div key={i}>{item.text}</div>)}</div>;
+		return (
+			<div>
+				{value &&
+					value.map &&
+					value.map((item: any, i: number) => <div key={i}>{item.text}</div>)}
+			</div>
+		);
 	} else {
 		return <div>{value}</div>;
 	}
 };
 
-const MultipleText: React.FC<{ value: any; children?: React.ReactNode }> = ({ value }) => {
-	return <div>{value && value.map && value.map((item: any, idx: number) => <div key={idx}>{item.text}</div>)}</div>;
+const MultipleText: React.FC<{ value: any; children?: React.ReactNode }> = ({
+	value,
+}) => {
+	return (
+		<div>
+			{value &&
+				value.map &&
+				value.map((item: any, idx: number) => <div key={idx}>{item.text}</div>)}
+		</div>
+	);
 };
 
 const getStatusText = (value: any, fieldConfig: any) => {
@@ -202,14 +236,14 @@ const getStatusText = (value: any, fieldConfig: any) => {
 	if (typeof item0 === "string") {
 		options = temp.map((item: any) => ({
 			label: item,
-			value: item
+			value: item,
 		}));
 	}
 
 	if (typeof item0 === "object") {
 		options = temp.map((item: any) => ({
 			label: item.name,
-			value: item.id
+			value: item.id,
 		}));
 	}
 
@@ -223,7 +257,9 @@ const SingleSelect: React.FC<{
 }> = ({ value, fieldConfig }) => {
 	const text = getStatusText(value, fieldConfig);
 	// console.log("value", value, fieldConfig, text);
-	const color = _.find(_.get(fieldConfig, "property.options") || [], { id: value })?.color || "default";
+	const color =
+		_.find(_.get(fieldConfig, "property.options") || [], { id: value })
+			?.color || "default";
 	return text && text !== "" ? (
 		<Tag style={{ color: "#000" }} color={color}>
 			{text}
@@ -241,7 +277,7 @@ const MultiSelect: React.FC<{
 	const list = _.get(fieldConfig, "property.options") || [];
 	const options = list.map((item: any) => ({
 		label: item.name,
-		value: item.id
+		value: item.id,
 	}));
 
 	return (
@@ -318,12 +354,18 @@ const NetAddress: React.FC<{
 };
 
 const getMemberList = (value: any, userList: DeveloperUser[]) => {
-	if (typeof value === `undefined` || typeof userList === `undefined` || !(value instanceof Array)) {
+	if (
+		typeof value === `undefined` ||
+		typeof userList === `undefined` ||
+		!(value instanceof Array)
+	) {
 		return;
 	}
 
 	return value.map((item: string) => {
-		return userList.map(users => users.userInfo).filter(m => m.id === item)[0];
+		return userList
+			.map((users) => users.userInfo)
+			.filter((m) => m.id === item)[0];
 	});
 };
 
@@ -340,10 +382,14 @@ const MemberSelect: React.FC<{
 				memberList.map(
 					(member: any) =>
 						member && (
-							<Tag key={member.id} color="blue" icon={<Avatar src={member.avatar} />}>
+							<Tag
+								key={member.id}
+								color="blue"
+								icon={<Avatar src={member.avatar} />}
+							>
 								{member.nickname}
 							</Tag>
-						)
+						),
 				)}
 		</div>
 	);

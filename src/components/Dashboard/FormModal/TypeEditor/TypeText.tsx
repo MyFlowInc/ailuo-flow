@@ -41,6 +41,7 @@ const TypeText: React.FC<TypeTextEditorProps> = (
 	return (
 		<TextArea
 			rows={3}
+			value={form[cell.dataIndex]}
 			ref={(input) => {
 				if (!input) {
 					return;

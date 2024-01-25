@@ -78,11 +78,17 @@ const columns: any = [
 		title: "选型分析",
 		dataIndex: "selectionAnalysis",
 		key: "selectionAnalysis",
+		render: (text: string, record: any) => {
+			return <span>{record.selectionAnalysis}</span>;
+		},
 	},
 	{
 		title: "生产分析",
 		dataIndex: "productionAnalysis",
 		key: "productionAnalysis",
+		render: (text: string, record: any) => {
+			return <span>{record.productionAnalysis}</span>;
+		},
 	},
 	{
 		title: "附件",

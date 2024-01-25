@@ -101,22 +101,7 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 	);
 };
 const { Text } = Typography;
-const summary = (pageData: any) => {
-	let totalBorrow = 0;
-	// @ts-ignore
-	pageData.forEach(({ total }) => {
-		totalBorrow += total;
-	});
 
-	return (
-		<Table.Summary.Row>
-			<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
-			<Table.Summary.Cell index={1} colSpan={4}>
-				<Text>{totalBorrow}</Text>
-			</Table.Summary.Cell>
-		</Table.Summary.Row>
-	);
-};
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -257,7 +242,31 @@ const ModeSelectTable: React.FC = (props: any) => {
 			})
 		};
 	});
+	const summary = (pageData: any) => {
+		let totalBorrow = 0;
+		// @ts-ignore
+		pageData.forEach(({ total }) => {
+			totalBorrow += total;
+		});
+		const { currency } = form
+		let momey = "¥"
+		if (currency === "美元") {
+			momey = "$"
+		}
+		if (currency === "欧元") {
+			momey = "€"
+		}
 
+		return (
+			<Table.Summary.Row>
+				<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
+				<Table.Summary.Cell index={1} colSpan={4}>
+					<Text>{momey}</Text>
+					<Text className="ml-4">{totalBorrow}</Text>
+				</Table.Summary.Cell>
+			</Table.Summary.Row>
+		);
+	};
 	return (
 		<div className="w-full">
 			<div className="flex mb-4">

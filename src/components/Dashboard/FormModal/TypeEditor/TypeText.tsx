@@ -5,21 +5,20 @@
 import React, { useRef, useEffect, SyntheticEvent } from "react";
 import { Input } from "antd";
 
-interface TypeSingleTextEditorProps {
-	mode?: "multiple";
+interface TypeTextEditorProps {
 	cell: { key: string; dataIndex: string; name: string };
 	form: any;
 	setForm: any;
 }
+const { TextArea } = Input;
 
-const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
-	props: TypeSingleTextEditorProps,
+const TypeText: React.FC<TypeTextEditorProps> = (
+	props: TypeTextEditorProps,
 ) => {
 	const { cell, form, setForm } = props;
 	const el = useRef<any>(null);
 
 	useEffect(() => {
-		// console.log('useEffect--TypeSingleText', form)
 		forceSetValue();
 	}, [form]);
 
@@ -30,21 +29,19 @@ const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
 			...form,
 			[cell.dataIndex]: value,
 		});
-		// console.log("onChangeContent", form);
 	};
 
 	const forceSetValue = () => {
 		if (el.current) {
-			const input = el.current.input;
+			const input = el.current.resizableTextArea.textArea;
 			input.value = form[cell.dataIndex] || "";
 			input.setAttribute("value", form[cell.dataIndex] || "");
 		}
 	};
-
 	return (
-		<Input
+		<TextArea
+			rows={3}
 			ref={(input) => {
-
 				if (!input) {
 					return;
 				}
@@ -58,4 +55,4 @@ const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
 	);
 };
 
-export default TypeSingleText;
+export default TypeText;

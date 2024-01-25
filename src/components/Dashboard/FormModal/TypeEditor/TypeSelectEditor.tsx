@@ -17,6 +17,7 @@ const LabelRoot = styled.div`
 
 interface TypeSelectEditorProps {
 	mode?: "multiple";
+	fixed?: boolean
 	cell: TableColumnItem;
 	form: any;
 	setForm: any;
@@ -24,7 +25,7 @@ interface TypeSelectEditorProps {
 
 let index = 0;
 const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEditorProps) => {
-	const { mode, cell, form, setForm } = props;
+	const { mode, fixed, cell, form, setForm } = props;
 
 	const [items, setItems] = useState<string[]>([]);
 	const [name, setName] = useState("");
@@ -74,7 +75,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 			setTimeout(() => {
 				inputRef.current?.focus();
 			}, 0);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
@@ -125,16 +126,28 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 			[cell.key]: value
 		});
 	};
-	const Label: React.FC<{ item: string; children?: React.ReactNode }> = ({ item }) => {
+	const Label: React.FC<{ item: string; fixed?: boolean; children?: React.ReactNode }> = ({ item }) => {
 		return (
 			<LabelRoot>
 				<div>{item}</div>
-				<div>
+				<div className={fixed ? 'hidden' : ''}>
 					<Button type="text" icon={<CloseFilled style={{ fontSize: "10px", color: "#707683" }} />} onClick={e => removeItem(e, item)} />
 				</div>
 			</LabelRoot>
 		);
 	};
+	const dropdownRender = (menu: any) => (
+		<>
+			{menu}
+			<Divider style={{ margin: "8px 0" }} />
+			<Space style={{ padding: "0 8px 4px" }}>
+				<Input placeholder="请输入选项" ref={inputRef} value={name} onChange={onNameChange} onPressEnter={addItem as any} />
+				<Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+					添加项
+				</Button>
+			</Space>
+		</>
+	)
 	return (
 		<Select
 			style={{ width: "100%" }}
@@ -143,19 +156,8 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 			value={value}
 			onChange={handleSelectChange}
 			optionLabelProp="value"
-			dropdownRender={menu => (
-				<>
-					{menu}
-					<Divider style={{ margin: "8px 0" }} />
-					<Space style={{ padding: "0 8px 4px" }}>
-						<Input placeholder="请输入选项" ref={inputRef} value={name} onChange={onNameChange} onPressEnter={addItem as any} />
-						<Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-							添加项
-						</Button>
-					</Space>
-				</>
-			)}
-			options={items.map((item: any) => ({ label: <Label item={item} />, value: item }))}
+			dropdownRender={fixed ? undefined : dropdownRender}
+			options={items.map((item: any) => ({ label: <Label item={item} fixed={fixed} />, value: item }))}
 		/>
 	);
 };

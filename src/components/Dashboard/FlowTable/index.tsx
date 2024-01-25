@@ -39,7 +39,6 @@ const FlowTable: React.FC<FlowTableProps> = ({ dstId, editFlowItemRecord, freshF
 	const { statusId, statusFieldId } = rest;
 	const dstColumns = useAppSelector(selectCurTableColumn);
 	const datasource = useAppSelector(selectCurTableRows);
-	// const users = useAppSelector(selectMembers);
 	const isArchiveView = useAppSelector(selectIsArchiveView);
 
 	const [users, set] = useState<DeveloperUser[]>([]);

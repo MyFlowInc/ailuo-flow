@@ -21,6 +21,7 @@ import TypeMember from "./TypeMember";
 import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
+import TypeText from "./TypeText";
 
 export const FieldTypeList = [
 	{
@@ -102,6 +103,10 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 	let CellEditor: React.ReactNode;
 
 	switch (cell.type) {
+		case NumFieldType.Text:
+			// 多行文本
+			CellEditor = <TypeText cell={cell} {...rest} />;
+			break;
 		case NumFieldType.SingleText:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;
 			break;
@@ -110,6 +115,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 			break;
 		case NumFieldType.SingleSelect:
 			CellEditor = <TypeSelectEditor cell={cell} {...rest} />;
+			break;
+		case NumFieldType.SingleFixSelect:
+			CellEditor = <TypeSelectEditor fixed cell={cell} {...rest} />;
 			break;
 		case NumFieldType.MultiSelect:
 			CellEditor = <TypeSelectEditor mode="multiple" cell={cell} {...rest} />;

@@ -8,29 +8,29 @@ import { Link } from "react-router-dom";
 import type { DeveloperUser } from "../../store/globalSlice";
 /**
  * The type of field returned by the interface	The type of the corresponding field
-      SingleText	single-line text
-      Text	Multi-line text
-      SingleSelect	Single choice
-      MultiSelect	Multiple choice
-      Number	Number
-      Currency	Currency
-      Percent	Percentage
-      DateTime	Datetime
-      Attachment	Attachment
-      Member	Member
-      Checkbox	Check
-      Rating	Rating
-      URL	Website
-      Phone	A telephone number.
-      Email	Email
-      MagicLink	MagicLink
-      MagicLookUp	MagicLookUp
-      Formula	Intelligent formula
-      AutoNumber	Autoincrement number
-      CreatedTime	Create Timestamp
-      LastModifiedTime	Modify Timestamp
-      CreatedBy	Created by
-      LastModifiedBy	Updated by
+			SingleText	single-line text
+			Text	Multi-line text
+			SingleSelect	Single choice
+			MultiSelect	Multiple choice
+			Number	Number
+			Currency	Currency
+			Percent	Percentage
+			DateTime	Datetime
+			Attachment	Attachment
+			Member	Member
+			Checkbox	Check
+			Rating	Rating
+			URL	Website
+			Phone	A telephone number.
+			Email	Email
+			MagicLink	MagicLink
+			MagicLookUp	MagicLookUp
+			Formula	Intelligent formula
+			AutoNumber	Autoincrement number
+			CreatedTime	Create Timestamp
+			LastModifiedTime	Modify Timestamp
+			CreatedBy	Created by
+			LastModifiedBy	Updated by
  */
 export const NumFieldType = {
 	NotSupport: 0,
@@ -61,6 +61,7 @@ export const NumFieldType = {
 	Cascader: 25,
 	OptionStatus: 26,
 	discuss: 27,
+	SingleFixSelect: 28,
 	DeniedField: 999 // no permission column
 };
 export const ReverSedNumFieldType = {

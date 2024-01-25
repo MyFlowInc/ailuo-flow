@@ -135,13 +135,13 @@ const columns: any = (mode: '1' | '2', setMode: any, setShowDstColumns: any) => 
 				title: "选型分析",
 				dataIndex: "selectionAnalysis",
 				key: "selectionAnalysis",
-				type: NumFieldType.SingleText
+				type: NumFieldType.Text
 			},
 			{
 				title: "生产分析",
 				dataIndex: "productionAnalysis",
 				key: "productionAnalysis",
-				type: NumFieldType.SingleText
+				type: NumFieldType.Text
 			},
 			{
 				title: "附件",
@@ -191,7 +191,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 			return;
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
-			console.log(11, editFlowItemRecord);
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
 			if (temp.result) {
@@ -255,7 +254,6 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, statusList, modalType,
 		if (!form) {
 			return;
 		}
-		console.log("tech  form =", form.status);
 		const { id, status } = form;
 		if (id && (status === ITechStatus.Todo || !status)) {
 			return (

@@ -49,9 +49,6 @@ interface NotifyDrawerProps {
 	onDrawerClose: () => void;
 }
 const NotifyDrawer = (props: NotifyDrawerProps) => {
-	useEffect(() => {
-		console.log("NotifyDrawer NotifyDrawer",);
-	})
 	const { isOpenDrawer, onDrawerClose } = props;
 	const [noticeList, setNoticeList] = useState([]);
 	const user = useAppSelector(selectUser);

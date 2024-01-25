@@ -14,6 +14,7 @@ import { useLoginByCache } from "../hooks";
 import SaleManage from "../pages/Sale/SaleManage";
 import TechFeedBack from "../pages/Tech/TechFeedBack";
 import MyQuoteProcess from "../pages/Sale/MyQuoteProcess";
+import MySaleManage from "../pages/Sale/MySaleManage";
 
 const { Sider, Content } = Layout;
 const DashboardRouterOutlet: React.FC = () => {
@@ -69,6 +70,10 @@ const DashboardRouterOutlet: React.FC = () => {
 								{/* 报价管理 */}
 								<Route path="/dashboard/quote-manage" exact={true}>
 									<SaleManage />
+								</Route>
+								{/* 我的报价管理 */}
+								<Route path="/dashboard/my-quote" exact={true}>
+									<MySaleManage />
 								</Route>
 								{/* 报价技术反馈 */}
 								<Route path="/dashboard/quote-tech-feedback" exact={true}>

@@ -168,7 +168,8 @@ const columns: any = [
 		title: "货币",
 		dataIndex: "currency",
 		key: "currency",
-		type: NumFieldType.SingleText,
+		type: NumFieldType.SingleFixSelect,
+		dictCode: "currency",
 	},
 	{
 		title: "初步选型型号",
@@ -181,7 +182,7 @@ const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={key} className="w-full">
+				<div key={'ModeSelectTable_' + key} className="w-full">
 					<ModeSelectTable
 						key={"ModeSelectTable" + key}
 						{...{ column, form, setForm }}
@@ -445,13 +446,17 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			} catch (error) {
 				temp.payType = [];
 			}
+			if (!temp.currency) {
+				temp.currency = "人民币";
+			}
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-			if (statusList && statusList.length > 0) {
-			}
-			setForm({});
+
+			setForm({
+				currency: "人民币"
+			});
 		}
 	}, [open]);
 

@@ -69,7 +69,7 @@ const SaleManage: React.FC = () => {
 
 	useEffect(() => {
 		if (_.isEmpty(user)) {
-			return
+			return;
 		}
 		fetchSaleList();
 	}, [user]);

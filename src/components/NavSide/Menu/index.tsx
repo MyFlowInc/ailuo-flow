@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { selectCollapsed, selectUser, setIsOpenDrawer, setUserMenus } from "../../../store/globalSlice";
+import {
+	selectCollapsed,
+	selectUser,
+	setIsOpenDrawer,
+	setUserMenus,
+} from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import BellFilled from "../../../assets/icons/BellFilled";
 import AtFilled from "../../../assets/icons/AtFilled";
@@ -98,47 +103,37 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) {
-
-		}
-
+		} catch (error) {}
 	};
 	const handleNotice = async () => {
 		try {
 			const res = await noticeListFetch(user.id);
 			const record = _.get(res, "data.record");
-			console.log("fetchNoticeList", res);
-			const unRead = record.filter((item: any) => !item.isRead)
+			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) {
-
-		}
-
-	}
+		} catch (error) {}
+	};
 	const handlePolling = async () => {
-		const myQuote = await handleQuote() || 0;
-		const notice = await handleNotice() || 0;
+		const myQuote = (await handleQuote()) || 0;
+		const notice = (await handleNotice()) || 0;
 		console.log("handlePolling", myQuote, notice);
 		setTotalInfo({
 			myQuote,
 			notice,
 		});
-
-	}
+	};
 	useEffect(() => {
 		if (!_.isEmpty(user)) {
 			setTimeout(() => {
 				handlePolling();
-			}, 2 * 1000)
+			}, 2 * 1000);
 			const timer = setInterval(async () => {
 				// 访问的API地址部分，按你实际情况编写
 				await handlePolling();
 			}, 60 * 1000);
 			return () => clearInterval(timer);
 		}
-
 	}, [user]);
-
 
 	const showDrawer = () => {
 		dispatch(setIsOpenDrawer(true));
@@ -167,7 +162,11 @@ const Menu: React.FC = () => {
 		<MenuContext.Provider value={{ totalInfo }}>
 			<MenuRoot collapsed={collapsed}>
 				<div className="menu-content">
-					<MenuGroupContext menuList={menus} title="销售部" groupStyle={{ paddingBottom: "18px" }} />
+					<MenuGroupContext
+						menuList={menus}
+						title="销售部"
+						groupStyle={{ paddingBottom: "18px" }}
+					/>
 				</div>
 				<div className="menu-extra">
 					<MenuGroup>
@@ -177,7 +176,14 @@ const Menu: React.FC = () => {
 							menuName="通知"
 							onClick={showDrawer}
 							isSelected={false}
-							icon={<BellFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
+							icon={
+								<BellFilled
+									style={{
+										color: "#707683",
+										fontSize: `${collapsed ? "16px" : "14px"}`,
+									}}
+								/>
+							}
 							style={{ marginBottom: "10px" }}
 						/>
 						<MenuItem
@@ -185,15 +191,25 @@ const Menu: React.FC = () => {
 							menuName="帮助与支持"
 							menuKey="help"
 							isSelected={false}
-							icon={<AtFilled style={{ color: "#707683", fontSize: `${collapsed ? "16px" : "14px"}` }} />}
+							icon={
+								<AtFilled
+									style={{
+										color: "#707683",
+										fontSize: `${collapsed ? "16px" : "14px"}`,
+									}}
+								/>
+							}
 							style={{ marginBottom: "10px" }}
 						/>
 					</MenuGroup>
-					{!collapsed && <div className="menu-bottom flex align-middle justify-center">由弗络科技技术驱动</div>}
+					{!collapsed && (
+						<div className="menu-bottom flex align-middle justify-center">
+							由弗络科技技术驱动
+						</div>
+					)}
 				</div>
 			</MenuRoot>
 		</MenuContext.Provider>
-
 	);
 };
 

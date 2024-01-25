@@ -53,7 +53,6 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 	const [noticeList, setNoticeList] = useState([]);
 	const user = useAppSelector(selectUser);
 
-
 	const fetchNoticeList = async () => {
 		if (!user) {
 			return;
@@ -61,7 +60,6 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 		try {
 			const res = await noticeListFetch(user.id);
 			const record = _.get(res, "data.record");
-			console.log("fetchNoticeList", res);
 			setNoticeList(record || []);
 		} catch (error) {
 			console.log(error);

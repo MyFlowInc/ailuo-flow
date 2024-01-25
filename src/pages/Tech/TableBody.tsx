@@ -65,6 +65,7 @@ const columns: any = [
 	{
 		title: "分析结果",
 		dataIndex: "result",
+		width: 200,
 		key: "result",
 		render: (text: string, record: any) => {
 			return (
@@ -79,12 +80,15 @@ const columns: any = [
 		dataIndex: "selectionAnalysis",
 		key: "selectionAnalysis",
 		render: (text: string, record: any) => {
-			return <span>{record.selectionAnalysis}</span>;
+			return (
+				<div style={{ maxWidth: "150px" }}>{record.selectionAnalysis}</div>
+			);
 		},
 	},
 	{
 		title: "生产分析",
 		dataIndex: "productionAnalysis",
+		width: 200,
 		key: "productionAnalysis",
 		render: (text: string, record: any) => {
 			return <span>{record.productionAnalysis}</span>;
@@ -92,6 +96,7 @@ const columns: any = [
 	},
 	{
 		title: "附件",
+		width: 200,
 		dataIndex: "attach",
 		key: "attach",
 		type: NumFieldType.Attachment,

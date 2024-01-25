@@ -1,6 +1,12 @@
 import { Route, Switch } from "react-router";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { fetchFlowStatus, selectCollapsed, selectIsOpenDrawer, selectUser, setIsOpenDrawer } from "../store/globalSlice";
+import {
+	fetchFlowStatus,
+	selectCollapsed,
+	selectIsOpenDrawer,
+	selectUser,
+	setIsOpenDrawer,
+} from "../store/globalSlice";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import Loading from "../assets/icons/Loading";
@@ -25,7 +31,7 @@ const DashboardRouterOutlet: React.FC = () => {
 	const isEmpty = _.isEmpty(user);
 	const [loading, setLoading] = useState(isEmpty);
 	const {
-		token: { colorBgContainer }
+		token: { colorBgContainer },
 	} = theme.useToken();
 	const collapsed = useAppSelector(selectCollapsed);
 	//  通知抽屉
@@ -52,7 +58,15 @@ const DashboardRouterOutlet: React.FC = () => {
 	return (
 		<RouterContainer className="router-container">
 			<Layout>
-				<Sider theme="light" className={collapsed ? "sider-collapsed" : "sider-uncollapsed"} width={212} trigger={null} collapsedWidth={48} collapsible collapsed={collapsed}>
+				<Sider
+					theme="light"
+					className={collapsed ? "sider-collapsed" : "sider-uncollapsed"}
+					width={212}
+					trigger={null}
+					collapsedWidth={48}
+					collapsible
+					collapsed={collapsed}
+				>
 					<NavSide />
 				</Sider>
 				<Layout className="site-layout">
@@ -63,8 +77,9 @@ const DashboardRouterOutlet: React.FC = () => {
 							display: "flex",
 							background: colorBgContainer,
 							flex: 1,
-							padding: "0px 16px"
-						}}>
+							padding: "0px 16px",
+						}}
+					>
 						<div className="router-content">
 							<Switch>
 								{/* 报价管理 */}
@@ -83,13 +98,17 @@ const DashboardRouterOutlet: React.FC = () => {
 								<Route path="/dashboard/my-quote-process" exact={true}>
 									<MyQuoteProcess />
 								</Route>
+
 								<Route path="/dashboard/setting" exact={true}>
 									<Setting />
 								</Route>
 							</Switch>
 						</div>
 					</Content>
-					<NotifyDrawer onDrawerClose={onDrawerClose} isOpenDrawer={isOpenDrawer} />
+					<NotifyDrawer
+						onDrawerClose={onDrawerClose}
+						isOpenDrawer={isOpenDrawer}
+					/>
 				</Layout>
 			</Layout>
 		</RouterContainer>

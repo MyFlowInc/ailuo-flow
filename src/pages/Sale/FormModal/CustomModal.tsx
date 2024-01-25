@@ -70,12 +70,9 @@ const CustomModalRoot = styled.div`
 interface CustomModalProps {
 	title: string;
 	open: boolean;
-
 	setOpen: (value: boolean) => void;
-	statusList: WorkFlowStatusInfo[];
 	modalType: string;
 	editFlowItemRecord?: any | undefined;
-	children?: React.ReactNode;
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
@@ -99,12 +96,12 @@ const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={'name_' + key} className="w-full" >
+				<div key={"name_" + key} className="w-full">
 					<ProjectName
 						key={"ProjectName" + key}
 						{...{ column, form, setForm }}
 					/>
-				</div >
+				</div>
 			);
 		},
 	},
@@ -182,7 +179,7 @@ const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={'ModeSelectTable_' + key} className="w-full">
+				<div key={"ModeSelectTable_" + key} className="w-full">
 					<ModeSelectTable
 						key={"ModeSelectTable" + key}
 						{...{ column, form, setForm }}
@@ -275,20 +272,23 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { form, setForm, changeProcess } = useContext(CustomModalContext)! as any;
+	const { form, setForm, changeProcess } = useContext(
+		CustomModalContext,
+	)! as any;
 	const [rejectReason, setRejectReason] = useState("");
 	const rejectHandle = () => {
-		setForm(
+		setForm({
+			...form,
+			remark: rejectReason,
+		});
+		setRejectModal(false);
+		changeProcess(
 			{
 				...form,
 				remark: rejectReason,
 			},
-		)
-		setRejectModal(false);
-		changeProcess({
-			...form,
-			remark: rejectReason,
-		}, MainStatus.ReviewFailed);
+			MainStatus.ReviewFailed,
+		);
 	};
 	return (
 		<div className="flex flex-col" style={{ width: "300px" }}>
@@ -302,7 +302,11 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 				填写驳回理由
 			</div>
 			<div>
-				<TextArea rows={4} value={rejectReason} onChange={(e) => setRejectReason(e.target.value)} />
+				<TextArea
+					rows={4}
+					value={rejectReason}
+					onChange={(e) => setRejectReason(e.target.value)}
+				/>
 			</div>
 			<div className="flex justify-center mb-4 mt-4">
 				<ConfigProvider theme={greyButtonTheme}>
@@ -322,7 +326,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 						style={{ width: "80px" }}
 						type="primary"
 						onClick={() => {
-							rejectHandle()
+							rejectHandle();
 						}}
 					>
 						驳回
@@ -394,7 +398,6 @@ const CustomModalContext = React.createContext({});
 
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
-	statusList,
 	modalType,
 	open,
 	setOpen,
@@ -453,9 +456,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-
 			setForm({
-				currency: "人民币"
+				currency: "人民币",
 			});
 		}
 	}, [open]);
@@ -473,7 +475,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -495,7 +497,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -540,8 +542,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			}
 			// 同意后 通知报价单创建人
 			if (status === MainStatus.Approved) {
-				const { createBy } = form // 创建人id
-				if (!createBy) return
+				const { createBy } = form; // 创建人id
+				if (!createBy) return;
 				const params: any = {
 					recipientId: createBy,
 					content: {
@@ -555,8 +557,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			}
 			// 审批拒绝 通知报价单创建人
 			if (status === MainStatus.ReviewFailed) {
-				const { createBy } = form // 创建人id
-				if (!createBy) return
+				const { createBy } = form; // 创建人id
+				if (!createBy) return;
 				const params: any = {
 					recipientId: createBy,
 					content: {
@@ -568,7 +570,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				};
 				params.content = JSON.stringify(params.content);
 				await noticeAdd(params);
-
 			}
 		} catch (error) {
 			console.log(error);
@@ -713,7 +714,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

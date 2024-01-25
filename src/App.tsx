@@ -13,6 +13,7 @@ import zhCN from "antd/locale/zh_CN";
 import ResetPwd from "./pages/User/ResetPwd";
 import Setting from "./pages/Setting";
 import ModeSelectTable from "./pages/Sale/ModeSelectTable";
+import PublicAddQuote from "./pages/Sale/PublicAddQuote";
 
 setupIonicReact();
 
@@ -45,6 +46,9 @@ const App: React.FC = () => {
 						</Route>
 						<Route path="/test" exact={true}>
 							<ModeSelectTable />
+						</Route>
+						<Route path="/add-quote" exact={true}>
+							<PublicAddQuote />
 						</Route>
 					</IonRouterOutlet>
 				</IonReactRouter>

@@ -58,3 +58,12 @@ export function finalInfoPage(projectSaleId?: string) {
 		params,
 	});
 }
+
+// 会签审批接口
+export function finalApproveEdit(data: any) {
+	return apiCall({
+		url: "api/sys/projectFlowApprove/edit",
+		method: "put",
+		data,
+	});
+}

@@ -59,11 +59,7 @@ const TechFeedBack: React.FC = () => {
 	};
 
 	useEffect(() => {
-		console.log("SaleManage 初始化");
 		fetchTechFeedbackList();
-		return () => {
-			console.log("SaleManage 销毁");
-		};
 	}, []);
 	return (
 		<TechFeedBackContext.Provider

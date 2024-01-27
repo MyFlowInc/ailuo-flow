@@ -117,7 +117,6 @@ const Menu: React.FC = () => {
 	const handlePolling = async () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
-		console.log("handlePolling", myQuote, notice);
 		setTotalInfo({
 			myQuote,
 			notice,

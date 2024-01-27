@@ -12,9 +12,6 @@ import { MainStatus } from "../../api/ailuo/dict";
 import { SaleManageContext } from "./SaleManage";
 
 const MyQuoteProcess: React.FC = () => {
-	useEffect(() => {
-		console.log("MyQuoteProcess MyQuoteProcess",);
-	})
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
@@ -56,11 +53,7 @@ const MyQuoteProcess: React.FC = () => {
 	};
 
 	useEffect(() => {
-		console.log("MyQuoteProcess 初始化");
 		fetchSaleList();
-		return () => {
-			console.log("MyQuoteProcess 销毁");
-		};
 	}, []);
 
 	return (

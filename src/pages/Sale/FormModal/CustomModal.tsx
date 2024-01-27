@@ -21,9 +21,11 @@ import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";
-import { approveInfo, finalInfoPage } from "../../../api/ailuo/approve";
+import { approveInfo, finalApproveEdit, finalInfoPage } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
+import { selectUser } from "../../../store/globalSlice";
+import { useAppSelector } from "../../../store/hooks";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -234,8 +236,27 @@ export const columns: any = [
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-	const { form, changeProcess } = useContext(CustomModalContext)! as any;
+	const { user, setOpen, finalInfoList, } = useContext(CustomModalContext)! as any;
+	const clickHandle = async () => {
+		setApproveModal(false);
+		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
+			return
+		}
+		const { id } = user
+		const info = _.find(finalInfoList, { relationUserId: id })
+		console.log(111, 'user id ', id, info)
+		try {
+			await finalApproveEdit({
+				id: info.id,
+				status: 'approve'	// 通过
+			})
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setOpen(false)
+		}
 
+	}
 	return (
 		<div className="flex flex-col items-center" style={{ width: "300px" }}>
 			<div className="flex mb-4 mt-4">
@@ -260,8 +281,7 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 						style={{ width: "80px" }}
 						type="primary"
 						onClick={() => {
-							setApproveModal(false);
-							changeProcess(form, MainStatus.Approved);
+							clickHandle()
 						}}
 					>
 						通过
@@ -272,23 +292,30 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { form, setForm, changeProcess } = useContext(
-		CustomModalContext,
-	)! as any;
+	const { user, setOpen, finalInfoList, } = useContext(CustomModalContext)! as any;
 	const [rejectReason, setRejectReason] = useState("");
-	const rejectHandle = () => {
-		setForm({
-			...form,
-			remark: rejectReason,
-		});
+	const rejectHandle = async () => {
+
 		setRejectModal(false);
-		changeProcess(
-			{
-				...form,
-				remark: rejectReason,
-			},
-			MainStatus.ReviewFailed,
-		);
+
+		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
+			return
+		}
+		const { id } = user
+		const info = _.find(finalInfoList, { relationUserId: id })
+		console.log(111, 'user id ', id, info)
+		try {
+			await finalApproveEdit({
+				id: info.id,
+				status: 'reject',	// 通过
+				remark: rejectReason
+			})
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setOpen(false)
+		}
+
 	};
 	return (
 		<div className="flex flex-col" style={{ width: "300px" }}>
@@ -340,8 +367,25 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-quote-process") {
 		return <div></div>;
 	}
+	const { user, finalInfoList, } = useContext(CustomModalContext)! as any;
+
+
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
+
+	if (_.isEmpty(user || _.isEmpty(finalInfoList))) {
+		return null
+	}
+	const { id } = user
+	const info = _.find(finalInfoList, { relationUserId: id })
+
+	if (!_.isEmpty(info) && _.get(info, "status") !== "todo") {
+		return <div className="w-full flex justify-center">
+			<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
+				您已审批完成
+			</Tag>
+		</div>
+	}
 
 	return (
 		<div className="w-full flex justify-center">
@@ -406,6 +450,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const user = useAppSelector(selectUser)
 	const { fetchSaleList } = useContext(SaleManageContext);
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
@@ -413,9 +458,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	useEffect(() => {
 		const fetchFinalInfoList = async () => {
 			const res = await finalInfoPage(form.id + '');
+			const record = _.get(res, "data.record");
+			setFinalInfoList(record);
 			console.log(111, res)
 		}
-		fetchFinalInfoList();
+		if (open && form.status === "quotation_review") {
+			fetchFinalInfoList();
+		}
 	}, [form.status, open])
 
 	useEffect(() => {
@@ -799,7 +848,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</Form>
 			</div>
 			<div className="footer">
-				<CustomModalContext.Provider value={{ form, setForm, changeProcess }}>
+				<CustomModalContext.Provider value={{ user, finalInfoList, form, setForm, setOpen, changeProcess }}>
 					<FootView />
 				</CustomModalContext.Provider>
 			</div>

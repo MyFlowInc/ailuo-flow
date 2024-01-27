@@ -63,11 +63,7 @@ const SaleManage: React.FC = () => {
 	};
 
 	useEffect(() => {
-		console.log("SaleManage 初始化");
 		fetchSaleList();
-		return () => {
-			console.log("SaleManage 销毁");
-		};
 	}, []);
 
 	return (

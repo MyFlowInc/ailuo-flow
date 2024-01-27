@@ -35,7 +35,6 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		console.log(222, form);
 		const { linkSale } = form;
 		if (linkSale) {
 			fetchSaleInfo(linkSale);

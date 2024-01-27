@@ -6,19 +6,16 @@ import CellEditorContext from "./CellEditorContext";
 import {
 	blueButtonTheme,
 	greyButtonTheme,
-	redButtonTheme,
 } from "../../../theme/theme";
 import {
 	changeStatus,
 	saleProjectAdd,
 } from "../../../api/ailuo/sale";
 import { MainStatus } from "../../../api/ailuo/dict";
-import warnSvg from "../assets/warning.svg";
 import { approveInfo } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 import { columns } from "./CustomModal";
-const { TextArea } = Input;
 const PublicAddEditorRoot = styled.div`
 	position: relative;
 	width: 100%;

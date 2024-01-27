@@ -1,3 +1,4 @@
+
 import { apiCall } from "../../network";
 
 //  当前报价的审批人设置情况
@@ -38,5 +39,22 @@ export function approvePersonRemove(id: number) {
 		params: {
 			id,
 		},
+	});
+}
+
+// 终审阶段会签
+
+// 确定终审情况
+export function finalInfoPage(projectSaleId?: string) {
+	let params: any = {
+		pageNum: 1,
+		pageSize: 10,
+		projectSaleId
+	};
+
+	return apiCall({
+		url: "api/sys/projectFlowApprove/page",
+		method: "get",
+		params,
 	});
 }

@@ -21,7 +21,7 @@ import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";
-import { approveInfo } from "../../../api/ailuo/approve";
+import { approveInfo, finalInfoPage } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 const { TextArea } = Input;
@@ -406,25 +406,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
-
 	const { fetchSaleList } = useContext(SaleManageContext);
+	// 终审情况
+	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
+	// 确定终审情况
+	useEffect(() => {
+		const fetchFinalInfoList = async () => {
+			const res = await finalInfoPage(form.id + '');
+			console.log(111, res)
+		}
+		fetchFinalInfoList();
+	}, [form.status, open])
 
-	// // esc handler
-	// useEffect(() => {
-	// 	if (!open) {
-	// 		return;
-	// 	}
-	// 	const keydownHandler = (e: KeyboardEvent) => {
-	// 		if (e.code === "Escape") {
-	// 			setOpen(false);
-	// 		}
-	// 	};
-	// 	document.addEventListener("keydown", keydownHandler, true);
-	// 	return () => {
-	// 		document.removeEventListener("keydown", keydownHandler, true);
-	// 	};
-	// }, [open]);
-	//
 	useEffect(() => {
 		if (!open) {
 			return;

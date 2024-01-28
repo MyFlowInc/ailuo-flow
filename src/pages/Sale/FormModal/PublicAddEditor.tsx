@@ -108,7 +108,7 @@ export const columns: any = [
 		title: "单位名称",
 		dataIndex: "company",
 		key: "company",
-		type: NumFieldType.SingleSelect,
+		type: NumFieldType.SingleFixSelect,
 		dictCode: "company",
 	},
 	{

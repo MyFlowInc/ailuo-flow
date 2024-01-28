@@ -26,6 +26,7 @@ import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 import { selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
+import ExportProject from "../ExportProject";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -181,9 +182,9 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={"ModeSelectTable_" + key} className="w-full">
-					<ModeSelectTable
-						key={"ModeSelectTable" + key}
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
 						{...{ column, form, setForm }}
 					/>
 				</div>
@@ -206,7 +207,21 @@ export const columns: any = [
 		title: "出口项目",
 		dataIndex: "exportItem",
 		key: "exportItem",
-		type: NumFieldType.SingleText,
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"ModeSelectTable_" + key} className="w-full">
+					<ModeSelectTable
+						key={"ModeSelectTable" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
 	},
 	{
 		title: "贸易方式",

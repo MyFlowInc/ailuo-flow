@@ -37,9 +37,6 @@ const ProjectName: React.FC = (props: any) => {
 		}
 	};
 	const getTurnTime = async (e: any) => {
-		if (1) {
-			return 1
-		}
 		if (!e.target.value) {
 			return;
 		}

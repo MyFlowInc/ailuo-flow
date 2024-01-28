@@ -2,25 +2,30 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
-import { Checkbox } from "antd";
+import { Checkbox, CheckboxProps } from "antd";
 
 
 
 const ExportProject: React.FC = (props: any) => {
 	const { column, form, setForm } = props;
 
-	const handleAdd = () => { }
+
+	const onChange: CheckboxProps['onChange'] = (e) => {
+		console.log(`checked = ${e.target.checked}`);
+		setForm({
+			...form,
+			[column.dataIndex]: e.target.checked ? 'show' : 'hide',
+		})
+	};
+
 
 	return (
 		<div className="w-full">
 			<div className="flex mb-4">
-				<div style={{ width: "100px" }}>初步选型型号</div>
-				<div className="flex items-center" onClick={handleAdd}>
-					<Checkbox onChange={handleAdd}>Checkbox</Checkbox>;
+				<div style={{ width: "100px" }}>出口项目</div>
+				<div className="flex items-center">
+					<Checkbox checked={form[column.dataIndex] === 'show'} onChange={onChange}>出口</Checkbox>
 				</div>
-			</div>
-			<div className="w-full overflow-hidden overflow-x-auto">
-				<div>123</div>
 			</div>
 		</div>
 	);

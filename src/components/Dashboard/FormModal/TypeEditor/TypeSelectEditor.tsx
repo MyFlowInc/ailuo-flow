@@ -30,6 +30,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 	const [items, setItems] = useState<string[]>([]);
 	const [name, setName] = useState("");
 	const [value, setValue] = useState<string[] | string>([]);
+
 	const inputRef = useRef<InputRef>(null);
 
 	// 初始化

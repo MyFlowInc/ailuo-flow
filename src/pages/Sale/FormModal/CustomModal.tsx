@@ -182,9 +182,9 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={"exportItem_" + key} className="w-full">
-					<ExportProject
-						key={"exportItem" + key}
+				<div key={"ModeSelectTable_" + key} className="w-full">
+					<ModeSelectTable
+						key={"ModeSelectTable" + key}
 						{...{ column, form, setForm }}
 					/>
 				</div>
@@ -205,7 +205,7 @@ export const columns: any = [
 	},
 	{
 		title: "出口项目",
-		dataIndex: "exportItem",
+		dataIndex: "exportItem",	// 'show' | 'hide'
 		key: "exportItem",
 		render: (
 			column: any,
@@ -214,14 +214,15 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={"ModeSelectTable_" + key} className="w-full">
-					<ModeSelectTable
-						key={"ModeSelectTable" + key}
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
 						{...{ column, form, setForm }}
 					/>
 				</div>
 			);
 		},
+
 	},
 	{
 		title: "贸易方式",
@@ -229,6 +230,7 @@ export const columns: any = [
 		key: "modeTrade",
 		type: NumFieldType.MultiSelect,
 		dictCode: "tarde_mode",
+		showCtrlKey: 'exportItem',
 	},
 	{
 		title: "付款方式",

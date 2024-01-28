@@ -119,6 +119,12 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 				if (item.render) {
 					return item.render(item, "field_" + item.key, form, setForm);
 				}
+				if (item.showCtrlKey) {
+					const isShow = form[item.showCtrlKey]
+					if (isShow !== 'show') {
+						return null
+					}
+				}
 				return (
 					<CellEditorWrap key={"field_" + item.key}>
 						<CellLabelRoot>

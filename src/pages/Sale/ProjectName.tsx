@@ -37,6 +37,9 @@ const ProjectName: React.FC = (props: any) => {
 		}
 	};
 	const getTurnTime = async (e: any) => {
+		if (1) {
+			return 1
+		}
 		if (!e.target.value) {
 			return;
 		}
@@ -49,13 +52,13 @@ const ProjectName: React.FC = (props: any) => {
 				...form,
 				turnTime: time,
 			});
-		} catch (error) {}
+		} catch (error) { }
 	};
 	return (
 		<div className="w-full">
 			<div className="flex mb-4">
 				<div style={{ width: "100px" }}>项目名称</div>
-				<div className="flex-1 flex items-center" onClick={() => {}}>
+				<div className="flex-1 flex items-center" onClick={() => { }}>
 					<Input
 						className="flex-1"
 						onBlur={(e) => {

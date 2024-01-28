@@ -21,9 +21,19 @@ export function saleProjectList(params: PageParams) {
 interface SaveParams {
 	[key: string]: any;
 }
+// 需要token
 export function saleProjectAdd(data: SaveParams) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/save",
+		method: "post",
+		data,
+	});
+}
+
+// 不需要token
+export function saleProjectPublishAdd(data: SaveParams) {
+	return apiCall({
+		url: "api/sys/projectSaleProcess/publicSave",
 		method: "post",
 		data,
 	});

@@ -123,6 +123,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 		case NumFieldType.MultiSelect:
 			CellEditor = <TypeSelectEditor mode="multiple" cell={cell} {...rest} />;
 			break;
+		case NumFieldType.MultiFixSelect:
+			CellEditor = <TypeSelectEditor mode="multiple" fixed cell={cell} {...rest} />;
+			break;
 		case NumFieldType.Attachment:
 			CellEditor = <TypeAttachment cell={cell} {...rest} />;
 			break;

@@ -62,6 +62,8 @@ export const NumFieldType = {
 	OptionStatus: 26,
 	discuss: 27,
 	SingleFixSelect: 28,
+	MultiFixSelect: 30,
+
 	RelationView: 29, // 关联报价
 
 	DeniedField: 999, // no permission column

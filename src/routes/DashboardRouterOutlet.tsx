@@ -42,6 +42,9 @@ const DashboardRouterOutlet: React.FC = () => {
 	// 全局工单详情显示
 	const [isSaleModalViewOpen, setIsSaleModalViewOpen] = useState(false);
 	const [saleId, setSaleId] = useState(undefined); // 当前展示的 
+	// 全局技术评审详情
+	const [isTechModalViewOpen, setIsTechModalViewOpen] = useState(false);
+	const [techId, setTechId] = useState(undefined);
 
 	// 全局预览文件
 	const [isPdfModalViewOpen, setIsPdfModalViewOpen] = useState(false);
@@ -76,6 +79,26 @@ const DashboardRouterOutlet: React.FC = () => {
 					title: "查看报价",
 					open: isSaleModalViewOpen,
 					setOpen: setIsSaleModalViewOpen,
+				}}
+			/>}
+			width={560}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
+
+	}
+	const renderTechViewModal = () => {
+		if (!techId) {
+			return null
+		}
+		return <Modal
+			key={'notify_modal'}
+			open={isTechModalViewOpen}
+			modalRender={() => <CustomModalView
+				{...{
+					title: "查看技术评审",
+					open: isTechModalViewOpen,
+					setOpen: setIsTechModalViewOpen,
 				}}
 			/>}
 			width={560}

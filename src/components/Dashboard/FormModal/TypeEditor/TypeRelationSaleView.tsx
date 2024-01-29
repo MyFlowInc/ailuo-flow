@@ -22,7 +22,7 @@ const PriceRoot = styled.div`
 	cursor: pointer;
 `;
 
-const TypeRelationView: React.FC<any> = (props: any) => {
+const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	const { form, } = props;
 	const [saleInfo, setSaleInfo] = React.useState<any>({});
 	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
@@ -38,15 +38,14 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		const { relationSale } = form;
-		console.log(111, form, relationSale);
-
-		if (relationSale) {
-			fetchSaleInfo(relationSale);
+		const { linkSale, } = form;
+		// TODO: 后端没有统一字段
+		const saleId = linkSale;
+		if (saleId) {
+			fetchSaleInfo(saleId);
 		}
 	}, [form]);
 	const showModalView = (saleInfo: any) => {
-		console.log(11, saleInfo)
 		const { id } = saleInfo
 		setSaleId(id)
 		setIsSaleModalViewOpen(true)
@@ -64,4 +63,4 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 	return null
 };
 
-export default TypeRelationView;
+export default TypeRelationSaleView;

@@ -22,7 +22,8 @@ import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
 import TypeText from "./TypeText";
-import TypeRelationView from "./TypeRelationView";
+import TypeRelationSaleView from "./TypeRelationSaleView";
+import TypeRelationTechView from "./TypeRelationTechView";
 
 export const FieldTypeList = [
 	{
@@ -144,8 +145,11 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 		case NumFieldType.Phone:
 			CellEditor = <TypePhone cell={cell} {...rest} />;
 			break;
-		case NumFieldType.RelationView:
-			CellEditor = <TypeRelationView cell={cell} {...rest} />;
+		case NumFieldType.RelationSaleView:
+			CellEditor = <TypeRelationSaleView cell={cell} {...rest} />;
+			break;
+		case NumFieldType.RelationTechView:
+			CellEditor = <TypeRelationTechView cell={cell} {...rest} />;
 			break;
 		default:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;

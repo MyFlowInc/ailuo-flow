@@ -6,6 +6,7 @@ import { ITechStatus } from "./dict";
 interface PageParams {
 	pageNum: number;
 	pageSize: number;
+	id?: number
 }
 
 export function techProjectList(params: PageParams) {

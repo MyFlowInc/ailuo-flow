@@ -241,13 +241,13 @@ export const columns: any = [
 		title: "关联技术评审",
 		dataIndex: "relateTechProcess",
 		key: "relateTechProcess",
-		type: NumFieldType.SingleText,
+		type: NumFieldType.RelationTechView,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relateQuote",
 		key: "relateQuote",
-		type: NumFieldType.RelationView,
+		type: NumFieldType.RelationSaleView,
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {

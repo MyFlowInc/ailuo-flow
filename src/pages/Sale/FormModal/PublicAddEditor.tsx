@@ -67,7 +67,7 @@ const PublicAddEditorRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {}
+interface CustomModalProps { }
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -235,17 +235,17 @@ export const columns: any = [
 		title: "关联技术评审",
 		dataIndex: "relateTechProcess",
 		key: "relateTechProcess",
-		type: NumFieldType.SingleText,
+		type: NumFieldType.RelationTechView,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relateQuote",
 		key: "relateQuote",
-		type: NumFieldType.RelationView,
+		type: NumFieldType.RelationSaleView,
 	},
 ];
 
-const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
+const PublicAddEditor: React.FC<CustomModalProps> = ({ }) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -273,7 +273,7 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectPublishAdd(excludeNull(form));
 			setStep(2);
 		} catch (error) {

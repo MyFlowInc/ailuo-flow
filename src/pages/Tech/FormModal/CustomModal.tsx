@@ -117,7 +117,7 @@ const columns: any = (
 			title: "关联报价",
 			dataIndex: "relateQuote",
 			key: "relateQuote",
-			type: NumFieldType.RelationView,
+			type: NumFieldType.RelationSaleView,
 		},
 	];
 	if (mode === "1") {

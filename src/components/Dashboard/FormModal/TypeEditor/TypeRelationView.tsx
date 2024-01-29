@@ -2,11 +2,12 @@
  * type=3
  */
 
-import React, { useRef, useEffect, SyntheticEvent } from "react";
+import React, { useRef, useEffect, SyntheticEvent, useContext } from "react";
 import TurnView from "../../../../pages/Sale/TurnView";
 import { saleProjectList } from "../../../../api/ailuo/sale";
 import _ from "lodash";
 import styled from "styled-components";
+import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
 
 const PriceRoot = styled.div`
 	height: fit-content;
@@ -18,11 +19,13 @@ const PriceRoot = styled.div`
 	padding: 4px 16px;
 	background: #e3f5e4;
 	width: fit-content;
+	cursor: pointer;
 `;
 
 const TypeRelationView: React.FC<any> = (props: any) => {
 	const { cell, form, setForm } = props;
 	const [saleInfo, setSaleInfo] = React.useState<any>({});
+	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
 	const fetchSaleInfo = async (saleId: string) => {
 		const res = await saleProjectList({
 			id: saleId,
@@ -35,14 +38,20 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		const { linkSale } = form;
-		if (linkSale) {
-			fetchSaleInfo(linkSale);
+		const { relationSale } = form;
+		if (relationSale) {
+			fetchSaleInfo(relationSale);
 		}
 	}, [form]);
+	const showModalView = (saleInfo: any) => {
+		console.log(11, saleInfo)
+		const { id } = saleInfo
+		setSaleId(id)
+		setIsSaleModalViewOpen(true)
+	}
 	if (!_.isEmpty(saleInfo)) {
 		return (
-			<PriceRoot>
+			<PriceRoot onClick={() => showModalView(saleInfo)}>
 				{`${saleInfo.name}-报价  (第${saleInfo.turnTime}轮)`}
 			</PriceRoot>
 		);
@@ -50,12 +59,7 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 	if (!form.name) {
 		return null;
 	}
-	return (
-		<div>
-			<span>{form.name}</span>
-			<TurnView turnTime={form.turnTime} />
-		</div>
-	);
+	return null
 };
 
 export default TypeRelationView;

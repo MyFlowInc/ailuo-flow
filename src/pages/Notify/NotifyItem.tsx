@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { Button, ConfigProvider, Popconfirm, Typography, message } from "antd";
+import { Popconfirm, Typography, message } from "antd";
 import delPng from "../../components/Notify/assets/del.svg";
 import { noticeEdit, noticeRemove } from "../../api/ailuo/notice";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MainStatus } from "../../api/ailuo/dict";
-import { lightBlueButtonTheme } from "../../theme/theme";
+import { DashboardRouterOutletContext } from "../../routes/DashboardRouterOutlet";
 const { Paragraph } = Typography;
 
 const NotifyItemRoot = styled.div`
@@ -83,6 +83,7 @@ interface NotifyItemProps {
 const NotifyItem = (props: NotifyItemProps) => {
 	const { info, freshList } = props;
 	const [content, setContent] = useState<any>({});
+	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
 	useEffect(() => {
 		try {
 			let c = JSON.parse(info.content);
@@ -125,6 +126,17 @@ const NotifyItem = (props: NotifyItemProps) => {
 
 		return <div className="text">系统消息</div>;
 	};
+	const clickSaleHandle = (info: any) => {
+
+		try {
+			let { saleId } = JSON.parse(info.content);
+			setSaleId(saleId || '')
+			setIsSaleModalViewOpen(true)
+		} catch (error) { }
+		console.log(111, info)
+
+	}
+
 	return (
 		<NotifyItemRoot>
 			<div className="title">
@@ -172,7 +184,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 							}}
 							className="flex justify-center"
 						>
-							<span>显示工单</span>
+							<span onClick={() => { clickSaleHandle(info) }}>显示工单</span>
 						</div>
 					</div>
 				</div>

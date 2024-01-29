@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import _ from "lodash";
-import { Button, Drawer, Empty, Modal } from "antd";
+import { Drawer, Empty, Modal } from "antd";
 import notifyPng from "../../components/Notify/assets/notify.png";
 import NotifyItem from "./NotifyItem";
 import { noticeListFetch } from "../../api/ailuo/notice";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
-import CustomModalView from "../Sale/FormModal/CustomModalView";
-import { dashboardTheme } from "../../theme/theme";
+import React from "react";
 const UIROOT = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -54,20 +53,7 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 	const [noticeList, setNoticeList] = useState([]); // 通知列表
 	const user = useAppSelector(selectUser);
 
-	const [isSaleModalOpen, setIsSaleModalOpen] = useState(false); // 显示工单功能
-	const [saleId, setSaleId] = useState(undefined); // 当前显示的工单 id
 
-	const showModal = () => {
-		setIsSaleModalOpen(true);
-	};
-
-	const handleOk = () => {
-		setIsSaleModalOpen(false);
-	};
-
-	const handleCancel = () => {
-		setIsSaleModalOpen(false);
-	};
 
 	const fetchNoticeList = async () => {
 		if (!user) {
@@ -92,28 +78,7 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 		}
 		fetchNoticeList();
 	}, [isOpenDrawer]);
-	const renderModal = () => {
-		if (!isOpenDrawer) {
-			return null
-		}
-		return <Modal
-			key={'notify_modal'}
-			open={isSaleModalOpen}
-			modalRender={() => <CustomModalView
-				{...{
-					title: "编辑报价",
-					open: isSaleModalOpen,
-					setOpen: setIsSaleModalOpen,
-					modalType: "edit",
-					editFlowItemRecord: {},
-				}}
-			/>}
-			width={528}
-			wrapClassName="overflow-hidden"
-			style={{ height: "100vh", overflow: "hidden" }}
-		></Modal>
 
-	}
 	return (
 		<Drawer
 			placement="left"
@@ -124,9 +89,6 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 			getContainer={false}
 		>
 			<UIROOT className="notify">
-				<Button type="primary" onClick={showModal}>
-					Open Modal
-				</Button>
 				<div className="header">
 					<div className="left">
 						<img className="img" src={notifyPng} />
@@ -148,10 +110,9 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 							);
 						})}
 				</div>
-				{renderModal()}
-
 			</UIROOT>
 		</Drawer>
+
 	);
 };
 

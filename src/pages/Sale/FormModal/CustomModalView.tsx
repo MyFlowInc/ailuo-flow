@@ -14,6 +14,7 @@ import {
 	changeStatus,
 	saleProjectAdd,
 	saleProjectEdit,
+	saleProjectList,
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
@@ -26,6 +27,7 @@ import { noticeAdd } from "../../../api/ailuo/notice";
 import { selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
+import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -73,8 +75,6 @@ interface CustomModalProps {
 	title: string;
 	open: boolean;
 	setOpen: (value: boolean) => void;
-	modalType: string;
-	editFlowItemRecord?: any | undefined;
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
@@ -457,19 +457,22 @@ const CustomModalContext = React.createContext({});
 
 const CustomModalView: React.FC<CustomModalProps> = ({
 	title,
-	modalType,
 	open,
 	setOpen,
-	editFlowItemRecord,
 }) => {
-	const [showDstColumns, setShowDstColumns] = useState(columns);
+	const [showDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const user = useAppSelector(selectUser)
-	const { fetchSaleList } = useContext(SaleManageContext);
+	// sale id
+
+	const { saleId } = useContext(DashboardRouterOutletContext)
+
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
-	// 确定终审情况
+	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any>({});
+
+	// 确定终审情况	
 	useEffect(() => {
 		const fetchFinalInfoList = async () => {
 			const res = await finalInfoPage(form.id + '');
@@ -482,11 +485,35 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		}
 	}, [form.status, open])
 
+	// 根据saleid 获取值
+	useEffect(() => {
+		console.log('saleId', saleId)
+		if (saleId) {
+			const fetchEditFlowItemRecord = async () => {
+				try {
+					const res = await saleProjectList({
+						id: saleId,
+						pageNum: 1,
+						pageSize: 10
+					});
+					setEditFlowItemRecord(_.get(res, "data.record.0"));
+				} catch (error) {
+
+				}
+
+			}
+			fetchEditFlowItemRecord();
+		}
+	}, [saleId])
+	// 初始化form
 	useEffect(() => {
 		if (!open) {
 			return;
 		}
-		if (modalType === "edit" && editFlowItemRecord) {
+		if (_.isEmpty(editFlowItemRecord)) {
+			return
+		}
+		if (editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			try {
 				// 处理初步选型型号
@@ -512,34 +539,9 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
-		if (modalType === "add") {
-			setForm({
-				currency: "人民币",
-			});
-		}
-	}, [open]);
+	}, [open, editFlowItemRecord]);
 
-	// 新增记录
-	const createRecord = async () => {
-		inputForm.setFieldsValue(form);
-		try {
-			await inputForm.validateFields();
-			console.log("Received values of form: ", form);
-			if (!form.status) {
-				form.status = "not_started";
-			}
-			try {
-				form.typeSelection = JSON.stringify(form.typeSelection);
-				form.modeTrade = JSON.stringify(form.modeTrade);
-				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
-			await saleProjectAdd(excludeNull(form));
-			await fetchSaleList();
-			setOpen(false);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+
 	// 更新记录
 	const updateRecord = async () => {
 		const { recordId, id, ...rest } = form;
@@ -556,7 +558,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
-			await fetchSaleList();
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -565,11 +566,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 
 	const handleSaveRecord = () => {
 		inputForm.setFieldsValue(form);
-		if (modalType === "add") {
-			createRecord();
-		} else {
-			updateRecord();
-		}
+		updateRecord();
 	};
 
 	// 通知模块
@@ -646,7 +643,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 			}
 			await notifyHandler(form, status);
 			await setOpen(false);
-			await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -838,7 +834,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						</Button>
 						<ConfigProvider theme={blueButtonTheme}>
 							<Button type="primary" onClick={handleSaveRecord}>
-								{modalType === "add" ? "创建" : "保存"}
+								{"保存"}
 							</Button>
 						</ConfigProvider>
 					</div>
@@ -858,7 +854,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 								form={form}
 								setForm={setForm}
 								dstColumns={showDstColumns}
-								modalType={modalType}
+								modalType="edit"
 							/>
 						) : (
 							<NoFieldData />

@@ -308,7 +308,6 @@ const Attachment: React.FC<{
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(DashboardRouterOutletContext)
 	const clickHandle = (e: any) => {
 		e.preventDefault()
-		console.log(111, `/preview?url=${value}`)
 		setFileUrl(`/preview?url=${value}`)
 		setIsPdfModalViewOpen(true)
 	}
@@ -317,9 +316,9 @@ const Attachment: React.FC<{
 
 		if (suffix === "pdf" || suffix === "docx" || suffix === "doc") {
 			return (
-				<Link target="_blank" to={'/'} onClick={(e) => clickHandle(e)} rel="noreferrer">
+				<div className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300" onClick={(e) => clickHandle(e)}  >
 					{getFileName(value)}
-				</Link>
+				</div>
 			);
 		} else {
 			return (

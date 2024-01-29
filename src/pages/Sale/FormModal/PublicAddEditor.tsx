@@ -3,10 +3,7 @@ import styled from "styled-components";
 import { ConfigProvider, Form, Button, Tag, Modal, Popover, Input } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
-import {
-	blueButtonTheme,
-	greyButtonTheme,
-} from "../../../theme/theme";
+import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import {
 	changeStatus,
 	saleProjectAdd,
@@ -31,16 +28,16 @@ const PublicAddEditorRoot = styled.div`
 	flex-direction: column;
 	align-items: center;
 
-	.warp{
+	.warp {
 		width: 600px;
 		height: 100%;
 		padding: 24px 40px 24px 40px;
 		overflow: hidden;
 		background-image: url("/assets/bg.svg");
-	background-position: center center;
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: cover;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
+		background-size: cover;
 	}
 	.header {
 		height: 18px;
@@ -70,8 +67,7 @@ const PublicAddEditorRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {
-}
+interface CustomModalProps {}
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -202,7 +198,7 @@ export const columns: any = [
 	},
 	{
 		title: "出口项目",
-		dataIndex: "exportItem",	// 'show' | 'hide'
+		dataIndex: "exportItem", // 'show' | 'hide'
 		key: "exportItem",
 		render: (
 			column: any,
@@ -226,7 +222,7 @@ export const columns: any = [
 		key: "modeTrade",
 		type: NumFieldType.MultiSelect,
 		dictCode: "tarde_mode",
-		showCtrlKey: 'exportItem',
+		showCtrlKey: "exportItem",
 	},
 	{
 		title: "付款方式",
@@ -249,13 +245,11 @@ export const columns: any = [
 	},
 ];
 
-const PublicAddEditor: React.FC<CustomModalProps> = ({
-}) => {
+const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
-	const [step, setStep] = useState<1 | 2>(1);
-
+	const [step, setStep] = useState<1 | 2>(2);
 
 	useEffect(() => {
 		if (!open) {
@@ -264,7 +258,6 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({
 		setForm({
 			currency: "人民币",
 		});
-
 	}, [open]);
 
 	// 新增记录
@@ -280,9 +273,9 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectPublishAdd(excludeNull(form));
-			setStep(2)
+			setStep(2);
 		} catch (error) {
 			console.log(error);
 		}
@@ -420,64 +413,85 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({
 	};
 	const AddView = () => {
 		if (step === 1) {
-			return (<div className="warp">
-				<div style={{ background: '#fff', padding: '24px 48px', borderRadius: '10px' }} className="h-full overflow-hidden">
-					<div className="header">
-						<div className="title">{'新建报价'}</div>
-					</div>
-					{StatusView()}
-					<div className="content">
-						<Form
-							form={inputForm}
-							name="recordForm"
-							colon={false}
-							wrapperCol={{ flex: 1 }}
-							preserve={false}
-						>
-							{showDstColumns.length > 0 ? (
-								<CellEditorContext
-									form={form}
-									setForm={setForm}
-									dstColumns={showDstColumns}
-									modalType={'add'}
-								/>
-							) : (
-								<NoFieldData />
-							)}
-						</Form>
-					</div>
-					<div className="footer">
-						<ConfigProvider theme={greyButtonTheme}>
-							<Button type="primary" className="mr-8" onClick={handleSaveRecord}>
-								取消
-							</Button>
-						</ConfigProvider>
-						<ConfigProvider theme={blueButtonTheme}>
-							<Button type="primary" onClick={handleSaveRecord}>
-								创建
-							</Button>
-						</ConfigProvider>
+			return (
+				<div className="warp">
+					<div
+						style={{
+							background: "#fff",
+							padding: "24px 48px",
+							borderRadius: "10px",
+						}}
+						className="h-full overflow-hidden"
+					>
+						<div className="header">
+							<div className="title">{"新建报价"}</div>
+						</div>
+						{StatusView()}
+						<div className="content">
+							<Form
+								form={inputForm}
+								name="recordForm"
+								colon={false}
+								wrapperCol={{ flex: 1 }}
+								preserve={false}
+							>
+								{showDstColumns.length > 0 ? (
+									<CellEditorContext
+										form={form}
+										setForm={setForm}
+										dstColumns={showDstColumns}
+										modalType={"add"}
+									/>
+								) : (
+									<NoFieldData />
+								)}
+							</Form>
+						</div>
+						<div className="footer">
+							<ConfigProvider theme={greyButtonTheme}>
+								<Button
+									type="primary"
+									className="mr-8"
+									onClick={handleSaveRecord}
+								>
+									取消
+								</Button>
+							</ConfigProvider>
+							<ConfigProvider theme={blueButtonTheme}>
+								<Button type="primary" onClick={handleSaveRecord}>
+									创建
+								</Button>
+							</ConfigProvider>
+						</div>
 					</div>
 				</div>
-
-			</div>
-			)
+			);
 		}
-		return null
-	}
+		return null;
+	};
 	const SuccessView = () => {
 		if (step === 2) {
 			return (
-				<PublishAddSuccess />
-			)
+				<div className="warp">
+					<div
+						style={{
+							background: "#fff",
+							padding: "24px 48px",
+							borderRadius: "10px",
+						}}
+						className="h-full overflow-hidden"
+					>
+						<PublishAddSuccess />
+					</div>
+				</div>
+			);
 		}
-		return null
-	}
+		return null;
+	};
 	return (
 		<PublicAddEditorRoot>
 			{AddView()}
 			{SuccessView()}
-
 		</PublicAddEditorRoot>
 	);
 };

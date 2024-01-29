@@ -42,6 +42,10 @@ const DashboardRouterOutlet: React.FC = () => {
 	// 全局工单详情显示
 	const [isSaleModalViewOpen, setIsSaleModalViewOpen] = useState(false);
 	const [saleId, setSaleId] = useState(undefined); // 当前展示的 
+
+	// 全局预览文件
+	const [isPdfModalViewOpen, setIsPdfModalViewOpen] = useState(false);
+	const [fileUrl, setFileUrl] = useState('');
 	const onDrawerClose = () => {
 		dispatch(setIsOpenDrawer(false));
 	};
@@ -60,7 +64,10 @@ const DashboardRouterOutlet: React.FC = () => {
 			</LoadingRoot>
 		);
 	}
-	const renderModal = () => {
+	const renderSaleViewModal = () => {
+		if (!saleId) {
+			return null
+		}
 		return <Modal
 			key={'notify_modal'}
 			open={isSaleModalViewOpen}
@@ -77,7 +84,16 @@ const DashboardRouterOutlet: React.FC = () => {
 		></Modal>
 
 	}
-
+	const renderPdfViewModal = () => {
+		if (!fileUrl) {
+			return
+		}
+		return <Modal title="Basic Modal" open={isPdfModalViewOpen} footer={null} onCancel={() => setIsPdfModalViewOpen(false)}>
+			<div className="w-full h-full">
+				<iframe src={`/preview?url=${fileUrl}`}  ></iframe>
+			</div>
+		</Modal>
+	}
 	return (
 		<DashboardRouterOutletContext.Provider value={{ saleId, setSaleId, isSaleModalViewOpen, setIsSaleModalViewOpen }}>
 			<RouterContainer className="router-container">
@@ -135,7 +151,8 @@ const DashboardRouterOutlet: React.FC = () => {
 						/>
 					</Layout>
 					{/* 显示工单-复用 */}
-					{renderModal()}
+					{renderSaleViewModal()}
+					{renderPdfViewModal()}
 				</Layout>
 			</RouterContainer>
 		</DashboardRouterOutletContext.Provider>

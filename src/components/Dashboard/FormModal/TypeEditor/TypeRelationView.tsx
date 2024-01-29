@@ -23,7 +23,7 @@ const PriceRoot = styled.div`
 `;
 
 const TypeRelationView: React.FC<any> = (props: any) => {
-	const { cell, form, setForm } = props;
+	const { form, } = props;
 	const [saleInfo, setSaleInfo] = React.useState<any>({});
 	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
 	const fetchSaleInfo = async (saleId: string) => {
@@ -39,6 +39,8 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 
 	useEffect(() => {
 		const { relationSale } = form;
+		console.log(111, form, relationSale);
+
 		if (relationSale) {
 			fetchSaleInfo(relationSale);
 		}

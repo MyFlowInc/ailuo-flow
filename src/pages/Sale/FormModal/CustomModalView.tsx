@@ -496,6 +496,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						pageNum: 1,
 						pageSize: 10
 					});
+					console.log(222, res.data);
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
 				} catch (error) {
 

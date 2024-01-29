@@ -32,7 +32,6 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 			pageNum: 1,
 			pageSize: 5,
 		});
-		console.log(111, res.data);
 		const info = _.get(res, "data.record[0]") || {};
 		setTechInfo(info);
 	};
@@ -46,8 +45,6 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 		}
 	}, [form]);
 	const showModalView = (techInfo: any) => {
-		console.log(11, techInfo)
-		const { id } = techInfo
 		setTechId(techInfo.id)
 		setIsTechModalViewOpen(true)
 	}

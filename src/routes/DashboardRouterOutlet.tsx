@@ -75,6 +75,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		return <Modal
 			key={'notify_sale_modal'}
 			open={isSaleModalViewOpen}
+			onCancel={() => setSaleId(undefined)}
 			modalRender={() => <CustomModalView
 				{...{
 					title: "查看报价",
@@ -95,6 +96,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		return <Modal
 			key={'notify_sale_modal'}
 			open={isTechModalViewOpen}
+			onCancel={() => setTechId(undefined)}
 			modalRender={() => <CustomModalTechView
 				{...{
 					title: "查看技术评审",
@@ -112,12 +114,22 @@ const DashboardRouterOutlet: React.FC = () => {
 		if (!fileUrl) {
 			return
 		}
-		return <Modal title="Basic Modal" open={isPdfModalViewOpen} footer={null} onCancel={() => setIsPdfModalViewOpen(false)}>
+		return <Modal title="预览" open={isPdfModalViewOpen}
+			style={{ top: 0, padding: 0 }}
+			styles={{
+				body: { height: 'calc(100vh - 108px)', overflow: 'hidden' }
+			}}
+			width="100%"
+			footer={null} onCancel={() => {
+				setFileUrl('')
+				setIsPdfModalViewOpen(false)
+			}}>
 			<div className="w-full h-full">
-				<iframe src={`/preview?url=${fileUrl}`}  ></iframe>
+				<iframe style={{ width: '100%', height: '100%' }} src={`/preview?url=${fileUrl}`}  ></iframe>
 			</div>
 		</Modal>
 	}
+	console.log(222, techId)
 	return (
 		<DashboardRouterOutletContext.Provider value={{
 			saleId,
@@ -127,7 +139,9 @@ const DashboardRouterOutlet: React.FC = () => {
 			isTechModalViewOpen,
 			setIsTechModalViewOpen,
 			techId,
-			setTechId
+			setTechId,
+			setFileUrl,
+			setIsPdfModalViewOpen
 		}}>
 			<RouterContainer className="router-container">
 				<Layout>

@@ -32,7 +32,6 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 			pageNum: 1,
 			pageSize: 5,
 		});
-		console.log(111, res.data);
 		const info = _.get(res, "data.record[0]") || {};
 		setSaleInfo(info);
 	};

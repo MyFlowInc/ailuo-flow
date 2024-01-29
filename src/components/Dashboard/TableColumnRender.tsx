@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import _ from "lodash";
 import { Tag, Avatar } from "antd";
 import { Link } from "react-router-dom";
@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 // import { DiscussModal } from "./FormModal/TypeEditor/TypeDiscuss";
 
 import type { DeveloperUser } from "../../store/globalSlice";
+import { DashboardRouterOutletContext } from "../../routes/DashboardRouterOutlet";
 /**
  * The type of field returned by the interface	The type of the corresponding field
 			SingleText	single-line text
@@ -304,12 +305,19 @@ const Attachment: React.FC<{
 	value: any;
 	children?: React.ReactNode;
 }> = ({ value }) => {
+	const { setFileUrl, setIsPdfModalViewOpen } = useContext(DashboardRouterOutletContext)
+	const clickHandle = (e: any) => {
+		e.preventDefault()
+		console.log(111, `/preview?url=${value}`)
+		setFileUrl(`/preview?url=${value}`)
+		setIsPdfModalViewOpen(true)
+	}
 	if (value && typeof value === "string") {
 		const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
 
 		if (suffix === "pdf" || suffix === "docx" || suffix === "doc") {
 			return (
-				<Link target="_blank" to={`/preview?url=${value}`} rel="noreferrer">
+				<Link target="_blank" to={'/'} onClick={(e) => clickHandle(e)} rel="noreferrer">
 					{getFileName(value)}
 				</Link>
 			);

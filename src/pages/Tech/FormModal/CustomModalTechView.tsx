@@ -169,7 +169,6 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 
 	// 根据saleid 获取值
 	useEffect(() => {
-		console.log('techId', techId)
 		if (techId) {
 			const fetchEditFlowItemRecord = async () => {
 				try {
@@ -178,7 +177,6 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						pageNum: 1,
 						pageSize: 10
 					});
-					console.log(222, res.data);
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
 				} catch (error) {
 

@@ -12,12 +12,7 @@
   },
   "tauri": {
     "allowlist": {
-			"all": true,
-			"http": {
-        "all": true,
-        "request": true,
-        "scope": ["http://*"]
-      }
+			"all": true
     },
     "bundle": {
       "active": true,
@@ -53,7 +48,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": ""
     },
     "updater": {
       "active": false

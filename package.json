@@ -68,6 +68,7 @@
     "start": "react-scripts start",
     "serve": "react-scripts start",
     "build": "react-scripts build",
+    "echo": "echo 1",
     "deploy": "react-scripts build && node ./build.js",
     "lint": "eslint --ext .ts --ext .tsx src",
     "fix": "eslint --fix  --ext .ts --ext .tsx src",

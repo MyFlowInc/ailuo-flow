@@ -114,6 +114,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		if (!fileUrl) {
 			return
 		}
+		console.log(fileUrl)
 		return <Modal title="预览" open={isPdfModalViewOpen}
 			style={{ top: 0, padding: 0 }}
 			styles={{
@@ -129,7 +130,6 @@ const DashboardRouterOutlet: React.FC = () => {
 			</div>
 		</Modal>
 	}
-	console.log(222, techId)
 	return (
 		<DashboardRouterOutletContext.Provider value={{
 			saleId,

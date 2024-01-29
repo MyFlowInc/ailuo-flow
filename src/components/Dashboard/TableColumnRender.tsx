@@ -308,7 +308,7 @@ const Attachment: React.FC<{
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(DashboardRouterOutletContext)
 	const clickHandle = (e: any) => {
 		e.preventDefault()
-		setFileUrl(`/preview?url=${value}`)
+		setFileUrl(`/preview?url=${value.replace('http', 'https')}`)
 		setIsPdfModalViewOpen(true)
 	}
 	if (value && typeof value === "string") {

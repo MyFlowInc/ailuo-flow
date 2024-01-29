@@ -8,6 +8,7 @@ import { noticeListFetch } from "../../api/ailuo/notice";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
 import CustomModalView from "../Sale/FormModal/CustomModalView";
+import { dashboardTheme } from "../../theme/theme";
 const UIROOT = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -91,7 +92,28 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 		}
 		fetchNoticeList();
 	}, [isOpenDrawer]);
+	const renderModal = () => {
+		if (!isOpenDrawer) {
+			return null
+		}
+		return <Modal
+			key={'notify_modal'}
+			open={isSaleModalOpen}
+			modalRender={() => <CustomModalView
+				{...{
+					title: "编辑报价",
+					open: isSaleModalOpen,
+					setOpen: setIsSaleModalOpen,
+					modalType: "edit",
+					editFlowItemRecord: {},
+				}}
+			/>}
+			width={528}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
 
+	}
 	return (
 		<Drawer
 			placement="left"
@@ -126,22 +148,8 @@ const NotifyDrawer = (props: NotifyDrawerProps) => {
 							);
 						})}
 				</div>
-				<Modal
-					title="Basic Modal"
-					open={isSaleModalOpen}
-					onOk={handleOk}
-					onCancel={handleCancel}
-				>
-					<CustomModalView
-						{...{
-							title: "编辑报价",
-							open: isSaleModalOpen,
-							setOpen: setIsSaleModalOpen,
-							modalType: "edit",
-							editFlowItemRecord: {},
-						}}
-					/>
-				</Modal>
+				{renderModal()}
+
 			</UIROOT>
 		</Drawer>
 	);

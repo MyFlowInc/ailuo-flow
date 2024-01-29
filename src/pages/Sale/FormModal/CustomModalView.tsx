@@ -5,10 +5,10 @@ import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
 import {
 	blueButtonTheme,
+	dashboardTheme,
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
-import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import {
 	changeStatus,
@@ -17,7 +17,6 @@ import {
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
-import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";
@@ -456,7 +455,7 @@ const FootView = (props: any) => {
 
 const CustomModalContext = React.createContext({});
 
-const CustomModal: React.FC<CustomModalProps> = ({
+const CustomModalView: React.FC<CustomModalProps> = ({
 	title,
 	modalType,
 	open,
@@ -821,55 +820,60 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 
 	return (
-		<CustomModalRoot>
-			<div className="header">
-				<div className="title">{title}</div>
-				<div>
-					<Button
-						style={{
-							fontSize: "12px",
-							background: "#F2F3F5",
-							marginRight: "18px",
-						}}
-						onClick={() => setOpen(false)}
-					>
-						取消
-					</Button>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={handleSaveRecord}>
-							{modalType === "add" ? "创建" : "保存"}
+		<ConfigProvider theme={dashboardTheme}>
+
+			<CustomModalRoot>
+				<div className="header">
+					<div className="title">{title}</div>
+					<div>
+						<Button
+							style={{
+								fontSize: "12px",
+								background: "#F2F3F5",
+								marginRight: "18px",
+							}}
+							onClick={() => setOpen(false)}
+						>
+							取消
 						</Button>
-					</ConfigProvider>
+						<ConfigProvider theme={blueButtonTheme}>
+							<Button type="primary" onClick={handleSaveRecord}>
+								{modalType === "add" ? "创建" : "保存"}
+							</Button>
+						</ConfigProvider>
+					</div>
 				</div>
-			</div>
-			{StatusView()}
-			<div className="content">
-				<Form
-					form={inputForm}
-					name="recordForm"
-					colon={false}
-					wrapperCol={{ flex: 1 }}
-					preserve={false}
-				>
-					{showDstColumns.length > 0 ? (
-						<CellEditorContext
-							form={form}
-							setForm={setForm}
-							dstColumns={showDstColumns}
-							modalType={modalType}
-						/>
-					) : (
-						<NoFieldData />
-					)}
-				</Form>
-			</div>
-			<div className="footer">
-				<CustomModalContext.Provider value={{ user, finalInfoList, form, setForm, setOpen, changeProcess }}>
-					<FootView />
-				</CustomModalContext.Provider>
-			</div>
-		</CustomModalRoot>
+				{StatusView()}
+				<div className="content">
+					<Form
+						form={inputForm}
+						name="recordViewForm"
+						key="recordViewForm"
+						colon={false}
+						wrapperCol={{ flex: 1 }}
+						preserve={false}
+					>
+						{showDstColumns.length > 0 ? (
+							<CellEditorContext
+								form={form}
+								setForm={setForm}
+								dstColumns={showDstColumns}
+								modalType={modalType}
+							/>
+						) : (
+							<NoFieldData />
+						)}
+					</Form>
+				</div>
+				<div className="footer">
+					<CustomModalContext.Provider value={{ user, finalInfoList, form, setForm, setOpen, changeProcess }}>
+						<FootView />
+					</CustomModalContext.Provider>
+				</div>
+			</CustomModalRoot>
+		</ConfigProvider>
+
 	);
 };
 
-export default CustomModal;
+export default CustomModalView;

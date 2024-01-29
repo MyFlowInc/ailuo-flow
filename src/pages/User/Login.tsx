@@ -162,7 +162,7 @@ const Login: React.FC = () => {
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
 
-	const onFinish = (values: any) => {};
+	const onFinish = (values: any) => { };
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
 		setTimeout(() => {
@@ -214,7 +214,7 @@ const Login: React.FC = () => {
 							>
 								<Input
 									rootClassName="noborder-bg"
-									bordered={false}
+									variant={'borderless'}
 									placeholder="请输入用户名"
 								/>
 							</Form.Item>
@@ -225,7 +225,7 @@ const Login: React.FC = () => {
 							>
 								<Input.Password
 									rootClassName="noborder-bg"
-									bordered={false}
+									variant={'borderless'}
 									placeholder="请输入密码"
 									iconRender={(visible) =>
 										visible ? <EyeFilled /> : <EyeInvisibleFilled />

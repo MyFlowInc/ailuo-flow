@@ -222,7 +222,6 @@ export const columns: any = [
 				</div>
 			);
 		},
-
 	},
 	{
 		title: "贸易方式",

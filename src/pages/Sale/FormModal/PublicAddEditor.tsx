@@ -20,6 +20,7 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import ModeSelectTable from "../ModeSelectTable";
 import ProjectName from "../ProjectName";
 import PublishAddSuccess from "./PublishAddSuccess";
+import ExportProject from "../ExportProject";
 
 const PublicAddEditorRoot = styled.div`
 	position: relative;
@@ -201,16 +202,31 @@ export const columns: any = [
 	},
 	{
 		title: "出口项目",
-		dataIndex: "exportItem",
+		dataIndex: "exportItem",	// 'show' | 'hide'
 		key: "exportItem",
-		type: NumFieldType.SingleText,
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
 	},
 	{
 		title: "贸易方式",
 		dataIndex: "modeTrade",
 		key: "modeTrade",
-		type: NumFieldType.MultiFixSelect,
+		type: NumFieldType.MultiSelect,
 		dictCode: "tarde_mode",
+		showCtrlKey: 'exportItem',
 	},
 	{
 		title: "付款方式",

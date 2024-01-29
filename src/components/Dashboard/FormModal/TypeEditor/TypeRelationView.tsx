@@ -47,6 +47,9 @@ const TypeRelationView: React.FC<any> = (props: any) => {
 			</PriceRoot>
 		);
 	}
+	if (!form.name) {
+		return null;
+	}
 	return (
 		<div>
 			<span>{form.name}</span>

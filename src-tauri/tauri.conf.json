@@ -12,7 +12,12 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+			"all": true,
+			"http": {
+        "all": true,
+        "request": true,
+        "scope": ["http://*"]
+      }
     },
     "bundle": {
       "active": true,
@@ -29,7 +34,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "ailuo",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

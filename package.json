@@ -91,6 +91,7 @@
     "@babel/preset-react": "^7.22.15",
     "@capacitor/cli": "4.6.0",
     "@changesets/cli": "^2.26.0",
+    "@tauri-apps/api": "^1.5.3",
     "@tauri-apps/cli": "^1.5.9",
     "@types/lodash": "^4.14.191",
     "@types/serviceworker": "^0.0.74",

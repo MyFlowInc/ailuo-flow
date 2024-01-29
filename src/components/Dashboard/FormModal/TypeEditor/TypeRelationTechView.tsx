@@ -2,8 +2,7 @@
  * type=3
  */
 
-import React, { useRef, useEffect, } from "react";
-import { saleProjectList } from "../../../../api/ailuo/sale";
+import React, { useEffect, useContext, } from "react";
 import _ from "lodash";
 import styled from "styled-components";
 import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
@@ -25,6 +24,8 @@ const PriceRoot = styled.div`
 const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	const { form, } = props;
 	const [techInfo, setTechInfo] = React.useState<any>({});
+	const { setTechId, setIsTechModalViewOpen } = useContext(DashboardRouterOutletContext)
+
 	const fetchSaleInfo = async (techId: number) => {
 		const res = await techProjectList({
 			id: techId,
@@ -47,6 +48,8 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	const showModalView = (techInfo: any) => {
 		console.log(11, techInfo)
 		const { id } = techInfo
+		setTechId(techInfo.id)
+		setIsTechModalViewOpen(true)
 	}
 	if (!_.isEmpty(techInfo)) {
 		return (

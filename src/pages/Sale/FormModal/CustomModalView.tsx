@@ -506,6 +506,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 			fetchEditFlowItemRecord();
 		}
 	}, [saleId])
+
 	// 初始化form
 	useEffect(() => {
 		if (!open) {

@@ -22,6 +22,7 @@ import TechFeedBack from "../pages/Tech/TechFeedBack";
 import MyQuoteProcess from "../pages/Sale/MyQuoteProcess";
 import MySaleManage from "../pages/Sale/MySaleManage";
 import CustomModalView from "../pages/Sale/FormModal/CustomModalView";
+import CustomModalTechView from "../pages/Tech/FormModal/CustomModalTechView";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -72,7 +73,7 @@ const DashboardRouterOutlet: React.FC = () => {
 			return null
 		}
 		return <Modal
-			key={'notify_modal'}
+			key={'notify_sale_modal'}
 			open={isSaleModalViewOpen}
 			modalRender={() => <CustomModalView
 				{...{
@@ -92,9 +93,9 @@ const DashboardRouterOutlet: React.FC = () => {
 			return null
 		}
 		return <Modal
-			key={'notify_modal'}
+			key={'notify_sale_modal'}
 			open={isTechModalViewOpen}
-			modalRender={() => <CustomModalView
+			modalRender={() => <CustomModalTechView
 				{...{
 					title: "查看技术评审",
 					open: isTechModalViewOpen,
@@ -118,7 +119,16 @@ const DashboardRouterOutlet: React.FC = () => {
 		</Modal>
 	}
 	return (
-		<DashboardRouterOutletContext.Provider value={{ saleId, setSaleId, isSaleModalViewOpen, setIsSaleModalViewOpen }}>
+		<DashboardRouterOutletContext.Provider value={{
+			saleId,
+			setSaleId,
+			isSaleModalViewOpen,
+			setIsSaleModalViewOpen,
+			isTechModalViewOpen,
+			setIsTechModalViewOpen,
+			techId,
+			setTechId
+		}}>
 			<RouterContainer className="router-container">
 				<Layout>
 					<Sider
@@ -175,6 +185,7 @@ const DashboardRouterOutlet: React.FC = () => {
 					</Layout>
 					{/* 显示工单-复用 */}
 					{renderSaleViewModal()}
+					{renderTechViewModal()}
 					{renderPdfViewModal()}
 				</Layout>
 			</RouterContainer>

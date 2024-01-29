@@ -88,10 +88,10 @@ const columns: any = [
 	{
 		title: "生产分析",
 		dataIndex: "productionAnalysis",
-		width: 200,
 		key: "productionAnalysis",
+		with: 100,
 		render: (text: string, record: any) => {
-			return <span>{record.productionAnalysis}</span>;
+			return <div className="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap">{record.productionAnalysis}</div>;
 		},
 	},
 	{

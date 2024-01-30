@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { myFlowUpload } from "../../../../api/upload";
+import _ from "lodash";
 
 interface TypeAttachmentProps {
 	cell: TableColumnItem;
@@ -35,6 +36,15 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			setFileName(fileName);
 		}
 	}, [form]);
+
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(cell, "disabled")) {
+			setDisabled(true);
+		} else {
+			setDisabled(false);
+		}
+	}, [cell]);
 
 	const uploadHandler = async () => {
 		console.log(111, "uploadHandler");
@@ -75,7 +85,21 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			[cell.key]: url,
 		});
 	};
-
+	if (disabled) {
+		return (
+			<div>
+				<span
+					style={{
+						color: "#1677ff",
+						cursor: "pointer",
+						transition: "color 0.3s",
+					}}
+				>
+					{fileName || ""}
+				</span>
+			</div>
+		);
+	}
 	return (
 		<div>
 			<span

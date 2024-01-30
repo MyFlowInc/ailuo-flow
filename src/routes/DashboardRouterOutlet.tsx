@@ -42,14 +42,14 @@ const DashboardRouterOutlet: React.FC = () => {
 	const isOpenDrawer = useAppSelector(selectIsOpenDrawer);
 	// 全局工单详情显示
 	const [isSaleModalViewOpen, setIsSaleModalViewOpen] = useState(false);
-	const [saleId, setSaleId] = useState(undefined); // 当前展示的 
+	const [saleId, setSaleId] = useState(undefined); // 当前展示的
 	// 全局技术评审详情
 	const [isTechModalViewOpen, setIsTechModalViewOpen] = useState(false);
 	const [techId, setTechId] = useState(undefined);
 
 	// 全局预览文件
 	const [isPdfModalViewOpen, setIsPdfModalViewOpen] = useState(false);
-	const [fileUrl, setFileUrl] = useState('');
+	const [fileUrl, setFileUrl] = useState("");
 	const onDrawerClose = () => {
 		dispatch(setIsOpenDrawer(false));
 	};
@@ -70,79 +70,96 @@ const DashboardRouterOutlet: React.FC = () => {
 	}
 	const renderSaleViewModal = () => {
 		if (!saleId) {
-			return null
+			return null;
 		}
-		return <Modal
-			key={'notify_sale_modal'}
-			open={isSaleModalViewOpen}
-			onCancel={() => setSaleId(undefined)}
-			modalRender={() => <CustomModalView
-				{...{
-					title: "查看报价",
-					open: isSaleModalViewOpen,
-					setOpen: setIsSaleModalViewOpen,
-				}}
-			/>}
-			width={560}
-			wrapClassName="overflow-hidden"
-			style={{ height: "100vh", overflow: "hidden" }}
-		></Modal>
-
-	}
+		return (
+			<Modal
+				key={"renderSaleViewModal"}
+				open={isSaleModalViewOpen}
+				onCancel={() => setSaleId(undefined)}
+				modalRender={() => (
+					<CustomModalView
+						{...{
+							title: "查看报价",
+							open: isSaleModalViewOpen,
+							setOpen: setIsSaleModalViewOpen,
+						}}
+					/>
+				)}
+				width={560}
+				wrapClassName="overflow-hidden"
+				style={{ height: "100vh", overflow: "hidden" }}
+			></Modal>
+		);
+	};
 	const renderTechViewModal = () => {
 		if (!techId) {
-			return null
+			return null;
 		}
-		return <Modal
-			key={'notify_sale_modal'}
-			open={isTechModalViewOpen}
-			onCancel={() => setTechId(undefined)}
-			modalRender={() => <CustomModalTechView
-				{...{
-					title: "查看技术评审",
-					open: isTechModalViewOpen,
-					setOpen: setIsTechModalViewOpen,
-				}}
-			/>}
-			width={560}
-			wrapClassName="overflow-hidden"
-			style={{ height: "100vh", overflow: "hidden" }}
-		></Modal>
-
-	}
+		return (
+			<Modal
+				key={"renderTechViewModal"}
+				open={isTechModalViewOpen}
+				onCancel={() => setTechId(undefined)}
+				modalRender={() => (
+					<CustomModalTechView
+						{...{
+							title: "查看技术评审",
+							open: isTechModalViewOpen,
+							setOpen: setIsTechModalViewOpen,
+						}}
+					/>
+				)}
+				width={560}
+				wrapClassName="overflow-hidden"
+				style={{ height: "100vh", overflow: "hidden" }}
+			></Modal>
+		);
+	};
 	const renderPdfViewModal = () => {
 		if (!fileUrl) {
-			return
+			return;
 		}
-		console.log(fileUrl)
-		return <Modal title="预览" open={isPdfModalViewOpen}
-			style={{ top: 0, padding: 0 }}
-			styles={{
-				body: { height: 'calc(100vh - 108px)', overflow: 'hidden' }
-			}}
-			width="100%"
-			footer={null} onCancel={() => {
-				setFileUrl('')
-				setIsPdfModalViewOpen(false)
-			}}>
-			<div className="w-full h-full">
-				<iframe style={{ width: '100%', height: '100%' }} src={`/preview?url=${fileUrl}`}  ></iframe>
-			</div>
-		</Modal>
-	}
+		console.log(fileUrl);
+		return (
+			<Modal
+				title="预览"
+				open={isPdfModalViewOpen}
+				style={{ top: 0, padding: 0 }}
+				styles={{
+					body: { height: "calc(100vh - 108px)", overflow: "hidden" },
+				}}
+				width="100%"
+				footer={null}
+				onCancel={() => {
+					setFileUrl("");
+					setIsPdfModalViewOpen(false);
+				}}
+			>
+				<div className="w-full h-full">
+					<iframe
+						style={{ width: "100%", height: "100%" }}
+						src={`/preview?url=${fileUrl}`}
+					></iframe>
+				</div>
+			</Modal>
+		);
+	};
 	return (
-		<DashboardRouterOutletContext.Provider value={{
-			saleId,
-			setSaleId,
-			isSaleModalViewOpen,
-			setIsSaleModalViewOpen,
-			isTechModalViewOpen,
-			setIsTechModalViewOpen,
-			techId,
-			setTechId,
-			setFileUrl,
-			setIsPdfModalViewOpen
-		}}>
+		<DashboardRouterOutletContext.Provider
+			value={{
+				saleId,
+				setSaleId,
+				isSaleModalViewOpen,
+				setIsSaleModalViewOpen,
+				isTechModalViewOpen,
+				setIsTechModalViewOpen,
+				techId,
+				setTechId,
+				setFileUrl,
+				setIsPdfModalViewOpen,
+			}}
+		>
 			<RouterContainer className="router-container">
 				<Layout>
 					<Sider
@@ -204,7 +221,6 @@ const DashboardRouterOutlet: React.FC = () => {
 				</Layout>
 			</RouterContainer>
 		</DashboardRouterOutletContext.Provider>
-
 	);
 };
 

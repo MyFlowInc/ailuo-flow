@@ -12,10 +12,17 @@ import TurnView from "./TurnView";
 import { fetchTurnTime } from "../../api/ailuo/sale";
 
 const ProjectName: React.FC = (props: any) => {
-	const { column, form, setForm } = props;
 	const el = useRef<any>(null);
+	const { column, form, setForm } = props;
+
+	const [disabled, setDisabled] = useState(false);
 	useEffect(() => {
-		// console.log('useEffect--TypeSingleText', form)
+		if (_.get(column, 'disabled')) {
+			setDisabled(true)
+		}
+	}, [column])
+
+	useEffect(() => {
 		forceSetValue();
 	}, [form]);
 
@@ -26,7 +33,6 @@ const ProjectName: React.FC = (props: any) => {
 			...form,
 			[column.dataIndex]: value,
 		});
-		// console.log("onChangeContent", form);
 	};
 
 	const forceSetValue = () => {
@@ -57,6 +63,7 @@ const ProjectName: React.FC = (props: any) => {
 				<div style={{ width: "100px" }}>项目名称</div>
 				<div className="flex-1 flex items-center" onClick={() => { }}>
 					<Input
+						disabled={disabled}
 						className="flex-1"
 						onBlur={(e) => {
 							getTurnTime(e);

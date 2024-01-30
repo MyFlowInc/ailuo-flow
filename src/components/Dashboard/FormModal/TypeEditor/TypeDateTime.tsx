@@ -2,7 +2,7 @@
  * type=3
  */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DatePicker, DatePickerProps } from "antd";
 import { TableColumnItem } from "../../../../store/workflowSlice";
 import dayjs from "dayjs";
@@ -12,6 +12,7 @@ import localeData from "dayjs/plugin/localeData";
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
+import _ from "lodash";
 
 dayjs.extend(customParseFormat);
 dayjs.extend(advancedFormat);
@@ -34,6 +35,13 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
 
 	const value = form[cell.key] || null;
 
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(cell, 'disabled')) {
+			setDisabled(true)
+		}
+	}, [cell])
+
 	const onChange: DatePickerProps["onChange"] = (date, dateString) => {
 		console.log(date, dateString);
 		setForm({
@@ -44,6 +52,7 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
 
 	return (
 		<DatePicker
+			disabled={disabled}
 			value={value && dayjs(value)}
 			showTime={{ format: "HH:mm" }}
 			format="YYYY-MM-DD HH:mm"

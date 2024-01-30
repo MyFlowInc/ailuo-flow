@@ -14,7 +14,7 @@ import _ from "lodash";
 
 const CustomModalRoot = styled.div`
 	position: relative;
-	padding: 24px 40px 24px 40px;
+	padding: 24px 36px 24px 36px;
 	border-radius: 8px;
 	background-color: #ffffff;
 	box-shadow:

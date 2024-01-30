@@ -2,8 +2,9 @@
  * type=3
  */
 
-import React, { useRef, useEffect, SyntheticEvent } from "react";
+import React, { useRef, useEffect, SyntheticEvent, useState } from "react";
 import { Input } from "antd";
+import _ from "lodash";
 
 interface TypeSingleTextEditorProps {
 	mode?: "multiple";
@@ -17,6 +18,13 @@ const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
 ) => {
 	const { cell, form, setForm } = props;
 	const el = useRef<any>(null);
+
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(cell, 'disabled')) {
+			setDisabled(true)
+		}
+	}, [cell])
 
 	useEffect(() => {
 		// console.log('useEffect--TypeSingleText', form)
@@ -43,6 +51,7 @@ const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
 
 	return (
 		<Input
+			disabled={disabled}
 			ref={(input) => {
 
 				if (!input) {

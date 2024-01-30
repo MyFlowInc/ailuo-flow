@@ -32,6 +32,12 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 	const [value, setValue] = useState<string[] | string>([]);
 
 	const inputRef = useRef<InputRef>(null);
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(cell, 'disabled')) {
+			setDisabled(true)
+		}
+	}, [cell])
 
 	// 初始化
 	useEffect(() => {
@@ -151,6 +157,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 	)
 	return (
 		<Select
+			disabled={disabled}
 			style={{ width: "100%" }}
 			placeholder={mode === "multiple" ? "多选框" : "单选框"}
 			mode={mode}

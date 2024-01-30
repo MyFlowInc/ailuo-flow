@@ -31,7 +31,7 @@ const PublicAddEditorRoot = styled.div`
 	.warp {
 		width: 600px;
 		height: 100%;
-		padding: 24px 40px 24px 40px;
+		padding: 24px 36px 24px 36px;
 		overflow: hidden;
 		background-image: url("/assets/bg.svg");
 		background-position: center center;
@@ -249,7 +249,7 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({ }) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
-	const [step, setStep] = useState<1 | 2>(2);
+	const [step, setStep] = useState<1 | 2>(1);
 
 	useEffect(() => {
 		if (!open) {

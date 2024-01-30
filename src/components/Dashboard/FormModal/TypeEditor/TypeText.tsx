@@ -2,8 +2,9 @@
  * type=3
  */
 
-import React, { useRef, useEffect, SyntheticEvent } from "react";
+import React, { useRef, useEffect, SyntheticEvent, useState } from "react";
 import { Input } from "antd";
+import _ from "lodash";
 
 interface TypeTextEditorProps {
 	cell: { key: string; dataIndex: string; name: string };
@@ -17,6 +18,12 @@ const TypeText: React.FC<TypeTextEditorProps> = (
 ) => {
 	const { cell, form, setForm } = props;
 	const el = useRef<any>(null);
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(cell, 'disabled')) {
+			setDisabled(true)
+		}
+	}, [cell])
 
 	useEffect(() => {
 		forceSetValue();
@@ -40,6 +47,7 @@ const TypeText: React.FC<TypeTextEditorProps> = (
 	};
 	return (
 		<TextArea
+			disabled={disabled}
 			rows={3}
 			value={form[cell.dataIndex]}
 			ref={(input) => {

@@ -30,7 +30,7 @@ import ExportProject from "../ExportProject";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
-	padding: 24px 40px 24px 40px;
+	padding: 24px 36px 24px 36px;
 	border-radius: 8px;
 	background-color: #ffffff;
 	box-shadow:
@@ -311,9 +311,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 	const { user, setOpen, finalInfoList, } = useContext(CustomModalContext)! as any;
 	const [rejectReason, setRejectReason] = useState("");
 	const rejectHandle = async () => {
-
 		setRejectModal(false);
-
 		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
 			return
 		}
@@ -468,6 +466,30 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [form, setForm] = useState<any>({});
 	const user = useAppSelector(selectUser)
 	const { fetchSaleList } = useContext(SaleManageContext);
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled
+			}
+		});
+		setShowDstColumns(newCol)
+	}
+	useEffect(() => {
+		if (_.isEmpty(showDstColumns)) {
+			return
+		}
+		if (open && form.status === MainStatus.NotStarted) {
+			setAllDisabled(true)
+		} else {
+			if (_.get(showDstColumns, '[0].disabled') !== false) {
+				setAllDisabled(false)
+			}
+		}
+	}, [form.status, open])
+	useEffect(() => {
+		console.log(111, showDstColumns)
+	}, [showDstColumns])
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
 	// 确定终审情况
@@ -478,9 +500,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			setFinalInfoList(record);
 			console.log(111, res)
 		}
-		if (open && form.status === "quotation_review") {
+		if (open && form.status === MainStatus.QuotationReview) {
 			fetchFinalInfoList();
 		}
+
 	}, [form.status, open])
 
 	useEffect(() => {

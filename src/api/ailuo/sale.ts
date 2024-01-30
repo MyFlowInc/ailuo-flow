@@ -8,6 +8,7 @@ interface PageParams {
 	pageSize: number;
 	status?: string;
 	id?: string;
+	createBy?: string;
 }
 
 export function saleProjectList(params: PageParams) {

@@ -100,10 +100,11 @@ const Menu: React.FC = () => {
 				pageNum: 1,
 				pageSize: 20,
 				status: MainStatus.QuotationReview,
+				createBy: user.id,
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	const handleNotice = async () => {
 		try {
@@ -111,7 +112,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	// TODO: 调试可以关闭
 	const handlePolling = async () => {

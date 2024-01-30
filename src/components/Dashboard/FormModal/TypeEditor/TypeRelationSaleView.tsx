@@ -23,9 +23,11 @@ const PriceRoot = styled.div`
 `;
 
 const TypeRelationSaleView: React.FC<any> = (props: any) => {
-	const { form, } = props;
+	const { form } = props;
 	const [saleInfo, setSaleInfo] = React.useState<any>({});
-	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
+	const { setSaleId, setIsSaleModalViewOpen } = useContext(
+		DashboardRouterOutletContext,
+	);
 	const fetchSaleInfo = async (saleId: string) => {
 		const res = await saleProjectList({
 			id: saleId,
@@ -37,18 +39,18 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		const { linkSale, } = form;
+		const { linkSale, relationReview } = form;
 		// TODO: 后端没有统一字段
-		const saleId = linkSale;
+		const saleId = linkSale || relationReview;
 		if (saleId) {
 			fetchSaleInfo(saleId);
 		}
 	}, [form]);
 	const showModalView = (saleInfo: any) => {
-		const { id } = saleInfo
-		setSaleId(id)
-		setIsSaleModalViewOpen(true)
-	}
+		const { id } = saleInfo;
+		setSaleId(id);
+		setIsSaleModalViewOpen(true);
+	};
 	if (!_.isEmpty(saleInfo)) {
 		return (
 			<PriceRoot onClick={() => showModalView(saleInfo)}>
@@ -59,7 +61,7 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	if (!form.name) {
 		return null;
 	}
-	return null
+	return null;
 };
 
 export default TypeRelationSaleView;

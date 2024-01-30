@@ -10,9 +10,13 @@ import TableBody from "./TableBody";
 import _ from "lodash";
 import { MainStatus } from "../../api/ailuo/dict";
 import { SaleManageContext } from "./SaleManage";
+import { useAppSelector } from "../../store/hooks";
+import { selectUser } from "../../store/globalSlice";
 
 const MyQuoteProcess: React.FC = () => {
 	const [loading, setLoading] = useState(false);
+	const user = useAppSelector(selectUser);
+
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
 		undefined,
@@ -40,6 +44,7 @@ const MyQuoteProcess: React.FC = () => {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
 				status: MainStatus.QuotationReview,
+				createBy: user.id,
 			});
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {

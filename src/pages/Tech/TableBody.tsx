@@ -78,10 +78,13 @@ const columns: any = [
 	{
 		title: "选型分析",
 		dataIndex: "selectionAnalysis",
+		with: 100,
 		key: "selectionAnalysis",
 		render: (text: string, record: any) => {
 			return (
-				<div style={{ maxWidth: "150px" }}>{record.selectionAnalysis}</div>
+				<div className="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap">
+					{record.selectionAnalysis}
+				</div>
 			);
 		},
 	},
@@ -91,7 +94,11 @@ const columns: any = [
 		key: "productionAnalysis",
 		with: 100,
 		render: (text: string, record: any) => {
-			return <div className="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap">{record.productionAnalysis}</div>;
+			return (
+				<div className="w-24 overflow-hidden overflow-ellipsis whitespace-nowrap">
+					{record.productionAnalysis}
+				</div>
+			);
 		},
 	},
 	{

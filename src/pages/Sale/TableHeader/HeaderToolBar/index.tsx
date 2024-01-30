@@ -35,8 +35,8 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = ({}) => {
 	return (
 		<Space>
 			<Search columns={dstColumns} />
-			<Filter records={records} columns={dstColumns} />
-			<img src={LinePng} style={{ width: "14px", height: "14px" }} />
+			{/* <Filter records={records} columns={dstColumns} />
+			<img src={LinePng} style={{ width: "14px", height: "14px" }} /> */}
 			<Sort columns={dstColumns} />
 		</Space>
 	);

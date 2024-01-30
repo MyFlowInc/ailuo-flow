@@ -36,6 +36,8 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (props: TypeSelectEdit
 	useEffect(() => {
 		if (_.get(cell, 'disabled')) {
 			setDisabled(true)
+		} else {
+			setDisabled(false)
 		}
 	}, [cell])
 

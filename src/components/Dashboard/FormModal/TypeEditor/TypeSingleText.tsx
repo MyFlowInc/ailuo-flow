@@ -23,6 +23,8 @@ const TypeSingleText: React.FC<TypeSingleTextEditorProps> = (
 	useEffect(() => {
 		if (_.get(cell, 'disabled')) {
 			setDisabled(true)
+		} else {
+			setDisabled(false)
 		}
 	}, [cell])
 

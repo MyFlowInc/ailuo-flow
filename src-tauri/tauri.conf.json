@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run echo",
     "beforeDevCommand": "npm run serve",
     "devPath": "http://localhost:3000",
     "distDir": "../build"
@@ -12,7 +12,7 @@
   },
   "tauri": {
     "allowlist": {
-			"all": true
+      "all": true
     },
     "bundle": {
       "active": true,

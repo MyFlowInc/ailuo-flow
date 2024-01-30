@@ -487,9 +487,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			}
 		}
 	}, [form.status, open])
-	useEffect(() => {
-		console.log(111, showDstColumns)
-	}, [showDstColumns])
+
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
 	// 确定终审情况

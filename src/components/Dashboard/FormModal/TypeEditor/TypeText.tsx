@@ -22,6 +22,8 @@ const TypeText: React.FC<TypeTextEditorProps> = (
 	useEffect(() => {
 		if (_.get(cell, 'disabled')) {
 			setDisabled(true)
+		} else {
+			setDisabled(false)
 		}
 	}, [cell])
 

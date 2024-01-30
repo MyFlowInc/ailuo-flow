@@ -39,6 +39,8 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
 	useEffect(() => {
 		if (_.get(cell, 'disabled')) {
 			setDisabled(true)
+		} else {
+			setDisabled(false)
 		}
 	}, [cell])
 

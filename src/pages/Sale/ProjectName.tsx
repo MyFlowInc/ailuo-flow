@@ -19,6 +19,8 @@ const ProjectName: React.FC = (props: any) => {
 	useEffect(() => {
 		if (_.get(column, 'disabled')) {
 			setDisabled(true)
+		} else {
+			setDisabled(false)
 		}
 	}, [column])
 

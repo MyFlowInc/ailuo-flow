@@ -7,7 +7,11 @@ import { blueButtonTheme, dashboardTheme } from "../../../theme/theme";
 
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { ITechStatus } from "../../../api/ailuo/dict";
-import { changeStatus, techProjectEdit, techProjectList } from "../../../api/ailuo/tech";
+import {
+	changeStatus,
+	techProjectEdit,
+	techProjectList,
+} from "../../../api/ailuo/tech";
 import _ from "lodash";
 import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
 
@@ -94,11 +98,12 @@ const columns: any = (
 					setMode(e.target.value);
 					setForm({ ...form, result: e.target.value });
 				};
+
 				return (
 					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group onChange={onChange} value={mode}>
+							<Radio.Group disabled onChange={onChange} value={mode}>
 								<Space direction="vertical">
 									<Radio value={"1"}>常规产品，无特殊改动</Radio>
 									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
@@ -155,8 +160,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [mode, setMode] = useState<"1" | "2">("1");
-	const { techId } = useContext(DashboardRouterOutletContext)
-
+	const { techId } = useContext(DashboardRouterOutletContext);
 
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any>({});
 
@@ -175,18 +179,30 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 					const res = await techProjectList({
 						id: techId,
 						pageNum: 1,
-						pageSize: 10
+						pageSize: 10,
 					});
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
-				} catch (error) {
-
-				}
-
-			}
+				} catch (error) {}
+			};
 			fetchEditFlowItemRecord();
 		}
-	}, [techId])
-
+	}, [techId]);
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled,
+			};
+		});
+		setShowDstColumns(newCol);
+	};
+	// 控制 只读和编辑
+	useEffect(() => {
+		if (_.isEmpty(showDstColumns)) {
+			return;
+		}
+		setAllDisabled(true);
+	}, [form.status, open]);
 
 	// esc handler
 	useEffect(() => {
@@ -216,9 +232,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 			}
 			inputForm.setFieldsValue(temp);
 		}
-
 	}, [open, editFlowItemRecord]);
-
 
 	// 更新记录
 	const updateRecord = async () => {
@@ -240,7 +254,6 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 	const handleSaveRecord = () => {
 		inputForm.setFieldsValue(form);
 		updateRecord();
-
 	};
 	const changeProcess = async (
 		form: any,
@@ -268,7 +281,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 							{"未启动"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					{/* <div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -279,7 +292,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						>
 							{"开始审阅"}
 						</Tag>
-					</div>
+					</div> */}
 				</div>
 			);
 		}
@@ -353,11 +366,11 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						>
 							取消
 						</Button>
-						<ConfigProvider theme={blueButtonTheme}>
+						{/* <ConfigProvider theme={blueButtonTheme}>
 							<Button type="primary" onClick={handleSaveRecord}>
 								{"保存"}
 							</Button>
-						</ConfigProvider>
+						</ConfigProvider> */}
 					</div>
 				</div>
 				{StatusView()}
@@ -376,7 +389,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 								form={form}
 								setForm={setForm}
 								dstColumns={showDstColumns}
-								modalType={'edit'}
+								modalType={"edit"}
 							/>
 						) : (
 							<NoFieldData />
@@ -385,8 +398,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 				</div>
 				<div className="footer"></div>
 			</CustomModalRoot>
-		</ConfigProvider >
-
+		</ConfigProvider>
 	);
 };
 

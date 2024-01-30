@@ -21,7 +21,11 @@ import { MainStatus } from "../../../api/ailuo/dict";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";
-import { approveInfo, finalApproveEdit, finalInfoPage } from "../../../api/ailuo/approve";
+import {
+	approveInfo,
+	finalApproveEdit,
+	finalInfoPage,
+} from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 import { selectUser } from "../../../store/globalSlice";
@@ -204,7 +208,7 @@ export const columns: any = [
 	},
 	{
 		title: "出口项目",
-		dataIndex: "exportItem",	// 'show' | 'hide'
+		dataIndex: "exportItem", // 'show' | 'hide'
 		key: "exportItem",
 		render: (
 			column: any,
@@ -228,7 +232,7 @@ export const columns: any = [
 		key: "modeTrade",
 		type: NumFieldType.MultiSelect,
 		dictCode: "tarde_mode",
-		showCtrlKey: 'exportItem',
+		showCtrlKey: "exportItem",
 	},
 	{
 		title: "付款方式",
@@ -251,27 +255,28 @@ export const columns: any = [
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-	const { user, setOpen, finalInfoList, } = useContext(CustomModalContext)! as any;
+	const { user, setOpen, finalInfoList } = useContext(
+		CustomModalContext,
+	)! as any;
 	const clickHandle = async () => {
 		setApproveModal(false);
 		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
-			return
+			return;
 		}
-		const { id } = user
-		const info = _.find(finalInfoList, { relationUserId: id })
-		console.log(111, 'user id ', id, info)
+		const { id } = user;
+		const info = _.find(finalInfoList, { relationUserId: id });
+		console.log(111, "user id ", id, info);
 		try {
 			await finalApproveEdit({
 				id: info.id,
-				status: 'approve'	// 通过
-			})
+				status: "approve", // 通过
+			});
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		} finally {
-			setOpen(false)
+			setOpen(false);
 		}
-
-	}
+	};
 	return (
 		<div className="flex flex-col items-center" style={{ width: "300px" }}>
 			<div className="flex mb-4 mt-4">
@@ -296,7 +301,7 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 						style={{ width: "80px" }}
 						type="primary"
 						onClick={() => {
-							clickHandle()
+							clickHandle();
 						}}
 					>
 						通过
@@ -307,30 +312,30 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { user, setOpen, finalInfoList, } = useContext(CustomModalContext)! as any;
+	const { user, setOpen, finalInfoList } = useContext(
+		CustomModalContext,
+	)! as any;
 	const [rejectReason, setRejectReason] = useState("");
 	const rejectHandle = async () => {
-
 		setRejectModal(false);
 
 		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
-			return
+			return;
 		}
-		const { id } = user
-		const info = _.find(finalInfoList, { relationUserId: id })
-		console.log(111, 'user id ', id, info)
+		const { id } = user;
+		const info = _.find(finalInfoList, { relationUserId: id });
+		console.log(111, "user id ", id, info);
 		try {
 			await finalApproveEdit({
 				id: info.id,
-				status: 'reject',	// 通过
-				remark: rejectReason
-			})
+				status: "reject", // 通过
+				remark: rejectReason,
+			});
 		} catch (error) {
-			console.log(error)
+			console.log(error);
 		} finally {
-			setOpen(false)
+			setOpen(false);
 		}
-
 	};
 	return (
 		<div className="flex flex-col" style={{ width: "300px" }}>
@@ -382,24 +387,25 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-quote-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList, } = useContext(CustomModalContext)! as any;
-
+	const { user, finalInfoList } = useContext(CustomModalContext)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
 
 	if (_.isEmpty(user || _.isEmpty(finalInfoList))) {
-		return null
+		return null;
 	}
-	const { id } = user
-	const info = _.find(finalInfoList, { relationUserId: id })
+	const { id } = user;
+	const info = _.find(finalInfoList, { relationUserId: id });
 
 	if (!_.isEmpty(info) && _.get(info, "status") !== "todo") {
-		return <div className="w-full flex justify-center">
-			<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-				您已审批完成
-			</Tag>
-		</div>
+		return (
+			<div className="w-full flex justify-center">
+				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
+					您已审批完成
+				</Tag>
+			</div>
+		);
 	}
 
 	return (
@@ -460,51 +466,64 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 }) => {
-	const [showDstColumns] = useState(columns);
+	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
-	const user = useAppSelector(selectUser)
+	const user = useAppSelector(selectUser);
 	// sale id
 
-	const { saleId } = useContext(DashboardRouterOutletContext)
+	const { saleId } = useContext(DashboardRouterOutletContext);
 
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any>({});
 
-	// 确定终审情况	
+	// 确定终审情况
 	useEffect(() => {
 		const fetchFinalInfoList = async () => {
-			const res = await finalInfoPage(form.id + '');
+			const res = await finalInfoPage(form.id + "");
 			const record = _.get(res, "data.record");
 			setFinalInfoList(record);
-			console.log(111, res)
-		}
+		};
 		if (open && form.status === "quotation_review") {
 			fetchFinalInfoList();
 		}
-	}, [form.status, open])
+	}, [form.status, open]);
+
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled,
+			};
+		});
+		setShowDstColumns(newCol);
+	};
+	// 控制 只读和编辑
+	useEffect(() => {
+		if (_.isEmpty(showDstColumns)) {
+			return;
+		}
+		setAllDisabled(true);
+	}, [form.status, open]);
 
 	// 根据saleid 获取值
 	useEffect(() => {
-		console.log('saleId', saleId)
+		console.log("saleId", saleId);
 		if (saleId) {
 			const fetchEditFlowItemRecord = async () => {
 				try {
 					const res = await saleProjectList({
 						id: saleId,
 						pageNum: 1,
-						pageSize: 10
+						pageSize: 10,
 					});
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
-				} catch (error) {
-
-				}
-
-			}
+				} catch (error) {}
+			};
 			fetchEditFlowItemRecord();
 		}
-	}, [saleId])
+	}, [saleId]);
 
 	// 初始化form
 	useEffect(() => {
@@ -512,7 +531,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 			return;
 		}
 		if (_.isEmpty(editFlowItemRecord)) {
-			return
+			return;
 		}
 		if (editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
@@ -542,7 +561,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		}
 	}, [open, editFlowItemRecord]);
 
-
 	// 更新记录
 	const updateRecord = async () => {
 		const { recordId, id, ...rest } = form;
@@ -557,7 +575,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -663,7 +681,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"未启动"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -688,7 +706,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"处理中"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -713,7 +731,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"技术审核中"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer"></div>
 				</div>
 			);
 		}
@@ -727,7 +744,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"技术审核已完成"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -752,7 +769,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"报价终审中"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer"></div>
 				</div>
 			);
 		}
@@ -766,9 +782,9 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"终审通过"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
 							{"发起合同流程"}
 						</Tag>
 					</div>
@@ -785,7 +801,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"审批驳回"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer">
+					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
 						<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
 							{"新一轮报价（需技术审批）"}
@@ -818,7 +834,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-
 			<CustomModalRoot>
 				<div className="header">
 					<div className="title">{title}</div>
@@ -833,11 +848,11 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						>
 							取消
 						</Button>
-						<ConfigProvider theme={blueButtonTheme}>
+						{/* <ConfigProvider theme={blueButtonTheme}>
 							<Button type="primary" onClick={handleSaveRecord}>
 								{"保存"}
 							</Button>
-						</ConfigProvider>
+						</ConfigProvider> */}
 					</div>
 				</div>
 				{StatusView()}
@@ -863,13 +878,21 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 					</Form>
 				</div>
 				<div className="footer">
-					<CustomModalContext.Provider value={{ user, finalInfoList, form, setForm, setOpen, changeProcess }}>
+					<CustomModalContext.Provider
+						value={{
+							user,
+							finalInfoList,
+							form,
+							setForm,
+							setOpen,
+							changeProcess,
+						}}
+					>
 						<FootView />
 					</CustomModalContext.Provider>
 				</div>
 			</CustomModalRoot>
 		</ConfigProvider>
-
 	);
 };
 

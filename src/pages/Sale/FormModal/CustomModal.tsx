@@ -5,7 +5,6 @@ import {
 	Form,
 	Button,
 	Tag,
-	Modal,
 	Popover,
 	Input,
 	Popconfirm,
@@ -17,7 +16,6 @@ import {
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
-import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import {
 	changeStatus,
@@ -27,7 +25,6 @@ import {
 } from "../../../api/ailuo/sale";
 import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
-import { useLocation } from "react-router";
 import warnSvg from "../assets/warning.svg";
 import ProjectName from "../ProjectName";
 import { SaleManageContext } from "../SaleManage";

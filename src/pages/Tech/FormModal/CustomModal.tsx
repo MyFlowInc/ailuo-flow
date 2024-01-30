@@ -98,11 +98,20 @@ const columns: any = (
 					setMode(e.target.value);
 					setForm({ ...form, result: e.target.value });
 				};
+				const [disabled, setDisabled] = useState(false);
+				useEffect(() => {
+					if (_.get(column, "disabled")) {
+						setDisabled(true);
+					} else {
+						setDisabled(false);
+					}
+				}, [column]);
+
 				return (
 					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group onChange={onChange} value={mode}>
+							<Radio.Group disabled={disabled} onChange={onChange} value={mode}>
 								<Space direction="vertical">
 									<Radio value={"1"}>常规产品，无特殊改动</Radio>
 									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
@@ -170,6 +179,34 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled,
+			};
+		});
+		setShowDstColumns(newCol);
+		setSaveButtonDisabled(disabled);
+	};
+	// 控制 只读和编辑
+	useEffect(() => {
+		if (_.isEmpty(showDstColumns)) {
+			return;
+		}
+		if (open && form.status === ITechStatus.Todo) {
+			// 未启动
+			setAllDisabled(true);
+		} else if (open && form.status === ITechStatus.Over) {
+			// 已完成
+			setAllDisabled(true);
+		} else {
+			if (_.get(showDstColumns, "[0].disabled") !== false) {
+				setAllDisabled(false);
+			}
+		}
+	}, [form.status, open]);
 
 	// esc handler
 	useEffect(() => {
@@ -337,6 +374,19 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			</div>
 		);
 	};
+	const SaveButton = () => {
+		if (saveButtonDisabled) {
+			return null;
+		}
+		return (
+			<ConfigProvider theme={blueButtonTheme}>
+				<Button type="primary" onClick={handleSaveRecord}>
+					{"保存"}
+				</Button>
+			</ConfigProvider>
+		);
+	};
+
 	return (
 		<CustomModalRoot>
 			<div className="header">
@@ -352,11 +402,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					>
 						取消
 					</Button>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={handleSaveRecord}>
-							{"保存"}
-						</Button>
-					</ConfigProvider>
+					{SaveButton()}
 				</div>
 			</div>
 			{StatusView()}

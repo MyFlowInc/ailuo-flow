@@ -1,8 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { ConfigProvider, Form, Input, InputNumber, Table, Typography } from "antd";
+import {
+	ConfigProvider,
+	Form,
+	Input,
+	InputNumber,
+	Table,
+	Typography,
+} from "antd";
 import { TableTheme } from "../../theme/theme";
 import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
+import { selectIsTech } from "../../store/globalSlice";
+import { useAppSelector } from "../../store/hooks";
 
 type InputRef = any;
 type FormInstance<T> = any;
@@ -42,7 +51,15 @@ interface EditableCellProps {
 	handleSave: (record: Item) => void;
 }
 
-const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
+const EditableCell: React.FC<EditableCellProps> = ({
+	title,
+	editable,
+	children,
+	dataIndex,
+	record,
+	handleSave,
+	...restProps
+}) => {
 	const [editing, setEditing] = useState(false);
 	const inputRef = useRef<InputRef>(null);
 	const form = useContext(EditableContext)!;
@@ -83,12 +100,33 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 						// 	message: `${title} is required.`
 						// }
 					]
-				}>
-				{numKeys.includes(dataIndex) && <InputNumber size="small" style={{ width: "56px" }} ref={inputRef} onPressEnter={save} onBlur={save} />}
-				{!numKeys.includes(dataIndex) && <Input size="small" style={{ width: "56px" }} ref={inputRef} onPressEnter={save} onBlur={save} />}
+				}
+			>
+				{numKeys.includes(dataIndex) && (
+					<InputNumber
+						size="small"
+						style={{ width: "56px" }}
+						ref={inputRef}
+						onPressEnter={save}
+						onBlur={save}
+					/>
+				)}
+				{!numKeys.includes(dataIndex) && (
+					<Input
+						size="small"
+						style={{ width: "56px" }}
+						ref={inputRef}
+						onPressEnter={save}
+						onBlur={save}
+					/>
+				)}
 			</Form.Item>
 		) : (
-			<div className="editable-cell-value-wrap" style={{ paddingRight: 12 }} onClick={toggleEdit}>
+			<div
+				className="editable-cell-value-wrap"
+				style={{ paddingRight: 12 }}
+				onClick={toggleEdit}
+			>
 				{_.get(children, "1") ? children : "点击输入"}
 			</div>
 		);
@@ -101,7 +139,6 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 	);
 };
 const { Text } = Typography;
-
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -121,10 +158,20 @@ const item = {
 	force: "",
 	num: 0,
 	price: 0,
-	total: 0
+	total: 0,
 };
 const ModeSelectTable: React.FC = (props: any) => {
 	const { column, form, setForm } = props;
+	const [disabled, setDisabled] = useState(false);
+	useEffect(() => {
+		if (_.get(column, "disabled")) {
+			setDisabled(true);
+		} else {
+			setDisabled(false);
+		}
+	}, [column]);
+
+	const isTechRole = useAppSelector(selectIsTech); // 是否是技术
 
 	const records = _.get(form, column.dataIndex) || [];
 	const [dataSource, setDataSource] = useState<DataType[]>(records);
@@ -137,51 +184,75 @@ const ModeSelectTable: React.FC = (props: any) => {
 	}, [form.typeSelection]);
 
 	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter(item => item.key !== key);
+		const newData = dataSource.filter((item) => item.key !== key);
 		setDataSource(newData);
 		// console.log("do update");
 		debouncedSetForm({
 			...form,
-			[column.dataIndex]: newData
+			[column.dataIndex]: newData,
 		});
 	};
 
-	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+	const defaultColumns: any = [
 		{
 			title: "初步选型型号",
 			dataIndex: "mode",
-			editable: true
+			editable: true,
 		},
 		{
 			title: "额定扭矩/推力",
 			editable: true,
-			dataIndex: "force"
+			dataIndex: "force",
 		},
 		{
 			title: "数量",
 			editable: true,
-			dataIndex: "num"
+			dataIndex: "num",
 		},
 		{
 			editable: true,
 			title: "单价",
-			dataIndex: "price"
-		},
-		{
-			title: "总价",
-			width: 100,
-			dataIndex: "total",
-			render: (text, record: any) => {
+			dataIndex: "price",
+			render: (text: any, record: any) => {
 				return (
 					<div className="flex items-center justify-around">
 						{+record.num * +record.price}
 						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
 					</div>
 				);
-			}
-		}
+			},
+		},
+		{
+			title: "总价",
+			width: 100,
+			dataIndex: "total",
+			render: (text: any, record: any) => {
+				return (
+					<div className="flex items-center justify-around">
+						{+record.num * +record.price}
+						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
+					</div>
+				);
+			},
+		},
 	];
-
+	const defaultColumnsTech: any = [
+		{
+			title: "初步选型型号",
+			dataIndex: "mode",
+			editable: true,
+		},
+		{
+			title: "额定扭矩/推力",
+			editable: true,
+			dataIndex: "force",
+		},
+		{
+			title: "数量",
+			editable: true,
+			dataIndex: "num",
+		},
+	];
 	const handleAdd = () => {
 		const newData: DataType = {
 			key: count,
@@ -189,13 +260,13 @@ const ModeSelectTable: React.FC = (props: any) => {
 			force: "",
 			num: 0,
 			price: 0,
-			total: 0
+			total: 0,
 		};
 		setDataSource([...dataSource, newData]);
 		debouncedSetForm({
 			// typeSelection
 			...form,
-			[column.dataIndex]: [...dataSource, newData]
+			[column.dataIndex]: [...dataSource, newData],
 		});
 		setCount(count + 1);
 		// console.log("do update");
@@ -203,19 +274,19 @@ const ModeSelectTable: React.FC = (props: any) => {
 
 	const handleSave = (row: DataType) => {
 		const newData = [...dataSource];
-		const index = newData.findIndex(item => row.key === item.key);
+		const index = newData.findIndex((item) => row.key === item.key);
 		const item = newData[index];
 		// hack
 		row.total = row.num * row.price;
 
 		newData.splice(index, 1, {
 			...item,
-			...row
+			...row,
 		});
 		setDataSource(newData);
 		debouncedSetForm({
 			...form,
-			[column.dataIndex]: newData
+			[column.dataIndex]: newData,
 		});
 		// console.log("do update");
 	};
@@ -223,38 +294,43 @@ const ModeSelectTable: React.FC = (props: any) => {
 	const components = {
 		body: {
 			row: EditableRow,
-			cell: EditableCell
-		}
+			cell: EditableCell,
+		},
 	};
 
-	const columns = defaultColumns.map(col => {
-		if (!col.editable) {
-			return col;
-		}
-		return {
-			...col,
-			onCell: (record: DataType) => ({
-				record,
-				editable: col.editable,
-				dataIndex: col.dataIndex,
-				title: col.title,
-				handleSave
-			})
-		};
-	});
+	const columns = (isTechRole ? defaultColumnsTech : defaultColumns).map(
+		(col: any) => {
+			if (!col.editable) {
+				return col;
+			}
+			return {
+				...col,
+				onCell: (record: DataType) => ({
+					record,
+					editable: col.editable,
+					dataIndex: col.dataIndex,
+					title: col.title,
+					handleSave,
+				}),
+			};
+		},
+	);
 	const summary = (pageData: any) => {
+		if (isTechRole) {
+			return null;
+		}
 		let totalBorrow = 0;
 		// @ts-ignore
 		pageData.forEach(({ total }) => {
 			totalBorrow += total;
 		});
-		const { currency } = form
-		let momey = "¥"
+		const { currency } = form;
+		let momey = "¥";
 		if (currency === "美元") {
-			momey = "$"
+			momey = "$";
 		}
 		if (currency === "欧元") {
-			momey = "€"
+			momey = "€";
 		}
 
 		return (
@@ -271,12 +347,18 @@ const ModeSelectTable: React.FC = (props: any) => {
 		<div className="w-full">
 			<div className="flex mb-4">
 				<div style={{ width: "100px" }}>初步选型型号</div>
-				<div className="flex items-center" onClick={handleAdd}>
+				<div
+					className={["flex items-center ", disabled ? "hidden" : ""].join("")}
+					onClick={handleAdd}
+				>
 					<PlusCircleFilled size={14} />
 					<div className="ml-2">添加型号</div>
 				</div>
 			</div>
-			<div className="w-full overflow-hidden overflow-x-auto">
+			<div
+				className="w-full overflow-hidden overflow-x-auto"
+				style={{ pointerEvents: disabled ? "none" : "auto" }}
+			>
 				<ConfigProvider theme={TableTheme}>
 					<Table
 						size="small"

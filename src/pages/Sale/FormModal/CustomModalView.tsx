@@ -28,7 +28,7 @@ import {
 } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
-import { selectUser } from "../../../store/globalSlice";
+import { selectIsTech, selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
@@ -90,7 +90,7 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-export const columns: any = [
+const columns: any = [
 	{
 		title: "项目名称",
 		dataIndex: "name",
@@ -233,6 +233,130 @@ export const columns: any = [
 		type: NumFieldType.MultiSelect,
 		dictCode: "tarde_mode",
 		showCtrlKey: "exportItem",
+	},
+	{
+		title: "付款方式",
+		dataIndex: "payType",
+		key: "payType",
+		type: NumFieldType.MultiSelect,
+		dictCode: "pay",
+	},
+	{
+		title: "关联技术评审",
+		dataIndex: "relateTechProcess",
+		key: "relateTechProcess",
+		type: NumFieldType.RelationTechView,
+	},
+	{
+		title: "关联报价",
+		dataIndex: "relateQuote",
+		key: "relateQuote",
+		type: NumFieldType.RelationSaleView,
+	},
+];
+const columnsTech: any = [
+	{
+		title: "项目名称",
+		dataIndex: "name",
+		key: "name",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"name_" + key} className="w-full">
+					<ProjectName
+						key={"ProjectName" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
+	},
+	{
+		title: "单位名称",
+		dataIndex: "company",
+		key: "company",
+		type: NumFieldType.SingleSelect,
+		dictCode: "company",
+	},
+	{
+		title: "销售经理",
+		dataIndex: "salesManager",
+		key: "salesManager",
+		type: NumFieldType.SingleSelect,
+		dictCode: "salesManager",
+	},
+	{
+		title: "报价开始日期",
+		dataIndex: "quotationBegin",
+		key: "quotationBegin",
+		type: NumFieldType.DateTime,
+	},
+	{
+		title: "产品规格书",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
+	},
+	{
+		title: "阀门参数",
+		dataIndex: "valveDetail",
+		key: "valveDetail",
+		type: NumFieldType.Attachment,
+	},
+	{
+		title: "其他技术文件",
+		dataIndex: "otherFile",
+		key: "otherFile",
+		type: NumFieldType.Attachment,
+	},
+	{
+		title: "扭矩/推力",
+		dataIndex: "torqueThrust",
+		key: "torquehrust",
+		type: NumFieldType.SingleText,
+	},
+	{
+		title: "其他技术要求",
+		dataIndex: "otherTechnicalRequirements",
+		key: "otherTechnicalRequirements",
+		type: NumFieldType.Text,
+	},
+	{
+		title: "执行机构形式",
+		dataIndex: "mechanismForm",
+		key: "mechanismForm",
+		type: NumFieldType.SingleText,
+	},
+	{
+		title: "货币",
+		dataIndex: "currency",
+		key: "currency",
+		type: NumFieldType.SingleFixSelect,
+		dictCode: "currency",
+	},
+	{
+		title: "初步选型型号",
+		dataIndex: "typeSelection",
+		key: "typeSelection",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"ModeSelectTable_" + key} className="w-full">
+					<ModeSelectTable
+						key={"ModeSelectTable" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
 	},
 	{
 		title: "付款方式",
@@ -466,12 +590,20 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 }) => {
-	const [showDstColumns, setShowDstColumns] = useState(columns);
+	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const user = useAppSelector(selectUser);
-	// sale id
+	const isTechRole = useAppSelector(selectIsTech); // 是否是技术
+	useEffect(() => {
+		if (isTechRole) {
+			setShowDstColumns(columnsTech);
+		} else {
+			setShowDstColumns(columns);
+		}
+	}, [isTechRole]);
 
+	// sale id
 	const { saleId } = useContext(DashboardRouterOutletContext);
 
 	// 终审情况

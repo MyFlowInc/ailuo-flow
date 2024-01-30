@@ -18,7 +18,7 @@ export interface User {
 	endTime: string;
 	email: string;
 	isInvite: number;
-	roles: Array<{ id: string, name: string, code: string }>
+	roles: Array<{ id: string; name: string; code: string }>;
 }
 
 export interface DeveloperUser {
@@ -47,7 +47,6 @@ export interface globalState {
 	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知,
 	flowStatus: IFlowStatus[];
-
 }
 
 const initialState: globalState = {
@@ -64,14 +63,17 @@ const initialState: globalState = {
 	isShowSaleModal: false,
 	isStatusSettingModalOpen: false, //  状态流设置modal
 	isOpenDrawer: false, // 是否打开通知
-	flowStatus: []
+	flowStatus: [],
 };
 
-export const fetchFlowStatus = createAsyncThunk("global/fetchFlowStatus", async () => {
-	const res = await dictFlowStatus();
-	// The value we return becomes the `fulfilled` action payload
-	return res;
-});
+export const fetchFlowStatus = createAsyncThunk(
+	"global/fetchFlowStatus",
+	async () => {
+		const res = await dictFlowStatus();
+		// The value we return becomes the `fulfilled` action payload
+		return res;
+	},
+);
 
 export const freshUser = createAsyncThunk("global/freshUser", async () => {
 	const res = await userProfile();
@@ -79,10 +81,13 @@ export const freshUser = createAsyncThunk("global/freshUser", async () => {
 	return res.data;
 });
 
-export const freshGradeList = createAsyncThunk("global/freshGradeList", async () => {
-	const res = await userGradeList();
-	return _.get(res, "data.record") || [];
-});
+export const freshGradeList = createAsyncThunk(
+	"global/freshGradeList",
+	async () => {
+		const res = await userGradeList();
+		return _.get(res, "data.record") || [];
+	},
+);
 
 export const globalSlice = createSlice({
 	name: "global",
@@ -127,17 +132,16 @@ export const globalSlice = createSlice({
 		},
 		setIsOpenDrawer: (state, action) => {
 			state.isOpenDrawer = action.payload;
-		}
+		},
 	},
-	extraReducers: builder => {
+	extraReducers: (builder) => {
 		builder.addCase(fetchFlowStatus.fulfilled, (state, action) => {
 			state.flowStatus = action.payload;
 		});
 		builder.addCase(freshUser.fulfilled, (state, action) => {
 			state.user = action.payload;
 		});
-
-	}
+	},
 });
 
 export const {
@@ -152,36 +156,56 @@ export const {
 	setIsAddOrderModalOpen,
 	setIsShowSaleModal,
 	setIsStatusSettingModalOpen,
-	setIsOpenDrawer
+	setIsOpenDrawer,
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;
 export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
-export const selectIsAddTableModalOpen = (state: RootState) => state.global.isAddTableModalOpen;
-export const selectIsAddOrderModalOpen = (state: RootState) => state.global.isAddOrderModalOpen;
-export const selectIsShowSaleModal = (state: RootState) => state.global.isShowSaleModal;
-export const selectIsStatusSettingModalOpen = (state: RootState) => state.global.isStatusSettingModalOpen;
-export const selectIsOpenDrawer = (state: RootState) => state.global.isOpenDrawer;
+export const selectIsAddTableModalOpen = (state: RootState) =>
+	state.global.isAddTableModalOpen;
+export const selectIsAddOrderModalOpen = (state: RootState) =>
+	state.global.isAddOrderModalOpen;
+export const selectIsShowSaleModal = (state: RootState) =>
+	state.global.isShowSaleModal;
+export const selectIsStatusSettingModalOpen = (state: RootState) =>
+	state.global.isStatusSettingModalOpen;
+export const selectIsOpenDrawer = (state: RootState) =>
+	state.global.isOpenDrawer;
 
 export const selectIsArchive = (state: RootState) => state.global.is_archive;
-export const selectIsArchiveView = (state: RootState) => state.global.is_archive_view;
+export const selectIsArchiveView = (state: RootState) =>
+	state.global.is_archive_view;
 export const selectIsShowTour = (state: RootState) => state.global.is_show_tour;
 
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;
-	const { roles } = user
-	let res = false
+	const { roles } = user;
+	let res = false;
 	if (!roles) {
-		return res
+		return res;
 	}
-	roles.forEach(item => {
+	roles.forEach((item) => {
 		if (item.code === "manage") {
-			res = true
+			res = true;
 		}
-	})
-	return res
-}
+	});
+	return res;
+};
+export const selectIsTech = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "technologist") {
+			res = true;
+		}
+	});
+	return res;
+};
 
 // 是否是会员
 export const selectIsMember = (state: RootState) => {
@@ -211,4 +235,3 @@ export const selectIsExpired = (state: RootState) => {
 };
 
 export default globalSlice.reducer;
-

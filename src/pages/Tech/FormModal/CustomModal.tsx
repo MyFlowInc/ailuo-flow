@@ -161,7 +161,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	editFlowItemRecord,
 	fetchTechFeedbackList,
 }) => {
-	const dispatch = useAppDispatch();
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [mode, setMode] = useState<"1" | "2">("1");
 

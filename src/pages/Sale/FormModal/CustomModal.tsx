@@ -21,6 +21,7 @@ import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import {
 	changeStatus,
+	fetchTurnTime,
 	saleProjectAdd,
 	saleProjectEdit,
 } from "../../../api/ailuo/sale";
@@ -265,7 +266,7 @@ export const columns: any = [
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-	const { user, setOpen, finalInfoList } = useContext(
+	const { user, setOpen, finalInfoList, fetchSaleList } = useContext(
 		CustomModalContext,
 	)! as any;
 	const clickHandle = async () => {
@@ -275,12 +276,12 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 		}
 		const { id } = user;
 		const info = _.find(finalInfoList, { relationUserId: id });
-		console.log(111, "user id ", id, info);
 		try {
 			await finalApproveEdit({
 				id: info.id,
 				status: "approve", // 通过
 			});
+			await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -322,7 +323,7 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { user, setOpen, finalInfoList } = useContext(
+	const { user, setOpen, finalInfoList, fetchSaleList } = useContext(
 		CustomModalContext,
 	)! as any;
 	const [rejectReason, setRejectReason] = useState("");
@@ -340,6 +341,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 				status: "reject", // 通过
 				remark: rejectReason,
 			});
+			await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -482,6 +484,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [form, setForm] = useState<any>({});
 	const user = useAppSelector(selectUser);
 	const { fetchSaleList } = useContext(SaleManageContext);
+
+	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
 		const newCol = showDstColumns.map((item: any) => {
 			return {
@@ -490,12 +494,28 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			};
 		});
 		setShowDstColumns(newCol);
+		setSaveButtonDisabled(disabled);
 	};
+
+	// 控制 只读和编辑
 	useEffect(() => {
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
 		if (open && form.status === MainStatus.NotStarted) {
+			// 未启动
+			setAllDisabled(true);
+		} else if (open && form.status === MainStatus.TechnicalReview) {
+			// 技术审核中
+			setAllDisabled(true);
+		} else if (open && form.status === MainStatus.QuotationReview) {
+			// 报价终审中
+			setAllDisabled(true);
+		} else if (open && form.status === MainStatus.Approved) {
+			// 通过
+			setAllDisabled(true);
+		} else if (open && form.status === MainStatus.ReviewFailed) {
+			// 驳回
 			setAllDisabled(true);
 		} else {
 			if (_.get(showDstColumns, "[0].disabled") !== false) {
@@ -503,7 +523,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			}
 		}
 	}, [form.status, open]);
-
 	// 终审情况
 	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
 	// 确定终审情况
@@ -518,7 +537,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			fetchFinalInfoList();
 		}
 	}, [form.status, open]);
-
+	// 初始化form数据
 	useEffect(() => {
 		if (!open) {
 			return;
@@ -708,8 +727,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
 			} catch (error) {}
+			try {
+				const res = await fetchTurnTime(form.name);
+				const time = _.get(res, "data.turn_time");
+				params.turnTime = time;
+			} catch (error) {
+				params.turnTime = +form.turnTime + 1;
+			}
 			params.status = status;
-			params.turnTime = +form.turnTime + 1;
 			params.relationReview = form.id;
 			await saleProjectAdd(excludeNull(params));
 			await fetchSaleList();
@@ -909,7 +934,27 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			</div>
 		);
 	};
-
+	const SaveButton = () => {
+		if (modalType === "add") {
+			return (
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button type="primary" onClick={handleSaveRecord}>
+						创建
+					</Button>
+				</ConfigProvider>
+			);
+		}
+		if (saveButtonDisabled) {
+			return null;
+		}
+		return (
+			<ConfigProvider theme={blueButtonTheme}>
+				<Button type="primary" onClick={handleSaveRecord}>
+					{"保存"}
+				</Button>
+			</ConfigProvider>
+		);
+	};
 	return (
 		<CustomModalRoot>
 			<div className="header">
@@ -925,11 +970,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					>
 						取消
 					</Button>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={handleSaveRecord}>
-							{modalType === "add" ? "创建" : "保存"}
-						</Button>
-					</ConfigProvider>
+					{SaveButton()}
 				</div>
 			</div>
 			{StatusView()}
@@ -955,7 +996,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			</div>
 			<div className="footer">
 				<CustomModalContext.Provider
-					value={{ user, finalInfoList, form, setForm, setOpen, changeProcess }}
+					value={{
+						user,
+						finalInfoList,
+						form,
+						setForm,
+						setOpen,
+						changeProcess,
+						fetchSaleList,
+					}}
 				>
 					<FootView />
 				</CustomModalContext.Provider>

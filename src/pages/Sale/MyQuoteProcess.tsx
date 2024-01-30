@@ -44,7 +44,7 @@ const MyQuoteProcess: React.FC = () => {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
 				status: MainStatus.QuotationReview,
-				createBy: user.id,
+				// createBy: user.id,
 			});
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {

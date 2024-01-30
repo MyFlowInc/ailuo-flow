@@ -100,7 +100,7 @@ const Menu: React.FC = () => {
 				pageNum: 1,
 				pageSize: 20,
 				status: MainStatus.QuotationReview,
-				createBy: user.id,
+				// createBy: user.id,
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;

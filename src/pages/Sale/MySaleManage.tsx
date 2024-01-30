@@ -11,10 +11,10 @@ import _ from "lodash";
 import { IfetchSaleList } from "./types";
 import { selectUser } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
+import { SaleManageContext } from "./SaleManage";
 
-export const SaleManageContext = React.createContext<any>({});
-
-const SaleManage: React.FC = () => {
+// 我的报价
+const MySaleManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const user = useAppSelector(selectUser);
@@ -101,4 +101,4 @@ const SaleManage: React.FC = () => {
 	);
 };
 
-export default SaleManage;
+export default MySaleManage;

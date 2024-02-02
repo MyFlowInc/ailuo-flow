@@ -216,7 +216,7 @@ const ModeSelectTable: React.FC = (props: any) => {
 			render: (text: any, record: any) => {
 				return (
 					<div className="flex items-center justify-around">
-						{+record.num * +record.price}
+						{record.price}
 						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
 					</div>
 				);

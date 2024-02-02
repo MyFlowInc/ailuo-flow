@@ -240,9 +240,9 @@ const Login: React.FC = () => {
 									<Checkbox>自动登录</Checkbox>
 								</Form.Item>
 								<Form.Item noStyle>
-									<Link to="/reset" rel="noreferrer">
+									{/* <Link to="/reset" rel="noreferrer">
 										<span style={{ color: "#5966d6" }}>忘记密码?</span>
-									</Link>
+									</Link> */}
 								</Form.Item>
 							</Form.Item>
 							<div>

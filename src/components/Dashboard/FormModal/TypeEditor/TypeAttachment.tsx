@@ -7,6 +7,7 @@ import { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { myFlowUpload } from "../../../../api/upload";
 import _ from "lodash";
+import { Button, Popover } from "antd";
 
 interface TypeAttachmentProps {
 	cell: TableColumnItem;
@@ -47,6 +48,9 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	}, [cell]);
 
 	const uploadHandler = async () => {
+		if (disabled) {
+			return
+		}
 		console.log(111, "uploadHandler");
 		const inputTag = document.createElement("input");
 		inputTag.type = "file";
@@ -85,18 +89,44 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			[cell.key]: url,
 		});
 	};
-	if (disabled) {
+	const downLoadHandle = () => {
+		const url = form[cell.key];
+		console.log(111, url)
+		var downloadLink = document.createElement("a");
+		downloadLink.href = url.replace('http', 'https');
+		downloadLink.download = url.split("/").pop();
+		document.body.appendChild(downloadLink);
+		downloadLink.click();
+		document.body.removeChild(downloadLink);
+	}
+	const deleteHandle = () => {
+		setForm({
+			...form,
+			[cell.key]: "",
+		});
+		setFileName('');
+	}
+	const content = () => {
+		return <div className="p-1">
+			<Button disabled={disabled} type="link" danger onClick={deleteHandle}>删除</Button>
+			<Button type="link" onClick={downLoadHandle}>下载</Button>
+		</div>
+	}
+	if (fileName) {
 		return (
 			<div>
-				<span
-					style={{
-						color: "#1677ff",
-						cursor: "pointer",
-						transition: "color 0.3s",
-					}}
-				>
-					{fileName || ""}
-				</span>
+				<Popover overlayInnerStyle={{ padding: 0 }} content={content}  >
+					<span
+						onClick={uploadHandler}
+						style={{
+							color: "#1677ff",
+							cursor: "pointer",
+							transition: "color 0.3s",
+						}}
+					>
+						{fileName}
+					</span>
+				</Popover>
 			</div>
 		);
 	}
@@ -110,8 +140,9 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 					transition: "color 0.3s",
 				}}
 			>
-				{fileName || "上传"}
+				{"上传"}
 			</span>
+
 		</div>
 	);
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ConfigProvider, Form, Button, Tag, Radio, Space } from "antd";
 import { NoFieldData } from "./NoFieldData";
-import { useAppDispatch } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme } from "../../../theme/theme";
 
@@ -11,6 +11,7 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { ITechStatus } from "../../../api/ailuo/dict";
 import { changeStatus, techProjectEdit } from "../../../api/ailuo/tech";
 import _ from "lodash";
+import { selectIsManager } from "../../../store/globalSlice";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -180,7 +181,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+	const isManager = useAppSelector(selectIsManager);
+
 	const setAllDisabled = (disabled: boolean) => {
+		disabled = isManager ? false : disabled
+
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,

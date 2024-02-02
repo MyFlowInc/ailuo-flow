@@ -35,7 +35,7 @@ import {
 } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
-import { selectUser } from "../../../store/globalSlice";
+import { selectIsManager, selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 const { TextArea } = Input;
@@ -480,10 +480,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const user = useAppSelector(selectUser);
+	const isManager = useAppSelector(selectIsManager);
 	const { fetchSaleList } = useContext(SaleManageContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
+		disabled = isManager ? false : disabled
+
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -585,7 +588,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -607,7 +610,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -723,7 +726,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			try {
 				const res = await fetchTurnTime(form.name);
 				const time = _.get(res, "data.turn_time");
@@ -861,7 +864,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>
@@ -904,7 +907,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>

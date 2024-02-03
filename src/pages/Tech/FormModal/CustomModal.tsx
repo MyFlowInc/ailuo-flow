@@ -86,7 +86,7 @@ const columns: any = (
 			dataIndex: "name",
 			key: "name",
 			fixed: "left",
-			type: NumFieldType.SingleText,
+			type: NumFieldType.RelationSaleView,
 		},
 		{
 			title: "分析结果",

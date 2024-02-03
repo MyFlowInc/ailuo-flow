@@ -111,6 +111,11 @@ const Login: React.FC = () => {
 		if (form && username) {
 			form.setFieldValue("username", username || "");
 		}
+
+		const password = localStorage.getItem("danger");
+		if (form && password) {
+			form.setFieldValue("password", password || "");
+		}
 	}, [form]);
 
 	const checkLoginHandler = () => {
@@ -129,6 +134,7 @@ const Login: React.FC = () => {
 						localStorage.setItem("Authorization", token);
 						localStorage.setItem("Authorization-key", tokenKey);
 						localStorage.setItem("username", data.username);
+						localStorage.setItem("danger", data.password);
 
 						const res = await userProfile();
 						dispatch(loginSuccess(res.data));

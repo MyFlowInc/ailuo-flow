@@ -314,7 +314,7 @@ const Attachment: React.FC<{
 	if (value && typeof value === "string") {
 		const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
 
-		if (suffix === "pdf" || suffix === "docx" || suffix === "doc") {
+		if (suffix === "pdf" || suffix === "docx" || ['jpg', 'png', 'jpeg'].includes(suffix)) {
 			return (
 				<div className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300" onClick={(e) => clickHandle(e)}  >
 					{getFileName(value)}

@@ -855,24 +855,58 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		// 审批通过
 		if (id && status === MainStatus.Approved) {
 			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
-							{"终审通过"}
-						</Tag>
+				<>
+
+					<div className="status-operate flex">
+						<div className="flex">
+							<div className="mr-2">状态: </div>
+							<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+								{"终审通过"}
+							</Tag>
+						</div>
+						<div className="flex cursor-pointer">
+							<div className="mr-2">操作: </div>
+							<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
+								{"发起合同流程"}
+							</Tag>
+						</div>
 					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
-							{"发起合同流程"}
-						</Tag>
+					<div className="flex cursor-pointer mb-4">
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "need");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+								{"新一轮报价（需技术审批）"}
+							</Tag>
+						</Popconfirm>
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "noNeed");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag
+								className="ml-2"
+								color={"#D4F3F2"}
+								style={{ color: "#000" }}
+								onClick={() => { }}
+							>
+								{"新一轮报价（无需技术审批）"}
+							</Tag>
+						</Popconfirm>
 					</div>
-				</div>
+				</>
 			);
 		}
 		// 审批驳回
-		if (id && status === MainStatus.ReviewFailed) {
+		if (id && [MainStatus.ReviewFailed, MainStatus.Approved].includes(status)) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">

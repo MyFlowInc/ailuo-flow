@@ -713,7 +713,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			let status = "";
 			if (type == "need") {
 				//
-				status = MainStatus.TechnicalReview;
+				status = MainStatus.Processing;
 			}
 			if (type == "noNeed") {
 				// 下一步提交终审吧

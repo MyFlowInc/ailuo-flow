@@ -116,6 +116,11 @@ const Login: React.FC = () => {
 		if (form && password) {
 			form.setFieldValue("password", password || "");
 		}
+		const remember = localStorage.getItem("remember");
+		if (form && remember) {
+			form.setFieldValue("remember", !!remember || !!"");
+		}
+
 	}, [form]);
 
 	const checkLoginHandler = () => {
@@ -133,8 +138,19 @@ const Login: React.FC = () => {
 					if (token && tokenKey) {
 						localStorage.setItem("Authorization", token);
 						localStorage.setItem("Authorization-key", tokenKey);
-						localStorage.setItem("username", data.username);
-						localStorage.setItem("danger", data.password);
+
+						const { remember } = form.getFieldsValue(["remember"]);
+						if (remember) {
+							localStorage.setItem("username", data.username);
+							localStorage.setItem("danger", data.password);
+							localStorage.setItem("remember", '1');
+						} else {
+							localStorage.setItem("username", data.username);
+							localStorage.setItem("danger", '');
+							localStorage.setItem("remember", '');
+
+						}
+
 
 						const res = await userProfile();
 						dispatch(loginSuccess(res.data));
@@ -208,7 +224,7 @@ const Login: React.FC = () => {
 							form={form}
 							name="normal_login"
 							className="login-form"
-							initialValues={{ remember: true }}
+							initialValues={{}}
 							onFinish={onFinish}
 							onFinishFailed={onFinishFailed}
 							autoComplete="off"

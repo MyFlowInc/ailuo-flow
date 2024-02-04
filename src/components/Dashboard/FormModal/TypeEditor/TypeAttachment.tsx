@@ -2,12 +2,13 @@
  * type=3
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { myFlowUpload } from "../../../../api/upload";
 import _ from "lodash";
 import { Button, Popover } from "antd";
+import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
 
 interface TypeAttachmentProps {
 	cell: TableColumnItem;
@@ -20,6 +21,10 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 ) => {
 	const { cell, form, setForm } = props;
 	const [fileName, setFileName] = useState("");
+	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
+		DashboardRouterOutletContext,
+	);
+
 	// 初始化
 	useEffect(() => {
 		const url = form[cell.key];
@@ -49,7 +54,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 
 	const uploadHandler = async () => {
 		if (disabled) {
-			return
+			return;
 		}
 		console.log(111, "uploadHandler");
 		const inputTag = document.createElement("input");
@@ -91,31 +96,47 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	};
 	const downLoadHandle = () => {
 		const url = form[cell.key];
-		console.log(111, url)
+		console.log(111, url);
 		var downloadLink = document.createElement("a");
-		downloadLink.href = url.replace('http', 'https');
+		downloadLink.href = url.replace("http", "https");
 		downloadLink.download = url.split("/").pop();
 		document.body.appendChild(downloadLink);
 		downloadLink.click();
 		document.body.removeChild(downloadLink);
-	}
+	};
+	const previewHandle = () => {
+		const url = form[cell.key];
+		console.log(111, url);
+		setFileUrl(`/preview?url=${url.replace("http", "https")}`);
+		setIsPdfModalViewOpen(true);
+	};
+
 	const deleteHandle = () => {
 		setForm({
 			...form,
 			[cell.key]: "",
 		});
-		setFileName('');
-	}
+		setFileName("");
+	};
 	const content = () => {
-		return <div className="p-1">
-			<Button disabled={disabled} type="link" danger onClick={deleteHandle}>删除</Button>
-			<Button type="link" onClick={downLoadHandle}>下载</Button>
-		</div>
-	}
+		return (
+			<div className="p-1">
+				<Button disabled={disabled} type="link" danger onClick={deleteHandle}>
+					删除
+				</Button>
+				<Button type="link" onClick={downLoadHandle}>
+					下载
+				</Button>
+				<Button type="link" onClick={previewHandle}>
+					预览
+				</Button>
+			</div>
+		);
+	};
 	if (fileName) {
 		return (
 			<div>
-				<Popover overlayInnerStyle={{ padding: 0 }} content={content}  >
+				<Popover overlayInnerStyle={{ padding: 0 }} content={content}>
 					<span
 						onClick={uploadHandler}
 						style={{
@@ -142,7 +163,6 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			>
 				{"上传"}
 			</span>
-
 		</div>
 	);
 };

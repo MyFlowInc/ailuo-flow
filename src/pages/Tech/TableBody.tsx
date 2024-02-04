@@ -68,12 +68,13 @@ const columns: any = [
 		width: 200,
 		key: "result",
 		render: (text: string, record: any) => {
-			if (!record.result) {
-				return null;
-			}
+			// TODO 不知道能不能删除
+			// if (!record.result) {
+			// 	return null;
+			// }
 			return (
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.result === "1" ? "常规产品" : "非常规产品"}
+					{record.result === "2" ? "非常规产品" : "常规产品"}
 				</Tag>
 			);
 		},

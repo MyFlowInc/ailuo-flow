@@ -98,12 +98,24 @@ const columns: any = (
 					setMode(e.target.value);
 					setForm({ ...form, result: e.target.value });
 				};
+				const [disabled, setDisabled] = useState(false);
+				useEffect(() => {
+					if (_.get(column, "disabled")) {
+						setDisabled(true);
+					} else {
+						setDisabled(false);
+					}
+				}, [column]);
 
 				return (
 					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group disabled onChange={onChange} value={mode}>
+							<Radio.Group
+								disabled={disabled}
+								onChange={onChange}
+								value={form.result || "1"}
+							>
 								<Space direction="vertical">
 									<Radio value={"1"}>常规产品，无特殊改动</Radio>
 									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
@@ -165,6 +177,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any>({});
 
 	useEffect(() => {
+		console.log(2222, mode);
 		setShowDstColumns(columns(mode, setMode, setShowDstColumns));
 	}, [mode]);
 
@@ -181,7 +194,13 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						pageNum: 1,
 						pageSize: 10,
 					});
-					setEditFlowItemRecord(_.get(res, "data.record.0"));
+					const form = _.get(res, "data.record.0");
+					setEditFlowItemRecord(form);
+					const result = _.get(form, "result");
+					if (result) {
+						setMode(result);
+					}
+					console.log(111, form, result);
 				} catch (error) {}
 			};
 			fetchEditFlowItemRecord();

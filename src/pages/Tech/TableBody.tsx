@@ -69,14 +69,24 @@ const columns: any = [
 		key: "result",
 		render: (text: string, record: any) => {
 			// TODO 不知道能不能删除
-			// if (!record.result) {
-			// 	return null;
-			// }
-			return (
-				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.result === "2" ? "非常规产品" : "常规产品"}
-				</Tag>
-			);
+			if (!record.result) {
+				return null;
+			}
+			if (record.result === '1') {
+				return (
+					<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
+						常规产品
+					</Tag>
+				);
+			}
+			if (record.result === '2') {
+				return (
+					<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
+						非常规产品
+					</Tag>
+				);
+			}
+			return null
 		},
 	},
 	{

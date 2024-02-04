@@ -172,7 +172,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	fetchTechFeedbackList,
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
-	const [mode, setMode] = useState<"1" | "2">("1");
+	const [mode, setMode] = useState<'' | "1" | "2">('');
 
 	useEffect(() => {
 		setShowDstColumns(columns(mode, setMode, setShowDstColumns));

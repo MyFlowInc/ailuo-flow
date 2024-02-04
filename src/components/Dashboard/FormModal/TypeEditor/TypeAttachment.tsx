@@ -3,7 +3,6 @@
  */
 
 import React, { useContext, useEffect, useState } from "react";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 
 import { myFlowUpload } from "../../../../api/upload";
 import _ from "lodash";
@@ -11,7 +10,7 @@ import { Button, Popover } from "antd";
 import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
 
 interface TypeAttachmentProps {
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

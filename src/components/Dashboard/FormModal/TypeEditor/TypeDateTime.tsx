@@ -4,7 +4,6 @@
 
 import React, { useEffect, useState } from "react";
 import { DatePicker, DatePickerProps } from "antd";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -23,7 +22,7 @@ dayjs.extend(weekYear);
 
 interface TypeDateTimeProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

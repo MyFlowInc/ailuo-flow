@@ -17,7 +17,6 @@ import TypeNumber from "./TypeNumber";
 import TypeSelectEditor from "./TypeSelectEditor";
 import TypeAttachment from "./TypeAttachment";
 import TypeDateTime from "./TypeDateTime";
-import TypeMember from "./TypeMember";
 import TypeLink from "./TypeLink";
 import TypeEmail from "./TypeEmail";
 import TypePhone from "./TypePhone";
@@ -132,9 +131,6 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 			break;
 		case NumFieldType.DateTime:
 			CellEditor = <TypeDateTime cell={cell} {...rest} />;
-			break;
-		case NumFieldType.Member:
-			CellEditor = <TypeMember mode="multiple" cell={cell} {...rest} />;
 			break;
 		case NumFieldType.Link:
 			CellEditor = <TypeLink cell={cell} {...rest} />;

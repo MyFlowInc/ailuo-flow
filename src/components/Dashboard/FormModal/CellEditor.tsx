@@ -1,6 +1,5 @@
 import React from "react";
 import { Form } from "antd";
-import { WorkFlowFieldInfo } from "../../../store/workflowSlice";
 import styled from "styled-components";
 import { NumFieldType } from "../TableColumnRender";
 import TypeEditor from "./TypeEditor";
@@ -11,7 +10,7 @@ const CellEditorRoot = styled.div`
 `;
 
 interface CellEditorProps {
-	cell: WorkFlowFieldInfo;
+	cell: any;
 	form: { [id: string]: string };
 	setForm: (value: any) => void;
 	modalType: string;

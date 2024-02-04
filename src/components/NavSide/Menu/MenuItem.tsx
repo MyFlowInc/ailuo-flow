@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { useAppDispatch } from "../../../store/hooks";
-import { updateCurFlowDstId } from "../../../store/workflowSlice";
 import { Badge } from "antd";
 import { MenuContext } from ".";
 

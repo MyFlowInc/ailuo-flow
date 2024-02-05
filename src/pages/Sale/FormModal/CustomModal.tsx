@@ -331,7 +331,6 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 		}
 		const { id } = user;
 		const info = _.find(finalInfoList, { relationUserId: id });
-		console.log(111, "user id ", id, info);
 		try {
 			await finalApproveEdit({
 				id: info.id,
@@ -749,6 +748,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
+
+		// 特殊处理报价终审中
+		useEffect(() => {
+			console.log('finalInfoList', finalInfoList)
+		})
+
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
 			return (

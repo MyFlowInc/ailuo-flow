@@ -1,4 +1,4 @@
-import type { CollapseProps, GetProp } from "antd";
+import type { CollapseProps   } from "antd";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {

@@ -235,8 +235,8 @@ const Login: React.FC = () => {
 								rules={[{ required: true, message: "用户名不能为空!" }]}
 							>
 								<Input
+									 variant="borderless"
 									rootClassName="noborder-bg"
-									variant={'borderless'}
 									placeholder="请输入用户名"
 								/>
 							</Form.Item>
@@ -247,7 +247,7 @@ const Login: React.FC = () => {
 							>
 								<Input.Password
 									rootClassName="noborder-bg"
-									variant={'borderless'}
+									 variant="borderless"
 									placeholder="请输入密码"
 									iconRender={(visible) =>
 										visible ? <EyeFilled /> : <EyeInvisibleFilled />

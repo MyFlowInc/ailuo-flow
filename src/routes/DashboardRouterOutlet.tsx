@@ -2,9 +2,11 @@ import { Route, Switch } from "react-router";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
 	fetchFlowStatus,
+	selectAllUser,
 	selectCollapsed,
 	selectIsOpenDrawer,
 	selectUser,
+	setAllUser,
 	setIsOpenDrawer,
 } from "../store/globalSlice";
 import _ from "lodash";
@@ -23,6 +25,7 @@ import MyQuoteProcess from "../pages/Sale/MyQuoteProcess";
 import MySaleManage from "../pages/Sale/MySaleManage";
 import CustomModalView from "../pages/Sale/FormModal/CustomModalView";
 import CustomModalTechView from "../pages/Tech/FormModal/CustomModalTechView";
+import { accountList } from "../api/user";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -32,6 +35,8 @@ const DashboardRouterOutlet: React.FC = () => {
 	useLoginByCache();
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
+	const allUser = useAppSelector(selectAllUser);
+
 	const isEmpty = _.isEmpty(user);
 	const [loading, setLoading] = useState(isEmpty);
 	const {
@@ -57,6 +62,18 @@ const DashboardRouterOutlet: React.FC = () => {
 	useEffect(() => {
 		dispatch(fetchFlowStatus()).then(() => setLoading(false));
 	}, []);
+
+	// TODO危险操作
+	useEffect(() => {
+		const fetchAllUser = async () => {
+			const res = await accountList();
+			let allUserList = _.get(res, "data.record", []);
+			dispatch(setAllUser(allUserList));
+		}
+		if (_.isEmpty(allUser)) {
+			fetchAllUser()
+		}
+	}, [allUser])
 
 	if (loading) {
 		return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Tag, Modal, Popover, Input } from "antd";
+import { ConfigProvider, Form, Button, Tag, Modal, Popover, Input, Badge, Avatar } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
 import {
@@ -28,10 +28,11 @@ import {
 } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
-import { selectIsTech, selectUser } from "../../../store/globalSlice";
+import { User, selectAllUser, selectIsTech, selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
+import { CheckCircleOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -593,6 +594,8 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const allUser = useAppSelector(selectAllUser);
+
 	const user = useAppSelector(selectUser);
 	const isTechRole = useAppSelector(selectIsTech); // 是否是技术
 	useEffect(() => {
@@ -651,7 +654,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						pageSize: 10,
 					});
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
-				} catch (error) {}
+				} catch (error) { }
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -707,7 +710,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -893,13 +896,28 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		}
 		// 报价终审中
 		if (id && status === MainStatus.QuotationReview) {
+			// 特殊处理报价终审中
+			const ids = finalInfoList.map(i => i.relationUserId)
+			const users = allUser.filter(i => ids.includes(i.id))
 			return (
-				<div className="status-operate flex">
+				<div className="status-operate flex items-center">
 					<div className="flex">
 						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+						<Tag color={"#FFEEE3"} style={{ color: "#000", height: 'fit-content' }}>
 							{"报价终审中"}
 						</Tag>
+					</div>
+					<div className="flex cursor-pointer">
+						{users.map((user: User) => {
+							const approveInfo = finalInfoList.find(i => i.relationUserId === user.id);
+							// TODO 状态不统一会有bug
+							if (approveInfo.status === 'approve') {
+								return <Badge key={'Badge' + user.id} count={<CheckCircleOutlined style={{ color: 'green' }} />}>
+									<Avatar className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+								</Badge>
+							}
+							return <Avatar key={'avatar' + user.id} className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+						})}
 					</div>
 				</div>
 			);
@@ -916,7 +934,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

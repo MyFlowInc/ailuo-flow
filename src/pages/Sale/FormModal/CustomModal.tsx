@@ -535,7 +535,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			const res = await finalInfoPage(form.id + "");
 			const record = _.get(res, "data.record");
 			setFinalInfoList(record);
-			console.log(111, res);
 		};
 		if (open && form.status === MainStatus.QuotationReview) {
 			fetchFinalInfoList();
@@ -862,8 +861,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							const approveInfo = finalInfoList.find(i => i.relationUserId === user.id);
 							// TODO 状态不统一会有bug
 							if (approveInfo.status === 'approve') {
-								return <Badge count={<CheckCircleOutlined style={{ color: 'green' }} />}>
-									<Avatar key={'avatar' + user.id} className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+								return <Badge key={'Badge' + user.id} count={<CheckCircleOutlined style={{ color: 'green' }} />}>
+									<Avatar className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
 								</Badge>
 							}
 							return <Avatar key={'avatar' + user.id} className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />

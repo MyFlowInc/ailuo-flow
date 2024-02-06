@@ -19,29 +19,15 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	props: TypeAttachmentProps,
 ) => {
 	const { cell, form, setForm } = props;
-	const [fileName, setFileName] = useState("");
+
+	const [fileList, setFileList] = useState<string[]>([]);
+
+
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
 	);
 
-	// 初始化
-	useEffect(() => {
-		const url = form[cell.key];
-		if (!url) {
-			return;
-		}
-		const file = url.split("/").pop();
-		if (file) {
-			let fileName;
-			if (file.includes("-")) {
-				fileName = file?.split("-")[1] || "";
-			} else {
-				fileName = file;
-			}
-			setFileName(fileName);
-		}
-	}, [form]);
-
+	// 权限处理
 	const [disabled, setDisabled] = useState(false);
 	useEffect(() => {
 		if (_.get(cell, "disabled")) {
@@ -50,6 +36,35 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			setDisabled(false);
 		}
 	}, [cell]);
+
+	// 初始化
+	useEffect(() => {
+		const urls = form[cell.key];
+		if (!urls) {
+			return;
+		}
+		try {
+			const urlList = JSON.parse(urls);
+			setFileList(urlList);
+		} catch (error) {
+			console.log(error);
+			setFileList([urls]);
+		}
+
+	}, [form]);
+
+	const getFileName = (url: string) => {
+		const file = url.split("/").pop();
+		if (file) {
+			let fileName;
+			if (file.includes("-")) {
+				fileName = file?.split("-")[1] || "";
+			} else {
+				fileName = file;
+			}
+			return fileName;
+		}
+	};
 
 	const uploadHandler = async () => {
 		if (disabled) {
@@ -85,16 +100,16 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 		};
 	};
 	const onUrlChange = (url: string) => {
-		const file = url.split("/").pop();
-		const fileName = file?.split("-")[1] || "";
-		setFileName(fileName);
+		const list = [...fileList, url];
+		// 同步
+		setFileList(list);
 		setForm({
 			...form,
-			[cell.key]: url,
+			[cell.key]: JSON.stringify(list),
 		});
 	};
-	const downLoadHandle = () => {
-		const url = form[cell.key];
+	const downLoadHandle = (idx: number) => {
+		const url = fileList[idx] as any;
 		console.log(111, url);
 		var downloadLink = document.createElement("a");
 		downloadLink.href = url.replace("http", "https");
@@ -103,53 +118,65 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 		downloadLink.click();
 		document.body.removeChild(downloadLink);
 	};
-	const previewHandle = () => {
-		const url = form[cell.key];
-		console.log(111, url);
+	const previewHandle = (idx: number) => {
+		const url = fileList[idx] as any;
+		console.log('previewHandle', url);
 		setFileUrl(`/preview?url=${url.replace("http", "https")}`);
 		setIsPdfModalViewOpen(true);
 	};
 
-	const deleteHandle = () => {
+	const deleteHandle = (idx: number) => {
+		fileList.splice(idx, 1);
+		setFileList([...fileList]);
 		setForm({
 			...form,
-			[cell.key]: "",
+			[cell.key]: JSON.stringify(fileList),
 		});
-		setFileName("");
 	};
-	const content = () => {
+	const content = (idx: number) => {
 		return (
 			<div className="p-1">
-				<Button disabled={disabled} type="link" danger onClick={deleteHandle}>
+				<Button disabled={disabled} type="link" danger onClick={() => { deleteHandle(idx) }}>
 					删除
 				</Button>
-				<Button type="link" onClick={downLoadHandle}>
+				<Button type="link" onClick={() => { downLoadHandle(idx) }}>
 					下载
 				</Button>
-				<Button type="link" onClick={previewHandle}>
+				<Button type="link" onClick={() => { previewHandle(idx) }}>
 					预览
+				</Button>
+				{/* 继续上传 */}
+				<Button type="link" onClick={uploadHandler}>
+					继续上传
 				</Button>
 			</div>
 		);
 	};
-	if (fileName) {
+
+	if (!_.isEmpty(fileList)) {
 		return (
 			<div>
-				<Popover overlayInnerStyle={{ padding: 0 }} content={content}>
-					<span
-						onClick={uploadHandler}
-						style={{
-							color: "#1677ff",
-							cursor: "pointer",
-							transition: "color 0.3s",
-						}}
-					>
-						{fileName}
-					</span>
-				</Popover>
+				{fileList.map((url, index) => {
+					return <div key={'file' + index}>
+						<Popover overlayInnerStyle={{ padding: 0 }} content={() => {
+							return content(index)
+						}}>
+							<span
+								style={{
+									color: "#1677ff",
+									cursor: "pointer",
+									transition: "color 0.3s",
+								}}
+							>
+								{getFileName(url)}
+							</span>
+						</Popover>
+					</div>
+				})}
 			</div>
 		);
 	}
+
 	return (
 		<div>
 			<span

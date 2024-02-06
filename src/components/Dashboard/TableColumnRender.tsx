@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import { Tag, Avatar } from "antd";
 import { Link } from "react-router-dom";
@@ -305,31 +305,54 @@ const Attachment: React.FC<{
 	value: any;
 	children?: React.ReactNode;
 }> = ({ value }) => {
+
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(DashboardRouterOutletContext)
-	const clickHandle = (e: any) => {
+
+	const clickHandle = (e: any, url: string) => {
 		e.preventDefault()
-		setFileUrl(`/preview?url=${value.replace('http', 'https')}`)
+		setFileUrl(`/preview?url=${url.replace('http', 'https')}`)
 		setIsPdfModalViewOpen(true)
 	}
-	if (value && typeof value === "string") {
-		const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
+	const [fileList, setFileList] = useState<string[]>([]);
 
-		if (suffix === "pdf" || suffix === "docx" || ['jpg', 'png', 'jpeg'].includes(suffix)) {
-			return (
-				<div className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300" onClick={(e) => clickHandle(e)}  >
-					{getFileName(value)}
-				</div>
-			);
-		} else {
-			return (
-				<a href={value} target="blank">
-					{getFileName(value)}
-				</a>
-			);
+	useEffect(() => {
+		try {
+			if (value) {
+				const list = JSON.parse(value);
+				setFileList(list);
+			}
+		} catch (error) {
+			console.log(error)
+			setFileList([value]);
 		}
-	} else {
-		return <></>;
+	}, [value])
+
+	if (!_.isEmpty(fileList)) {
+		return (
+			<div>
+				{fileList.map((value: string, idx: number) => {
+					const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
+					if (suffix === "pdf" || suffix === "docx" || ['jpg', 'png', 'jpeg'].includes(suffix)) {
+						return (
+							<div key={'Attachment_' + idx} className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300" onClick={(e) => clickHandle(e, value)}  >
+								{getFileName(value)}
+							</div>
+						);
+					} else {
+						return (
+							<a key={'Attachment_' + idx} href={value} target="blank">
+								{getFileName(value)}
+							</a>
+						);
+					}
+				})}
+			</div>
+		);
 	}
+
+
+	return <></>;
+
 };
 
 const SingleNumber: React.FC<{

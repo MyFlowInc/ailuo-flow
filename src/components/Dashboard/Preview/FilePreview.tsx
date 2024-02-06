@@ -16,7 +16,9 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file }) => {
 			return <PdfPreview file={file} />;
 		case "docx" || "doc":
 			return <DocxPreview file={file} />;
-		case "jpg" || "jpeg" || "png":
+		case "jpg":
+		case "png":
+		case "jpeg":
 			return <div className="w-full h-full flex justify-center"><img src={file} /></div>
 		default:
 			return <></>;

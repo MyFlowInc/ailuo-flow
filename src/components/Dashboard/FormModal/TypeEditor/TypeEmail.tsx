@@ -5,11 +5,10 @@
 import React, { useRef, SyntheticEvent } from "react";
 import { Input } from "antd";
 import { MailOutlined } from "@ant-design/icons";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 
 interface TypeEmailProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

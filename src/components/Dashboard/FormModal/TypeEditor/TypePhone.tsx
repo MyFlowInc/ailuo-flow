@@ -5,12 +5,11 @@
 import React, { useRef, SyntheticEvent } from "react";
 import { Input } from "antd";
 import { PhoneOutlined } from "@ant-design/icons";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import _ from "lodash";
 
 interface TypePhoneProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

@@ -4,7 +4,6 @@
 
 import React, { useEffect, useState } from "react";
 import { DatePicker, DatePickerProps } from "antd";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -23,7 +22,7 @@ dayjs.extend(weekYear);
 
 interface TypeDateTimeProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }
@@ -51,15 +50,28 @@ const TypeDateTime: React.FC<TypeDateTimeProps> = (
 			[cell.key]: dateString,
 		});
 	};
-
+	const footerHandle = (d: number) => {
+		var newDate = dayjs().add(d, 'day');
+		console.log(newDate.format('YYYY-MM-DD'));
+		const dateString = newDate.format('YYYY-MM-DD')
+		onChange(newDate, dateString)
+	}
+	const footer = () => {
+		return <div className="flex " style={{ color: '#1677ff' }}>
+			<div className=" cursor-pointer   mr-4" onClick={() => footerHandle(90)}>+90天</div>
+			<div className=" cursor-pointer   mr-4" onClick={() => footerHandle(180)}>+180天</div>
+			<div className=" cursor-pointer  " onClick={() => footerHandle(365)}>+365天</div>
+		</div>
+	}
 	return (
 		<DatePicker
 			disabled={disabled}
 			value={value && dayjs(value)}
-			showTime={{ format: "HH:mm" }}
-			format="YYYY-MM-DD HH:mm"
+			showTime
+			format="YYYY-MM-DD"
 			onChange={onChange}
 			style={{ width: "100%" }}
+			renderExtraFooter={footer}
 		/>
 	);
 };

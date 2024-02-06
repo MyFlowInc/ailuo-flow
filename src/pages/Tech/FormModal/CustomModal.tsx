@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme } from "../../../theme/theme";
 
-import type { WorkFlowStatusInfo } from "../../../store/workflowSlice";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { ITechStatus } from "../../../api/ailuo/dict";
 import { changeStatus, techProjectEdit } from "../../../api/ailuo/tech";
@@ -59,7 +58,6 @@ interface CustomModalProps {
 	open: boolean;
 	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	setOpen: (value: boolean) => void;
-	statusList: WorkFlowStatusInfo[];
 	modalType: string;
 	editFlowItemRecord?: any | undefined;
 	children?: React.ReactNode;
@@ -164,7 +162,7 @@ const columns: any = (
 
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
-	statusList,
+
 	modalType,
 	open,
 	setOpen,
@@ -172,7 +170,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	fetchTechFeedbackList,
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
-	const [mode, setMode] = useState<"1" | "2">("1");
+	const [mode, setMode] = useState<'' | "1" | "2">('');
 
 	useEffect(() => {
 		setShowDstColumns(columns(mode, setMode, setShowDstColumns));
@@ -242,8 +240,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-			if (statusList && statusList.length > 0) {
-			}
+
 			setForm({});
 		}
 	}, [open]);

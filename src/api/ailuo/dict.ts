@@ -115,13 +115,13 @@ export const TechStatus = [
 		"value": "t_processing",
 		"label": "处理中",
 		"id": "1747826896261599234",
-		"color": "#E8F2FF"
+		"color": "#FFEEE3"
 	},
 	{
 		"value": "t_over",
 		"label": "处理完成",
 		"id": "1747826967833202689",
-		"color": "#E8F2FF"
+		"color": "#E8FFEA"
 	}
 ]
 export enum ITechStatus {

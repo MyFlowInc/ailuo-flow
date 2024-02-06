@@ -8,6 +8,8 @@ import {
 	Popover,
 	Input,
 	Popconfirm,
+	Avatar,
+	Badge,
 } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
@@ -35,9 +37,10 @@ import {
 } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
-import { selectIsManager, selectUser } from "../../../store/globalSlice";
+import { User, selectAllUser, selectIsManager, selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
+import { CheckCircleOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -331,7 +334,6 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 		}
 		const { id } = user;
 		const info = _.find(finalInfoList, { relationUserId: id });
-		console.log(111, "user id ", id, info);
 		try {
 			await finalApproveEdit({
 				id: info.id,
@@ -479,6 +481,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const allUser = useAppSelector(selectAllUser);
+
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const { fetchSaleList } = useContext(SaleManageContext);
@@ -531,7 +535,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			const res = await finalInfoPage(form.id + "");
 			const record = _.get(res, "data.record");
 			setFinalInfoList(record);
-			console.log(111, res);
 		};
 		if (open && form.status === MainStatus.QuotationReview) {
 			fetchFinalInfoList();
@@ -749,6 +752,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
+
+
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
 			return (
@@ -840,15 +845,29 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		}
 		// 报价终审中
 		if (id && status === MainStatus.QuotationReview) {
+			// 特殊处理报价终审中
+			const ids = finalInfoList.map(i => i.relationUserId)
+			const users = allUser.filter(i => ids.includes(i.id))
 			return (
-				<div className="status-operate flex">
+				<div className="status-operate flex items-center">
 					<div className="flex">
 						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+						<Tag color={"#FFEEE3"} style={{ color: "#000", height: 'fit-content' }}>
 							{"报价终审中"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer"></div>
+					<div className="flex cursor-pointer">
+						{users.map((user: User) => {
+							const approveInfo = finalInfoList.find(i => i.relationUserId === user.id);
+							// TODO 状态不统一会有bug
+							if (approveInfo.status === 'approve') {
+								return <Badge key={'Badge' + user.id} count={<CheckCircleOutlined style={{ color: 'green' }} />}>
+									<Avatar className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+								</Badge>
+							}
+							return <Avatar key={'avatar' + user.id} className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+						})}
+					</div>
 				</div>
 			);
 		}

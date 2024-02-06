@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Divider, Input, Select, Space, message } from "antd";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import CloseFilled from "../../../../assets/icons/CloseFilled";
 import _ from "lodash";
 
@@ -18,7 +17,7 @@ const LabelRoot = styled.div`
 interface TypeSelectEditorProps {
 	mode?: "multiple";
 	fixed?: boolean
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

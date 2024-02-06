@@ -34,6 +34,7 @@ export interface DeveloperUser {
 
 export interface globalState {
 	user: User;
+	allUser: User[];
 	userMenus: IMenu[];
 	Authorization: string;
 	"Authorization-key": string;
@@ -51,6 +52,7 @@ export interface globalState {
 
 const initialState: globalState = {
 	user: {} as User,
+	allUser: [],
 	userMenus: [],
 	Authorization: "",
 	"Authorization-key": "",
@@ -94,11 +96,13 @@ export const globalSlice = createSlice({
 	initialState,
 	reducers: {
 		setUser: (state, action) => {
-			// console.log('setUser', action)
 			state.user = action.payload;
 		},
+		//allUser 
+		setAllUser: (state, action) => {
+			state.allUser = action.payload;
+		},
 		setUserMenus: (state, action) => {
-			// console.log('setUser', action)
 			state.userMenus = action.payload;
 		},
 		loginSuccess: (state, action) => {
@@ -146,6 +150,7 @@ export const globalSlice = createSlice({
 
 export const {
 	setUser,
+	setAllUser,
 	setUserMenus,
 	loginSuccess,
 	setCollapsed,
@@ -160,6 +165,7 @@ export const {
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;
+export const selectAllUser = (state: RootState) => state.global.allUser;
 export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
 export const selectIsAddTableModalOpen = (state: RootState) =>

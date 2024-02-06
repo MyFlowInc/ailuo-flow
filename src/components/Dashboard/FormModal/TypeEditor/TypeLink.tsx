@@ -5,12 +5,11 @@
 import React, { SyntheticEvent } from "react";
 import { Input } from "antd";
 import { LinkOutlined } from "@ant-design/icons";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import _ from "lodash";
 
 interface TypeLinkProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

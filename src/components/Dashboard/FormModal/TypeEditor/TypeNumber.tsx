@@ -4,12 +4,11 @@
 
 import React from "react";
 import { InputNumber } from "antd";
-import { TableColumnItem } from "../../../../store/workflowSlice";
 import _ from "lodash";
 
 interface TypeNumberProps {
 	mode?: "multiple";
-	cell: TableColumnItem;
+	cell: any;
 	form: any;
 	setForm: any;
 }

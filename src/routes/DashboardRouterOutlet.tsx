@@ -26,6 +26,7 @@ import MySaleManage from "../pages/Sale/MySaleManage";
 import CustomModalView from "../pages/Sale/FormModal/CustomModalView";
 import CustomModalTechView from "../pages/Tech/FormModal/CustomModalTechView";
 import { accountList } from "../api/user";
+import ContractManage from "../pages/Contract/ContractManage";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -219,7 +220,11 @@ const DashboardRouterOutlet: React.FC = () => {
 									<Route path="/dashboard/my-quote-process" exact={true}>
 										<MyQuoteProcess />
 									</Route>
-
+									{/* 合同管理 */}
+									<Route path="/dashboard/contract-manage" exact={true}>
+										<ContractManage />
+									</Route>
+									
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />
 									</Route>

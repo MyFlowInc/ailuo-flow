@@ -34,13 +34,11 @@ const DefaultHeaderRoot = styled.div<DefaultHeaderRootProps>`
 
 interface DefaultHeaderProps {
 	hasSelected: boolean;
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	children?: React.ReactNode;
 }
 
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 	hasSelected,
-	fetchTechFeedbackList,
 }) => {
 	const dispatch = useAppDispatch();
 
@@ -57,7 +55,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({
 			<AddRecordModal
 				open={isAddTableModalOpen}
 				setOpen={setOpen}
-				fetchTechFeedbackList={fetchTechFeedbackList}
 			/>
 		</DefaultHeaderRoot>
 	);

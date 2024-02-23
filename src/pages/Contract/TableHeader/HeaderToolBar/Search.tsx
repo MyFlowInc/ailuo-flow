@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
 
 import SearchFilled from "../../../../assets/icons/SearchFilled";
-import { TechFeedBackContext } from "../../ContractManage";
+import { ContracContext } from "../../ContractManage";
 
 const SearchRoot = styled.div`
 	display: flex;
@@ -20,10 +20,10 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 	const options = columns;
 	const [inputValue, setInputValue] = useState<string>("");
 	const [selectValue, setSelectValue] = useState<string>("name");
-	const { fetchTechFeedbackList } = useContext(TechFeedBackContext) as any;
+	const { fetchContractList } = useContext(ContracContext) as any;
 
 	const handleSearch = async () => {
-		await fetchTechFeedbackList({
+		await fetchContractList({
 			search: {
 				[selectValue]: inputValue.trim(),
 			},
@@ -35,7 +35,7 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 				layout="inline"
 				form={form}
 				name="SearchForm"
-				onValuesChange={() => {}}
+				onValuesChange={() => { }}
 			>
 				<Form.Item name="searchField" style={{ margin: 0, padding: 0 }}>
 					<Space.Compact>

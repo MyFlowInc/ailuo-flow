@@ -1,15 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Modal } from "antd";
 import CustomModal from "./FormModal/CustomModal";
+import { ContracContext } from "./ContractManage";
 
 interface AddRecordModalProps {
 	open: boolean;
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	setOpen: (a: boolean) => void;
 }
 
 export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordModalProps) => {
-	const { open, setOpen, fetchTechFeedbackList } = props;
+	const { open, setOpen, } = props;
+	const { fetchContractList } = useContext(ContracContext) as any;
 
 	const statusList: any = [];
 
@@ -18,7 +19,7 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 		open,
 		setOpen,
 		statusList,
-		fetchTechFeedbackList,
+		fetchContractList,
 		modalType: "add"
 	};
 
@@ -29,13 +30,13 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordMo
 
 interface EditRecordModalProps {
 	open: boolean;
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	setOpen: (a: boolean) => void;
 	editFlowItemRecord: any | undefined;
 }
 
 export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
-	const { editFlowItemRecord, open, setOpen, fetchTechFeedbackList } = props;
+	const { editFlowItemRecord, open, setOpen, } = props;
+	const { fetchContractList } = useContext(ContracContext) as any;
 
 	const statusList: any = [];
 
@@ -44,7 +45,7 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
 		open,
 		setOpen,
 		statusList,
-		fetchTechFeedbackList,
+		fetchContractList,
 		modalType: "edit",
 		editFlowItemRecord
 	};

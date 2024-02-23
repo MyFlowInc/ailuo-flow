@@ -18,7 +18,7 @@ interface DefaultHeaderGroupProps {
 	children?: React.ReactNode;
 }
 
-const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{children}</div>)<DefaultHeaderGroupProps>`
+const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{children}</div>) <DefaultHeaderGroupProps>`
 	display: flex;
 	overflow: hidden;
 	opacity: ${({ toggle }) => (toggle ? 0 : 1)};
@@ -31,7 +31,6 @@ const DefaultHeaderGroup = styled(({ children, ...rest }) => <div {...rest}>{chi
 interface HeaderProps {
 	selectedRows: any[];
 	setSelectedRows: (v: any[]) => void;
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	children?: React.ReactNode;
 }
 

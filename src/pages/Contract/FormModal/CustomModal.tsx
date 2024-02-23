@@ -56,7 +56,7 @@ const CustomModalRoot = styled.div`
 interface CustomModalProps {
 	title: string;
 	open: boolean;
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
+	fetchContractList: () => void; // 获取技术反馈列表
 	setOpen: (value: boolean) => void;
 	modalType: string;
 	editFlowItemRecord?: any | undefined;
@@ -162,12 +162,11 @@ const columns: any = (
 
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
-
 	modalType,
 	open,
 	setOpen,
 	editFlowItemRecord,
-	fetchTechFeedbackList,
+	fetchContractList,
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [mode, setMode] = useState<'' | "1" | "2">('');
@@ -265,7 +264,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			await inputForm.validateFields();
 			await techProjectEdit(excludeNull(params));
-			await fetchTechFeedbackList();
+			await fetchContractList();
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -288,7 +287,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			const { id } = form;
 			await changeStatus({ id, status });
 			setOpen(false);
-			await fetchTechFeedbackList();
+			await fetchContractList();
 		} catch (error) {
 			console.log(error);
 		}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
@@ -9,6 +9,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
+import { ContracContext } from "./ContractManage";
 
 const StandardTableRoot = styled.div`
 	position: absolute;
@@ -97,7 +98,6 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 interface StandardTableProps {
 	tableDataSource: any[];
-	fetchTechFeedbackList: () => void; // 获取技术反馈列表
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
@@ -115,11 +115,12 @@ interface StandardTableProps {
 const StandardTable: React.FC<StandardTableProps> = ({
 	columns,
 	datasource,
-	fetchTechFeedbackList,
 	setSelectedRows,
 	curPage,
 	...rest
 }) => {
+	const { fetchContractList } = useContext(ContracContext) as any;
+
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 	const getTableColumns = () => {
@@ -183,11 +184,9 @@ const StandardTable: React.FC<StandardTableProps> = ({
 	}, [datasource.length]);
 
 	const pageNumChange = (page: number, pageSize: number) => {
-		console.log(2222, page, pageSize);
-
 		curPage.current.pageNum = page;
 		setTimeout(() => {
-			fetchTechFeedbackList();
+			fetchContractList();
 		});
 	};
 

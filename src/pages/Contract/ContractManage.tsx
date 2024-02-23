@@ -6,11 +6,11 @@ import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
-import { techProjectList, techProjectRemove } from "../../api/ailuo/tech";
+import { contractList, contractRemove } from "../../api/ailuo/contract";
 
-export const TechFeedBackContext = React.createContext<any>({});
+export const ContracContext = React.createContext<any>({});
 
-const TechFeedBack: React.FC = () => {
+const ContractManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
@@ -24,8 +24,8 @@ const TechFeedBack: React.FC = () => {
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
-			await techProjectRemove(id);
-			await fetchTechFeedbackList();
+			await contractRemove(id);
+			await fetchContractList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -33,7 +33,7 @@ const TechFeedBack: React.FC = () => {
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
 	// 获取技术反馈列表
-	const fetchTechFeedbackList = async (options: any = {}) => {
+	const fetchContractList = async (options: any = {}) => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
@@ -46,7 +46,7 @@ const TechFeedBack: React.FC = () => {
 					...options.search,
 				};
 			}
-			const res = await techProjectList(params);
+			const res = await contractList(params);
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;
@@ -59,12 +59,12 @@ const TechFeedBack: React.FC = () => {
 	};
 
 	useEffect(() => {
-		fetchTechFeedbackList();
+		fetchContractList();
 	}, []);
 	return (
-		<TechFeedBackContext.Provider
+		<ContracContext.Provider
 			value={{
-				fetchTechFeedbackList,
+				fetchContractList,
 				tableDataSource,
 				setTableDataSource,
 			}}
@@ -74,14 +74,12 @@ const TechFeedBack: React.FC = () => {
 					{/* 表头 */}
 					<TableHeader
 						selectedRows={selectedRows}
-						fetchTechFeedbackList={fetchTechFeedbackList}
 						setSelectedRows={setSelectedRows}
 					/>
 					{loading && <BaseLoading />}
 					{/* 表格主体 */}
 					<TableBody
 						tableDataSource={tableDataSource} // 数据源
-						fetchTechFeedbackList={fetchTechFeedbackList}
 						{...{ curPage }}
 						editFlowItemRecord={editFlowItemRecord}
 						deleteFlowItem={deleteFlowItemHandler}
@@ -90,8 +88,8 @@ const TechFeedBack: React.FC = () => {
 					/>
 				</DashboardRoot>
 			</ConfigProvider>
-		</TechFeedBackContext.Provider>
+		</ContracContext.Provider>
 	);
 };
 
-export default TechFeedBack;
+export default ContractManage;

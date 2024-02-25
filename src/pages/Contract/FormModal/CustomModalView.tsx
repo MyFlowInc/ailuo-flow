@@ -1,8 +1,6 @@
 import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
 import { ConfigProvider, Form, Button, Tag, Modal, Popover, Input, Badge, Avatar } from "antd";
-import { NoFieldData } from "./NoFieldData";
-import CellEditorContext from "./CellEditorContext";
 import {
 	blueButtonTheme,
 	dashboardTheme,
@@ -16,11 +14,8 @@ import {
 	saleProjectEdit,
 	saleProjectList,
 } from "../../../api/ailuo/sale";
-import ModeSelectTable from "../ModeSelectTable";
 import { MainStatus } from "../../../api/ailuo/dict";
 import warnSvg from "../assets/warning.svg";
-import ProjectName from "../ProjectName";
-import { SaleManageContext } from "../SaleManage";
 import {
 	approveInfo,
 	finalApproveEdit,
@@ -30,9 +25,13 @@ import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 import { User, selectAllUser, selectIsTech, selectUser } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
-import ExportProject from "../ExportProject";
 import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import ProjectName from "../../Sale/ProjectName";
+import ModeSelectTable from "../../Sale/ModeSelectTable";
+import ExportProject from "../../Sale/ExportProject";
+import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;

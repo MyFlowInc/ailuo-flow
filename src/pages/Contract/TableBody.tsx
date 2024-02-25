@@ -46,7 +46,6 @@ const columns: any = [
 			return (
 				<div>
 					<span>{record.name}</span>
-					<TurnView turnTime={record.turnTime} />
 				</div>
 			);
 		},
@@ -82,19 +81,18 @@ const columns: any = [
 		},
 	},
 	{
-		title: "销售经理",
-		dataIndex: "salesManager",
-		key: "salesManager",
+		title: "合同编号",
+		width: 200,
+		dataIndex: "name",
+		key: "name",
 		render: (text: string, record: any) => {
 			return (
-				<Tag color={"#F3F7FF"} style={{ color: "#000" }}>
-					{record.salesManager || ""}
-				</Tag>
+				<span>{record.name}</span>
 			);
 		},
 	},
 	{
-		title: "报价开始日期",
+		title: "合同日期",
 		dataIndex: "quotationBegin",
 		key: "quotationBegin",
 		type: NumFieldType.DateTime,
@@ -105,18 +103,8 @@ const columns: any = [
 			return <div>{format}</div>;
 		},
 	},
-	{
-		title: "产品规格书",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "阀门参数",
-		dataIndex: "valveDetail",
-		key: "valveDetail",
-		type: NumFieldType.Attachment,
-	},
+
+
 	{
 		title: "初步选型型号",
 		dataIndex: "typeSelection",
@@ -135,16 +123,32 @@ const columns: any = [
 		},
 	},
 	{
-		title: "交期",
-		dataIndex: "quotationEnd",
-		key: "quotationEnd",
-		type: NumFieldType.DateTime,
+		title: "总数量",
+		width: 200,
+		dataIndex: "name",
+		key: "name",
 		render: (text: string, record: any) => {
-			const format = record.quotationBegin
-				? dayjs(record.quotationBegin).format("YYYY-MM-DD")
-				: "";
-			return <div>{format}</div>;
+			return (
+				<span>{record.name}</span>
+			);
 		},
+	},
+	{
+		title: "总价",
+		width: 200,
+		dataIndex: "name",
+		key: "name",
+		render: (text: string, record: any) => {
+			return (
+				<span>{record.name}</span>
+			);
+		},
+	},
+	{
+		title: "合同附件",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
 	},
 ];
 const TableBody: React.FC<FlowTableProps> = ({

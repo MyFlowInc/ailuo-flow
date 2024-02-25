@@ -322,7 +322,6 @@ const Attachment: React.FC<{
 				setFileList(list);
 			}
 		} catch (error) {
-			console.log(error)
 			setFileList([value]);
 		}
 	}, [value])

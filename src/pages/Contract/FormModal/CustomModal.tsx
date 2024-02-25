@@ -19,7 +19,7 @@ import {
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import { MainStatus } from "../../../api/ailuo/dict";
-import warnSvg from "../assets/warning.svg";
+import warnSvg from "../../Sale/assets/warning.svg";
 import {
 	approveInfo,
 	finalApproveEdit,
@@ -37,6 +37,7 @@ import { ContracContext } from "../ContractManage";
 import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import { fetchTurnTime } from "../../../api/ailuo/sale";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -687,6 +688,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			console.log(error);
 		}
 	};
+	const changeStatus = async (params: any) => {
+		await contractEdit(params);
+	}
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,

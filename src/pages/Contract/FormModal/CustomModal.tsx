@@ -18,7 +18,7 @@ import {
 } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
-import { MainStatus } from "../../../api/ailuo/dict";
+import { ContractStatusMap } from "../../../api/ailuo/dict";
 import warnSvg from "../../Sale/assets/warning.svg";
 import {
 	approveInfo,
@@ -362,7 +362,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 	);
 };
 const FootView = (props: any) => {
-	if (location.pathname !== "/dashboard/my-quote-process") {
+	if (location.pathname !== "/dashboard/my-contract-process") {
 		return <div></div>;
 	}
 	const { user, finalInfoList } = useContext(CustomModalContext)! as any;
@@ -474,19 +474,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
-		if (open && form.status === MainStatus.NotStarted) {
+		if (open && form.status === ContractStatusMap.NotStarted) {
 			// 未启动
 			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.TechnicalReview) {
-			// 技术审核中
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.QuotationReview) {
-			// 报价终审中
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.Approved) {
+		} else if (open && form.status === ContractStatusMap.Approved) {
 			// 通过
 			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.ReviewFailed) {
+		} else if (open && form.status === ContractStatusMap.ReviewFailed) {
 			// 驳回
 			setAllDisabled(true);
 		} else {
@@ -504,7 +498,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			const record = _.get(res, "data.record");
 			setFinalInfoList(record);
 		};
-		if (open && form.status === MainStatus.QuotationReview) {
+		if (open && form.status === ContractStatusMap.Reviewing) {
 			fetchFinalInfoList();
 		}
 	}, [form.status, open]);
@@ -608,11 +602,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	// 通知模块
 	const notifyHandler = async (
 		form: any,
-		status: MainStatus[keyof MainStatus],
+		status: ContractStatusMap[keyof ContractStatusMap],
 	) => {
 		try {
 			// 通知 终审人员
-			if (status === MainStatus.QuotationReview) {
+			if (status === ContractStatusMap.Reviewing) {
 				const res = await approveInfo(); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
@@ -631,7 +625,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await Promise.all(allP);
 			}
 			// 同意后 通知报价单创建人
-			if (status === MainStatus.Approved) {
+			if (status === ContractStatusMap.Approved) {
 				const { createBy } = form; // 创建人id
 				if (!createBy) return;
 				const params: any = {
@@ -646,7 +640,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await noticeAdd(params);
 			}
 			// 审批拒绝 通知报价单创建人
-			if (status === MainStatus.ReviewFailed) {
+			if (status === ContractStatusMap.ReviewFailed) {
 				const { createBy } = form; // 创建人id
 				if (!createBy) return;
 				const params: any = {
@@ -671,11 +665,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
-		status: MainStatus[keyof MainStatus],
+		status: ContractStatusMap[keyof ContractStatusMap],
 	) => {
 		try {
 			const { id } = form;
-			if (status === MainStatus.ReviewFailed) {
+			if (status === ContractStatusMap.ReviewFailed) {
 				await changeStatus({ id, status, remark: form.remark } as any);
 			} else {
 				await changeStatus({ id, status });
@@ -693,11 +687,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			let status = "";
 			if (type == "need") {
 				//
-				status = MainStatus.Processing;
+				status = ContractStatusMap.Processing;
 			}
 			if (type == "noNeed") {
 				// 下一步提交终审吧
-				status = MainStatus.TechnicalOver;
 			}
 			console.log("newSaleHandle", form);
 			const { id, createTime, deleted, updateTime, ...params } = form;
@@ -725,7 +718,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		const { id, status } = form;
 
 		// 未启动 开始处理
-		if (id && (status === "not_started" || !status)) {
+		if (id && (status === ContractStatusMap.NotStarted || !status)) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -740,7 +733,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-								changeProcess(form, MainStatus.Processing);
+								changeProcess(form, ContractStatusMap.Processing);
 							}}
 						>
 							{"开始处理"}
@@ -749,8 +742,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</div>
 			);
 		}
-		// 处理中 --》 提交技术审核
-		if (id && status === "processing") {
+		// 处理中 --》 提交审批
+		if (id && status === ContractStatusMap.Processing) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -765,56 +758,56 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-								changeProcess(form, MainStatus.TechnicalReview);
+								changeProcess(form, ContractStatusMap.Reviewing);
 							}}
 						>
-							{"提交技术审核"}
+							{"提交审批"}
 						</Tag>
 					</div>
 				</div>
 			);
 		}
-		// 技术审核中
-		if (id && status === MainStatus.TechnicalReview) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核中"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer"></div>
-				</div>
-			);
-		}
+		// // 审批中
+		// if (id && status === ContractStatusMap.Reviewing) {
+		// 	return (
+		// 		<div className="status-operate flex">
+		// 			<div className="flex">
+		// 				<div className="mr-2">状态: </div>
+		// 				<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+		// 					{"审批中"}
+		// 				</Tag>
+		// 			</div>
+		// 			<div className="flex cursor-pointer"></div>
+		// 		</div>
+		// 	);
+		// }
 		// 技术审核完成  提价提交终审
-		if (id && status === MainStatus.TechnicalOver) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核已完成"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag
-							color={"#D4F3F2"}
-							style={{ color: "#000" }}
-							onClick={() => {
-								changeProcess(form, MainStatus.QuotationReview);
-							}}
-						>
-							{"提交终审"}
-						</Tag>
-					</div>
-				</div>
-			);
-		}
-		// 报价终审中
-		if (id && status === MainStatus.QuotationReview) {
+		// if (id && status === ContractStatusMap.TechnicalOver) {
+		// 	return (
+		// 		<div className="status-operate flex">
+		// 			<div className="flex">
+		// 				<div className="mr-2">状态: </div>
+		// 				<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+		// 					{"技术审核已完成"}
+		// 				</Tag>
+		// 			</div>
+		// 			<div className="flex cursor-pointer">
+		// 				<div className="mr-2">操作: </div>
+		// 				<Tag
+		// 					color={"#D4F3F2"}
+		// 					style={{ color: "#000" }}
+		// 					onClick={() => {
+		// 						changeProcess(form, ContractStatusMap.QuotationReview);
+		// 					}}
+		// 				>
+		// 					{"提交终审"}
+		// 				</Tag>
+		// 			</div>
+		// 		</div>
+		// 	);
+		// }
+		// 审批中
+		if (id && status === ContractStatusMap.Reviewing) {
 			// 特殊处理报价终审中
 			const ids = finalInfoList.map((i) => i.relationUserId);
 			const users = allUser.filter((i) => ids.includes(i.id));
@@ -826,7 +819,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#FFEEE3"}
 							style={{ color: "#000", height: "fit-content" }}
 						>
-							{"报价终审中"}
+							{"审批中"}
 						</Tag>
 					</div>
 					<div className="flex cursor-pointer">
@@ -869,7 +862,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			);
 		}
 		// 审批通过
-		if (id && status === MainStatus.Approved) {
+		if (id && status === ContractStatusMap.Approved) {
 			return (
 				<>
 					<div className="status-operate flex">
@@ -881,13 +874,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</div>
 						<div className="flex cursor-pointer">
 							<div className="mr-2">操作: </div>
-							<Tag
+							{/* <Tag
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
 								onClick={() => { }}
 							>
 								{"发起合同流程"}
-							</Tag>
+							</Tag> */}
 						</div>
 					</div>
 					<div className="flex cursor-pointer mb-4">
@@ -900,7 +893,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							cancelText="取消"
 						>
 							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
+								{"生成项目"}
 							</Tag>
 						</Popconfirm>
 						<Popconfirm
@@ -917,7 +910,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								style={{ color: "#000" }}
 								onClick={() => { }}
 							>
-								{"新一轮报价（无需技术审批）"}
+								{"撤回重改"}
 							</Tag>
 						</Popconfirm>
 					</div>
@@ -925,7 +918,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			);
 		}
 		// 审批驳回
-		if (id && [MainStatus.ReviewFailed, MainStatus.Approved].includes(status)) {
+		if (id && [ContractStatusMap.ReviewFailed, ContractStatusMap.Approved].includes(status)) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -937,7 +930,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Popconfirm
-							title="是否发起新一轮报价?"
+							title="撤回重改?"
 							onConfirm={() => {
 								newSaleHandle(form, "need");
 							}}
@@ -945,26 +938,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							cancelText="取消"
 						>
 							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
+								{"撤回重改"}
 							</Tag>
 						</Popconfirm>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "noNeed");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag
-								className="ml-2"
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => { }}
-							>
-								{"新一轮报价（无需技术审批）"}
-							</Tag>
-						</Popconfirm>
+
 					</div>
 				</div>
 			);

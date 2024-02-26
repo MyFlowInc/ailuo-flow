@@ -145,7 +145,7 @@ export const ContractStatusList = [
 	},
 	{
 		"id": "1761948993703731202",
-		"label": "审核中",
+		"label": "审批中",
 		"value": "reviewing",
 		"color": "#FFEEE3"
 	},

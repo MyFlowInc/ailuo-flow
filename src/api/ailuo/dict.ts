@@ -49,7 +49,7 @@ export interface IFlowStatus {
 }
 
 // code :  flow_status
-export const FlowStatus = [
+export const SaleStatus = [
 	{
 		value: "not_started",
 		label: "未启动",
@@ -130,27 +130,49 @@ export enum ITechStatus {
 	Over = "t_over"
 }
 
-export const ContractStatus = [
+export const ContractStatusList = [
 	{
-		"value": "t_todo",
-		"label": "待开始",
-		"id": "1747826125270597134",
+		"id": "1761946363040456705",
+		"label": "未启动",
+		"value": "not_started",
 		"color": "#E8F2FF"
 	},
 	{
-		"value": "t_processing",
+		"id": "1761946475552661506",
 		"label": "处理中",
-		"id": "1747826896261599234",
+		"value": "processing",
 		"color": "#FFEEE3"
 	},
 	{
-		"value": "t_over",
-		"label": "处理完成",
-		"id": "1747826967833202689",
+		"id": "1761948993703731202",
+		"label": "审核中",
+		"value": "reviewing",
+		"color": "#FFEEE3"
+	},
+	{
+		"id": "1761949089929453570",
+		"label": "审批通过",
+		"value": "approved",
+		"color": "#E8FFEA"
+
+	},
+	{
+		"id": "1761949144291827714",
+		"label": "审批驳回",
+		"value": "review_failed",
 		"color": "#E8FFEA"
 	}
 ]
 
+export enum ContractStatusMap {
+	NotStarted = "not_started",
+	Processing = "processing",
+	Reviewing = "reviewing",
+	Approved = "approved",
+	ReviewFailed = "review_failed"
+
+}
+
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
-	return Promise.resolve(FlowStatus);
+	return Promise.resolve(SaleStatus);
 }

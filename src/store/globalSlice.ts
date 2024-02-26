@@ -46,7 +46,7 @@ export interface globalState {
 	isShowSaleModal: boolean; // 新建报价modal
 	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知,
-	flowStatus: IFlowStatus[];
+
 }
 
 const initialState: globalState = {
@@ -63,7 +63,7 @@ const initialState: globalState = {
 	isShowSaleModal: false, // 新建报价modal
 	isStatusSettingModalOpen: false, //  状态流设置modal
 	isOpenDrawer: false, // 是否打开通知
-	flowStatus: [],
+
 };
 
 export const fetchFlowStatus = createAsyncThunk(
@@ -134,9 +134,7 @@ export const globalSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		builder.addCase(fetchFlowStatus.fulfilled, (state, action) => {
-			state.flowStatus = action.payload;
-		});
+
 		builder.addCase(freshUser.fulfilled, (state, action) => {
 			state.user = action.payload;
 		});

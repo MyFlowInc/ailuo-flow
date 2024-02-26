@@ -4,7 +4,7 @@ import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
-import { FlowStatus } from "../../api/ailuo/dict";
+import { SaleStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
 import TurnView from "./TurnView";
@@ -57,9 +57,9 @@ const columns: any = [
 		key: "status",
 		render: (text: string, record: any) => {
 			const { status } = record;
-			let item = _.find(FlowStatus, { value: status });
+			let item = _.find(SaleStatus, { value: status });
 			if (!item) {
-				item = FlowStatus[0];
+				item = SaleStatus[0];
 			}
 			return (
 				<Tag color={item.color} style={{ color: "#000" }}>
@@ -126,7 +126,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) {}
+			} catch (error) { }
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}

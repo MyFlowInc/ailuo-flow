@@ -1,4 +1,4 @@
-import type { CollapseProps   } from "antd";
+import type { CollapseProps } from "antd";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
@@ -13,6 +13,8 @@ import {
 	ConfigProvider,
 	message,
 	Popconfirm,
+	Divider,
+	Radio,
 } from "antd";
 import { accountList } from "../../api/user";
 import _ from "lodash";
@@ -186,19 +188,19 @@ const ApproveSetting: React.FC<any> = ({
 	const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
 		panelStyle,
 	) => [
-		{
-			key: "1",
-			label: <div style={{ fontSize: "16px" }}>总经理</div>,
-			children: getAccountList(manageList),
-			style: panelStyle,
-		},
-		{
-			key: "2",
-			label: <div style={{ fontSize: "16px" }}>财务部</div>,
-			children: getAccountList(financeList),
-			style: panelStyle,
-		},
-	];
+			{
+				key: "1",
+				label: <div style={{ fontSize: "16px" }}>总经理</div>,
+				children: getAccountList(manageList),
+				style: panelStyle,
+			},
+			{
+				key: "2",
+				label: <div style={{ fontSize: "16px" }}>财务部</div>,
+				children: getAccountList(financeList),
+				style: panelStyle,
+			},
+		];
 
 	const { token } = theme.useToken();
 	const panelStyle: React.CSSProperties = {
@@ -252,6 +254,13 @@ const ApproveSetting: React.FC<any> = ({
 			console.log(error);
 		}
 	};
+	const [value, setValue] = useState(1);
+
+	const radioOnChange = (e: any) => {
+		console.log('radio checked', e.target.value);
+		setValue(e.target.value);
+	};
+
 	return (
 		<Modal
 			title="审批设置"
@@ -270,6 +279,12 @@ const ApproveSetting: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
+				<div className="mb-4" style={{ color: "#848484" }}>审批方式</div>
+				<Radio.Group onChange={radioOnChange} value={value}>
+					<Radio value={1}>会签</Radio>
+					<Radio value={2}>或签</Radio>
+				</Radio.Group>
+				<Divider style={{ margin: '12px 0' }} />
 				<div style={{ color: "#848484" }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList.map((item: any) => {
@@ -319,7 +334,7 @@ const ApproveSetting: React.FC<any> = ({
 				</div>
 				<div className="flex justify-center mt-4">
 					<ConfigProvider theme={greyButtonTheme}>
-						<Button loading={loading} type="primary" onClick={() => {}}>
+						<Button loading={loading} type="primary" onClick={() => { }}>
 							取消
 						</Button>
 					</ConfigProvider>

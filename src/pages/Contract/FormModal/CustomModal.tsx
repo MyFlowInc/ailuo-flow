@@ -136,8 +136,8 @@ export const columns: any = [
 	},
 	{
 		title: "合同日期",
-		dataIndex: "quotationBegin",
-		key: "quotationBegin",
+		dataIndex: "contractTime",
+		key: "contractTime",
 		type: NumFieldType.DateTime,
 	},
 	{
@@ -176,14 +176,14 @@ export const columns: any = [
 	},
 	{
 		title: "总数量",
-		dataIndex: "mechanismForm",
-		key: "mechanismForm",
+		dataIndex: "totalNum",
+		key: "totalNum",
 		type: NumFieldType.SingleText,
 	},
 	{
 		title: "总价",
-		dataIndex: "mechanismForm",
-		key: "mechanismForm",
+		dataIndex: "totalPrice",
+		key: "totalPrice",
 		type: NumFieldType.SingleText,
 	},
 	{
@@ -556,10 +556,16 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.status = "not_started";
 			}
 			try {
-				form.typeSelection = JSON.stringify(form.typeSelection);
-				form.modeTrade = JSON.stringify(form.modeTrade);
-				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+				if (form.typeSelection) {
+					form.typeSelection = JSON.stringify(form.typeSelection);
+				}
+				if (form.modeTrade) {
+					form.modeTrade = JSON.stringify(form.modeTrade);
+				}
+				if (form.payType) {
+					form.payType = JSON.stringify(form.payType);
+				}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -581,7 +587,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -700,7 +706,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -878,7 +884,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							<Tag
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"发起合同流程"}
 							</Tag>
@@ -909,7 +915,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -954,7 +960,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>

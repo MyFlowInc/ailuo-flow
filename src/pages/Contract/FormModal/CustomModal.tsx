@@ -27,17 +27,19 @@ import {
 } from "../../../api/ailuo/approve";
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
-import { User, selectAllUser, selectIsManager, selectUser } from "../../../store/globalSlice";
+import {
+	User,
+	selectAllUser,
+	selectIsManager,
+	selectUser,
+} from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import ProjectName from "../../Sale/ProjectName";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
-import ExportProject from "../../Sale/ExportProject";
 import { ContracContext } from "../ContractManage";
 import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
-import { fetchTurnTime } from "../../../api/ailuo/sale";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -103,21 +105,7 @@ export const columns: any = [
 		title: "项目名称",
 		dataIndex: "name",
 		key: "name",
-		render: (
-			column: any,
-			key: string,
-			form: any,
-			setForm: (value: any) => void,
-		) => {
-			return (
-				<div key={"name_" + key} className="w-full">
-					<ProjectName
-						key={"ProjectName" + key}
-						{...{ column, form, setForm }}
-					/>
-				</div>
-			);
-		},
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "单位名称",
@@ -127,6 +115,13 @@ export const columns: any = [
 		dictCode: "company",
 	},
 	{
+		title: "单位联系方式",
+		dataIndex: "phone",
+		key: "phone",
+		type: NumFieldType.SingleText,
+	},
+
+	{
 		title: "销售经理",
 		dataIndex: "salesManager",
 		key: "salesManager",
@@ -134,40 +129,16 @@ export const columns: any = [
 		dictCode: "salesManager",
 	},
 	{
-		title: "报价开始日期",
-		dataIndex: "quotationBegin",
-		key: "quotationBegin",
-		type: NumFieldType.DateTime,
-	},
-	{
-		title: "产品规格书",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "阀门参数",
-		dataIndex: "valveDetail",
-		key: "valveDetail",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "其他技术文件",
-		dataIndex: "otherFile",
-		key: "otherFile",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "扭矩/推力",
-		dataIndex: "torqueThrust",
-		key: "torquehrust",
+		title: "合同编号",
+		dataIndex: "uuid",
+		key: "uuid",
 		type: NumFieldType.SingleText,
 	},
 	{
-		title: "其他技术要求",
-		dataIndex: "otherTechnicalRequirements",
-		key: "otherTechnicalRequirements",
-		type: NumFieldType.Text,
+		title: "合同日期",
+		dataIndex: "quotationBegin",
+		key: "quotationBegin",
+		type: NumFieldType.DateTime,
 	},
 	{
 		title: "执行机构形式",
@@ -182,6 +153,7 @@ export const columns: any = [
 		type: NumFieldType.SingleFixSelect,
 		dictCode: "currency",
 	},
+
 	{
 		title: "初步选型型号",
 		dataIndex: "typeSelection",
@@ -203,6 +175,18 @@ export const columns: any = [
 		},
 	},
 	{
+		title: "总数量",
+		dataIndex: "mechanismForm",
+		key: "mechanismForm",
+		type: NumFieldType.SingleText,
+	},
+	{
+		title: "总价",
+		dataIndex: "mechanismForm",
+		key: "mechanismForm",
+		type: NumFieldType.SingleText,
+	},
+	{
 		title: "交期",
 		dataIndex: "quotationEnd",
 		key: "quotationEnd",
@@ -214,26 +198,7 @@ export const columns: any = [
 		key: "qualityTime",
 		type: NumFieldType.SingleText,
 	},
-	{
-		title: "出口项目",
-		dataIndex: "exportItem", // 'show' | 'hide'
-		key: "exportItem",
-		render: (
-			column: any,
-			key: string,
-			form: any,
-			setForm: (value: any) => void,
-		) => {
-			return (
-				<div key={"exportItem_" + key} className="w-full">
-					<ExportProject
-						key={"exportItem" + key}
-						{...{ column, form, setForm }}
-					/>
-				</div>
-			);
-		},
-	},
+
 	{
 		title: "贸易方式",
 		dataIndex: "modeTrade",
@@ -248,6 +213,12 @@ export const columns: any = [
 		key: "payType",
 		type: NumFieldType.MultiSelect,
 		dictCode: "pay",
+	},
+	{
+		title: "合同附件",
+		dataIndex: "otherFile",
+		key: "otherFile",
+		type: NumFieldType.Attachment,
 	},
 	{
 		title: "关联技术评审",
@@ -486,7 +457,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
-		disabled = isManager ? false : disabled
+		disabled = isManager ? false : disabled;
 
 		const newCol = showDstColumns.map((item: any) => {
 			return {
@@ -588,7 +559,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -610,7 +581,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -690,7 +661,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 	const changeStatus = async (params: any) => {
 		await contractEdit(params);
-	}
+	};
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
@@ -729,14 +700,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
-			try {
-				const res = await fetchTurnTime(form.name);
-				const time = _.get(res, "data.turn_time");
-				params.turnTime = time;
-			} catch (error) {
-				params.turnTime = +form.turnTime + 1;
-			}
+			} catch (error) {}
+
 			params.status = status;
 			params.relationReview = form.id;
 			await contractAdd(excludeNull(params));
@@ -752,7 +717,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
-
 
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
@@ -846,26 +810,53 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		// 报价终审中
 		if (id && status === MainStatus.QuotationReview) {
 			// 特殊处理报价终审中
-			const ids = finalInfoList.map(i => i.relationUserId)
-			const users = allUser.filter(i => ids.includes(i.id))
+			const ids = finalInfoList.map((i) => i.relationUserId);
+			const users = allUser.filter((i) => ids.includes(i.id));
 			return (
 				<div className="status-operate flex items-center">
 					<div className="flex">
 						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000", height: 'fit-content' }}>
+						<Tag
+							color={"#FFEEE3"}
+							style={{ color: "#000", height: "fit-content" }}
+						>
 							{"报价终审中"}
 						</Tag>
 					</div>
 					<div className="flex cursor-pointer">
 						{users.map((user: User) => {
-							const approveInfo = finalInfoList.find(i => i.relationUserId === user.id);
+							const approveInfo = finalInfoList.find(
+								(i) => i.relationUserId === user.id,
+							);
 							// TODO 状态不统一会有bug
-							if (approveInfo.status === 'approve') {
-								return <Badge key={'Badge' + user.id} count={<CheckCircleOutlined style={{ color: 'green' }} />}>
-									<Avatar className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
-								</Badge>
+							if (approveInfo.status === "approve") {
+								return (
+									<Badge
+										key={"Badge" + user.id}
+										count={<CheckCircleOutlined style={{ color: "green" }} />}
+									>
+										<Avatar
+											className="mx-2"
+											src={
+												<img
+													src={user.avatar}
+													alt="avatar"
+													title={user.nickname}
+												/>
+											}
+										/>
+									</Badge>
+								);
 							}
-							return <Avatar key={'avatar' + user.id} className="mx-2" src={<img src={user.avatar} alt="avatar" title={user.nickname} />} />
+							return (
+								<Avatar
+									key={"avatar" + user.id}
+									className="mx-2"
+									src={
+										<img src={user.avatar} alt="avatar" title={user.nickname} />
+									}
+								/>
+							);
 						})}
 					</div>
 				</div>
@@ -875,7 +866,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (id && status === MainStatus.Approved) {
 			return (
 				<>
-
 					<div className="status-operate flex">
 						<div className="flex">
 							<div className="mr-2">状态: </div>
@@ -885,7 +875,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</div>
 						<div className="flex cursor-pointer">
 							<div className="mr-2">操作: </div>
-							<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
+							<Tag
+								color={"#D4F3F2"}
+								style={{ color: "#000" }}
+								onClick={() => {}}
+							>
 								{"发起合同流程"}
 							</Tag>
 						</div>
@@ -915,7 +909,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -960,7 +954,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>

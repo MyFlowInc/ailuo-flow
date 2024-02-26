@@ -83,12 +83,10 @@ const columns: any = [
 	{
 		title: "合同编号",
 		width: 200,
-		dataIndex: "name",
-		key: "name",
+		dataIndex: "uuid",
+		key: "uuid",
 		render: (text: string, record: any) => {
-			return (
-				<span>{record.name}</span>
-			);
+			return <span>{record.name}</span>;
 		},
 	},
 	{
@@ -104,7 +102,6 @@ const columns: any = [
 		},
 	},
 
-
 	{
 		title: "初步选型型号",
 		dataIndex: "typeSelection",
@@ -114,7 +111,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) { }
+			} catch (error) {}
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}
@@ -128,9 +125,7 @@ const columns: any = [
 		dataIndex: "name",
 		key: "name",
 		render: (text: string, record: any) => {
-			return (
-				<span>{record.name}</span>
-			);
+			return <span>{record.name}</span>;
 		},
 	},
 	{
@@ -139,9 +134,7 @@ const columns: any = [
 		dataIndex: "name",
 		key: "name",
 		render: (text: string, record: any) => {
-			return (
-				<span>{record.name}</span>
-			);
+			return <span>{record.name}</span>;
 		},
 	},
 	{

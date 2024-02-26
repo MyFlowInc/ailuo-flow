@@ -1,10 +1,10 @@
 // @
 const { exec } = require("child_process");
 
-const formal = '121.40.147.23'
-const test = '47.101.51.252'
+const formal = "121.40.147.23";
+const test = "47.101.51.252";
 
-let host = formal
+let host = test;
 // 首先，我们需要登录到服务器并删除 build 文件夹
 const deleteCommand = `
 ssh -tt root@${host} << EOF

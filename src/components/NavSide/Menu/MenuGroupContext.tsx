@@ -47,7 +47,6 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	const collapsed = useAppSelector(selectCollapsed);
 	const isManager = useAppSelector(selectIsManager);
 	const location = useLocation();
-	// 审批设置
 	const [approveModalVisible, setApproveModalVisible] =
 		useState<boolean>(false);
 	const [approveMenuItem, setApproveMenuItem] = useState<any>({});
@@ -63,7 +62,8 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	};
 	const extra = (menu: IMenu) => {
 		const { path } = menu;
-		return isManager && path === "/quote-manage" ? (
+		const isShow = isManager && ["/quote-manage", '/contract-manage'].includes(path);
+		return isShow ? (
 			<MenuExtraAction {...{ menu, chooseMenu }} />
 		) : null;
 	};

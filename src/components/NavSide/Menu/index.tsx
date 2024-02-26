@@ -92,6 +92,7 @@ const Menu: React.FC = () => {
 	const [totalInfo, setTotalInfo] = useState<{}>({
 		myQuote: 0,
 		notice: 0,
+		myContract: 0
 	});
 
 	const handleQuote = async () => {

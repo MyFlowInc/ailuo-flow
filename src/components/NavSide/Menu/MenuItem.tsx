@@ -93,6 +93,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 	const TimeView = (menuName: string) => {
 		const myQuote = totalInfo?.myQuote
 		const notice = totalInfo?.notice
+		const myContract = totalInfo?.myContract
 		if (menuKey === '/my-quote-process' && myQuote) {
 			return (
 				<div className="flex items-center">
@@ -102,6 +103,16 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				</div>
 			)
 		}
+		if (menuKey === '/my-contract-process' && myContract) {
+			return (
+				<div className="flex items-center">
+					<div>{menuName}</div>
+					<Badge className="ml-2" count={myContract}>
+					</Badge>
+				</div>
+			)
+		}
+
 		if (menuKey === 'notification' && notice) {
 			return (
 				<div className="flex items-center">

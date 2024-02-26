@@ -224,7 +224,10 @@ const DashboardRouterOutlet: React.FC = () => {
 									<Route path="/dashboard/contract-manage" exact={true}>
 										<ContractManage />
 									</Route>
-									
+									{/* 我的合同审核 */}
+									<Route path="/dashboard/my-contract-process" exact={true}>
+										<ContractManage />
+									</Route>
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />
 									</Route>

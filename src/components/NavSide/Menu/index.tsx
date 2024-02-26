@@ -115,6 +115,13 @@ const Menu: React.FC = () => {
 			return unRead.length;
 		} catch (error) {}
 	};
+
+	useEffect(() => {
+		window.addEventListener("fersh-total-info", immediatelyPolling);
+		return () => {
+			window.removeEventListener("fersh-total-info", immediatelyPolling);
+		};
+	});
 	const immediatelyPolling = async () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
@@ -169,7 +176,7 @@ const Menu: React.FC = () => {
 	}, []);
 
 	return (
-		<MenuContext.Provider value={{ totalInfo, immediatelyPolling }}>
+		<MenuContext.Provider value={{ totalInfo }}>
 			<MenuRoot collapsed={collapsed}>
 				<div className="menu-content">
 					<MenuGroupContext

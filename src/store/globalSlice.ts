@@ -42,7 +42,6 @@ export interface globalState {
 	is_archive: boolean; // 归档状态
 	is_archive_view: boolean; // 项目归档视图
 	is_show_tour: boolean; // 导航
-	isAddTableModalOpen: boolean; // 新建项目modal
 	isAddOrderModalOpen: boolean; // 新建工单modal
 	isShowSaleModal: boolean; // 新建报价
 	isStatusSettingModalOpen: boolean;
@@ -60,7 +59,6 @@ const initialState: globalState = {
 	is_archive_view: false,
 	is_show_tour: false,
 	collapsed: false,
-	isAddTableModalOpen: false, // 新建项目modal
 	isAddOrderModalOpen: false, // 新建工单modal
 	isShowSaleModal: false,
 	isStatusSettingModalOpen: false, //  状态流设置modal
@@ -98,7 +96,7 @@ export const globalSlice = createSlice({
 		setUser: (state, action) => {
 			state.user = action.payload;
 		},
-		//allUser 
+		//allUser
 		setAllUser: (state, action) => {
 			state.allUser = action.payload;
 		},
@@ -121,9 +119,6 @@ export const globalSlice = createSlice({
 		setCollapsed: (state, action) => {
 			console.log("setCollapsed", action);
 			state.collapsed = action.payload;
-		},
-		setIsAddTableModalOpen: (state, action) => {
-			state.isAddTableModalOpen = action.payload;
 		},
 		setIsAddOrderModalOpen: (state, action) => {
 			state.isAddOrderModalOpen = action.payload;
@@ -157,7 +152,6 @@ export const {
 	setIsArchive,
 	setIsArchiveView,
 	setIsShowTour,
-	setIsAddTableModalOpen,
 	setIsAddOrderModalOpen,
 	setIsShowSaleModal,
 	setIsStatusSettingModalOpen,
@@ -168,8 +162,7 @@ export const selectUser = (state: RootState) => state.global.user;
 export const selectAllUser = (state: RootState) => state.global.allUser;
 export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
-export const selectIsAddTableModalOpen = (state: RootState) =>
-	state.global.isAddTableModalOpen;
+
 export const selectIsAddOrderModalOpen = (state: RootState) =>
 	state.global.isAddOrderModalOpen;
 export const selectIsShowSaleModal = (state: RootState) =>

@@ -115,6 +115,14 @@ const Menu: React.FC = () => {
 			return unRead.length;
 		} catch (error) {}
 	};
+	const immediatelyPolling = async () => {
+		const myQuote = (await handleQuote()) || 0;
+		const notice = (await handleNotice()) || 0;
+		setTotalInfo({
+			myQuote,
+			notice,
+		});
+	};
 	// TODO: 调试可以关闭
 	const handlePolling = async () => {
 		const myQuote = (await handleQuote()) || 0;
@@ -132,7 +140,7 @@ const Menu: React.FC = () => {
 			const timer = setInterval(async () => {
 				// 访问的API地址部分，按你实际情况编写
 				await handlePolling();
-			}, 60 * 1000);
+			}, 20 * 1000);
 			return () => clearInterval(timer);
 		}
 	}, [user]);
@@ -161,7 +169,7 @@ const Menu: React.FC = () => {
 	}, []);
 
 	return (
-		<MenuContext.Provider value={{ totalInfo }}>
+		<MenuContext.Provider value={{ totalInfo, immediatelyPolling }}>
 			<MenuRoot collapsed={collapsed}>
 				<div className="menu-content">
 					<MenuGroupContext

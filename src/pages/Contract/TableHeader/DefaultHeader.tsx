@@ -43,7 +43,6 @@ interface DefaultHeaderProps {
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const dispatch = useAppDispatch();
 
-	const { pathname } = location;
 	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
 	const setOpen = (value: boolean) => {
 		dispatch(setIsAddOrderModalOpen(value));

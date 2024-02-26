@@ -3,7 +3,7 @@ import styled from "styled-components";
 import emptyListPng from "./assets/empty/empty-list.png";
 import buttonPng from "./assets/empty/button.png";
 import { useDispatch } from "react-redux";
-import { setIsAddOrderModalOpen, setIsAddTableModalOpen } from "../../store/globalSlice";
+import { setIsAddOrderModalOpen } from "../../store/globalSlice";
 const EmptyListRoot = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -50,14 +50,11 @@ interface EmptyListProps {
 	type: "list-data" | "table-data";
 }
 
-const EmptyList: React.FC<EmptyListProps> = props => {
+const EmptyList: React.FC<EmptyListProps> = (props) => {
 	const { type, rootStyle = {} } = props;
 	const dispatch = useDispatch();
 	const title = type === "list-data" ? "项目" : "工单";
 	const openAddModal = () => {
-		if (type === "list-data") {
-			dispatch(setIsAddTableModalOpen(true));
-		}
 		if (type === "table-data") {
 			dispatch(setIsAddOrderModalOpen(true));
 		}

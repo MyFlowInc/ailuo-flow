@@ -53,7 +53,6 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
 		open,
 		setOpen,
 		statusList,
-
 		modalType: "edit",
 		editFlowItemRecord,
 	};

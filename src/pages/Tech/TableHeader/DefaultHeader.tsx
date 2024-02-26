@@ -1,13 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import HeaderToolBar from "./HeaderToolBar";
-import { AddRecordModal } from "../RecordModal";
-
-import {
-	selectIsAddOrderModalOpen,
-	setIsAddOrderModalOpen,
-} from "../../../store/globalSlice";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -38,27 +31,12 @@ interface DefaultHeaderProps {
 	children?: React.ReactNode;
 }
 
-const DefaultHeader: React.FC<DefaultHeaderProps> = ({
-	hasSelected,
-	fetchTechFeedbackList,
-}) => {
-	const dispatch = useAppDispatch();
-
-	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
-	const setOpen = (value: boolean) => {
-		dispatch(setIsAddOrderModalOpen(value));
-	};
-
+const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal
-				open={isAddTableModalOpen}
-				setOpen={setOpen}
-				fetchTechFeedbackList={fetchTechFeedbackList}
-			/>
 		</DefaultHeaderRoot>
 	);
 };

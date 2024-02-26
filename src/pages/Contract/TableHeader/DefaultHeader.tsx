@@ -4,13 +4,13 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import {
-	selectIsAddOrderModalOpen,
-	setIsAddOrderModalOpen,
-} from "../../../store/globalSlice";
 import { Button, ConfigProvider } from "antd";
 import { blueButtonTheme } from "../../../theme/theme";
 import { EditFilled } from "@ant-design/icons";
+import {
+	selectIsShowContractModal,
+	setIsShowContractModal,
+} from "../../../store/globalSlice";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -43,9 +43,9 @@ interface DefaultHeaderProps {
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const dispatch = useAppDispatch();
 
-	const isAddTableModalOpen = useAppSelector(selectIsAddOrderModalOpen);
+	const isAddTableModalOpen = useAppSelector(selectIsShowContractModal);
 	const setOpen = (value: boolean) => {
-		dispatch(setIsAddOrderModalOpen(value));
+		dispatch(setIsShowContractModal(value));
 	};
 	const HeaderButtonView = () => {
 		return (

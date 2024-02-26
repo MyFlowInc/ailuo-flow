@@ -42,8 +42,8 @@ export interface globalState {
 	is_archive: boolean; // 归档状态
 	is_archive_view: boolean; // 项目归档视图
 	is_show_tour: boolean; // 导航
-	isAddOrderModalOpen: boolean; // 新建工单modal
-	isShowSaleModal: boolean; // 新建报价
+	isShowContractModal: boolean; // 新建合同modal
+	isShowSaleModal: boolean; // 新建报价modal
 	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知,
 	flowStatus: IFlowStatus[];
@@ -59,8 +59,8 @@ const initialState: globalState = {
 	is_archive_view: false,
 	is_show_tour: false,
 	collapsed: false,
-	isAddOrderModalOpen: false, // 新建工单modal
-	isShowSaleModal: false,
+	isShowContractModal: false, // 新建合同modal
+	isShowSaleModal: false, // 新建报价modal
 	isStatusSettingModalOpen: false, //  状态流设置modal
 	isOpenDrawer: false, // 是否打开通知
 	flowStatus: [],
@@ -120,8 +120,8 @@ export const globalSlice = createSlice({
 			console.log("setCollapsed", action);
 			state.collapsed = action.payload;
 		},
-		setIsAddOrderModalOpen: (state, action) => {
-			state.isAddOrderModalOpen = action.payload;
+		setIsShowContractModal: (state, action) => {
+			state.isShowContractModal = action.payload;
 		},
 		setIsShowSaleModal: (state, action) => {
 			state.isShowSaleModal = action.payload;
@@ -152,7 +152,7 @@ export const {
 	setIsArchive,
 	setIsArchiveView,
 	setIsShowTour,
-	setIsAddOrderModalOpen,
+	setIsShowContractModal,
 	setIsShowSaleModal,
 	setIsStatusSettingModalOpen,
 	setIsOpenDrawer,
@@ -163,8 +163,8 @@ export const selectAllUser = (state: RootState) => state.global.allUser;
 export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
 
-export const selectIsAddOrderModalOpen = (state: RootState) =>
-	state.global.isAddOrderModalOpen;
+export const selectIsShowContractModal = (state: RootState) =>
+	state.global.isShowContractModal;
 export const selectIsShowSaleModal = (state: RootState) =>
 	state.global.isShowSaleModal;
 export const selectIsStatusSettingModalOpen = (state: RootState) =>

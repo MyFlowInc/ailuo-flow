@@ -47,6 +47,7 @@ const App: React.FC = () => {
 						<Route path="/test" exact={true}>
 							<ModeSelectTable />
 						</Route>
+						{/* 神奇表单 */}
 						<Route path="/add-quote" exact={true}>
 							<PublicAddQuote />
 						</Route>

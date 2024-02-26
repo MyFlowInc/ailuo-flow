@@ -1,11 +1,10 @@
+/**
+ * 神奇表单
+ */
 import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider } from "antd";
 import { dashboardTheme } from "../../theme/theme";
-import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
-import { DashboardRoot } from "./styles";
 import _ from "lodash";
-import { IfetchSaleList } from "./types";
-import CustomModal from "./FormModal/CustomModal";
 import PublicAddEditor from "./FormModal/PublicAddEditor";
 
 export const PublicAddQuoteContext = React.createContext<any>({});

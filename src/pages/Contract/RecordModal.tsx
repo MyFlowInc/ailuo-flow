@@ -8,24 +8,34 @@ interface AddRecordModalProps {
 	setOpen: (a: boolean) => void;
 }
 
-export const AddRecordModal: React.FC<AddRecordModalProps> = (props: AddRecordModalProps) => {
-	const { open, setOpen, } = props;
+export const AddRecordModal: React.FC<AddRecordModalProps> = (
+	props: AddRecordModalProps,
+) => {
+	const { open, setOpen } = props;
 	const { fetchContractList } = useContext(ContracContext) as any;
 
 	const statusList: any = [];
 
 	const params = {
-		title: "新建报价",
+		title: "新建合同",
 		open,
 		setOpen,
 		statusList,
 		fetchContractList,
-		modalType: "add"
+		modalType: "add",
 	};
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
+	return (
+		<Modal
+			open={open}
+			modalRender={modalRender}
+			width={528}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
+	);
 };
 
 interface EditRecordModalProps {
@@ -34,23 +44,31 @@ interface EditRecordModalProps {
 	editFlowItemRecord: any | undefined;
 }
 
-export const EditRecordModal: React.FC<EditRecordModalProps> = props => {
-	const { editFlowItemRecord, open, setOpen, } = props;
+export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
+	const { editFlowItemRecord, open, setOpen } = props;
 	const { fetchContractList } = useContext(ContracContext) as any;
 
 	const statusList: any = [];
 
 	const params = {
-		title: "报价技术反馈",
+		title: "修改合同",
 		open,
 		setOpen,
 		statusList,
 		fetchContractList,
 		modalType: "edit",
-		editFlowItemRecord
+		editFlowItemRecord,
 	};
 
 	const modalRender = () => CustomModal(params);
 
-	return <Modal open={open} modalRender={modalRender} width={528} wrapClassName="overflow-hidden" style={{ height: "100vh", overflow: "hidden" }}></Modal>;
+	return (
+		<Modal
+			open={open}
+			modalRender={modalRender}
+			width={528}
+			wrapClassName="overflow-hidden"
+			style={{ height: "100vh", overflow: "hidden" }}
+		></Modal>
+	);
 };

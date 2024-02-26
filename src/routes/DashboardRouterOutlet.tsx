@@ -27,6 +27,7 @@ import CustomModalView from "../pages/Sale/FormModal/CustomModalView";
 import CustomModalTechView from "../pages/Tech/FormModal/CustomModalTechView";
 import { accountList } from "../api/user";
 import ContractManage from "../pages/Contract/ContractManage";
+import MyContractManage from "../pages/Contract/MyContractManage";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -70,11 +71,11 @@ const DashboardRouterOutlet: React.FC = () => {
 			const res = await accountList();
 			let allUserList = _.get(res, "data.record", []);
 			dispatch(setAllUser(allUserList));
-		}
+		};
 		if (_.isEmpty(allUser)) {
-			fetchAllUser()
+			fetchAllUser();
 		}
-	}, [allUser])
+	}, [allUser]);
 
 	if (loading) {
 		return (
@@ -225,8 +226,8 @@ const DashboardRouterOutlet: React.FC = () => {
 										<ContractManage />
 									</Route>
 									{/* 我的合同审核 */}
-									<Route path="/dashboard/my-contract-process" exact={true}>
-										<ContractManage />
+									<Route path="/dashboard/my-contract" exact={true}>
+										<MyContractManage />
 									</Route>
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />

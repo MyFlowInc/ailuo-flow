@@ -92,7 +92,7 @@ const Menu: React.FC = () => {
 	const [totalInfo, setTotalInfo] = useState<{}>({
 		myQuote: 0,
 		notice: 0,
-		myContract: 0
+		myContract: 0,
 	});
 
 	const handleQuote = async () => {
@@ -105,7 +105,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	const handleNotice = async () => {
 		try {
@@ -113,7 +113,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	// TODO: 调试可以关闭
 	const handlePolling = async () => {
@@ -150,7 +150,7 @@ const Menu: React.FC = () => {
 			setMenus(menus);
 			dispatch(setUserMenus(menus));
 			if (menus && menus.length > 0) {
-				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
+				// history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
 		} catch (error) {
 			console.log("error", error);

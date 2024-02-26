@@ -10,7 +10,7 @@ import { contractList, contractRemove } from "../../api/ailuo/contract";
 
 export const ContracContext = React.createContext<any>({});
 
-const ContractManage: React.FC = () => {
+const MyContractManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
@@ -92,4 +92,4 @@ const ContractManage: React.FC = () => {
 	);
 };
 
-export default ContractManage;
+export default MyContractManage;

@@ -39,12 +39,8 @@ export interface globalState {
 	Authorization: string;
 	"Authorization-key": string;
 	collapsed: boolean; // side menu
-	is_archive: boolean; // 归档状态
-	is_archive_view: boolean; // 项目归档视图
-	is_show_tour: boolean; // 导航
 	isShowContractModal: boolean; // 新建合同modal
 	isShowSaleModal: boolean; // 新建报价modal
-	isStatusSettingModalOpen: boolean;
 	isOpenDrawer: boolean; // 是否打开通知,
 
 }
@@ -55,13 +51,9 @@ const initialState: globalState = {
 	userMenus: [],
 	Authorization: "",
 	"Authorization-key": "",
-	is_archive: false,
-	is_archive_view: false,
-	is_show_tour: false,
 	collapsed: false,
 	isShowContractModal: false, // 新建合同modal
 	isShowSaleModal: false, // 新建报价modal
-	isStatusSettingModalOpen: false, //  状态流设置modal
 	isOpenDrawer: false, // 是否打开通知
 
 };
@@ -106,16 +98,7 @@ export const globalSlice = createSlice({
 		loginSuccess: (state, action) => {
 			state.user = action.payload;
 		},
-		setIsArchive: (state, action) => {
-			state.is_archive = action.payload;
-		},
-		setIsArchiveView: (state, action) => {
-			state.is_archive_view = action.payload;
-		},
-		setIsShowTour: (state, action) => {
-			// console.log('setIsShowTour', action)
-			state.is_show_tour = action.payload;
-		},
+
 		setCollapsed: (state, action) => {
 			console.log("setCollapsed", action);
 			state.collapsed = action.payload;
@@ -126,9 +109,7 @@ export const globalSlice = createSlice({
 		setIsShowSaleModal: (state, action) => {
 			state.isShowSaleModal = action.payload;
 		},
-		setIsStatusSettingModalOpen: (state, action) => {
-			state.isStatusSettingModalOpen = action.payload;
-		},
+
 		setIsOpenDrawer: (state, action) => {
 			state.isOpenDrawer = action.payload;
 		},
@@ -147,12 +128,8 @@ export const {
 	setUserMenus,
 	loginSuccess,
 	setCollapsed,
-	setIsArchive,
-	setIsArchiveView,
-	setIsShowTour,
 	setIsShowContractModal,
 	setIsShowSaleModal,
-	setIsStatusSettingModalOpen,
 	setIsOpenDrawer,
 } = globalSlice.actions;
 
@@ -165,15 +142,10 @@ export const selectIsShowContractModal = (state: RootState) =>
 	state.global.isShowContractModal;
 export const selectIsShowSaleModal = (state: RootState) =>
 	state.global.isShowSaleModal;
-export const selectIsStatusSettingModalOpen = (state: RootState) =>
-	state.global.isStatusSettingModalOpen;
+
 export const selectIsOpenDrawer = (state: RootState) =>
 	state.global.isOpenDrawer;
 
-export const selectIsArchive = (state: RootState) => state.global.is_archive;
-export const selectIsArchiveView = (state: RootState) =>
-	state.global.is_archive_view;
-export const selectIsShowTour = (state: RootState) => state.global.is_show_tour;
 
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;

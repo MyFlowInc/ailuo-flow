@@ -7,8 +7,6 @@ import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
 import { contractList, contractRemove } from "../../api/ailuo/contract";
-import { selectUser } from "../../store/globalSlice";
-import { useAppSelector } from "../../store/hooks";
 
 export const ContracContext = React.createContext<any>({});
 
@@ -23,7 +21,6 @@ const MyContractManage: React.FC = () => {
 		pageSize: 50,
 		total: 0,
 	});
-	const user = useAppSelector(selectUser);
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
@@ -41,7 +38,6 @@ const MyContractManage: React.FC = () => {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
-				createBy: user.id,
 			};
 
 			if (options.search) {

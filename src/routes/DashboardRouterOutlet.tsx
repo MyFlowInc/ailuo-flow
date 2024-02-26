@@ -28,6 +28,7 @@ import CustomModalTechView from "../pages/Tech/FormModal/CustomModalTechView";
 import { accountList } from "../api/user";
 import ContractManage from "../pages/Contract/ContractManage";
 import MyContractManage from "../pages/Contract/MyContractManage";
+import MyContractProcess from "../pages/Contract/MyContractProcess";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -225,12 +226,14 @@ const DashboardRouterOutlet: React.FC = () => {
 									<Route path="/dashboard/contract-manage" exact={true}>
 										<ContractManage />
 									</Route>
-									{/* 我的合同审核 */}
+									{/* 我的合同 */}
 									<Route path="/dashboard/my-contract" exact={true}>
 										<MyContractManage />
 									</Route>
+									{/* 我的合同审核 */}
+
 									<Route path="/dashboard/my-contract-process" exact={true}>
-										<MyContractManage />
+										<MyContractProcess />
 									</Route>
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />

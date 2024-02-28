@@ -11,6 +11,7 @@ import {
 	selectIsShowContractModal,
 	setIsShowContractModal,
 } from "../../../store/globalSlice";
+import { useLocation } from "react-router";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -42,17 +43,19 @@ interface DefaultHeaderProps {
 
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const dispatch = useAppDispatch();
-
+	const location = useLocation();
 	const isAddTableModalOpen = useAppSelector(selectIsShowContractModal);
 	const setOpen = (value: boolean) => {
 		dispatch(setIsShowContractModal(value));
 	};
+	const isShowButton = location.pathname === '/dashboard/contract-manage'
 	const HeaderButtonView = () => {
 		return (
 			<ConfigProvider theme={blueButtonTheme}>
 				<Button
+					style={{ visibility: !isShowButton ? 'hidden' : 'visible' }}
 					type="primary"
-					icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />}
+					icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff", }} />}
 					onClick={() => setOpen(true)}
 				>
 					新建合同

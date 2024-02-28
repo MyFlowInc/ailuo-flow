@@ -5,7 +5,7 @@ import { apiCall } from "../../network";
 export function noticeListFetch(recipientId: string) {
 	const params: any = {
 		pageNum: 1,
-		pageSize: 20,
+		pageSize: 50,
 	};
 	if (recipientId) {
 		params.recipientId = recipientId;
@@ -35,7 +35,7 @@ export function noticeRemove(id: string) {
 	});
 }
 
-export function noticeEdit(data: { id: string; [key: string]: any }) {
+export function noticeEdit(data: { id: string;[key: string]: any }) {
 	return apiCall({
 		url: "/api/sys/inbox/edit",
 		method: "PUT",

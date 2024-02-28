@@ -15,9 +15,10 @@ import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
 import { useHistory } from "react-router";
 import { saleProjectList } from "../../../api/ailuo/sale";
-import { MainStatus } from "../../../api/ailuo/dict";
+import { ContractStatusMap, MainStatus } from "../../../api/ailuo/dict";
 import _ from "lodash";
 import { noticeListFetch } from "../../../api/ailuo/notice";
+import { contractList } from "../../../api/ailuo/contract";
 
 const MenuRoot = styled.div<{ collapsed: boolean }>`
 	display: flex;
@@ -94,18 +95,29 @@ const Menu: React.FC = () => {
 		notice: 0,
 		myContract: 0,
 	});
-
+	// 我的报价审核
 	const handleQuote = async () => {
 		try {
 			const res = await saleProjectList({
 				pageNum: 1,
-				pageSize: 20,
+				pageSize: 50,
 				status: MainStatus.QuotationReview,
-				// createBy: user.id,
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) {}
+		} catch (error) { }
+	};
+	// 我的合同审核
+	const handleContract = async () => {
+		try {
+			const res = await contractList({
+				pageNum: 1,
+				pageSize: 50,
+				status: ContractStatusMap.Reviewing,
+			});
+			const list = _.get(res, "data.record") || [];
+			return list.length;
+		} catch (error) { }
 	};
 	const handleNotice = async () => {
 		try {
@@ -113,7 +125,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	useEffect(() => {
@@ -125,20 +137,26 @@ const Menu: React.FC = () => {
 	const immediatelyPolling = async () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
+		const myContract = (await handleContract()) || 0;
 		setTotalInfo({
 			myQuote,
 			notice,
+			myContract
 		});
 	};
 	// TODO: 调试可以关闭
 	const handlePolling = async () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
+		const myContract = (await handleContract()) || 0;
+
 		setTotalInfo({
 			myQuote,
 			notice,
+			myContract
 		});
 	};
+
 	useEffect(() => {
 		if (!_.isEmpty(user)) {
 			setTimeout(() => {

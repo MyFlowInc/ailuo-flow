@@ -165,7 +165,7 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			return (
-				<div key={"ModeSelectTable_" + key} className="w-full">
+				<div key={"ModeSelect_" + key} className="w-full">
 					<ModeSelectTable
 						key={"ModeSelectTable" + key}
 						{...{ column, form, setForm }}
@@ -559,7 +559,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) {}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -581,7 +581,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -676,6 +676,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			await notifyHandler(form, status);
 			await setOpen(false);
 			await fetchContractList();
+			if (status === ContractStatusMap.Reviewing) {
+				window.dispatchEvent(new Event("fersh-total-info"));
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -698,7 +701,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -907,7 +910,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"撤回重改"}
 							</Tag>

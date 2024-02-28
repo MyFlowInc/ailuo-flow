@@ -7,6 +7,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
 import { contractList, contractRemove } from "../../api/ailuo/contract";
+import { ContractStatusMap } from "../../api/ailuo/dict";
 
 export const ContracContext = React.createContext<any>({});
 
@@ -32,12 +33,13 @@ const MyContractManage: React.FC = () => {
 	};
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
-	// 获取技术反馈列表
+	// 获取列表
 	const fetchContractList = async (options: any = {}) => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
+				status: ContractStatusMap.Reviewing,
 			};
 
 			if (options.search) {

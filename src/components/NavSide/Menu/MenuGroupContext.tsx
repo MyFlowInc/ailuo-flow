@@ -62,10 +62,9 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 	};
 	const extra = (menu: IMenu) => {
 		const { path } = menu;
-		const isShow = isManager && ["/quote-manage", '/contract-manage'].includes(path);
-		return isShow ? (
-			<MenuExtraAction {...{ menu, chooseMenu }} />
-		) : null;
+		const isShow =
+			isManager && ["/quote-manage", "/contract-manage"].includes(path);
+		return isShow ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	};
 
 	return (

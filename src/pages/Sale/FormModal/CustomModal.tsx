@@ -270,6 +270,7 @@ export const columns: any = [
 		type: NumFieldType.RelationSaleView,
 	},
 ];
+// 通过二次确认
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	const { user, setOpen, finalInfoList, fetchSaleList } = useContext(
 		CustomModalContext,
@@ -655,7 +656,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							saleId: form.id,
 						},
 					};
-					console.log(11, params);
 					params.content = JSON.stringify(params.content);
 					return noticeAdd(params);
 				});

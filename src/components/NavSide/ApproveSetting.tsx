@@ -25,6 +25,7 @@ import {
 	approveInfo,
 	approvePersonAdd,
 	approvePersonRemove,
+	approveSaveBath,
 } from "../../api/ailuo/approve";
 import { blueButtonTheme, greyButtonTheme } from "../../theme/theme";
 
@@ -56,16 +57,29 @@ const ApproveSetting: React.FC<any> = ({
 	const [curSelectedIds, setCurSelectedIds] = useState<string[]>([]); // user id
 	const [filterValue, setFilterValue] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [belong, setBelong] = useState("");
+	const [type, setType] = useState("and");
 
+	useEffect(() => {
+		let belong = "";
+		const path = _.get(curMenu, "path") || "";
+		if (path.includes("quote")) {
+			belong = "sale";
+		}
+		if (path.includes("contract")) {
+			belong = "contract";
+		}
+		setBelong(belong);
+	});
 	// 获取账号列表
 	useEffect(() => {
-		approveModalVisible && fetchUserList();
-	}, [approveModalVisible]);
+		approveModalVisible && belong && fetchUserList();
+	}, [approveModalVisible, belong]);
 	// 刷新列表
 	const fetchUserList = async () => {
 		try {
 			const res = await accountList();
-			const res2 = await approveInfo(); // 审批信息
+			const res2 = await approveInfo({ belong }); // 审批信息
 			let allUserList = _.get(res, "data.record", []);
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
@@ -80,6 +94,11 @@ const ApproveSetting: React.FC<any> = ({
 				};
 			});
 			setAccessUserList(hasAccessList); // 有权限的人
+			if (!_.isEmpty(hasAccessList)) {
+				const item0 = hasAccessList[0];
+				const type = _.get(item0, "type");
+				type && setType(type);
+			}
 			const ids = hasAccessList.map((item: any) => item.userInfo.id);
 			setCurSelectedIds(ids);
 
@@ -96,7 +115,7 @@ const ApproveSetting: React.FC<any> = ({
 		return (
 			<div
 				className="flex justify-between items-center mt-4"
-				key={"item_" + userInfo.id}
+				key={"item_user_" + userInfo.id}
 			>
 				<div className="flex items-center">
 					<img
@@ -188,19 +207,19 @@ const ApproveSetting: React.FC<any> = ({
 	const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
 		panelStyle,
 	) => [
-			{
-				key: "1",
-				label: <div style={{ fontSize: "16px" }}>总经理</div>,
-				children: getAccountList(manageList),
-				style: panelStyle,
-			},
-			{
-				key: "2",
-				label: <div style={{ fontSize: "16px" }}>财务部</div>,
-				children: getAccountList(financeList),
-				style: panelStyle,
-			},
-		];
+		{
+			key: "1",
+			label: <div style={{ fontSize: "16px" }}>总经理</div>,
+			children: getAccountList(manageList),
+			style: panelStyle,
+		},
+		{
+			key: "2",
+			label: <div style={{ fontSize: "16px" }}>财务部</div>,
+			children: getAccountList(financeList),
+			style: panelStyle,
+		},
+	];
 
 	const { token } = theme.useToken();
 	const panelStyle: React.CSSProperties = {
@@ -220,17 +239,31 @@ const ApproveSetting: React.FC<any> = ({
 		const p2 = accessUserList.map((item: any) => {
 			return item.userInfo.id;
 		});
-
 		const diffIds = _.difference(p1, p2);
-		console.log(p1, p2, diffIds);
+		console.log(p1, p2, diffIds, accessUserList);
 		try {
-			const allP = diffIds.map((id) => {
-				return approvePersonAdd({
+			const params = curSelectedIds.map((id) => {
+				const relationUser = _.find(accessUserList, {
+					relationUserId: id,
+				}) as any;
+				if (!_.isEmpty(relationUser)) {
+					return {
+						carbonUserId: id,
+						relationUserId: id,
+						belong,
+						type,
+						id: relationUser.id,
+					};
+				}
+				return {
 					carbonUserId: id,
 					relationUserId: id,
-				});
+					belong,
+					type,
+				};
 			});
-			await Promise.all(allP);
+
+			await approveSaveBath(params);
 			await fetchUserList();
 			setTimeout(() => {
 				setLoading(false);
@@ -254,11 +287,9 @@ const ApproveSetting: React.FC<any> = ({
 			console.log(error);
 		}
 	};
-	const [value, setValue] = useState(1);
-
 	const radioOnChange = (e: any) => {
-		console.log('radio checked', e.target.value);
-		setValue(e.target.value);
+		console.log("radio checked", e.target.value);
+		setType(e.target.value);
 	};
 
 	return (
@@ -279,12 +310,14 @@ const ApproveSetting: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
-				<div className="mb-4" style={{ color: "#848484" }}>审批方式</div>
-				<Radio.Group onChange={radioOnChange} value={value}>
-					<Radio value={1}>会签</Radio>
-					<Radio value={2}>或签</Radio>
+				<div className="mb-4" style={{ color: "#848484" }}>
+					审批方式
+				</div>
+				<Radio.Group onChange={radioOnChange} value={type}>
+					<Radio value={"and"}>会签</Radio>
+					<Radio value={"or"}>或签</Radio>
 				</Radio.Group>
-				<Divider style={{ margin: '12px 0' }} />
+				<Divider style={{ margin: "12px 0" }} />
 				<div style={{ color: "#848484" }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList.map((item: any) => {
@@ -334,21 +367,19 @@ const ApproveSetting: React.FC<any> = ({
 				</div>
 				<div className="flex justify-center mt-4">
 					<ConfigProvider theme={greyButtonTheme}>
-						<Button loading={loading} type="primary" onClick={() => { }}>
+						<Button
+							loading={loading}
+							type="primary"
+							onClick={() => {
+								setApproveModalVisible(false);
+							}}
+						>
 							取消
 						</Button>
 					</ConfigProvider>
 					<ConfigProvider theme={blueButtonTheme}>
 						<Button
 							loading={loading}
-							disabled={
-								_.difference(
-									curSelectedIds,
-									accessUserList.map((item: any) => {
-										return item.userInfo.id;
-									}),
-								).length === 0
-							}
 							className="ml-8"
 							type="primary"
 							onClick={() => {

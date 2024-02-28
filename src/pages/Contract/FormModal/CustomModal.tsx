@@ -559,7 +559,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -581,7 +581,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -618,7 +618,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							saleId: form.id,
 						},
 					};
-					console.log(11, params);
 					params.content = JSON.stringify(params.content);
 					return noticeAdd(params);
 				});
@@ -699,7 +698,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -908,7 +907,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"撤回重改"}
 							</Tag>
@@ -918,7 +917,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			);
 		}
 		// 审批驳回
-		if (id && [ContractStatusMap.ReviewFailed, ContractStatusMap.Approved].includes(status)) {
+		if (
+			id &&
+			[ContractStatusMap.ReviewFailed, ContractStatusMap.Approved].includes(
+				status,
+			)
+		) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -941,7 +945,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								{"撤回重改"}
 							</Tag>
 						</Popconfirm>
-
 					</div>
 				</div>
 			);

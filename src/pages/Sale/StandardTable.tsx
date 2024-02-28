@@ -185,8 +185,6 @@ const StandardTable: React.FC<StandardTableProps> = ({
 	}, [datasource.length]);
 
 	const pageNumChange = (page: number, pageSize: number) => {
-		console.log(2222, page, pageSize);
-
 		curPage.current.pageNum = page;
 		setTimeout(() => {
 			fetchSaleList();

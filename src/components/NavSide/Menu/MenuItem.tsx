@@ -66,10 +66,20 @@ interface MenuItemProps {
 	children?: React.ReactNode;
 	onClick?: () => void;
 }
-const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon, extra, isSelected, isExtraShow, onClick, style }) => {
+const MenuItem: React.FC<MenuItemProps> = ({
+	collapsed,
+	menuKey,
+	menuName,
+	icon,
+	extra,
+	isSelected,
+	isExtraShow,
+	onClick,
+	style,
+}) => {
 	const location = useLocation();
 	const history = useHistory();
-	const { totalInfo } = useContext(MenuContext)
+	const { totalInfo } = useContext(MenuContext);
 	// menu router jump
 	const routerJumpHandler = () => {
 		switch (menuKey) {
@@ -77,7 +87,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				onClick && onClick();
 				return;
 			case "help":
-				window.open("https://w0be5cxszhi.feishu.cn/share/base/form/shrcnfIiATacA2QL1NdBlMFALaf");
+				window.open(
+					"https://w0be5cxszhi.feishu.cn/share/base/form/shrcnfIiATacA2QL1NdBlMFALaf",
+				);
 				return;
 			case "update":
 				onClick && onClick();
@@ -90,47 +102,48 @@ const MenuItem: React.FC<MenuItemProps> = ({ collapsed, menuKey, menuName, icon,
 				}
 		}
 	};
+	// 次数展示
 	const TimeView = (menuName: string) => {
-		const myQuote = totalInfo?.myQuote
-		const notice = totalInfo?.notice
-		const myContract = totalInfo?.myContract
-		if (menuKey === '/my-quote-process' && myQuote) {
+		const myQuote = totalInfo?.myQuote;
+		const notice = totalInfo?.notice;
+		const myContract = totalInfo?.myContract;
+		if (menuKey === "/my-quote-process" && myQuote) {
 			return (
 				<div className="flex items-center">
 					<div>{menuName}</div>
-					<Badge className="ml-2" count={myQuote}>
-					</Badge>
+					<Badge className="ml-2" count={myQuote}></Badge>
 				</div>
-			)
+			);
 		}
-		if (menuKey === '/my-contract-process' && myContract) {
+		if (menuKey === "/my-contract-process" && myContract) {
 			return (
 				<div className="flex items-center">
 					<div>{menuName}</div>
-					<Badge className="ml-2" count={myContract}>
-					</Badge>
+					<Badge className="ml-2" count={myContract}></Badge>
 				</div>
-			)
+			);
 		}
 
-		if (menuKey === 'notification' && notice) {
+		if (menuKey === "notification" && notice) {
 			return (
 				<div className="flex items-center">
 					<div>{menuName}</div>
-					<Badge className="ml-2" count={notice}>
-					</Badge>
+					<Badge className="ml-2" count={notice}></Badge>
 				</div>
-			)
+			);
 		}
-		return menuName
-	}
+		return menuName;
+	};
 	return (
 		<MenutItemRoot collapsed={collapsed} selected={isSelected} style={style}>
 			{collapsed ? (
 				<>
 					<div onClick={routerJumpHandler}>{icon}</div>
 					{extra && isExtraShow && (
-						<div className="menuitem-extra menuitem-action-collapse" onClick={routerJumpHandler}>
+						<div
+							className="menuitem-extra menuitem-action-collapse"
+							onClick={routerJumpHandler}
+						>
 							{extra}
 						</div>
 					)}

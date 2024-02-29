@@ -111,7 +111,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) { }
+			} catch (error) {}
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}
@@ -128,10 +128,12 @@ const columns: any = [
 			const { typeSelection } = record;
 			let num = 0;
 			try {
-				num = JSON.parse(typeSelection).length;
-			} catch (error) { }
+				const list = JSON.parse(typeSelection);
+				list.forEach((item: any) => {
+					num += +item.num;
+				});
+			} catch (error) {}
 			return <span>{num}</span>;
-
 		},
 	},
 	{
@@ -140,7 +142,26 @@ const columns: any = [
 		dataIndex: "totalPrice",
 		key: "totalPrice",
 		render: (text: string, record: any) => {
-			return <span>{record.name}</span>;
+			let totalPrice = 0;
+			try {
+				const list = JSON.parse(record.typeSelection);
+				list.forEach((item: any) => {
+					// totalPrice += +item.price;
+					totalPrice += +item.num * +item.price;
+				});
+			} catch (error) {}
+			const { currency } = record;
+			let sign = "";
+			if (currency === "人民币") {
+				sign = "¥";
+			}
+			if (currency === "美元") {
+				sign = "$";
+			}
+			if (currency === "欧元") {
+				sign = "€";
+			}
+			return <span>{`${sign} ${totalPrice}`}</span>;
 		},
 	},
 	{

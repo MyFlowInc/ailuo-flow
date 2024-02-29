@@ -178,13 +178,76 @@ export const columns: any = [
 		title: "总数量",
 		dataIndex: "totalNum",
 		key: "totalNum",
-		type: NumFieldType.SingleText,
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			let totalNum = 0;
+			try {
+				const list = form.typeSelection;
+				list.forEach((item: any) => {
+					totalNum += +item.num;
+				});
+			} catch (error) {}
+
+			return (
+				<div key={"name_" + key} className="w-full mt-4">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>总数量</div>
+							<div className="flex-1 flex items-center">
+								<span key={"totalNum" + key}>{totalNum}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
 	},
 	{
 		title: "总价",
 		dataIndex: "totalPrice",
 		key: "totalPrice",
-		type: NumFieldType.SingleText,
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			let totalPrice = 0;
+			console.log("totalPrice", form.typeSelection);
+			try {
+				const list = form.typeSelection;
+				list.forEach((item: any) => {
+					totalPrice += +item.num * +item.price;
+				});
+			} catch (error) {}
+			const { currency } = form;
+			let sign = "";
+			if (currency === "人民币") {
+				sign = "¥";
+			}
+			if (currency === "美元") {
+				sign = "$";
+			}
+			if (currency === "欧元") {
+				sign = "€";
+			}
+			return (
+				<div key={"name_" + key} className="w-full">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>总价</div>
+							<div className="flex-1 flex items-center">
+								<span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
 	},
 	{
 		title: "交期",
@@ -559,7 +622,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -581,7 +644,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+				delete params.updateTime;
+				delete params.createTime;
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -701,7 +766,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -910,7 +975,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"撤回重改"}
 							</Tag>

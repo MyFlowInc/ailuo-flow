@@ -69,7 +69,7 @@
     "serve": "react-scripts start",
     "build": "react-scripts build",
     "echo": "echo 1",
-    "deploy": "react-scripts build && node ./build.js",
+    "deploy": "node .deploy/updateTIme.js &&react-scripts build && node .deploy/build.js",
     "lint": "eslint --ext .ts --ext .tsx src",
     "fix": "eslint --fix  --ext .ts --ext .tsx src",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
@@ -110,5 +110,5 @@
     "prettier": "^3.0.3"
   },
   "description": "An Ionic project",
-  "updateTime": "2024-02-29T08:15:34.873Z"
+  "updateTime": "2024-02-29T08:20:29.836Z"
 }

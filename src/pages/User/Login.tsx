@@ -6,10 +6,12 @@ import { useHistory } from "react-router";
 import { userLogin, userProfile } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../store/globalSlice";
-import { Link } from "react-router-dom";
 import logoSvg from "../../assets/logo.png";
 import _ from "lodash";
 import AiluoLogo from "../../BaseUI/Logo/AiluoLogo";
+import pkgJSON from "../../../package.json";
+console.log("last update time ", pkgJSON.updateTime);
+
 const LoginRoot = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -120,7 +122,6 @@ const Login: React.FC = () => {
 		if (form && remember) {
 			form.setFieldValue("remember", !!remember || !!"");
 		}
-
 	}, [form]);
 
 	const checkLoginHandler = () => {
@@ -143,14 +144,12 @@ const Login: React.FC = () => {
 						if (remember) {
 							localStorage.setItem("username", data.username);
 							localStorage.setItem("danger", data.password);
-							localStorage.setItem("remember", '1');
+							localStorage.setItem("remember", "1");
 						} else {
 							localStorage.setItem("username", data.username);
-							localStorage.setItem("danger", '');
-							localStorage.setItem("remember", '');
-
+							localStorage.setItem("danger", "");
+							localStorage.setItem("remember", "");
 						}
-
 
 						const res = await userProfile();
 						dispatch(loginSuccess(res.data));
@@ -184,7 +183,7 @@ const Login: React.FC = () => {
 	};
 	const checkLogin = _.debounce(checkLoginHandler, 300);
 
-	const onFinish = (values: any) => { };
+	const onFinish = (values: any) => {};
 	const onFinishFailed = () => {
 		console.error("Submit failed!");
 		setTimeout(() => {
@@ -235,7 +234,7 @@ const Login: React.FC = () => {
 								rules={[{ required: true, message: "用户名不能为空!" }]}
 							>
 								<Input
-									 variant="borderless"
+									variant="borderless"
 									rootClassName="noborder-bg"
 									placeholder="请输入用户名"
 								/>
@@ -247,7 +246,7 @@ const Login: React.FC = () => {
 							>
 								<Input.Password
 									rootClassName="noborder-bg"
-									 variant="borderless"
+									variant="borderless"
 									placeholder="请输入密码"
 									iconRender={(visible) =>
 										visible ? <EyeFilled /> : <EyeInvisibleFilled />

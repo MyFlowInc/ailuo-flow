@@ -7,35 +7,26 @@ const path = require("path");
 // package.json的路径
 const packageJsonPath = path.join(__dirname, "package.json");
 
-// 读取package.json
-fs.readFile(packageJsonPath, "utf8", (err, data) => {
-	if (err) {
-		console.error("无法读取package.json:", err);
-		return;
-	}
+try {
+	// 以同步方式读取package.json
+	const data = fs.readFileSync(packageJsonPath, "utf8");
 
-	try {
-		// 将读取的内容解析为JSON
-		const packageJson = JSON.parse(data);
+	// 解析JSON以获取对象
+	const packageJson = JSON.parse(data);
 
-		// 更新updateTime字段
-		packageJson.updateTime = new Date().toISOString();
+	// 更新updateTime字段
+	packageJson.updateTime = new Date().toISOString();
 
-		// 将修改后的对象转换回JSON字符串
-		const updatedData = JSON.stringify(packageJson, null, 2);
+	// 转换回JSON字符串
+	const updatedData = JSON.stringify(packageJson, null, 2);
 
-		// 写回package.json文件
-		fs.writeFile(packageJsonPath, updatedData, "utf8", (err) => {
-			if (err) {
-				console.error("无法写入package.json:", err);
-			} else {
-				console.log("updateTime已更新至package.json");
-			}
-		});
-	} catch (parseErr) {
-		console.error("解析package.json时发生错误:", parseErr);
-	}
-});
+	// 同步方式写回package.json文件
+	fs.writeFileSync(packageJsonPath, updatedData, "utf8");
+
+	console.log("package.json的updateTime字段已更新。");
+} catch (err) {
+	console.error("发生错误:", err);
+}
 
 const formal = "121.40.147.23";
 const test = "47.101.51.252";

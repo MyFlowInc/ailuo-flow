@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 // package.json的路径
-const packageJsonPath = path.join(__dirname, "..", "package.json");
+const packageJsonPath = path.join(__dirname, "package.json");
 
 try {
 	// 以同步方式读取package.json

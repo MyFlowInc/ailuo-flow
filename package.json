@@ -69,7 +69,7 @@
     "serve": "react-scripts start",
     "build": "react-scripts build",
     "echo": "echo 1",
-    "deploy": "node ./deploy/updateTIme.js &&react-scripts build && node ./deploy/build.js",
+    "deploy": "node updateTIme.js &&react-scripts build && node build.js",
     "lint": "eslint --ext .ts --ext .tsx src",
     "fix": "eslint --fix  --ext .ts --ext .tsx src",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import { useAppDispatch } from "../../../store/hooks";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
+import { techProjectRemoveBatch } from "../../../api/ailuo/tech";
+import { TechFeedBackContext } from "../TechFeedBack";
 
 interface BatchHeaderRootProps {
 	isShow: boolean;
@@ -30,7 +32,7 @@ interface BatchHeaderProps {
 }
 
 const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, setSelectedRows }) => {
-	const dispatch = useAppDispatch();
+	const { fetchTechFeedbackList } = useContext(TechFeedBackContext)! as any
 
 	const handleBatchDelete = () => {
 		Modal.confirm({
@@ -40,9 +42,14 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const recordIds = selectedRows.map(item => item.recordId);
-
-				setSelectedRows([]);
+				const ids = selectedRows.map(item => item.id);
+				try {
+					await techProjectRemoveBatch(ids);
+					setSelectedRows([]);
+					await fetchTechFeedbackList()
+				} catch (error) {
+					console.log(error);
+				}
 			},
 			onCancel: () => {
 				console.log("Cancel");
@@ -76,11 +83,7 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 						删除
 					</Button>
 				</ConfigProvider>
-				{/* <ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary" icon={<FolderFilled style={{ fontSize: "12px", color: "#ffffff" }} />} onClick={handleBatchArchive}>
-						归档
-					</Button>
-				</ConfigProvider> */}
+
 			</Space>
 		</BatchHeaderRoot>
 	);

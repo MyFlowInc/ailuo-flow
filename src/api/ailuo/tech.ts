@@ -1,5 +1,6 @@
 // 技术审批
 
+import qs from "qs";
 import { apiCall } from "../../network";
 import { ITechStatus } from "./dict";
 
@@ -46,6 +47,19 @@ export function techProjectRemove(id: number) {
 		params: { id }
 	});
 }
+
+export function techProjectRemoveBatch(ids: number[]) {
+	return apiCall({
+		url: "api/sys/projectTechnicalProcess/removeBatch",
+		method: "DELETE",
+		params: { ids },
+		paramsSerializer: params => {
+			// 使用qs库来序列化参数，重复参数的键名不会带有索引
+			return qs.stringify(params, { arrayFormat: 'repeat' })
+		},
+	});
+}
+
 
 export function changeStatus(data: { id: number; status: ITechStatus[keyof ITechStatus] }) {
 	return apiCall({

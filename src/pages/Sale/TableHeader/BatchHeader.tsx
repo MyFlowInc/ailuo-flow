@@ -42,7 +42,6 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			cancelText: "取消",
 			onOk: async () => {
 				const ids = selectedRows.map(item => item.id);
-				console.log(111, ids, selectedRows)
 				try {
 					await saleProjectRemoveBatch(ids);
 					setSelectedRows([]);

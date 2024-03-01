@@ -10,6 +10,8 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { ContracContext } from "./ContractManage";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsFinance } from "../../store/globalSlice";
 
 const StandardTableRoot = styled.div`
 	position: absolute;
@@ -43,6 +45,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	deleteFlowItem,
 	setEditFlowItemRecord,
 }) => {
+	const isFinance = useAppSelector(selectIsFinance);
 	const handleDeleteRecord = async (text: string, record: any) => {
 		Modal.confirm({
 			title: "是否确认删除?",
@@ -89,7 +92,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 						}}
 					/>
 				}
-				disabled={!manager}
+				disabled={!manager || isFinance}
 				onClick={() => handleDeleteRecord(text, record)}
 			/>
 		</Space>

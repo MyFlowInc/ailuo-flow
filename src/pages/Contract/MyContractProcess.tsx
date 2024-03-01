@@ -9,10 +9,14 @@ import _ from "lodash";
 import { contractList, contractRemove } from "../../api/ailuo/contract";
 import { ContractStatusMap } from "../../api/ailuo/dict";
 import { ContracContext } from "./ContractManage";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsFinance } from "../../store/globalSlice";
 
 const MyContractManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
+	const isFinance = useAppSelector(selectIsFinance);
+
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
 		undefined,
 	); // 当前编辑的记录
@@ -41,6 +45,10 @@ const MyContractManage: React.FC = () => {
 				status: ContractStatusMap.Reviewing,
 			};
 
+			if (isFinance) {
+				delete params.status
+			}
+
 			if (options.search) {
 				params = {
 					...params,
@@ -61,7 +69,8 @@ const MyContractManage: React.FC = () => {
 
 	useEffect(() => {
 		fetchContractList();
-	}, []);
+	}, [isFinance]);
+
 	return (
 		<ContracContext.Provider
 			value={{

@@ -165,7 +165,7 @@ const Menu: React.FC = () => {
 			const timer = setInterval(async () => {
 				// 访问的API地址部分，按你实际情况编写
 				await handlePolling();
-			}, 200 * 1000);
+			}, 20 * 1000);
 			return () => clearInterval(timer);
 		}
 	}, [user]);

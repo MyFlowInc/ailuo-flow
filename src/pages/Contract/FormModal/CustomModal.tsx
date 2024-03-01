@@ -30,6 +30,7 @@ import { noticeAdd } from "../../../api/ailuo/notice";
 import {
 	User,
 	selectAllUser,
+	selectIsFinance,
 	selectIsManager,
 	selectUser,
 } from "../../../store/globalSlice";
@@ -430,7 +431,7 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-contract-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList } = useContext(CustomModalContext)! as any;
+	const { user, finalInfoList, form } = useContext(CustomModalContext)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -438,6 +439,11 @@ const FootView = (props: any) => {
 	if (_.isEmpty(user || _.isEmpty(finalInfoList))) {
 		return null;
 	}
+	if (_.get(form, 'status') !== ContractStatusMap.Reviewing) {
+		return null;
+
+	}
+
 	const info = _.find(finalInfoList, { relationUserId: user.id });
 	if (!_.isEmpty(info) && _.get(info, "status") !== "todo") {
 		console.log('你的审批结果', info.status)
@@ -517,11 +523,16 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
+	const isFinance = useAppSelector(selectIsFinance);
+
 	const { fetchContractList } = useContext(ContracContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
+		if (isFinance) {
+			disabled = true
+		}
 
 		const newCol = showDstColumns.map((item: any) => {
 			return {
@@ -982,7 +993,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						<Popconfirm
 							title="撤回重改?"
 							onConfirm={() => {
-								newSaleHandle(form, "need");
+								// newSaleHandle(form, "need");
+								// TODO 有bug 
+								changeProcess(form, ContractStatusMap.Processing);
 							}}
 							okText="确认"
 							cancelText="取消"

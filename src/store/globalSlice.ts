@@ -176,31 +176,21 @@ export const selectIsTech = (state: RootState) => {
 	return res;
 };
 
-// 是否是会员
-export const selectIsMember = (state: RootState) => {
+export const selectIsFinance = (state: RootState) => {
 	const { user } = state.global;
-	// TODO: 当前时间  后面改成服务器时间
-	const curTime = dayjs().format("YYYY-MM-DD hh:mm:ss");
-	const endTime = dayjs(user.endTime).format("YYYY-MM-DD hh:mm:ss");
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "finance") {
+			res = true;
+		}
+	});
+	return res;
+};
 
-	const p1 = !!user.gradeId;
-	const d1 = dayjs(curTime);
-	const d2 = dayjs(endTime);
-	const p2 = d1.isBefore(d2);
-	// console.log("selectIsMember", p1, p2);
-	return p1 && p2;
-};
-// 续费= 旧会员+时间过期
-export const selectIsExpired = (state: RootState) => {
-	const { user } = state.global;
-	const p1 = !!user.gradeId;
-	// TODO: 当前时间  后面改成服务器时间
-	const curTime = dayjs().format("YYYY-MM-DD hh:mm:ss");
-	const endTime = dayjs(user.endTime).format("YYYY-MM-DD hh:mm:ss");
-	const d1 = dayjs(curTime);
-	const d2 = dayjs(endTime);
-	const p2 = d1.isAfter(d2);
-	return p1 && p2;
-};
+
 
 export default globalSlice.reducer;

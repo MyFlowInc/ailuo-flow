@@ -2,7 +2,7 @@
 
 import { apiCall } from "../../network";
 import { MainStatus } from "./dict";
-
+import qs from 'qs'
 interface PageParams {
 	pageNum: number;
 	pageSize: number;
@@ -56,6 +56,17 @@ export function saleProjectRemove(id: number) {
 		url: "api/sys/projectSaleProcess/remove",
 		method: "DELETE",
 		params: { id },
+	});
+}
+export function saleProjectRemoveBatch(ids: number[]) {
+	return apiCall({
+		url: "api/sys/projectSaleProcess/removeBatch",
+		method: "DELETE",
+		params: { ids },
+		paramsSerializer: params => {
+			// 使用qs库来序列化参数，重复参数的键名不会带有索引
+			return qs.stringify(params, { arrayFormat: 'repeat' })
+		},
 	});
 }
 

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import { useAppDispatch } from "../../../store/hooks";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
+import { SaleManageContext } from "../SaleManage";
+import { saleProjectRemoveBatch } from "../../../api/ailuo/sale";
 
 interface BatchHeaderRootProps {
 	isShow: boolean;
@@ -30,8 +32,7 @@ interface BatchHeaderProps {
 }
 
 const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, setSelectedRows }) => {
-	const dispatch = useAppDispatch();
-
+	const { fetchSaleList } = useContext(SaleManageContext)! as any
 	const handleBatchDelete = () => {
 		Modal.confirm({
 			title: "是否确认批量删除选中条目?",
@@ -40,33 +41,24 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const recordIds = selectedRows.map(item => item.recordId);
-
-				setSelectedRows([]);
-			},
-			onCancel: () => {
-				console.log("Cancel");
-			}
-		});
-	};
-
-	const handleBatchArchive = () => {
-		Modal.confirm({
-			title: "是否确认归档?",
-			icon: <ExclamationCircleFilled />,
-			okText: "确认",
-			okType: "danger",
-			cancelText: "取消",
-			onOk: async () => {
 				const ids = selectedRows.map(item => item.id);
+				console.log(111, ids, selectedRows)
+				try {
+					await saleProjectRemoveBatch(ids);
+					setSelectedRows([]);
+					await fetchSaleList()
+				} catch (error) {
+					console.log(error);
+				}
 
-				setSelectedRows([]);
 			},
 			onCancel: () => {
 				console.log("Cancel");
 			}
 		});
 	};
+
+
 
 	return (
 		<BatchHeaderRoot isShow={hasSelected}>

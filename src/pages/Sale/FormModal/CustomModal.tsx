@@ -42,10 +42,13 @@ import {
 	selectAllUser,
 	selectIsManager,
 	selectUser,
+	setCurSaleForm,
 } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -761,6 +764,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
+		const history = useHistory();
+		const dispatch = useAppDispatch();
 
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
@@ -778,6 +783,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
+
 								changeProcess(form, MainStatus.Processing);
 							}}
 						>
@@ -919,13 +925,25 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</div>
 						<div className="flex cursor-pointer">
 							<div className="mr-2">操作: </div>
-							<Tag
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => { }}
+							<Popconfirm
+								title="确认发起合同流程?"
+								onConfirm={() => {
+									console.log("form=", form);
+									dispatch(setCurSaleForm(form))
+									history.push("/dashboard/contract-manage?from=sale");
+								}}
+								okText="确认"
+								cancelText="取消"
 							>
-								{"发起合同流程"}
-							</Tag>
+								<Tag
+									color={"#D4F3F2"}
+									style={{ color: "#000" }}
+									onClick={() => { }}
+								>
+									{"发起合同流程"}
+								</Tag>
+							</Popconfirm>
+
 						</div>
 					</div>
 					<div className="flex cursor-pointer mb-4">

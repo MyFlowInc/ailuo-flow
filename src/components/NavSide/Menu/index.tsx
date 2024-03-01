@@ -105,7 +105,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) {}
+		} catch (error) { }
 	};
 	// 我的合同审核
 	const handleContract = async () => {
@@ -117,7 +117,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) {}
+		} catch (error) { }
 	};
 	const handleNotice = async () => {
 		try {
@@ -125,7 +125,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	useEffect(() => {
@@ -165,7 +165,7 @@ const Menu: React.FC = () => {
 			const timer = setInterval(async () => {
 				// 访问的API地址部分，按你实际情况编写
 				await handlePolling();
-			}, 20 * 1000);
+			}, 200 * 1000);
 			return () => clearInterval(timer);
 		}
 	}, [user]);

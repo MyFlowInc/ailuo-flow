@@ -597,7 +597,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -619,7 +619,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -645,7 +645,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo(); // 审批信息
+				const res = await approveInfo({ belong: 'sale' }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
@@ -738,7 +738,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			try {
 				const res = await fetchTurnTime(form.name);
 				const time = _.get(res, "data.turn_time");
@@ -922,7 +922,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							<Tag
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"发起合同流程"}
 							</Tag>
@@ -953,7 +953,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -998,7 +998,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>

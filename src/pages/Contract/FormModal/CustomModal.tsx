@@ -354,9 +354,11 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { user, setOpen, finalInfoList, fetchContractList } = useContext(
+	const { user, setOpen, finalInfoList, } = useContext(
 		CustomModalContext,
 	)! as any;
+	const { fetchContractList } = useContext(ContracContext)! as any;
+
 	const [rejectReason, setRejectReason] = useState("");
 	const rejectHandle = async () => {
 		setRejectModal(false);
@@ -673,7 +675,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === ContractStatusMap.Reviewing) {
-				const res = await approveInfo(); // 审批信息
+				const res = await approveInfo({ belong: 'contract' }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
@@ -918,7 +920,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						<div className="flex">
 							<div className="mr-2">状态: </div>
 							<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
-								{"终审通过"}
+								{"审批通过"}
 							</Tag>
 						</div>
 						<div className="flex cursor-pointer">
@@ -938,7 +940,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							<Popconfirm
 								title="确认撤回重改?"
 								onConfirm={() => {
-									newSaleHandle(form, "noNeed");
+									changeProcess(form, ContractStatusMap.Processing);
 								}}
 								okText="确认"
 								cancelText="取消"

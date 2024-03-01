@@ -7,7 +7,7 @@ export function approveInfo(options: any = {}) {
 		pageNum: 1,
 		pageSize: 99,
 		status: 1,
-		belong,
+		belong, // sale or contract
 	};
 
 	return apiCall({

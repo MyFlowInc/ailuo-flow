@@ -668,7 +668,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						pageSize: 10,
 					});
 					setEditFlowItemRecord(_.get(res, "data.record.0"));
-				} catch (error) {}
+				} catch (error) { }
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -724,7 +724,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -745,7 +745,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo(); // 审批信息
+				const res = await approveInfo({ belong: 'contract' }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
@@ -974,7 +974,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

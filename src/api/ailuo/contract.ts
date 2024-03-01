@@ -1,5 +1,6 @@
 // 表格列
 
+import qs from "qs";
 import { apiCall } from "../../network";
 
 interface PageParams {
@@ -46,5 +47,17 @@ export function contractRemove(id: number) {
 		url: "api/sys/projectFlowContract/remove",
 		method: "DELETE",
 		params: { id }
+	});
+}
+
+export function contractRemoveBatch(ids: number[]) {
+	return apiCall({
+		url: "api/sys/projectFlowContract/removeBatch",
+		method: "DELETE",
+		params: { ids },
+		paramsSerializer: params => {
+			// 使用qs库来序列化参数，重复参数的键名不会带有索引
+			return qs.stringify(params, { arrayFormat: 'repeat' })
+		},
 	});
 }

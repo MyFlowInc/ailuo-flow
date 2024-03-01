@@ -207,19 +207,19 @@ const ApproveSetting: React.FC<any> = ({
 	const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
 		panelStyle,
 	) => [
-		{
-			key: "1",
-			label: <div style={{ fontSize: "16px" }}>总经理</div>,
-			children: getAccountList(manageList),
-			style: panelStyle,
-		},
-		{
-			key: "2",
-			label: <div style={{ fontSize: "16px" }}>财务部</div>,
-			children: getAccountList(financeList),
-			style: panelStyle,
-		},
-	];
+			{
+				key: "1",
+				label: <div style={{ fontSize: "16px" }}>总经理</div>,
+				children: getAccountList(manageList),
+				style: panelStyle,
+			},
+			{
+				key: "2",
+				label: <div style={{ fontSize: "16px" }}>财务部</div>,
+				children: getAccountList(financeList),
+				style: panelStyle,
+			},
+		];
 
 	const { token } = theme.useToken();
 	const panelStyle: React.CSSProperties = {
@@ -310,7 +310,7 @@ const ApproveSetting: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
-				<div className="mb-4" style={{ color: "#848484" }}>
+				<div className="mb-4" style={{ color: "#3D3D3D" }}>
 					审批方式
 				</div>
 				<Radio.Group onChange={radioOnChange} value={type}>
@@ -318,7 +318,7 @@ const ApproveSetting: React.FC<any> = ({
 					<Radio value={"or"}>或签</Radio>
 				</Radio.Group>
 				<Divider style={{ margin: "12px 0" }} />
-				<div style={{ color: "#848484" }}>当前审批人员</div>
+				<div style={{ color: "#3D3D3D" }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList.map((item: any) => {
 						return ListItem(item);
@@ -327,7 +327,7 @@ const ApproveSetting: React.FC<any> = ({
 						<div className="mt-8 flex justify-center">暂未设置</div>
 					)}
 				</div>
-				<div style={{ color: "#848484" }} className="mt-4 mb-4">
+				<div style={{ color: "#3D3D3D" }} className="mt-4 mb-4">
 					添加审核人员
 				</div>
 				<Input

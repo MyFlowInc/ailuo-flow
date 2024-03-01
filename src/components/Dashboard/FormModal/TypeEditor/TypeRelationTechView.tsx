@@ -25,7 +25,6 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	const { form, } = props;
 	const [techInfo, setTechInfo] = React.useState<any>({});
 	const { setTechId, setIsTechModalViewOpen } = useContext(DashboardRouterOutletContext)
-
 	const fetchSaleInfo = async (techId: number) => {
 		const res = await techProjectList({
 			id: techId,
@@ -42,6 +41,9 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 		const techId = relationSale;
 		if (techId) {
 			fetchSaleInfo(techId);
+		}
+		return () => {
+			setTechInfo({})
 		}
 	}, [form]);
 	const showModalView = (techInfo: any) => {

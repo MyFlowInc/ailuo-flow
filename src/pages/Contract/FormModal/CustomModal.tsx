@@ -33,8 +33,9 @@ import {
 	selectIsFinance,
 	selectIsManager,
 	selectUser,
+	setCurSaleForm,
 } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { ContracContext } from "../ContractManage";
@@ -520,10 +521,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const allUser = useAppSelector(selectAllUser);
+	const dispatch = useAppDispatch();
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
+	const curSaleForm = useAppSelector(state => state.global.curSaleForm)
 
 	const { fetchContractList } = useContext(ContracContext);
 
@@ -543,6 +546,65 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		setShowDstColumns(newCol);
 		setSaveButtonDisabled(disabled);
 	};
+
+	// new feature 从 sale 跳过来创建 合同
+	useEffect(() => {
+		if (location.search.includes('from=sale') && !_.isEmpty(curSaleForm)) {
+			console.log(2222, curSaleForm)
+			const { id, name, company, salesManager, mechanismForm, currency, typeSelection, quotationEnd, qualityTime, payType, relationSale, } = curSaleForm
+			setForm((v: any) => {
+				return {
+					...v,
+					name, company, salesManager, mechanismForm, currency, typeSelection, quotationEnd, qualityTime, payType,
+					relationReview: id + '',
+					relationSale, // 关联技术
+				}
+			});
+			dispatch(setCurSaleForm({}))
+		}
+	}, [curSaleForm])
+	// 初始化form数据
+	useEffect(() => {
+		if (!open) {
+			console.log(111, 222, form)
+			setForm({});
+			return;
+		}
+		if (modalType === "edit" && editFlowItemRecord) {
+			const { key, ...temp } = editFlowItemRecord;
+			try {
+				// 处理初步选型型号
+				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+			} catch (error) {
+				temp.typeSelection = [];
+			}
+			try {
+				// 处理modeTrade
+				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
+			} catch (error) {
+				temp.modeTrade = [];
+			}
+			try {
+				// 处理payType
+				temp.payType = JSON.parse(temp.payType || "[]");
+			} catch (error) {
+				temp.payType = [];
+			}
+			if (!temp.currency) {
+				temp.currency = "人民币";
+			}
+			setForm(temp);
+			inputForm.setFieldsValue(temp);
+		}
+		if (modalType === "add") {
+			setForm((v: any) => {
+				return {
+					currency: "人民币",
+					...v
+				}
+			});
+		}
+	}, [open]);
 
 	// 控制 只读和编辑
 	useEffect(() => {
@@ -580,43 +642,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			fetchFinalInfoList();
 		}
 	}, [form.id]);
-	// 初始化form数据
-	useEffect(() => {
-		if (!open) {
-			return;
-		}
-		if (modalType === "edit" && editFlowItemRecord) {
-			const { key, ...temp } = editFlowItemRecord;
-			try {
-				// 处理初步选型型号
-				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
-			} catch (error) {
-				temp.typeSelection = [];
-			}
-			try {
-				// 处理modeTrade
-				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
-			} catch (error) {
-				temp.modeTrade = [];
-			}
-			try {
-				// 处理payType
-				temp.payType = JSON.parse(temp.payType || "[]");
-			} catch (error) {
-				temp.payType = [];
-			}
-			if (!temp.currency) {
-				temp.currency = "人民币";
-			}
-			setForm(temp);
-			inputForm.setFieldsValue(temp);
-		}
-		if (modalType === "add") {
-			setForm({
-				currency: "人民币",
-			});
-		}
-	}, [open]);
+
 
 	// 新增记录
 	const createRecord = async () => {

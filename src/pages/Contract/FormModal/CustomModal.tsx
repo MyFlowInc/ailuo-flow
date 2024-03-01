@@ -217,7 +217,6 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			let totalPrice = 0;
-			console.log("totalPrice", form.typeSelection);
 			try {
 				const list = form.typeSelection;
 				list.forEach((item: any) => {
@@ -297,9 +296,10 @@ export const columns: any = [
 	},
 ];
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-	const { user, setOpen, finalInfoList, fetchContractList } = useContext(
+	const { user, setOpen, finalInfoList } = useContext(
 		CustomModalContext,
 	)! as any;
+	const { fetchContractList } = useContext(ContracContext)! as any;
 	const clickHandle = async () => {
 		setApproveModal(false);
 		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
@@ -1104,7 +1104,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						setForm,
 						setOpen,
 						changeProcess,
-						fetchContractList,
 					}}
 				>
 					<FootView />

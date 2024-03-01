@@ -29,7 +29,11 @@ interface BatchHeaderProps {
 	children?: React.ReactNode;
 }
 
-const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, setSelectedRows }) => {
+const BatchHeader: React.FC<BatchHeaderProps> = ({
+	hasSelected,
+	selectedRows,
+	setSelectedRows,
+}) => {
 	const dispatch = useAppDispatch();
 
 	const handleBatchDelete = () => {
@@ -40,13 +44,13 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const recordIds = selectedRows.map(item => item.recordId);
-
+				const recordIds = selectedRows.map((item) => item.recordId);
+				console.log(111, selectedRows);
 				setSelectedRows([]);
 			},
 			onCancel: () => {
 				console.log("Cancel");
-			}
+			},
 		});
 	};
 
@@ -58,13 +62,13 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const ids = selectedRows.map(item => item.id);
+				const ids = selectedRows.map((item) => item.id);
 
 				setSelectedRows([]);
 			},
 			onCancel: () => {
 				console.log("Cancel");
-			}
+			},
 		});
 	};
 
@@ -72,7 +76,13 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 		<BatchHeaderRoot isShow={hasSelected}>
 			<Space size={13}>
 				<ConfigProvider theme={greyButtonTheme}>
-					<Button type="primary" icon={<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />} onClick={handleBatchDelete}>
+					<Button
+						type="primary"
+						icon={
+							<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />
+						}
+						onClick={handleBatchDelete}
+					>
 						删除
 					</Button>
 				</ConfigProvider>

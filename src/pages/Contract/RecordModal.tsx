@@ -13,7 +13,6 @@ export const AddRecordModal: React.FC<AddRecordModalProps> = (
 ) => {
 	const { open, setOpen } = props;
 	const { fetchContractList } = useContext(ContracContext) as any;
-
 	const statusList: any = [];
 
 	const params = {

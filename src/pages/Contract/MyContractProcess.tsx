@@ -8,8 +8,7 @@ import TableBody from "./TableBody";
 import _ from "lodash";
 import { contractList, contractRemove } from "../../api/ailuo/contract";
 import { ContractStatusMap } from "../../api/ailuo/dict";
-
-export const ContracContext = React.createContext<any>({});
+import { ContracContext } from "./ContractManage";
 
 const MyContractManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);

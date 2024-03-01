@@ -1,34 +1,27 @@
 import React from "react";
 import { Space } from "antd";
-
 import Search from "./Search";
-import Filter from "./Filter"; // 筛选
 import Sort from "./Sort"; // 排序
-import LinePng from "../../../../assets/line.png";
 
 interface HeaderToolBarProps {
 	children?: React.ReactNode;
 }
 
 const HeaderToolBar: React.FC<HeaderToolBarProps> = () => {
-	// const dstColumns = useAppSelector(selectCurTableColumn);
-	// const records = useAppSelector(selectCurTableRecords);
 	const dstColumns = [
 		{ label: "项目名称", key: "name", value: "name" },
-		{ label: "分析结果", key: "result", value: "result" },
-		{ label: "选型分析", key: "selectionAnalysis", value: "selectionAnalysis" },
+		{ label: "单位名称", key: "company", value: "company" },
+		{ label: "销售经理", key: "salesManager", value: "salesManager" },
 		{
-			label: "生产分析",
-			key: "productionAnalysis",
-			value: "productionAnalysis",
+			label: "合同编号",
+			key: "uuid",
+			value: "uuid",
 		},
 	];
 	const records = [] as any;
 	return (
 		<Space>
 			<Search columns={dstColumns} />
-			{/* <Filter records={records} columns={dstColumns} />
-			<img src={LinePng} style={{ width: "14px", height: "14px" }} /> */}
 			<Sort columns={dstColumns} />
 		</Space>
 	);

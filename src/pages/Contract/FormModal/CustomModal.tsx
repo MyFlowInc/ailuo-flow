@@ -242,7 +242,12 @@ export const columns: any = [
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>总价</div>
 							<div className="flex-1 flex items-center">
-								<span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span>
+								{/* <span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span> */}
+								<Input
+									disabled
+									key={"totalPrice" + key}
+									defaultValue={`${sign} ${totalPrice}`}
+								/>
 							</div>
 						</div>
 					</div>

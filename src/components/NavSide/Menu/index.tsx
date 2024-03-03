@@ -13,7 +13,7 @@ import AtFilled from "../../../assets/icons/AtFilled";
 import MenuGroup from "./MenuGroup";
 import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { saleProjectList } from "../../../api/ailuo/sale";
 import { ContractStatusMap, MainStatus } from "../../../api/ailuo/dict";
 import _ from "lodash";
@@ -87,6 +87,7 @@ const Menu: React.FC = () => {
 	const dispatch = useAppDispatch();
 	const collapsed = useAppSelector(selectCollapsed);
 	const history = useHistory();
+	const location = useLocation();
 	const user = useAppSelector(selectUser);
 	const [menus, setMenus] = useState<any[]>([]);
 	// 轮训获取次数
@@ -182,8 +183,8 @@ const Menu: React.FC = () => {
 			// 菜单列表
 			setMenus(menus);
 			dispatch(setUserMenus(menus));
-			if (menus && menus.length > 0) {
-				// history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
+			if (menus && menus.length > 0 && location.pathname === '/dashboard') {
+				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
 		} catch (error) {
 			console.log("error", error);

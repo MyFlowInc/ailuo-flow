@@ -3,7 +3,6 @@ import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
-import { useAppDispatch } from "../../../store/hooks";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
 import { SaleManageContext } from "../SaleManage";
 import { saleProjectRemoveBatch } from "../../../api/ailuo/sale";
@@ -31,8 +30,12 @@ interface BatchHeaderProps {
 	children?: React.ReactNode;
 }
 
-const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, setSelectedRows }) => {
-	const { fetchSaleList } = useContext(SaleManageContext)! as any
+const BatchHeader: React.FC<BatchHeaderProps> = ({
+	hasSelected,
+	selectedRows,
+	setSelectedRows,
+}) => {
+	const { fetchSaleList } = useContext(SaleManageContext)! as any;
 	const handleBatchDelete = () => {
 		Modal.confirm({
 			title: "是否确认批量删除选中条目?",
@@ -41,37 +44,35 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({ hasSelected, selectedRows, se
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const ids = selectedRows.map(item => item.id);
+				const ids = selectedRows.map((item) => item.id);
 				try {
 					await saleProjectRemoveBatch(ids);
 					setSelectedRows([]);
-					await fetchSaleList()
+					await fetchSaleList();
 				} catch (error) {
 					console.log(error);
 				}
-
 			},
 			onCancel: () => {
 				console.log("Cancel");
-			}
+			},
 		});
 	};
-
-
 
 	return (
 		<BatchHeaderRoot isShow={hasSelected}>
 			<Space size={13}>
 				<ConfigProvider theme={greyButtonTheme}>
-					<Button type="primary" icon={<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />} onClick={handleBatchDelete}>
+					<Button
+						type="primary"
+						icon={
+							<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />
+						}
+						onClick={handleBatchDelete}
+					>
 						删除
 					</Button>
 				</ConfigProvider>
-				{/* <ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary" icon={<FolderFilled style={{ fontSize: "12px", color: "#ffffff" }} />} onClick={handleBatchArchive}>
-						归档
-					</Button>
-				</ConfigProvider> */}
 			</Space>
 		</BatchHeaderRoot>
 	);

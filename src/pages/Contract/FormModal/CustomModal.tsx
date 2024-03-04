@@ -594,7 +594,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	// 初始化form数据
 	useEffect(() => {
 		if (!open) {
-			console.log(111, 222, form);
 			setForm({});
 			return;
 		}
@@ -627,8 +626,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (modalType === "add") {
 			setForm((v: any) => {
 				return {
-					currency: "人民币",
 					...v,
+					currency: "人民币",
 				};
 			});
 		}
@@ -1092,7 +1091,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				<div className="flex">
 					<div className="mr-2">状态: </div>
 					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"异常状态"}
+						{"未启动"}
 					</Tag>
 				</div>
 				{/* <div className="hidden">

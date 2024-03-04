@@ -53,11 +53,9 @@ export function techProjectRemoveBatch(ids: number[]) {
 		url: "api/sys/projectTechnicalProcess/removeBatch",
 		method: "DELETE",
 		params: { ids },
-		// @ts-ignore
-		paramsSerializer: (params: any) => {
-			// 使用qs库来序列化参数，重复参数的键名不会带有索引
+		paramsSerializer: ((params: any) => {
 			return qs.stringify(params, { arrayFormat: "repeat" });
-		},
+		}) as any,
 	});
 }
 

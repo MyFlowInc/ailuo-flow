@@ -30,6 +30,7 @@ import { noticeAdd } from "../../../api/ailuo/notice";
 import {
 	User,
 	selectAllUser,
+	selectIsFinance,
 	selectIsManager,
 	selectUser,
 } from "../../../store/globalSlice";
@@ -516,12 +517,16 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
+	const isFinance = useAppSelector(selectIsFinance);
+
 	const { fetchContractList } = useContext(ContracContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
-
+		if (isFinance) {
+			disabled = true;
+		}
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,

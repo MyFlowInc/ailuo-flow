@@ -42,7 +42,6 @@ export interface globalState {
 	isShowContractModal: boolean; // 新建合同modal
 	isShowSaleModal: boolean; // 新建报价modal
 	isOpenDrawer: boolean; // 是否打开通知,
-
 }
 
 const initialState: globalState = {
@@ -55,7 +54,6 @@ const initialState: globalState = {
 	isShowContractModal: false, // 新建合同modal
 	isShowSaleModal: false, // 新建报价modal
 	isOpenDrawer: false, // 是否打开通知
-
 };
 
 export const fetchFlowStatus = createAsyncThunk(
@@ -115,7 +113,6 @@ export const globalSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-
 		builder.addCase(freshUser.fulfilled, (state, action) => {
 			state.user = action.payload;
 		});
@@ -146,7 +143,6 @@ export const selectIsShowSaleModal = (state: RootState) =>
 export const selectIsOpenDrawer = (state: RootState) =>
 	state.global.isOpenDrawer;
 
-
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;
 	const { roles } = user;
@@ -170,6 +166,20 @@ export const selectIsTech = (state: RootState) => {
 	}
 	roles.forEach((item) => {
 		if (item.code === "technologist") {
+			res = true;
+		}
+	});
+	return res;
+};
+export const selectIsFinance = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "finance") {
 			res = true;
 		}
 	});

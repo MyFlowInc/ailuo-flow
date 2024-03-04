@@ -10,6 +10,8 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { ContracContext } from "./ContractManage";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsFinance } from "../../store/globalSlice";
 
 const StandardTableRoot = styled.div`
 	position: absolute;
@@ -27,22 +29,20 @@ interface StandardTableActionProps {
 	setOpen: (v: boolean) => void;
 	deleteFlowItem: (id: number) => void;
 	setEditFlowItemRecord: (v: any) => void;
-	reader?: boolean;
-	writer?: boolean;
-	manager?: boolean;
+
 	children?: React.ReactNode;
 }
 
 const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	text,
 	record,
-	reader,
-	writer,
-	manager,
+
 	setOpen,
 	deleteFlowItem,
 	setEditFlowItemRecord,
 }) => {
+	const isFinance = useAppSelector(selectIsFinance);
+
 	const handleDeleteRecord = async (text: string, record: any) => {
 		Modal.confirm({
 			title: "是否确认删除?",
@@ -72,11 +72,10 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<EditFilled
 						style={{
 							fontSize: "12px",
-							color: `${!manager && !writer ? "#d9d9d9" : "#707683"}`,
+							color: `${!true ? "#d9d9d9" : "#707683"}`,
 						}}
 					/>
 				}
-				disabled={!manager && !writer}
 				onClick={() => handleEditRecord(text, record)}
 			/>
 			<Button
@@ -85,11 +84,11 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<DeleteFilled
 						style={{
 							fontSize: "12px",
-							color: `${!manager ? "#d9d9d9" : "#707683"}`,
+							color: `${isFinance ? "#d9d9d9" : "#707683"}`,
 						}}
 					/>
 				}
-				disabled={!manager}
+				disabled={isFinance}
 				onClick={() => handleDeleteRecord(text, record)}
 			/>
 		</Space>
@@ -120,6 +119,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 	...rest
 }) => {
 	const { fetchContractList } = useContext(ContracContext) as any;
+	const isFinance = useAppSelector(selectIsFinance);
 
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
@@ -145,14 +145,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 				title: "操作",
 				dataIndex: "actions",
 				render: (text: string, record: any) => (
-					<StandardTableAction
-						reader={true}
-						writer={true}
-						manager={true}
-						text={text}
-						record={record}
-						{...rest}
-					/>
+					<StandardTableAction text={text} record={record} {...rest} />
 				),
 			},
 		];
@@ -204,7 +197,6 @@ const StandardTable: React.FC<StandardTableProps> = ({
 			name: record.name,
 		}),
 	};
-	// if (_.isEmpty(datasource)) return <></>;
 	return (
 		<StandardTableRoot>
 			<Table
@@ -215,7 +207,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 						cell: TableColumnRender,
 					},
 				}}
-				rowSelection={rowSelection}
+				rowSelection={isFinance ? undefined : rowSelection}
 				columns={tableColumns}
 				dataSource={datasource}
 				scroll={{ x: true, y: `calc(100vh - 240px)` }}

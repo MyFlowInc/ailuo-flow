@@ -437,7 +437,9 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-contract-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList, form } = useContext(CustomModalContext)! as any;
+	const { user, finalInfoList, form, hasApprovePermission } = useContext(
+		CustomModalContext,
+	)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -460,7 +462,9 @@ const FootView = (props: any) => {
 			</div>
 		);
 	}
-
+	if (!hasApprovePermission) {
+		return null;
+	}
 	return (
 		<div className="w-full flex justify-center">
 			<ConfigProvider theme={redButtonTheme}>
@@ -532,7 +536,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
-	const { fetchContractList } = useContext(ContracContext);
+	const { fetchContractList, hasApprovePermission } =
+		useContext(ContracContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -848,6 +853,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 		// 未启动 开始处理
 		if (id && (status === ContractStatusMap.NotStarted || !status)) {
+			if (isFinance) {
+				return (
+					<div className="status-operate flex">
+						<div className="flex">
+							<div className="mr-2">状态: </div>
+							<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+								{"未启动"}
+							</Tag>
+						</div>
+					</div>
+				);
+			}
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -973,6 +990,21 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		}
 		// 审批通过
 		if (id && status === ContractStatusMap.Approved) {
+			// 特殊处理财务角色
+			if (isFinance) {
+				return (
+					<>
+						<div className="status-operate flex">
+							<div className="flex">
+								<div className="mr-2">状态: </div>
+								<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+									{"审批通过"}
+								</Tag>
+							</div>
+						</div>
+					</>
+				);
+			}
 			return (
 				<>
 					<div className="status-operate flex">
@@ -1060,15 +1092,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				<div className="flex">
 					<div className="mr-2">状态: </div>
 					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"未启动"}
+						{"异常状态"}
 					</Tag>
 				</div>
-				<div className="hidden">
+				{/* <div className="hidden">
 					<div className="mr-2">操作: </div>
 					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
 						{"开始处理"}
 					</Tag>
-				</div>
+				</div> */}
 			</div>
 		);
 	};
@@ -1141,6 +1173,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						setForm,
 						setOpen,
 						changeProcess,
+						hasApprovePermission,
 					}}
 				>
 					<FootView />

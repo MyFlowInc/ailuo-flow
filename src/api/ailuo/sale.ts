@@ -61,17 +61,13 @@ export function saleProjectRemove(id: number) {
 export function saleProjectRemoveBatch(ids: number[]) {
 	return apiCall({
 		url: "api/sys/projectSaleProcess/removeBatch",
-		method: "DELETE",
+		method: "delete",
 		params: { ids },
-		paramsSerializer: ((params: any) => {
-			// 使用qs库来序列化参数，重复参数的键名不会带有索引
-			console.log(
-				"sadas",
-				params,
-				qs.stringify(params, { arrayFormat: "repeat" }),
-			);
-			return qs.stringify(params, { arrayFormat: "repeat" });
-		}) as any,
+		paramsSerializer: {
+			serialize: ((params: any) => {
+				return qs.stringify(params, { arrayFormat: "repeat" });
+			}) as any,
+		} as any,
 	});
 }
 

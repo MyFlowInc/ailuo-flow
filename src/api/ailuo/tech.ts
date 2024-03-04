@@ -53,9 +53,11 @@ export function techProjectRemoveBatch(ids: number[]) {
 		url: "api/sys/projectTechnicalProcess/removeBatch",
 		method: "DELETE",
 		params: { ids },
-		paramsSerializer: ((params: any) => {
-			return qs.stringify(params, { arrayFormat: "repeat" });
-		}) as any,
+		paramsSerializer: {
+			serialize: ((params: any) => {
+				return qs.stringify(params, { arrayFormat: "repeat" });
+			}) as any,
+		} as any,
 	});
 }
 

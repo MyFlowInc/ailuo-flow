@@ -45,7 +45,10 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 		if (saleId) {
 			fetchSaleInfo(saleId);
 		}
-	}, [form]);
+		return () => {
+			setSaleInfo({})
+		}
+	}, [form.linkSale]);
 	const showModalView = (saleInfo: any) => {
 		const { id } = saleInfo;
 		setSaleId(id);

@@ -67,7 +67,7 @@ const PublicAddEditorRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {}
+interface CustomModalProps { }
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -245,7 +245,7 @@ export const columns: any = [
 	},
 ];
 
-const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
+const PublicAddEditor: React.FC<CustomModalProps> = ({ }) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -273,7 +273,7 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectPublishAdd(excludeNull(form));
 			setStep(2);
 		} catch (error) {
@@ -294,7 +294,7 @@ const PublicAddEditor: React.FC<CustomModalProps> = ({}) => {
 		try {
 			// 通知 终审人员
 			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo(); // 审批信息
+				const res = await approveInfo({ belong: 'sale' }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {

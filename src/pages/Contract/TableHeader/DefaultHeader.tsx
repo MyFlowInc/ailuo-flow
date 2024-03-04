@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import HeaderToolBar from "./HeaderToolBar";
@@ -12,6 +12,7 @@ import {
 	setIsShowContractModal,
 } from "../../../store/globalSlice";
 import { useLocation } from "react-router";
+import _ from "lodash";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -45,10 +46,19 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const isAddTableModalOpen = useAppSelector(selectIsShowContractModal);
+	const curSaleForm = useAppSelector(state => state.global.curSaleForm)
+
 	const setOpen = (value: boolean) => {
 		dispatch(setIsShowContractModal(value));
 	};
 	const isShowButton = location.pathname === '/dashboard/contract-manage'
+	// new feature 从 sale 跳过来创建 合同
+	useEffect(() => {
+		if (location.search.includes('from=sale') && !_.isEmpty(curSaleForm)) {
+			setOpen(true)
+		}
+	}, [curSaleForm])
+
 	const HeaderButtonView = () => {
 		return (
 			<ConfigProvider theme={blueButtonTheme}>

@@ -42,7 +42,6 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	setEditFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
-
 	const handleDeleteRecord = async (text: string, record: any) => {
 		Modal.confirm({
 			title: "是否确认删除?",

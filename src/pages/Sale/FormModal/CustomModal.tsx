@@ -42,10 +42,13 @@ import {
 	selectAllUser,
 	selectIsManager,
 	selectUser,
+	setCurSaleForm,
 } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router";
+import { useDispatch } from "react-redux";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -597,7 +600,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -619,7 +622,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -645,7 +648,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo(); // 审批信息
+				const res = await approveInfo({ belong: 'sale' }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
@@ -738,7 +741,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			try {
 				const res = await fetchTurnTime(form.name);
 				const time = _.get(res, "data.turn_time");
@@ -761,6 +764,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
+		const history = useHistory();
+		const dispatch = useAppDispatch();
 
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
@@ -778,6 +783,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
+
 								changeProcess(form, MainStatus.Processing);
 							}}
 						>
@@ -919,13 +925,25 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</div>
 						<div className="flex cursor-pointer">
 							<div className="mr-2">操作: </div>
-							<Tag
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => {}}
+							<Popconfirm
+								title="确认发起合同流程?"
+								onConfirm={() => {
+									console.log("form=", form);
+									dispatch(setCurSaleForm(form))
+									history.push("/dashboard/contract-manage?from=sale");
+								}}
+								okText="确认"
+								cancelText="取消"
 							>
-								{"发起合同流程"}
-							</Tag>
+								<Tag
+									color={"#D4F3F2"}
+									style={{ color: "#000" }}
+									onClick={() => { }}
+								>
+									{"发起合同流程"}
+								</Tag>
+							</Popconfirm>
+
 						</div>
 					</div>
 					<div className="flex cursor-pointer mb-4">
@@ -953,7 +971,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -998,7 +1016,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => {}}
+								onClick={() => { }}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>

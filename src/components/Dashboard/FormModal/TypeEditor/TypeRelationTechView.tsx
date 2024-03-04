@@ -21,11 +21,11 @@ const PriceRoot = styled.div`
 	cursor: pointer;
 `;
 
-const TypeRelationSaleView: React.FC<any> = (props: any) => {
+const TypeRelationTechView: React.FC<any> = (props: any) => {
 	const { form, } = props;
+	console.log(222, props)
 	const [techInfo, setTechInfo] = React.useState<any>({});
 	const { setTechId, setIsTechModalViewOpen } = useContext(DashboardRouterOutletContext)
-
 	const fetchSaleInfo = async (techId: number) => {
 		const res = await techProjectList({
 			id: techId,
@@ -43,7 +43,10 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 		if (techId) {
 			fetchSaleInfo(techId);
 		}
-	}, [form]);
+		return () => {
+			setTechInfo({})
+		}
+	}, [form.relationSale]);
 	const showModalView = (techInfo: any) => {
 		setTechId(techInfo.id)
 		setIsTechModalViewOpen(true)
@@ -61,4 +64,4 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	return null
 };
 
-export default TypeRelationSaleView;
+export default TypeRelationTechView;

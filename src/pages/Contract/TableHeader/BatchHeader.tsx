@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import { useAppDispatch } from "../../../store/hooks";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
+import { ContracContext } from "../ContractManage";
+import { contractRemoveBatch } from "../../../api/ailuo/contract";
 
 interface BatchHeaderRootProps {
 	isShow: boolean;
@@ -34,7 +36,8 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 	selectedRows,
 	setSelectedRows,
 }) => {
-	const dispatch = useAppDispatch();
+
+	const { fetchContractList } = useContext(ContracContext)! as any
 
 	const handleBatchDelete = () => {
 		Modal.confirm({
@@ -44,9 +47,14 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 			okType: "danger",
 			cancelText: "取消",
 			onOk: async () => {
-				const recordIds = selectedRows.map((item) => item.recordId);
-				console.log(111, selectedRows);
-				setSelectedRows([]);
+				const ids = selectedRows.map(item => item.id);
+				try {
+					await contractRemoveBatch(ids);
+					setSelectedRows([]);
+					await fetchContractList()
+				} catch (error) {
+					console.log(error);
+				}
 			},
 			onCancel: () => {
 				console.log("Cancel");

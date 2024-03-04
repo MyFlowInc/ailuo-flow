@@ -42,6 +42,7 @@ export interface globalState {
 	isShowContractModal: boolean; // 新建合同modal
 	isShowSaleModal: boolean; // 新建报价modal
 	isOpenDrawer: boolean; // 是否打开通知,
+	curSaleForm: any; // 从sale发起创建合同 带来的form
 }
 
 const initialState: globalState = {
@@ -54,6 +55,7 @@ const initialState: globalState = {
 	isShowContractModal: false, // 新建合同modal
 	isShowSaleModal: false, // 新建报价modal
 	isOpenDrawer: false, // 是否打开通知
+	curSaleForm: {},
 };
 
 export const fetchFlowStatus = createAsyncThunk(
@@ -111,6 +113,9 @@ export const globalSlice = createSlice({
 		setIsOpenDrawer: (state, action) => {
 			state.isOpenDrawer = action.payload;
 		},
+		setCurSaleForm: (state, action) => {
+			state.curSaleForm = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(freshUser.fulfilled, (state, action) => {
@@ -128,9 +133,11 @@ export const {
 	setIsShowContractModal,
 	setIsShowSaleModal,
 	setIsOpenDrawer,
+	setCurSaleForm,
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;
+
 export const selectAllUser = (state: RootState) => state.global.allUser;
 export const selectUserMenus = (state: RootState) => state.global.userMenus;
 export const selectCollapsed = (state: RootState) => state.global.collapsed;
@@ -142,6 +149,8 @@ export const selectIsShowSaleModal = (state: RootState) =>
 
 export const selectIsOpenDrawer = (state: RootState) =>
 	state.global.isOpenDrawer;
+
+export const selectCurSaleForm = (state: RootState) => state.global.curSaleForm;
 
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;
@@ -184,33 +193,6 @@ export const selectIsFinance = (state: RootState) => {
 		}
 	});
 	return res;
-};
-
-// 是否是会员
-export const selectIsMember = (state: RootState) => {
-	const { user } = state.global;
-	// TODO: 当前时间  后面改成服务器时间
-	const curTime = dayjs().format("YYYY-MM-DD hh:mm:ss");
-	const endTime = dayjs(user.endTime).format("YYYY-MM-DD hh:mm:ss");
-
-	const p1 = !!user.gradeId;
-	const d1 = dayjs(curTime);
-	const d2 = dayjs(endTime);
-	const p2 = d1.isBefore(d2);
-	// console.log("selectIsMember", p1, p2);
-	return p1 && p2;
-};
-// 续费= 旧会员+时间过期
-export const selectIsExpired = (state: RootState) => {
-	const { user } = state.global;
-	const p1 = !!user.gradeId;
-	// TODO: 当前时间  后面改成服务器时间
-	const curTime = dayjs().format("YYYY-MM-DD hh:mm:ss");
-	const endTime = dayjs(user.endTime).format("YYYY-MM-DD hh:mm:ss");
-	const d1 = dayjs(curTime);
-	const d2 = dayjs(endTime);
-	const p2 = d1.isAfter(d2);
-	return p1 && p2;
 };
 
 export default globalSlice.reducer;

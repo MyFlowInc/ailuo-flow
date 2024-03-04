@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Tag, Radio, Space } from "antd";
+import { ConfigProvider, Form, Button, Tag, Radio, Space, message } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
@@ -9,7 +9,7 @@ import { blueButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { ITechStatus } from "../../../api/ailuo/dict";
 import { changeStatus, techProjectEdit } from "../../../api/ailuo/tech";
-import _ from "lodash";
+import _, { result } from "lodash";
 import { selectIsManager } from "../../../store/globalSlice";
 
 const CustomModalRoot = styled.div`
@@ -75,7 +75,6 @@ const excludeNull = (obj: any) => {
 const columns: any = (
 	mode: "1" | "2",
 	setMode: any,
-	setShowDstColumns: any,
 ) => {
 	const defaultColumns = [
 		{
@@ -93,6 +92,7 @@ const columns: any = (
 			key: "result",
 			type: NumFieldType.SingleText,
 			render: (column: any, key: string, form: any, setForm: any) => {
+				const { result } = form
 				const onChange = (e: any) => {
 					setMode(e.target.value);
 					setForm({ ...form, result: e.target.value });
@@ -110,7 +110,7 @@ const columns: any = (
 					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group disabled={disabled} onChange={onChange} value={mode}>
+							<Radio.Group disabled={disabled} onChange={onChange} value={result}>
 								<Space direction="vertical">
 									<Radio value={"1"}>常规产品，无特殊改动</Radio>
 									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
@@ -128,9 +128,7 @@ const columns: any = (
 			type: NumFieldType.RelationSaleView,
 		},
 	];
-	if (mode === "1") {
-		return defaultColumns;
-	}
+
 	if (mode === "2") {
 		const idx = _.findIndex(defaultColumns, { title: "分析结果" });
 		const extraColumns: any = [
@@ -156,8 +154,9 @@ const columns: any = (
 
 		defaultColumns.splice(idx + 1, 0, ...extraColumns);
 		return defaultColumns;
+	} else {
+		return defaultColumns;
 	}
-	return defaultColumns;
 };
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -169,12 +168,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	editFlowItemRecord,
 	fetchTechFeedbackList,
 }) => {
+	const [mode, setMode] = useState<'' | "1" | "2">('');	// 未选择  常规  非常规
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
-	const [mode, setMode] = useState<'' | "1" | "2">('');
 
-	useEffect(() => {
-		setShowDstColumns(columns(mode, setMode, setShowDstColumns));
-	}, [mode]);
+
 
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -234,17 +231,20 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
-			if (temp.result) {
-				setMode(temp.result);
-			}
+			console.log(11, 'rest', temp.result)
+			setMode(temp.result || '');
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-
 			setForm({});
 		}
 	}, [open]);
-
+	useEffect(() => {
+		if (!open) {
+			return;
+		}
+		setShowDstColumns(columns(mode, setMode));
+	}, [open, mode])
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
@@ -262,6 +262,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			id,
 			...rest,
 		};
+		delete params.createTime
+		delete params.deleted
+		delete params.updateTime
+
+
 		try {
 			await inputForm.validateFields();
 			await techProjectEdit(excludeNull(params));
@@ -337,6 +342,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
+								if (!form.result) {
+									message.warning('您尚未选择分析结果，无法完成审核')
+									return
+								}
 								changeProcess(form, ITechStatus.Over);
 							}}
 						>

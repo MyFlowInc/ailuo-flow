@@ -593,7 +593,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				relationSale,
 				exportItem,
 				modeTrade,
-				relateQuote
 			} = curSaleForm;
 			setForm((v: any) => {
 				return {
@@ -609,9 +608,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					payType,
 					exportItem,
 					modeTrade,
-					relateQuote: id + "",
-					relationReview: id + "",
-					relationSale, // 关联技术
+					relationReview: id + "",// 关联技术
+					relationSale: relationSale, // 关联报价
 				};
 			});
 			dispatch(setCurSaleForm({}));

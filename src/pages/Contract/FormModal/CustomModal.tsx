@@ -42,6 +42,7 @@ import { ContracContext } from "../ContractManage";
 import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import ExportProject from "../../Sale/ExportProject";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -192,7 +193,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -224,7 +225,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) {}
+			} catch (error) { }
 			const { currency } = form;
 			let sign = "";
 			if (currency === "人民币") {
@@ -267,7 +268,26 @@ export const columns: any = [
 		key: "qualityTime",
 		type: NumFieldType.SingleText,
 	},
-
+	{
+		title: "出口项目",
+		dataIndex: "exportItem", // 'show' | 'hide'
+		key: "exportItem",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
+	},
 	{
 		title: "贸易方式",
 		dataIndex: "modeTrade",
@@ -571,6 +591,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				qualityTime,
 				payType,
 				relationSale,
+				exportItem,
+				modeTrade,
+				relateQuote
 			} = curSaleForm;
 			setForm((v: any) => {
 				return {
@@ -584,6 +607,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					quotationEnd,
 					qualityTime,
 					payType,
+					exportItem,
+					modeTrade,
+					relateQuote: id + "",
 					relationReview: id + "",
 					relationSale, // 关联技术
 				};
@@ -688,7 +714,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) {}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -712,7 +738,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -832,7 +858,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -1039,7 +1065,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => {}}
+									onClick={() => { }}
 								>
 									{"撤回重改"}
 								</Tag>

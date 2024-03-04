@@ -22,13 +22,13 @@ const ExportProject: React.FC = (props: any) => {
 			[column.dataIndex]: e.target.checked ? "show" : "hide",
 		});
 	};
-
 	return (
 		<div className="w-full">
 			<div className="flex mb-4">
 				<div style={{ width: "100px" }}>出口项目</div>
 				<div className="flex items-center">
 					<Checkbox
+						// defaultChecked={form[column.dataIndex] === "show"}
 						disabled={disabled}
 						checked={form[column.dataIndex] === "show"}
 						onChange={onChange}

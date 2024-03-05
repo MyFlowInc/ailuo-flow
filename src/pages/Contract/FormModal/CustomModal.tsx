@@ -188,6 +188,8 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			let totalNum = 0;
+			console.log('总数量', form,)
+
 			try {
 				const list = form.typeSelection;
 				list.forEach((item: any) => {
@@ -201,7 +203,12 @@ export const columns: any = [
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>总数量</div>
 							<div className="flex-1 flex items-center">
-								<span key={"totalNum" + key}>{totalNum}</span>
+								{/* <span key={"totalNum" + key}>{totalNum}</span> */}
+								<Input
+									disabled
+									key={"totalNum" + key}
+									value={`${totalNum}`}
+								/>
 							</div>
 						</div>
 					</div>
@@ -219,6 +226,7 @@ export const columns: any = [
 			form: any,
 			setForm: (value: any) => void,
 		) => {
+			console.log('总价', form,)
 			let totalPrice = 0;
 			try {
 				const list = form.typeSelection;
@@ -247,7 +255,7 @@ export const columns: any = [
 								<Input
 									disabled
 									key={"totalPrice" + key}
-									defaultValue={`${sign} ${totalPrice}`}
+									value={`${sign} ${totalPrice}`}
 								/>
 							</div>
 						</div>

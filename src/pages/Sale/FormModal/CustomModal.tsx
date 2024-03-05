@@ -406,7 +406,7 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-quote-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList } = useContext(CustomModalContext)! as any;
+	const { user, finalInfoList, hasApprovePermission } = useContext(CustomModalContext)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -425,6 +425,9 @@ const FootView = (props: any) => {
 				</Tag>
 			</div>
 		);
+	}
+	if (!hasApprovePermission) {
+		return null
 	}
 
 	return (
@@ -494,7 +497,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
-	const { fetchSaleList } = useContext(SaleManageContext);
+	const { fetchSaleList, hasApprovePermission } = useContext(SaleManageContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -1113,6 +1116,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						setOpen,
 						changeProcess,
 						fetchSaleList,
+						hasApprovePermission
 					}}
 				>
 					<FootView />

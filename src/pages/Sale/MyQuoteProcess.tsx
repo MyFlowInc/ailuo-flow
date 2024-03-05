@@ -12,6 +12,7 @@ import { MainStatus } from "../../api/ailuo/dict";
 import { SaleManageContext } from "./SaleManage";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
+import { approveInfo } from "../../api/ailuo/approve";
 
 const MyQuoteProcess: React.FC = () => {
 	const [loading, setLoading] = useState(false);
@@ -21,6 +22,10 @@ const MyQuoteProcess: React.FC = () => {
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
 		undefined,
 	); // 当前编辑的记录
+	// 当前角色是否有审批权限
+	const [hasApprovePermission, setHasApprovePermission] = useState(false);
+
+
 	const curPage = useRef({
 		pageNum: 1,
 		pageSize: 50,
@@ -60,10 +65,26 @@ const MyQuoteProcess: React.FC = () => {
 	useEffect(() => {
 		fetchSaleList();
 	}, []);
+	// 获取审批权限
+	const fetchApproveInfo = async () => {
+		const res = await approveInfo({ belong: "sale" });
+		const list = _.get(res, "data.record", []);
+		const item = _.find(list, { relationUserId: user.id });
+		if (_.isEmpty(item)) {
+			setHasApprovePermission(false);
+		} else {
+			setHasApprovePermission(true);
+		}
+	};
+
+	useEffect(() => {
+		user && fetchApproveInfo();
+	}, [user]);
+
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<SaleManageContext.Provider value={{ fetchSaleList }}>
+			<SaleManageContext.Provider value={{ fetchSaleList, hasApprovePermission }}>
 				<DashboardRoot>
 					{/* 表头 */}
 					<TableHeader

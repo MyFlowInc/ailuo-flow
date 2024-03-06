@@ -83,12 +83,14 @@ interface NotifyItemProps {
 const NotifyItem = (props: NotifyItemProps) => {
 	const { info, freshList } = props;
 	const [content, setContent] = useState<any>({});
-	const { setSaleId, setIsSaleModalViewOpen } = useContext(DashboardRouterOutletContext)
+	const { setSaleId, setIsSaleModalViewOpen } = useContext(
+		DashboardRouterOutletContext,
+	);
 	useEffect(() => {
 		try {
 			let c = JSON.parse(info.content);
 			setContent(c);
-		} catch (error) { }
+		} catch (error) {}
 	}, [info]);
 
 	const deleteHandle = async () => {
@@ -112,7 +114,8 @@ const NotifyItem = (props: NotifyItemProps) => {
 			console.log(error);
 		}
 	};
-	const { status, msg, saleId } = content;
+	const { status, msg, saleId, contractId } = content;
+	console.log(1111, content, contractId);
 	const TitleView = () => {
 		if (content.status === MainStatus.QuotationReview) {
 			return <div className="text">审批提醒</div>;
@@ -123,19 +126,16 @@ const NotifyItem = (props: NotifyItemProps) => {
 		if (content.status === MainStatus.ReviewFailed) {
 			return <div className="text">审批驳回</div>;
 		}
-
 		return <div className="text">系统消息</div>;
 	};
 	const clickSaleHandle = (info: any) => {
-
 		try {
 			let { saleId } = JSON.parse(info.content);
-			setSaleId(saleId || '')
-			setIsSaleModalViewOpen(true)
-		} catch (error) { }
-		console.log(111, info)
-
-	}
+			setSaleId(saleId || "");
+			setIsSaleModalViewOpen(true);
+		} catch (error) {}
+		console.log(111, info);
+	};
 
 	return (
 		<NotifyItemRoot>
@@ -165,7 +165,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 				>
 					<Paragraph
 						style={{
-							whiteSpace: 'pre-line'
+							whiteSpace: "pre-line",
 						}}
 						ellipsis={{
 							rows: 4,
@@ -184,7 +184,13 @@ const NotifyItem = (props: NotifyItemProps) => {
 							}}
 							className="flex justify-center"
 						>
-							<span onClick={() => { clickSaleHandle(info) }}>显示工单</span>
+							<span
+								onClick={() => {
+									clickSaleHandle(info);
+								}}
+							>
+								显示工单
+							</span>
 						</div>
 					</div>
 				</div>

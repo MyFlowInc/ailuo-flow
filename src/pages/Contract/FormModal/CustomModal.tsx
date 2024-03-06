@@ -188,14 +188,14 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			let totalNum = 0;
-			console.log('总数量', form,)
+			console.log("总数量", form);
 
 			try {
 				const list = form.typeSelection;
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -204,11 +204,7 @@ export const columns: any = [
 							<div style={{ width: "100px" }}>总数量</div>
 							<div className="flex-1 flex items-center">
 								{/* <span key={"totalNum" + key}>{totalNum}</span> */}
-								<Input
-									disabled
-									key={"totalNum" + key}
-									value={`${totalNum}`}
-								/>
+								<Input disabled key={"totalNum" + key} value={`${totalNum}`} />
 							</div>
 						</div>
 					</div>
@@ -226,14 +222,14 @@ export const columns: any = [
 			form: any,
 			setForm: (value: any) => void,
 		) => {
-			console.log('总价', form,)
+			console.log("总价", form);
 			let totalPrice = 0;
 			try {
 				const list = form.typeSelection;
 				list.forEach((item: any) => {
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) { }
+			} catch (error) {}
 			const { currency } = form;
 			let sign = "";
 			if (currency === "人民币") {
@@ -616,7 +612,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					payType,
 					exportItem,
 					modeTrade,
-					relationReview: id + "",// 关联技术
+					relationReview: id + "", // 关联技术
 					relationSale: relationSale, // 关联报价
 				};
 			});
@@ -720,7 +716,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -744,7 +740,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -777,8 +773,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						recipientId: item.relationUserId,
 						content: {
 							status: status,
-							msg: `您的工单: <${form.name}> 需要审批`,
-							saleId: form.id,
+							msg: `您的合同: <${form.name}> 需要审批`,
+							contractId: form.id,
 						},
 					};
 					params.content = JSON.stringify(params.content);
@@ -864,7 +860,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -1071,7 +1067,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => { }}
+									onClick={() => {}}
 								>
 									{"撤回重改"}
 								</Tag>

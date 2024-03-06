@@ -406,7 +406,9 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-quote-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList, hasApprovePermission } = useContext(CustomModalContext)! as any;
+	const { user, finalInfoList, hasApprovePermission } = useContext(
+		CustomModalContext,
+	)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -427,7 +429,7 @@ const FootView = (props: any) => {
 		);
 	}
 	if (!hasApprovePermission) {
-		return null
+		return null;
 	}
 
 	return (
@@ -603,7 +605,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				form.typeSelection = JSON.stringify(form.typeSelection);
 				form.modeTrade = JSON.stringify(form.modeTrade);
 				form.payType = JSON.stringify(form.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectAdd(excludeNull(form));
 			await fetchSaleList();
 			setOpen(false);
@@ -625,7 +627,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			await fetchSaleList();
 			setOpen(false);
@@ -651,14 +653,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo({ belong: 'sale' }); // 审批信息
+				const res = await approveInfo({ belong: "sale" }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
 						recipientId: item.relationUserId,
 						content: {
 							status: status,
-							msg: `您的工单: <${form.name}> 需要审批`,
+							msg: `您的报价单: <${form.name}> 需要审批`,
 							saleId: form.id,
 						},
 					};
@@ -744,7 +746,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			try {
 				const res = await fetchTurnTime(form.name);
 				const time = _.get(res, "data.turn_time");
@@ -786,7 +788,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-
 								changeProcess(form, MainStatus.Processing);
 							}}
 						>
@@ -932,7 +933,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								title="确认发起合同流程?"
 								onConfirm={() => {
 									console.log("form=", form);
-									dispatch(setCurSaleForm(form))
+									dispatch(setCurSaleForm(form));
 									history.push("/dashboard/contract-manage?from=sale");
 								}}
 								okText="确认"
@@ -941,12 +942,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								<Tag
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => { }}
+									onClick={() => {}}
 								>
 									{"发起合同流程"}
 								</Tag>
 							</Popconfirm>
-
 						</div>
 					</div>
 					<div className="flex cursor-pointer mb-4">
@@ -974,7 +974,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -1019,7 +1019,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 								className="ml-2"
 								color={"#D4F3F2"}
 								style={{ color: "#000" }}
-								onClick={() => { }}
+								onClick={() => {}}
 							>
 								{"新一轮报价（无需技术审批）"}
 							</Tag>
@@ -1116,7 +1116,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						setOpen,
 						changeProcess,
 						fetchSaleList,
-						hasApprovePermission
+						hasApprovePermission,
 					}}
 				>
 					<FootView />

@@ -191,7 +191,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -223,7 +223,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) { }
+			} catch (error) {}
 			const { currency } = form;
 			let sign = "";
 			if (currency === "人民币") {
@@ -355,7 +355,7 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { user, setOpen, finalInfoList, } = useContext(
+	const { user, setOpen, finalInfoList } = useContext(
 		CustomModalContext,
 	)! as any;
 	const { fetchContractList } = useContext(ContracContext)! as any;
@@ -439,14 +439,13 @@ const FootView = (props: any) => {
 	if (_.isEmpty(user || _.isEmpty(finalInfoList))) {
 		return null;
 	}
-	if (_.get(form, 'status') !== ContractStatusMap.Reviewing) {
+	if (_.get(form, "status") !== ContractStatusMap.Reviewing) {
 		return null;
-
 	}
 
 	const info = _.find(finalInfoList, { relationUserId: user.id });
 	if (!_.isEmpty(info) && _.get(info, "status") !== "todo") {
-		console.log('你的审批结果', info.status)
+		console.log("你的审批结果", info.status);
 		return (
 			<div className="w-full flex justify-center">
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
@@ -531,7 +530,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
 		if (isFinance) {
-			disabled = true
+			disabled = true;
 		}
 
 		const newCol = showDstColumns.map((item: any) => {
@@ -636,7 +635,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -660,7 +659,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -686,15 +685,15 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		try {
 			// 通知 终审人员
 			if (status === ContractStatusMap.Reviewing) {
-				const res = await approveInfo({ belong: 'contract' }); // 审批信息
+				const res = await approveInfo({ belong: "contract" }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
 						recipientId: item.relationUserId,
 						content: {
 							status: status,
-							msg: `您的工单: <${form.name}> 需要审批`,
-							saleId: form.id,
+							msg: `您的合同: <${form.name}> 需要审批`,
+							contractId: form.id,
 						},
 					};
 					params.content = JSON.stringify(params.content);
@@ -780,7 +779,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -960,16 +959,14 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => { }}
+									onClick={() => {}}
 								>
 									{"撤回重改"}
 								</Tag>
 							</Popconfirm>
 						</div>
 					</div>
-					<div className="flex cursor-pointer mb-4">
-
-					</div>
+					<div className="flex cursor-pointer mb-4"></div>
 				</>
 			);
 		}
@@ -994,7 +991,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							title="撤回重改?"
 							onConfirm={() => {
 								// newSaleHandle(form, "need");
-								// TODO 有bug 
+								// TODO 有bug
 								changeProcess(form, ContractStatusMap.Processing);
 							}}
 							okText="确认"

@@ -188,7 +188,6 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			let totalNum = 0;
-			console.log("总数量", form);
 
 			try {
 				const list = form.typeSelection;
@@ -222,7 +221,6 @@ export const columns: any = [
 			form: any,
 			setForm: (value: any) => void,
 		) => {
-			console.log("总价", form);
 			let totalPrice = 0;
 			try {
 				const list = form.typeSelection;

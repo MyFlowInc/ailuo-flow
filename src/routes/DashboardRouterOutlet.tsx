@@ -205,6 +205,7 @@ const DashboardRouterOutlet: React.FC = () => {
 				setSaleId,
 				isSaleModalViewOpen,
 				setIsSaleModalViewOpen,
+				contractId,
 				setContractId,
 				isContractModalViewOpen,
 				setIsContractModalViewOpen,

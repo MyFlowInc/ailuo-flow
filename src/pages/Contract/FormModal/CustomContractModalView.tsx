@@ -13,6 +13,7 @@ import {
 } from "antd";
 import {
 	blueButtonTheme,
+	dashboardTheme,
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
@@ -33,14 +34,21 @@ import {
 	selectIsFinance,
 	selectIsManager,
 	selectUser,
+	setCurSaleForm,
 } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { ContracContext } from "../ContractManage";
-import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
+import {
+	contractAdd,
+	contractEdit,
+	contractList,
+} from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import ExportProject from "../../Sale/ExportProject";
+import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -186,6 +194,7 @@ export const columns: any = [
 			setForm: (value: any) => void,
 		) => {
 			let totalNum = 0;
+
 			try {
 				const list = form.typeSelection;
 				list.forEach((item: any) => {
@@ -199,7 +208,8 @@ export const columns: any = [
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>总数量</div>
 							<div className="flex-1 flex items-center">
-								<span key={"totalNum" + key}>{totalNum}</span>
+								{/* <span key={"totalNum" + key}>{totalNum}</span> */}
+								<Input disabled key={"totalNum" + key} value={`${totalNum}`} />
 							</div>
 						</div>
 					</div>
@@ -241,7 +251,12 @@ export const columns: any = [
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>总价</div>
 							<div className="flex-1 flex items-center">
-								<span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span>
+								{/* <span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span> */}
+								<Input
+									disabled
+									key={"totalPrice" + key}
+									value={`${sign} ${totalPrice}`}
+								/>
 							</div>
 						</div>
 					</div>
@@ -261,7 +276,26 @@ export const columns: any = [
 		key: "qualityTime",
 		type: NumFieldType.SingleText,
 	},
-
+	{
+		title: "出口项目",
+		dataIndex: "exportItem", // 'show' | 'hide'
+		key: "exportItem",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
+	},
 	{
 		title: "贸易方式",
 		dataIndex: "modeTrade",
@@ -431,7 +465,9 @@ const FootView = (props: any) => {
 	if (location.pathname !== "/dashboard/my-contract-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList, form } = useContext(CustomModalContext)! as any;
+	const { user, finalInfoList, form, hasApprovePermission } = useContext(
+		CustomModalContext,
+	)! as any;
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -454,7 +490,9 @@ const FootView = (props: any) => {
 			</div>
 		);
 	}
-
+	if (!hasApprovePermission) {
+		return null;
+	}
 	return (
 		<div className="w-full flex justify-center">
 			<ConfigProvider theme={redButtonTheme}>
@@ -519,12 +557,36 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const allUser = useAppSelector(selectAllUser);
+	const dispatch = useAppDispatch();
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
+	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
-	const { fetchContractList } = useContext(ContracContext);
+	// contract id
+	const { contractId } = useContext(DashboardRouterOutletContext);
+
+	// 根据saleid 获取值
+	useEffect(() => {
+		console.log("contractId", contractId);
+		if (contractId) {
+			const fetchEditFlowItemRecord = async () => {
+				try {
+					const res = await contractList({
+						id: contractId,
+						pageNum: 1,
+						pageSize: 10,
+					});
+					setForm(_.get(res, "data.record.0"));
+				} catch (error) {}
+			};
+			fetchEditFlowItemRecord();
+		}
+	}, [contractId]);
+
+	const { fetchContractList, hasApprovePermission } =
+		useContext(ContracContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -532,7 +594,6 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 		if (isFinance) {
 			disabled = true;
 		}
-
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -542,6 +603,88 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 		setShowDstColumns(newCol);
 		setSaveButtonDisabled(disabled);
 	};
+
+	// new feature 从 sale 跳过来创建 合同
+	useEffect(() => {
+		if (location.search.includes("from=sale") && !_.isEmpty(curSaleForm)) {
+			console.log(2222, curSaleForm);
+			const {
+				id,
+				name,
+				company,
+				salesManager,
+				mechanismForm,
+				currency,
+				typeSelection,
+				quotationEnd,
+				qualityTime,
+				payType,
+				relationSale,
+				exportItem,
+				modeTrade,
+			} = curSaleForm;
+			setForm((v: any) => {
+				return {
+					...v,
+					name,
+					company,
+					salesManager,
+					mechanismForm,
+					currency,
+					typeSelection,
+					quotationEnd,
+					qualityTime,
+					payType,
+					exportItem,
+					modeTrade,
+					relationReview: id + "", // 关联技术
+					relationSale: relationSale, // 关联报价
+				};
+			});
+			dispatch(setCurSaleForm({}));
+		}
+	}, [curSaleForm]);
+	// 初始化form数据
+	useEffect(() => {
+		if (!open) {
+			setForm({});
+			return;
+		}
+		if (modalType === "edit" && editFlowItemRecord) {
+			const { key, ...temp } = editFlowItemRecord;
+			try {
+				// 处理初步选型型号
+				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+			} catch (error) {
+				temp.typeSelection = [];
+			}
+			try {
+				// 处理modeTrade
+				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
+			} catch (error) {
+				temp.modeTrade = [];
+			}
+			try {
+				// 处理payType
+				temp.payType = JSON.parse(temp.payType || "[]");
+			} catch (error) {
+				temp.payType = [];
+			}
+			if (!temp.currency) {
+				temp.currency = "人民币";
+			}
+			setForm(temp);
+			inputForm.setFieldsValue(temp);
+		}
+		if (modalType === "add") {
+			setForm((v: any) => {
+				return {
+					...v,
+					currency: "人民币",
+				};
+			});
+		}
+	}, [open]);
 
 	// 控制 只读和编辑
 	useEffect(() => {
@@ -579,43 +722,6 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 			fetchFinalInfoList();
 		}
 	}, [form.id]);
-	// 初始化form数据
-	useEffect(() => {
-		if (!open) {
-			return;
-		}
-		if (modalType === "edit" && editFlowItemRecord) {
-			const { key, ...temp } = editFlowItemRecord;
-			try {
-				// 处理初步选型型号
-				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
-			} catch (error) {
-				temp.typeSelection = [];
-			}
-			try {
-				// 处理modeTrade
-				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
-			} catch (error) {
-				temp.modeTrade = [];
-			}
-			try {
-				// 处理payType
-				temp.payType = JSON.parse(temp.payType || "[]");
-			} catch (error) {
-				temp.payType = [];
-			}
-			if (!temp.currency) {
-				temp.currency = "人民币";
-			}
-			setForm(temp);
-			inputForm.setFieldsValue(temp);
-		}
-		if (modalType === "add") {
-			setForm({
-				currency: "人民币",
-			});
-		}
-	}, [open]);
 
 	// 新增记录
 	const createRecord = async () => {
@@ -799,6 +905,18 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 
 		// 未启动 开始处理
 		if (id && (status === ContractStatusMap.NotStarted || !status)) {
+			if (isFinance) {
+				return (
+					<div className="status-operate flex">
+						<div className="flex">
+							<div className="mr-2">状态: </div>
+							<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+								{"未启动"}
+							</Tag>
+						</div>
+					</div>
+				);
+			}
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -924,6 +1042,21 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 		}
 		// 审批通过
 		if (id && status === ContractStatusMap.Approved) {
+			// 特殊处理财务角色
+			if (isFinance) {
+				return (
+					<>
+						<div className="status-operate flex">
+							<div className="flex">
+								<div className="mr-2">状态: </div>
+								<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+									{"审批通过"}
+								</Tag>
+							</div>
+						</div>
+					</>
+				);
+			}
 			return (
 				<>
 					<div className="status-operate flex">
@@ -1014,12 +1147,12 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 						{"未启动"}
 					</Tag>
 				</div>
-				<div className="hidden">
+				{/* <div className="hidden">
 					<div className="mr-2">操作: </div>
 					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
 						{"开始处理"}
 					</Tag>
-				</div>
+				</div> */}
 			</div>
 		);
 	};
@@ -1045,59 +1178,62 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 		);
 	};
 	return (
-		<CustomModalRoot>
-			<div className="header">
-				<div className="title">{title}</div>
-				<div>
-					<Button
-						style={{
-							fontSize: "12px",
-							background: "#F2F3F5",
-							marginRight: "18px",
-						}}
-						onClick={() => setOpen(false)}
-					>
-						取消
-					</Button>
-					{SaveButton()}
+		<ConfigProvider theme={dashboardTheme}>
+			<CustomModalRoot>
+				<div className="header">
+					<div className="title">{title}</div>
+					<div>
+						<Button
+							style={{
+								fontSize: "12px",
+								background: "#F2F3F5",
+								marginRight: "18px",
+							}}
+							onClick={() => setOpen(false)}
+						>
+							取消
+						</Button>
+						{SaveButton()}
+					</div>
 				</div>
-			</div>
-			{StatusView()}
-			<div className="content">
-				<Form
-					form={inputForm}
-					name="recordForm"
-					colon={false}
-					wrapperCol={{ flex: 1 }}
-					preserve={false}
-				>
-					{showDstColumns.length > 0 ? (
-						<CellEditorContext
-							form={form}
-							setForm={setForm}
-							dstColumns={showDstColumns}
-							modalType={modalType}
-						/>
-					) : (
-						<NoFieldData />
-					)}
-				</Form>
-			</div>
-			<div className="footer">
-				<CustomModalContext.Provider
-					value={{
-						user,
-						finalInfoList,
-						form,
-						setForm,
-						setOpen,
-						changeProcess,
-					}}
-				>
-					<FootView />
-				</CustomModalContext.Provider>
-			</div>
-		</CustomModalRoot>
+				{StatusView()}
+				<div className="content">
+					<Form
+						form={inputForm}
+						name="recordForm"
+						colon={false}
+						wrapperCol={{ flex: 1 }}
+						preserve={false}
+					>
+						{showDstColumns.length > 0 ? (
+							<CellEditorContext
+								form={form}
+								setForm={setForm}
+								dstColumns={showDstColumns}
+								modalType={modalType}
+							/>
+						) : (
+							<NoFieldData />
+						)}
+					</Form>
+				</div>
+				<div className="footer">
+					<CustomModalContext.Provider
+						value={{
+							user,
+							finalInfoList,
+							form,
+							setForm,
+							setOpen,
+							changeProcess,
+							hasApprovePermission,
+						}}
+					>
+						<FootView />
+					</CustomModalContext.Provider>
+				</div>
+			</CustomModalRoot>
+		</ConfigProvider>
 	);
 };
 

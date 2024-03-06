@@ -120,7 +120,7 @@ const Register: React.FC = () => {
 		setIsShowCode(true);
 		// 倒计时
 		const active = setInterval(() => {
-			setTime(preSecond => {
+			setTime((preSecond) => {
 				if (preSecond <= 1) {
 					setIsShowCode(false);
 					clearInterval(active);
@@ -132,39 +132,43 @@ const Register: React.FC = () => {
 		}, 1000);
 
 		const res = (await sendCaptcha({ email })) as any;
-		console.log(1111, res);
 		if (res.code === 200) {
 			messageApi.open({
 				type: "success",
 				content: "发送成功,请填写收到的验证码",
-				duration: 1
+				duration: 1,
 			});
 		}
 		if (res.code === 3001) {
 			messageApi.open({
 				type: "error",
 				content: res.smg,
-				duration: 1
+				duration: 1,
 			});
 		}
 	};
 
 	const checkRegister = async () => {
 		try {
-			const data = await form.validateFields(["email", "emailCode", "password", "confirm"]);
+			const data = await form.validateFields([
+				"email",
+				"emailCode",
+				"password",
+				"confirm",
+			]);
 			const { password, email, emailCode } = data;
 			const temp = {
 				email,
 				code: emailCode,
 				nickname: email,
-				password: password
+				password: password,
 			};
 			const res = (await userRegisterEmail(temp)) as any;
 			if (res.code === 500) {
 				messageApi.open({
 					type: "error",
 					content: res.msg,
-					duration: 1
+					duration: 1,
 				});
 				return;
 			}
@@ -173,7 +177,7 @@ const Register: React.FC = () => {
 					.open({
 						type: "success",
 						content: "注册成功,请登录!",
-						duration: 1
+						duration: 1,
 					})
 					.then(() => {
 						history.push("/login");
@@ -183,7 +187,7 @@ const Register: React.FC = () => {
 			messageApi.open({
 				type: "error",
 				content: "输入错误!",
-				duration: 1
+				duration: 1,
 			});
 		}
 	};
@@ -194,9 +198,10 @@ const Register: React.FC = () => {
 				components: {
 					Form: { fontSize: 11, itemMarginBottom: 0, controlHeight: 28 },
 					Input: { borderRadius: 0 },
-					Checkbox: { colorPrimary: "#5966d6" }
-				} as any
-			}}>
+					Checkbox: { colorPrimary: "#5966d6" },
+				} as any,
+			}}
+		>
 			<RegisterRoot>
 				{contextHolder}
 				<div className="container">
@@ -204,37 +209,65 @@ const Register: React.FC = () => {
 						<div className="title">
 							<div className="text">注册</div>
 						</div>
-						<Form form={form} name="normal_register" className="register-form" initialValues={{ remember: true, prefix: "86" }}>
+						<Form
+							form={form}
+							name="normal_register"
+							className="register-form"
+							initialValues={{ remember: true, prefix: "86" }}
+						>
 							<Form.Item
 								name="email"
 								style={{ margin: "20px 0px" }}
 								rules={[
 									{
 										type: "email",
-										message: "邮箱格式不正确!"
+										message: "邮箱格式不正确!",
 									},
 									{
 										required: true,
-										message: "请输入邮箱地址!"
-									}
-								]}>
-								<Input rootClassName="noborder-bg" bordered={false} placeholder="请输入邮箱地址" />
+										message: "请输入邮箱地址!",
+									},
+								]}
+							>
+								<Input
+									rootClassName="noborder-bg"
+									bordered={false}
+									placeholder="请输入邮箱地址"
+								/>
 							</Form.Item>
-							<Form.Item style={{ marginBottom: "20px" }} name="emailCode" rules={[{ required: true, message: "请输入邮箱验证码！" }]}>
+							<Form.Item
+								style={{ marginBottom: "20px" }}
+								name="emailCode"
+								rules={[{ required: true, message: "请输入邮箱验证码！" }]}
+							>
 								<Input
 									rootClassName="noborder-bg"
 									bordered={false}
 									placeholder="请输入验证码"
 									maxLength={6}
-									suffix={<a onClick={() => sendEmail()}>{isShowCode ? <CaptchaCodeText text={`${time}秒后重新发送`} /> : <CaptchaCodeText text="获取验证码" />}</a>}
+									suffix={
+										<a onClick={() => sendEmail()}>
+											{isShowCode ? (
+												<CaptchaCodeText text={`${time}秒后重新发送`} />
+											) : (
+												<CaptchaCodeText text="获取验证码" />
+											)}
+										</a>
+									}
 								/>
 							</Form.Item>
-							<Form.Item style={{ marginBottom: "20px" }} name="password" rules={[{ required: true, message: "请输入密码!" }]}>
+							<Form.Item
+								style={{ marginBottom: "20px" }}
+								name="password"
+								rules={[{ required: true, message: "请输入密码!" }]}
+							>
 								<Input.Password
 									rootClassName="noborder-bg"
 									bordered={false}
 									placeholder="请输入密码"
-									iconRender={visible => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
+									iconRender={(visible) =>
+										visible ? <EyeFilled /> : <EyeInvisibleFilled />
+									}
 								/>
 							</Form.Item>
 							<Form.Item
@@ -245,7 +278,7 @@ const Register: React.FC = () => {
 								rules={[
 									{
 										required: true,
-										message: "请二次确认你的密码!"
+										message: "请二次确认你的密码!",
 									},
 									({ getFieldValue }) => ({
 										validator(_, value) {
@@ -253,14 +286,17 @@ const Register: React.FC = () => {
 												return Promise.resolve();
 											}
 											return Promise.reject(new Error("两次密码不一致!"));
-										}
-									})
-								]}>
+										},
+									}),
+								]}
+							>
 								<Input.Password
 									rootClassName="noborder-bg"
 									bordered={false}
 									placeholder="请再次输入密码"
-									iconRender={visible => (visible ? <EyeFilled /> : <EyeInvisibleFilled />)}
+									iconRender={(visible) =>
+										visible ? <EyeFilled /> : <EyeInvisibleFilled />
+									}
 								/>
 							</Form.Item>
 
@@ -268,10 +304,18 @@ const Register: React.FC = () => {
 								<Form.Item name="remember" valuePropName="checked" noStyle>
 									<Checkbox>我已阅读并同意</Checkbox>
 								</Form.Item>
-								<a className="register-form-forgot">《服务条款》、《隐私政策》</a>
+								<a className="register-form-forgot">
+									《服务条款》、《隐私政策》
+								</a>
 							</Form.Item>
 							<div>
-								<Button onClick={checkRegister} type="primary" htmlType="submit" block className="active-button">
+								<Button
+									onClick={checkRegister}
+									type="primary"
+									htmlType="submit"
+									block
+									className="active-button"
+								>
 									注册
 								</Button>
 							</div>

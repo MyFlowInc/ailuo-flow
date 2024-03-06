@@ -29,6 +29,7 @@ import { accountList } from "../api/user";
 import ContractManage from "../pages/Contract/ContractManage";
 import MyContractManage from "../pages/Contract/MyContractManage";
 import MyContractProcess from "../pages/Contract/MyContractProcess";
+import CustomContractModalView from "../pages/Contract/FormModal/CustomContractModalView";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -48,9 +49,15 @@ const DashboardRouterOutlet: React.FC = () => {
 	const collapsed = useAppSelector(selectCollapsed);
 	//  通知抽屉
 	const isOpenDrawer = useAppSelector(selectIsOpenDrawer);
-	// 全局工单详情显示
+
+	// 全局报价单详情显示
 	const [isSaleModalViewOpen, setIsSaleModalViewOpen] = useState(false);
 	const [saleId, setSaleId] = useState(undefined); // 当前展示的
+
+	// 全局合同单详情显示
+	const [isContractModalViewOpen, setIsContractModalViewOpen] = useState(false);
+	const [contractId, setContractId] = useState(undefined); // 当前展示的
+
 	// 全局技术评审详情
 	const [isTechModalViewOpen, setIsTechModalViewOpen] = useState(false);
 	const [techId, setTechId] = useState(undefined);
@@ -88,6 +95,7 @@ const DashboardRouterOutlet: React.FC = () => {
 			</LoadingRoot>
 		);
 	}
+	// 报价单modal
 	const renderSaleViewModal = () => {
 		if (!saleId) {
 			return null;
@@ -103,6 +111,31 @@ const DashboardRouterOutlet: React.FC = () => {
 							title: "查看报价",
 							open: isSaleModalViewOpen,
 							setOpen: setIsSaleModalViewOpen,
+						}}
+					/>
+				)}
+				width={560}
+				wrapClassName="overflow-hidden"
+				style={{ height: "100vh", overflow: "hidden" }}
+			></Modal>
+		);
+	};
+	const renderContractViewModal = () => {
+		if (!contractId) {
+			return null;
+		}
+		return (
+			<Modal
+				key={"renderContractViewModal"}
+				open={isContractModalViewOpen}
+				onCancel={() => setContractId(undefined)}
+				modalRender={() => (
+					<CustomContractModalView
+						{...{
+							title: "查看合同",
+							open: isContractModalViewOpen,
+							setOpen: setIsContractModalViewOpen,
+							modalType: "edit",
 						}}
 					/>
 				)}
@@ -172,6 +205,9 @@ const DashboardRouterOutlet: React.FC = () => {
 				setSaleId,
 				isSaleModalViewOpen,
 				setIsSaleModalViewOpen,
+				setContractId,
+				isContractModalViewOpen,
+				setIsContractModalViewOpen,
 				isTechModalViewOpen,
 				setIsTechModalViewOpen,
 				techId,
@@ -248,6 +284,7 @@ const DashboardRouterOutlet: React.FC = () => {
 					</Layout>
 					{/* 显示工单-复用 */}
 					{renderSaleViewModal()}
+					{renderContractViewModal()}
 					{renderTechViewModal()}
 					{renderPdfViewModal()}
 				</Layout>

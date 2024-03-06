@@ -508,7 +508,7 @@ const FootView = (props: any) => {
 
 const CustomModalContext = React.createContext({});
 
-const CustomModalView: React.FC<CustomModalProps> = ({
+const CustomContractModalView: React.FC<CustomModalProps> = ({
 	title,
 	modalType,
 	open,
@@ -1101,4 +1101,4 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	);
 };
 
-export default CustomModalView;
+export default CustomContractModalView;

@@ -3,7 +3,7 @@ import { Popconfirm, Typography, message } from "antd";
 import delPng from "../../components/Notify/assets/del.svg";
 import { noticeEdit, noticeRemove } from "../../api/ailuo/notice";
 import { useContext, useEffect, useState } from "react";
-import { MainStatus } from "../../api/ailuo/dict";
+import { ContractStatusMap, MainStatus } from "../../api/ailuo/dict";
 import { DashboardRouterOutletContext } from "../../routes/DashboardRouterOutlet";
 const { Paragraph } = Typography;
 
@@ -83,9 +83,12 @@ interface NotifyItemProps {
 const NotifyItem = (props: NotifyItemProps) => {
 	const { info, freshList } = props;
 	const [content, setContent] = useState<any>({});
-	const { setSaleId, setIsSaleModalViewOpen } = useContext(
-		DashboardRouterOutletContext,
-	);
+	const {
+		setSaleId,
+		setIsSaleModalViewOpen,
+		setContractId,
+		setIsContractModalViewOpen,
+	} = useContext(DashboardRouterOutletContext);
 	useEffect(() => {
 		try {
 			let c = JSON.parse(info.content);
@@ -115,7 +118,6 @@ const NotifyItem = (props: NotifyItemProps) => {
 		}
 	};
 	const { status, msg, saleId, contractId } = content;
-	console.log(1111, content, contractId);
 	const TitleView = () => {
 		if (content.status === MainStatus.QuotationReview) {
 			return <div className="text">审批提醒</div>;
@@ -126,13 +128,26 @@ const NotifyItem = (props: NotifyItemProps) => {
 		if (content.status === MainStatus.ReviewFailed) {
 			return <div className="text">审批驳回</div>;
 		}
+		// 合同相关
+		if (content.status === ContractStatusMap.Reviewing) {
+			return <div className="text">审批提醒</div>;
+		}
+		if (content.status === ContractStatusMap.ReviewFailed) {
+			return <div className="text">审批驳回</div>;
+		}
 		return <div className="text">系统消息</div>;
 	};
 	const clickSaleHandle = (info: any) => {
 		try {
-			let { saleId } = JSON.parse(info.content);
-			setSaleId(saleId || "");
-			setIsSaleModalViewOpen(true);
+			let { saleId, contractId } = JSON.parse(info.content);
+			if (saleId) {
+				setSaleId(saleId || "");
+				setIsSaleModalViewOpen(true);
+			}
+			if (contractId) {
+				setContractId(contractId || "");
+				setIsContractModalViewOpen(true);
+			}
 		} catch (error) {}
 		console.log(111, info);
 	};

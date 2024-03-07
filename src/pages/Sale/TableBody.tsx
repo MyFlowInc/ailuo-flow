@@ -140,8 +140,8 @@ const columns: any = [
 		key: "quotationEnd",
 		type: NumFieldType.DateTime,
 		render: (text: string, record: any) => {
-			const format = record.quotationBegin
-				? dayjs(record.quotationBegin).format("YYYY-MM-DD")
+			const format = record.quotationEnd
+				? dayjs(record.quotationEnd).format("YYYY-MM-DD")
 				: "";
 			return <div>{format}</div>;
 		},

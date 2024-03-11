@@ -10,6 +10,7 @@ import {
 	Input,
 	Badge,
 	Avatar,
+	message,
 } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
@@ -95,6 +96,7 @@ interface CustomModalProps {
 	title: string;
 	open: boolean;
 	setOpen: (value: boolean) => void;
+	setSaleId: (value: any) => void;
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
@@ -605,6 +607,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 	title,
 	open,
 	setOpen,
+	setSaleId,
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
 	const [inputForm] = Form.useForm();
@@ -659,8 +662,8 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 
 	// 根据saleid 获取值
 	useEffect(() => {
-		console.log("saleId", saleId);
-		if (saleId) {
+		console.log("saleId", saleId, "open=", open);
+		if (saleId && open) {
 			const fetchEditFlowItemRecord = async () => {
 				try {
 					const res = await saleProjectList({
@@ -668,12 +671,20 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						pageNum: 1,
 						pageSize: 10,
 					});
-					setEditFlowItemRecord(_.get(res, "data.record.0"));
+					const item = _.get(res, "data.record.0");
+					console.log("item", item);
+					if (!item) {
+						setOpen(false);
+						setSaleId("");
+
+						message.warning("报价单不存在, 无法查看");
+					}
+					setEditFlowItemRecord(item);
 				} catch (error) {}
 			};
 			fetchEditFlowItemRecord();
 		}
-	}, [saleId]);
+	}, [saleId, open]);
 
 	// 初始化form
 	useEffect(() => {

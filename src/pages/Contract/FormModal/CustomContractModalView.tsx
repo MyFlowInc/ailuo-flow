@@ -623,6 +623,7 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 				exportItem,
 				modeTrade,
 			} = curSaleForm;
+
 			setForm((v: any) => {
 				return {
 					...v,
@@ -767,7 +768,6 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 				delete params.createTime;
 			} catch (error) {}
 			await contractEdit(excludeNull(params));
-			await fetchContractList();
 			setOpen(false);
 		} catch (error) {
 			console.log(error);

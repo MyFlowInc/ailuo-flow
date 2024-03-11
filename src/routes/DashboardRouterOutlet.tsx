@@ -111,6 +111,7 @@ const DashboardRouterOutlet: React.FC = () => {
 							title: "查看报价",
 							open: isSaleModalViewOpen,
 							setOpen: setIsSaleModalViewOpen,
+							setSaleId,
 						}}
 					/>
 				)}

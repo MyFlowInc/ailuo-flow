@@ -162,6 +162,26 @@ const item = {
 };
 const ModeSelectTable: React.FC = (props: any) => {
 	const { column, form, setForm } = props;
+
+	const isTechRole = useAppSelector(selectIsTech); // 是否是技术
+
+	const [dataSource, setDataSource] = useState<DataType[]>([]);
+	const [count, setCount] = useState(1);
+	const debouncedSetForm = _.debounce(setForm, 300);
+
+	useEffect(() => {
+		let records = _.get(form, column.dataIndex) || [];
+		if (typeof records === "string") {
+			try {
+				records = JSON.parse(records);
+			} catch (error) {
+				records = [];
+			}
+		}
+		setDataSource(records);
+		setCount(records.length + 1);
+	}, [form.typeSelection]);
+
 	const [disabled, setDisabled] = useState(false);
 	useEffect(() => {
 		if (_.get(column, "disabled")) {
@@ -170,18 +190,6 @@ const ModeSelectTable: React.FC = (props: any) => {
 			setDisabled(false);
 		}
 	}, [column]);
-
-	const isTechRole = useAppSelector(selectIsTech); // 是否是技术
-
-	const records = _.get(form, column.dataIndex) || [];
-	const [dataSource, setDataSource] = useState<DataType[]>(records);
-	const [count, setCount] = useState(records.length + 1);
-
-	const debouncedSetForm = _.debounce(setForm, 300);
-	useEffect(() => {
-		setDataSource(records);
-		setCount(records.length + 1);
-	}, [form.typeSelection]);
 
 	const handleDelete = (key: React.Key) => {
 		const newData = dataSource.filter((item) => item.key !== key);

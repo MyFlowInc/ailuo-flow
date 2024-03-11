@@ -72,10 +72,7 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = (
-	mode: "1" | "2",
-	setMode: any,
-) => {
+const columns: any = (mode: "1" | "2", setMode: any) => {
 	const defaultColumns = [
 		{
 			title: "项目名称",
@@ -92,7 +89,7 @@ const columns: any = (
 			key: "result",
 			type: NumFieldType.SingleText,
 			render: (column: any, key: string, form: any, setForm: any) => {
-				const { result } = form
+				const { result } = form;
 				const onChange = (e: any) => {
 					setMode(e.target.value);
 					setForm({ ...form, result: e.target.value });
@@ -110,7 +107,11 @@ const columns: any = (
 					<div className="w-full" key={"result_" + key}>
 						<div className="flex mb-4">
 							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group disabled={disabled} onChange={onChange} value={result}>
+							<Radio.Group
+								disabled={disabled}
+								onChange={onChange}
+								value={result}
+							>
 								<Space direction="vertical">
 									<Radio value={"1"}>常规产品，无特殊改动</Radio>
 									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
@@ -168,10 +169,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	editFlowItemRecord,
 	fetchTechFeedbackList,
 }) => {
-	const [mode, setMode] = useState<'' | "1" | "2">('');	// 未选择  常规  非常规
+	const [mode, setMode] = useState<"" | "1" | "2">(""); // 未选择  常规  非常规
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
-
-
 
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -179,7 +178,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const isManager = useAppSelector(selectIsManager);
 
 	const setAllDisabled = (disabled: boolean) => {
-		disabled = isManager ? false : disabled
+		disabled = isManager ? false : disabled;
 
 		const newCol = showDstColumns.map((item: any) => {
 			return {
@@ -231,8 +230,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
-			console.log(11, 'rest', temp.result)
-			setMode(temp.result || '');
+			console.log(11, "rest", temp.result);
+			setMode(temp.result || "");
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
@@ -244,7 +243,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		setShowDstColumns(columns(mode, setMode));
-	}, [open, mode])
+	}, [open, mode]);
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
@@ -262,10 +261,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			id,
 			...rest,
 		};
-		delete params.createTime
-		delete params.deleted
-		delete params.updateTime
-
+		delete params.createTime;
+		delete params.deleted;
+		delete params.updateTime;
 
 		try {
 			await inputForm.validateFields();
@@ -292,8 +290,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			const { id } = form;
 			await changeStatus({ id, status });
-			setOpen(false);
-			await fetchTechFeedbackList();
+			//TODO:  hack
+			form.status = status;
+			await handleSaveRecord();
+			// setOpen(false);
+			// await fetchTechFeedbackList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -343,8 +344,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							style={{ color: "#000" }}
 							onClick={() => {
 								if (!form.result) {
-									message.warning('您尚未选择分析结果，无法完成审核')
-									return
+									message.warning("您尚未选择分析结果，无法完成审核");
+									return;
 								}
 								changeProcess(form, ITechStatus.Over);
 							}}

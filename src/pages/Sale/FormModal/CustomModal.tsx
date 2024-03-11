@@ -717,8 +717,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await changeStatus({ id, status });
 			}
 			await notifyHandler(form, status);
-			await setOpen(false);
-			await fetchSaleList();
+			// hack
+			form.status = status;
+			await handleSaveRecord();
+			// await setOpen(false);
+			// await fetchSaleList();
 		} catch (error) {
 			console.log(error);
 		} finally {

@@ -201,7 +201,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						setMode(result);
 					}
 					console.log(111, form, result);
-				} catch (error) {}
+				} catch (error) { }
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -281,7 +281,10 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 		try {
 			const { id } = form;
 			await changeStatus({ id, status });
-			setOpen(false);
+			//TODO:  hack
+			form.status = status;
+			await handleSaveRecord();
+			// setOpen(false);
 		} catch (error) {
 			console.log(error);
 		}

@@ -837,8 +837,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await changeStatus({ id, status });
 			}
 			await notifyHandler(form, status);
-			await setOpen(false);
-			await fetchContractList();
+			// hack
+			form.status = status;
+			await handleSaveRecord();
+			// await setOpen(false);
+			// await fetchContractList();
 			if (status === ContractStatusMap.Reviewing) {
 				window.dispatchEvent(new Event("fersh-total-info"));
 			}

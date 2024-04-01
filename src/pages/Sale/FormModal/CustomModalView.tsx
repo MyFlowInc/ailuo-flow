@@ -680,7 +680,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						message.warning("报价单不存在, 无法查看");
 					}
 					setEditFlowItemRecord(item);
-				} catch (error) {}
+				} catch (error) { }
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -736,7 +736,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
+			} catch (error) { }
 			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -821,7 +821,10 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				await changeStatus({ id, status });
 			}
 			await notifyHandler(form, status);
-			await setOpen(false);
+			// hack
+			form.status = status;
+			await handleSaveRecord();
+			// await setOpen(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -986,7 +989,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 					</div>
 					<div className="flex cursor-pointer hidden">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => {}}>
+						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
 							{"发起合同流程"}
 						</Tag>
 					</div>

@@ -106,7 +106,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	// 我的合同审核
 	const handleContract = async () => {
@@ -118,7 +118,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	const handleNotice = async () => {
 		try {
@@ -126,7 +126,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	useEffect(() => {
@@ -181,9 +181,21 @@ const Menu: React.FC = () => {
 			const menus: any = _.get(res, "data.0.children") || [];
 			menus.sort((a: any, b: any) => a.sort - b.sort);
 			// 菜单列表
+			console.log("menus", menus);
+			const testMenus = [
+				{
+					path: "/spl-db",
+					title: "艾罗标准件资料库",
+				},
+				{
+					path: "/pre-product-manage",
+					title: "预生产管理",
+				},
+			];
+			menus.push(...testMenus);
 			setMenus(menus);
 			dispatch(setUserMenus(menus));
-			if (menus && menus.length > 0 && location.pathname === '/dashboard') {
+			if (menus && menus.length > 0 && location.pathname === "/dashboard") {
 				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
 		} catch (error) {

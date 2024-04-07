@@ -31,6 +31,7 @@ import MyContractManage from "../pages/Contract/MyContractManage";
 import MyContractProcess from "../pages/Contract/MyContractProcess";
 import CustomContractModalView from "../pages/Contract/FormModal/CustomContractModalView";
 import SPDatabase from "../pages/SPL/SPDatabase";
+import PreProductionManage from "../pages/PM/PreProductionManage";
 
 const { Sider, Content } = Layout;
 export const DashboardRouterOutletContext = React.createContext<any>({});
@@ -273,6 +274,14 @@ const DashboardRouterOutlet: React.FC = () => {
 
 									<Route path="/dashboard/my-contract-process" exact={true}>
 										<MyContractProcess />
+									</Route>
+									{/* 爱罗标准件资料库 */}
+									<Route path="/dashboard/spl-db" exact={true}>
+										<SPDatabase />
+									</Route>
+									{/* 预生产管理 */}
+									<Route path="/dashboard/pre-product-manage" exact={true}>
+										<PreProductionManage />
 									</Route>
 									{/* 爱罗标准件资料库 */}
 									<Route path="/dashboard/spl-db" exact={true}>

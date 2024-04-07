@@ -11,6 +11,8 @@ import _ from "lodash";
 import styled from "styled-components";
 import { IfetchSaleList } from "./types";
 import { UserOutlined } from "@ant-design/icons";
+import PrepareForm from "./FormModal/PrepareForm";
+import ReviewForm from "./FormModal/ReviewForm";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -56,14 +58,22 @@ const PreProductionManage: React.FC = () => {
 			/>
 		);
 	};
+	const CurForm = () => {
+		if (current === 0) {
+			return <PrepareForm />
+		}
+		if (current === 1) {
+			return <ReviewForm />
+		}
+
+	}
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SaleManageContext.Provider value={{}}>
 				<DashboardRoot>
-					{/* 表头 */}
 					<PreSteps />
 					{loading && <BaseLoading />}
-					{/* 表格主体 */}
+					{CurForm()}
 				</DashboardRoot>
 			</SaleManageContext.Provider>
 		</ConfigProvider>

@@ -11,23 +11,15 @@ import {
 	Avatar,
 	Badge,
 } from "antd";
-import { NoFieldData } from "./NoFieldData";
-import CellEditorContext from "./CellEditorContext";
 import {
 	blueButtonTheme,
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
-import {
-	changeStatus,
-	fetchTurnTime,
-	saleProjectAdd,
-	saleProjectEdit,
-} from "../../../api/ailuo/sale";
-import { MainStatus } from "../../../api/ailuo/dict";
-import warnSvg from "../assets/warning.svg";
-import { SaleManageContext } from "../PreProductionManage";
+
+import { ContractStatusMap } from "../../../api/ailuo/dict";
+import warnSvg from "../../Sale/assets/warning.svg";
 import {
 	approveInfo,
 	finalApproveEdit,
@@ -38,13 +30,19 @@ import { noticeAdd } from "../../../api/ailuo/notice";
 import {
 	User,
 	selectAllUser,
+	selectIsFinance,
 	selectIsManager,
 	selectUser,
 	setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { CheckCircleOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
+import ModeSelectTable from "../../Sale/ModeSelectTable";
+import { SaleManageContext } from "../PreProductionManage";
+import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
+import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
+import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import ExportProject from "../../Sale/ExportProject";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -107,12 +105,25 @@ const excludeNull = (obj: any) => {
 };
 export const columns: any = [
 	{
+		title: "项目名称",
+		dataIndex: "name",
+		key: "name",
+		type: NumFieldType.SingleText,
+	},
+	{
 		title: "单位名称",
 		dataIndex: "company",
 		key: "company",
 		type: NumFieldType.SingleSelect,
 		dictCode: "company",
 	},
+	{
+		title: "单位联系方式",
+		dataIndex: "phone",
+		key: "phone",
+		type: NumFieldType.SingleText,
+	},
+
 	{
 		title: "销售经理",
 		dataIndex: "salesManager",
@@ -121,40 +132,16 @@ export const columns: any = [
 		dictCode: "salesManager",
 	},
 	{
-		title: "报价开始日期",
-		dataIndex: "quotationBegin",
-		key: "quotationBegin",
-		type: NumFieldType.DateTime,
-	},
-	{
-		title: "产品规格书",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "阀门参数",
-		dataIndex: "valveDetail",
-		key: "valveDetail",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "其他技术文件",
-		dataIndex: "otherFile",
-		key: "otherFile",
-		type: NumFieldType.Attachment,
-	},
-	{
-		title: "扭矩/推力",
-		dataIndex: "torqueThrust",
-		key: "torquehrust",
+		title: "合同编号",
+		dataIndex: "uuid",
+		key: "uuid",
 		type: NumFieldType.SingleText,
 	},
 	{
-		title: "其他技术要求",
-		dataIndex: "otherTechnicalRequirements",
-		key: "otherTechnicalRequirements",
-		type: NumFieldType.Text,
+		title: "合同日期",
+		dataIndex: "contractTime",
+		key: "contractTime",
+		type: NumFieldType.DateTime,
 	},
 	{
 		title: "执行机构形式",
@@ -171,6 +158,107 @@ export const columns: any = [
 	},
 
 	{
+		title: "初步选型型号",
+		dataIndex: "typeSelection",
+		key: "typeSelection",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"ModeSelect_" + key} className="w-full">
+					<ModeSelectTable
+						key={"ModeSelectTable" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
+	},
+	{
+		title: "总数量",
+		dataIndex: "totalNum",
+		key: "totalNum",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			let totalNum = 0;
+
+			try {
+				const list = form.typeSelection;
+				list.forEach((item: any) => {
+					totalNum += +item.num;
+				});
+			} catch (error) { }
+
+			return (
+				<div key={"name_" + key} className="w-full mt-4">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>总数量</div>
+							<div className="flex-1 flex items-center">
+								{/* <span key={"totalNum" + key}>{totalNum}</span> */}
+								<Input disabled key={"totalNum" + key} value={`${totalNum}`} />
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
+	},
+	{
+		title: "总价",
+		dataIndex: "totalPrice",
+		key: "totalPrice",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			let totalPrice = 0;
+			try {
+				const list = form.typeSelection;
+				list.forEach((item: any) => {
+					totalPrice += +item.num * +item.price;
+				});
+			} catch (error) { }
+			const { currency } = form;
+			let sign = "";
+			if (currency === "人民币") {
+				sign = "¥";
+			}
+			if (currency === "美元") {
+				sign = "$";
+			}
+			if (currency === "欧元") {
+				sign = "€";
+			}
+			return (
+				<div key={"name_" + key} className="w-full">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>总价</div>
+							<div className="flex-1 flex items-center">
+								{/* <span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span> */}
+								<Input
+									disabled
+									key={"totalPrice" + key}
+									value={`${sign} ${totalPrice}`}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
+	},
+	{
 		title: "交期",
 		dataIndex: "quotationEnd",
 		key: "quotationEnd",
@@ -181,6 +269,26 @@ export const columns: any = [
 		dataIndex: "qualityTime",
 		key: "qualityTime",
 		type: NumFieldType.SingleText,
+	},
+	{
+		title: "出口项目",
+		dataIndex: "exportItem", // 'show' | 'hide'
+		key: "exportItem",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+			setForm: (value: any) => void,
+		) => {
+			return (
+				<div key={"exportItem_" + key} className="w-full">
+					<ExportProject
+						key={"exportItem" + key}
+						{...{ column, form, setForm }}
+					/>
+				</div>
+			);
+		},
 	},
 	{
 		title: "贸易方式",
@@ -198,6 +306,18 @@ export const columns: any = [
 		dictCode: "pay",
 	},
 	{
+		title: "技术规格表",
+		dataIndex: "technicalSheet",
+		key: "technicalSheet",
+		type: NumFieldType.Attachment,
+	},
+	{
+		title: "合同附件",
+		dataIndex: "otherFile",
+		key: "otherFile",
+		type: NumFieldType.Attachment,
+	},
+	{
 		title: "关联技术评审",
 		dataIndex: "relateTechProcess",
 		key: "relateTechProcess",
@@ -210,11 +330,11 @@ export const columns: any = [
 		type: NumFieldType.RelationSaleView,
 	},
 ];
-// 通过二次确认
 const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-	const { user, setOpen, finalInfoList, fetchSaleList } = useContext(
+	const { user, setOpen, finalInfoList } = useContext(
 		CustomModalContext,
 	)! as any;
+	const { fetchContractList } = useContext(SaleManageContext)! as any;
 	const clickHandle = async () => {
 		setApproveModal(false);
 		if (_.isEmpty(user) || _.isEmpty(finalInfoList)) {
@@ -227,7 +347,7 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 				id: info.id,
 				status: "approve", // 通过
 			});
-			await fetchSaleList();
+			await fetchContractList();
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -269,9 +389,11 @@ const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
 	);
 };
 const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-	const { user, setOpen, finalInfoList, fetchSaleList } = useContext(
+	const { user, setOpen, finalInfoList } = useContext(
 		CustomModalContext,
 	)! as any;
+	const { fetchContractList } = useContext(SaleManageContext)! as any;
+
 	const [rejectReason, setRejectReason] = useState("");
 	const rejectHandle = async () => {
 		setRejectModal(false);
@@ -286,7 +408,7 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 				status: "reject", // 通过
 				remark: rejectReason,
 			});
-			await fetchSaleList();
+			await fetchContractList();
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -340,10 +462,10 @@ const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
 	);
 };
 const FootView = (props: any) => {
-	if (location.pathname !== "/dashboard/my-quote-process") {
+	if (location.pathname !== "/dashboard/my-contract-process") {
 		return <div></div>;
 	}
-	const { user, finalInfoList, hasApprovePermission } = useContext(
+	const { user, finalInfoList, form, hasApprovePermission } = useContext(
 		CustomModalContext,
 	)! as any;
 
@@ -353,10 +475,13 @@ const FootView = (props: any) => {
 	if (_.isEmpty(user || _.isEmpty(finalInfoList))) {
 		return null;
 	}
-	const { id } = user;
-	const info = _.find(finalInfoList, { relationUserId: id });
+	if (_.get(form, "status") !== ContractStatusMap.Reviewing) {
+		return null;
+	}
 
+	const info = _.find(finalInfoList, { relationUserId: user.id });
 	if (!_.isEmpty(info) && _.get(info, "status") !== "todo") {
+		console.log("你的审批结果", info.status);
 		return (
 			<div className="w-full flex justify-center">
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
@@ -368,7 +493,6 @@ const FootView = (props: any) => {
 	if (!hasApprovePermission) {
 		return null;
 	}
-
 	return (
 		<div className="w-full flex justify-center">
 			<ConfigProvider theme={redButtonTheme}>
@@ -433,15 +557,21 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const allUser = useAppSelector(selectAllUser);
+	const dispatch = useAppDispatch();
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
-	const { fetchSaleList, hasApprovePermission } = useContext(SaleManageContext);
+	const isFinance = useAppSelector(selectIsFinance);
+	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
+
+
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
-
+		if (isFinance) {
+			disabled = true;
+		}
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -452,48 +582,50 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		setSaveButtonDisabled(disabled);
 	};
 
-	// 控制 只读和编辑
+	// new feature 从 sale 跳过来创建 合同
 	useEffect(() => {
-		if (_.isEmpty(showDstColumns)) {
-			return;
+		if (location.search.includes("from=sale") && !_.isEmpty(curSaleForm)) {
+			console.log(2222, curSaleForm);
+			const {
+				id,
+				name,
+				company,
+				salesManager,
+				mechanismForm,
+				currency,
+				typeSelection,
+				quotationEnd,
+				qualityTime,
+				payType,
+				relationSale,
+				exportItem,
+				modeTrade,
+			} = curSaleForm;
+			setForm((v: any) => {
+				return {
+					...v,
+					name,
+					company,
+					salesManager,
+					mechanismForm,
+					currency,
+					typeSelection,
+					quotationEnd,
+					qualityTime,
+					payType,
+					exportItem,
+					modeTrade,
+					relationReview: id + "", // 关联技术
+					relationSale: relationSale, // 关联报价
+				};
+			});
+			dispatch(setCurSaleForm({}));
 		}
-		if (open && form.status === MainStatus.NotStarted) {
-			// 未启动
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.TechnicalReview) {
-			// 技术审核中
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.QuotationReview) {
-			// 报价终审中
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.Approved) {
-			// 通过
-			setAllDisabled(true);
-		} else if (open && form.status === MainStatus.ReviewFailed) {
-			// 驳回
-			setAllDisabled(true);
-		} else {
-			if (_.get(showDstColumns, "[0].disabled") !== false) {
-				setAllDisabled(false);
-			}
-		}
-	}, [form.status, open]);
-	// 终审情况
-	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
-	// 确定终审情况
-	useEffect(() => {
-		const fetchFinalInfoList = async () => {
-			const res = await finalInfoPage(form.id + "");
-			const record = _.get(res, "data.record");
-			setFinalInfoList(record);
-		};
-		if (open && form.status === MainStatus.QuotationReview) {
-			fetchFinalInfoList();
-		}
-	}, [form.status, open]);
+	}, [curSaleForm]);
 	// 初始化form数据
 	useEffect(() => {
 		if (!open) {
+			setForm({});
 			return;
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
@@ -523,28 +655,72 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-			setForm({
-				currency: "人民币",
+			setForm((v: any) => {
+				return {
+					...v,
+					currency: "人民币",
+				};
 			});
 		}
 	}, [open]);
+
+	// 控制 只读和编辑
+	useEffect(() => {
+		if (_.isEmpty(showDstColumns)) {
+			return;
+		}
+		if (open && form.status === ContractStatusMap.NotStarted) {
+			// 未启动
+			setAllDisabled(true);
+		} else if (open && form.status === ContractStatusMap.Reviewing) {
+			// 审批中
+			setAllDisabled(true);
+		} else if (open && form.status === ContractStatusMap.Approved) {
+			// 通过
+			setAllDisabled(true);
+		} else if (open && form.status === ContractStatusMap.ReviewFailed) {
+			// 驳回
+			setAllDisabled(true);
+		} else {
+			if (_.get(showDstColumns, "[0].disabled") !== false) {
+				setAllDisabled(false);
+			}
+		}
+	}, [form.status, open]);
+	// 终审情况
+	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
+	// 确定终审情况
+	useEffect(() => {
+		const fetchFinalInfoList = async () => {
+			const res = await finalInfoPage(form.id + "");
+			const record = _.get(res, "data.record");
+			setFinalInfoList(record);
+		};
+		if (open && form.status === ContractStatusMap.Reviewing) {
+			fetchFinalInfoList();
+		}
+	}, [form.id]);
 
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
 		try {
 			await inputForm.validateFields();
-			console.log("Received values of form: ", form);
 			if (!form.status) {
 				form.status = "not_started";
 			}
 			try {
-				form.typeSelection = JSON.stringify(form.typeSelection);
-				form.modeTrade = JSON.stringify(form.modeTrade);
-				form.payType = JSON.stringify(form.payType);
-			} catch (error) {}
-			await saleProjectAdd(excludeNull(form));
-			await fetchSaleList();
+				if (form.typeSelection) {
+					form.typeSelection = JSON.stringify(form.typeSelection);
+				}
+				if (form.modeTrade) {
+					form.modeTrade = JSON.stringify(form.modeTrade);
+				}
+				if (form.payType) {
+					form.payType = JSON.stringify(form.payType);
+				}
+			} catch (error) { }
+			await contractAdd(excludeNull(form));
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -564,9 +740,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
-			await saleProjectEdit(excludeNull(params));
-			await fetchSaleList();
+				delete params.updateTime;
+				delete params.createTime;
+			} catch (error) { }
+			await contractEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
 			console.log(error);
@@ -585,20 +762,20 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	// 通知模块
 	const notifyHandler = async (
 		form: any,
-		status: MainStatus[keyof MainStatus],
+		status: ContractStatusMap[keyof ContractStatusMap],
 	) => {
 		try {
 			// 通知 终审人员
-			if (status === MainStatus.QuotationReview) {
-				const res = await approveInfo({ belong: "sale" }); // 审批信息
+			if (status === ContractStatusMap.Reviewing) {
+				const res = await approveInfo({ belong: "contract" }); // 审批信息
 				let list = _.get(res, "data.record", []);
 				const allP = list.map((item: any) => {
 					const params: any = {
 						recipientId: item.relationUserId,
 						content: {
 							status: status,
-							msg: `您的报价单: <${form.name}> 需要审批`,
-							saleId: form.id,
+							msg: `您的合同: <${form.name}> 需要审批`,
+							contractId: form.id,
 						},
 					};
 					params.content = JSON.stringify(params.content);
@@ -607,7 +784,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await Promise.all(allP);
 			}
 			// 同意后 通知报价单创建人
-			if (status === MainStatus.Approved) {
+			if (status === ContractStatusMap.Approved) {
 				const { createBy } = form; // 创建人id
 				if (!createBy) return;
 				const params: any = {
@@ -622,7 +799,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				await noticeAdd(params);
 			}
 			// 审批拒绝 通知报价单创建人
-			if (status === MainStatus.ReviewFailed) {
+			if (status === ContractStatusMap.ReviewFailed) {
 				const { createBy } = form; // 创建人id
 				if (!createBy) return;
 				const params: any = {
@@ -641,14 +818,17 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			console.log(error);
 		}
 	};
+	const changeStatus = async (params: any) => {
+		await contractEdit(params);
+	};
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
-		status: MainStatus[keyof MainStatus],
+		status: ContractStatusMap[keyof ContractStatusMap],
 	) => {
 		try {
 			const { id } = form;
-			if (status === MainStatus.ReviewFailed) {
+			if (status === ContractStatusMap.ReviewFailed) {
 				await changeStatus({ id, status, remark: form.remark } as any);
 			} else {
 				await changeStatus({ id, status });
@@ -658,13 +838,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			form.status = status;
 			await handleSaveRecord();
 			// await setOpen(false);
-			// await fetchSaleList();
-		} catch (error) {
-			console.log(error);
-		} finally {
-			if (status === MainStatus.QuotationReview) {
+			// await fetchContractList();
+			if (status === ContractStatusMap.Reviewing) {
 				window.dispatchEvent(new Event("fersh-total-info"));
 			}
+		} catch (error) {
+			console.log(error);
 		}
 	};
 	// 新一轮报价处理
@@ -673,11 +852,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			let status = "";
 			if (type == "need") {
 				//
-				status = MainStatus.Processing;
+				status = ContractStatusMap.Processing;
 			}
 			if (type == "noNeed") {
 				// 下一步提交终审吧
-				status = MainStatus.TechnicalOver;
 			}
 			console.log("newSaleHandle", form);
 			const { id, createTime, deleted, updateTime, ...params } = form;
@@ -686,18 +864,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
-			try {
-				const res = await fetchTurnTime(form.name);
-				const time = _.get(res, "data.turn_time");
-				params.turnTime = time;
-			} catch (error) {
-				params.turnTime = +form.turnTime + 1;
-			}
+			} catch (error) { }
+
 			params.status = status;
 			params.relationReview = form.id;
-			await saleProjectAdd(excludeNull(params));
-			await fetchSaleList();
+			await contractAdd(excludeNull(params));
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -709,11 +880,21 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		const { id, status } = form;
-		const history = useHistory();
-		const dispatch = useAppDispatch();
 
 		// 未启动 开始处理
-		if (id && (status === "not_started" || !status)) {
+		if (id && (status === ContractStatusMap.NotStarted || !status)) {
+			if (isFinance) {
+				return (
+					<div className="status-operate flex">
+						<div className="flex">
+							<div className="mr-2">状态: </div>
+							<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+								{"未启动"}
+							</Tag>
+						</div>
+					</div>
+				);
+			}
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -728,7 +909,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-								changeProcess(form, MainStatus.Processing);
+								changeProcess(form, ContractStatusMap.Processing);
 							}}
 						>
 							{"开始处理"}
@@ -737,8 +918,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</div>
 			);
 		}
-		// 处理中 --》 提交技术审核
-		if (id && status === "processing") {
+		// 处理中 --》 提交审批
+		if (id && status === ContractStatusMap.Processing) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -753,56 +934,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
 							onClick={() => {
-								changeProcess(form, MainStatus.TechnicalReview);
+								changeProcess(form, ContractStatusMap.Reviewing);
 							}}
 						>
-							{"提交技术审核"}
+							{"提交审批"}
 						</Tag>
 					</div>
 				</div>
 			);
 		}
-		// 技术审核中
-		if (id && status === MainStatus.TechnicalReview) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核中"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer"></div>
-				</div>
-			);
-		}
-		// 技术审核完成  提价提交终审
-		if (id && status === MainStatus.TechnicalOver) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核已完成"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag
-							color={"#D4F3F2"}
-							style={{ color: "#000" }}
-							onClick={() => {
-								changeProcess(form, MainStatus.QuotationReview);
-							}}
-						>
-							{"提交终审"}
-						</Tag>
-					</div>
-				</div>
-			);
-		}
-		// 报价终审中
-		if (id && status === MainStatus.QuotationReview) {
+
+		// 审批中
+		if (id && status === ContractStatusMap.Reviewing) {
 			// 特殊处理报价终审中
 			const ids = finalInfoList.map((i) => i.relationUserId);
 			const users = allUser.filter((i) => ids.includes(i.id));
@@ -814,7 +957,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							color={"#FFEEE3"}
 							style={{ color: "#000", height: "fit-content" }}
 						>
-							{"报价终审中"}
+							{"审批中"}
 						</Tag>
 					</div>
 					<div className="flex cursor-pointer">
@@ -828,6 +971,25 @@ const CustomModal: React.FC<CustomModalProps> = ({
 									<Badge
 										key={"Badge" + user.id}
 										count={<CheckCircleOutlined style={{ color: "green" }} />}
+									>
+										<Avatar
+											className="mx-2"
+											src={
+												<img
+													src={user.avatar}
+													alt="avatar"
+													title={user.nickname}
+												/>
+											}
+										/>
+									</Badge>
+								);
+							}
+							if (approveInfo.status === "reject") {
+								return (
+									<Badge
+										key={"Badge" + user.id}
+										count={<CloseCircleOutlined style={{ color: "red" }} />}
 									>
 										<Avatar
 											className="mx-2"
@@ -857,74 +1019,75 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			);
 		}
 		// 审批通过
-		if (id && status === MainStatus.Approved) {
+		if (id && status === ContractStatusMap.Approved) {
+			// 特殊处理财务角色
+			if (isFinance) {
+				return (
+					<>
+						<div className="status-operate flex">
+							<div className="flex">
+								<div className="mr-2">状态: </div>
+								<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+									{"审批通过"}
+								</Tag>
+							</div>
+						</div>
+					</>
+				);
+			}
 			return (
 				<>
 					<div className="status-operate flex">
 						<div className="flex">
 							<div className="mr-2">状态: </div>
 							<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
-								{"终审通过"}
+								{"审批通过"}
 							</Tag>
 						</div>
 						<div className="flex cursor-pointer">
 							<div className="mr-2">操作: </div>
 							<Popconfirm
-								title="确认发起合同流程?"
+								title="确认生成项目?"
 								onConfirm={() => {
-									console.log("form=", form);
-									dispatch(setCurSaleForm(form));
-									history.push("/dashboard/contract-manage?from=sale");
+									newSaleHandle(form, "need");
+								}}
+								okText="确认"
+								cancelText="取消"
+							>
+								<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+									{"生成项目"}
+								</Tag>
+							</Popconfirm>
+							<Popconfirm
+								title="确认撤回重改?"
+								onConfirm={() => {
+									changeProcess(form, ContractStatusMap.Processing);
 								}}
 								okText="确认"
 								cancelText="取消"
 							>
 								<Tag
+									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => {}}
+									onClick={() => { }}
 								>
-									{"发起合同流程"}
+									{"撤回重改"}
 								</Tag>
 							</Popconfirm>
 						</div>
 					</div>
-					<div className="flex cursor-pointer mb-4">
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "need");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
-							</Tag>
-						</Popconfirm>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "noNeed");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag
-								className="ml-2"
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => {}}
-							>
-								{"新一轮报价（无需技术审批）"}
-							</Tag>
-						</Popconfirm>
-					</div>
+					<div className="flex cursor-pointer mb-4"></div>
 				</>
 			);
 		}
 		// 审批驳回
-		if (id && [MainStatus.ReviewFailed, MainStatus.Approved].includes(status)) {
+		if (
+			id &&
+			[ContractStatusMap.ReviewFailed, ContractStatusMap.Approved].includes(
+				status,
+			)
+		) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -936,32 +1099,17 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Popconfirm
-							title="是否发起新一轮报价?"
+							title="撤回重改?"
 							onConfirm={() => {
-								newSaleHandle(form, "need");
+								// newSaleHandle(form, "need");
+								// TODO 有bug
+								changeProcess(form, ContractStatusMap.Processing);
 							}}
 							okText="确认"
 							cancelText="取消"
 						>
 							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
-							</Tag>
-						</Popconfirm>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "noNeed");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag
-								className="ml-2"
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => {}}
-							>
-								{"新一轮报价（无需技术审批）"}
+								{"撤回重改"}
 							</Tag>
 						</Popconfirm>
 					</div>
@@ -977,12 +1125,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						{"未启动"}
 					</Tag>
 				</div>
-				<div className="hidden">
+				{/* <div className="hidden">
 					<div className="mr-2">操作: </div>
 					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
 						{"开始处理"}
 					</Tag>
-				</div>
+				</div> */}
 			</div>
 		);
 	};
@@ -1055,8 +1203,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						setForm,
 						setOpen,
 						changeProcess,
-						fetchSaleList,
-						hasApprovePermission,
 					}}
 				>
 					<FootView />

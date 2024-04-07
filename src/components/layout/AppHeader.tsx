@@ -7,6 +7,7 @@ import { useLocation } from "react-router";
 import { IMenu } from "../../api/ailuo/menu";
 import { getImgByName } from "../NavSide/Menu/MenuIconMap";
 import _ from "lodash";
+import { MenuIcons } from "./icons";
 
 interface AppHeaderProps {}
 
@@ -36,7 +37,7 @@ const UIContent = styled.div`
 	}
 `;
 
-const AppHeader: React.FC<AppHeaderProps> = props => {
+const AppHeader: React.FC<AppHeaderProps> = (props) => {
 	const menus = useAppSelector(selectUserMenus);
 	const location = useLocation();
 	const [menu, setMenu] = useState<{ icon?: any; name?: string }>({});
@@ -48,6 +49,12 @@ const AppHeader: React.FC<AppHeaderProps> = props => {
 		if (menu) {
 			setMenu({ icon: getIcon(menu), name: menu.title });
 		}
+		if (pathname.includes("spl-db")) {
+			setMenu({
+				icon: <img src={MenuIcons.SPL_DB} />,
+				name: "艾罗标准件资料库",
+			});
+		}
 	}, [location, menus]);
 
 	const getIcon = (menu: IMenu) => {
@@ -56,7 +63,14 @@ const AppHeader: React.FC<AppHeaderProps> = props => {
 		return <img src={imgPath} />;
 	};
 	return (
-		<Header style={{ height: "34px", lineHeight: "24px", padding: "5px 16px", background: "#ffffff" }}>
+		<Header
+			style={{
+				height: "34px",
+				lineHeight: "24px",
+				padding: "5px 16px",
+				background: "#ffffff",
+			}}
+		>
 			<UIContent>
 				<div className="title">
 					<div>{menu.icon}</div>

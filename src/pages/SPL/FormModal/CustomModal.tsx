@@ -107,107 +107,42 @@ const excludeNull = (obj: any) => {
 };
 export const columns: any = [
 	{
-		title: "单位名称",
-		dataIndex: "company",
-		key: "company",
-		type: NumFieldType.SingleSelect,
-		dictCode: "company",
+		title: "标准件名称",
+		dataIndex: "name",
+		key: "name",
+		type: NumFieldType.SingleText,
+		dictCode: "name",
 	},
+
 	{
-		title: "销售经理",
-		dataIndex: "salesManager",
-		key: "salesManager",
-		type: NumFieldType.SingleSelect,
-		dictCode: "salesManager",
-	},
-	{
-		title: "报价开始日期",
-		dataIndex: "quotationBegin",
-		key: "quotationBegin",
-		type: NumFieldType.DateTime,
-	},
-	{
-		title: "产品规格书",
+		title: "配料单",
 		dataIndex: "specificationDetail",
 		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "阀门参数",
-		dataIndex: "valveDetail",
-		key: "valveDetail",
+		title: "BOM",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "其他技术文件",
-		dataIndex: "otherFile",
-		key: "otherFile",
+		title: "加工图纸包",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "扭矩/推力",
-		dataIndex: "torqueThrust",
-		key: "torquehrust",
-		type: NumFieldType.SingleText,
+		title: "装配图纸包",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
 	},
 	{
-		title: "其他技术要求",
-		dataIndex: "otherTechnicalRequirements",
-		key: "otherTechnicalRequirements",
-		type: NumFieldType.Text,
-	},
-	{
-		title: "执行机构形式",
-		dataIndex: "mechanismForm",
-		key: "mechanismForm",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "货币",
-		dataIndex: "currency",
-		key: "currency",
-		type: NumFieldType.SingleFixSelect,
-		dictCode: "currency",
-	},
-
-	{
-		title: "交期",
-		dataIndex: "quotationEnd",
-		key: "quotationEnd",
-		type: NumFieldType.DateTime,
-	},
-	{
-		title: "质保",
-		dataIndex: "qualityTime",
-		key: "qualityTime",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "贸易方式",
-		dataIndex: "modeTrade",
-		key: "modeTrade",
-		type: NumFieldType.MultiSelect,
-		dictCode: "tarde_mode",
-		showCtrlKey: "exportItem",
-	},
-	{
-		title: "付款方式",
-		dataIndex: "payType",
-		key: "payType",
-		type: NumFieldType.MultiSelect,
-		dictCode: "pay",
-	},
-	{
-		title: "关联技术评审",
-		dataIndex: "relateTechProcess",
-		key: "relateTechProcess",
-		type: NumFieldType.RelationTechView,
-	},
-	{
-		title: "关联报价",
-		dataIndex: "relateQuote",
-		key: "relateQuote",
-		type: NumFieldType.RelationSaleView,
+		title: "作业指导书",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
 	},
 ];
 // 通过二次确认
@@ -704,288 +639,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			setOpen(false);
 		}
 	};
-	const StatusView = () => {
-		if (!form) {
-			return;
-		}
-		const { id, status } = form;
-		const history = useHistory();
-		const dispatch = useAppDispatch();
 
-		// 未启动 开始处理
-		if (id && (status === "not_started" || !status)) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-							{"未启动"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag
-							color={"#D4F3F2"}
-							style={{ color: "#000" }}
-							onClick={() => {
-								changeProcess(form, MainStatus.Processing);
-							}}
-						>
-							{"开始处理"}
-						</Tag>
-					</div>
-				</div>
-			);
-		}
-		// 处理中 --》 提交技术审核
-		if (id && status === "processing") {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-							{"处理中"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag
-							color={"#D4F3F2"}
-							style={{ color: "#000" }}
-							onClick={() => {
-								changeProcess(form, MainStatus.TechnicalReview);
-							}}
-						>
-							{"提交技术审核"}
-						</Tag>
-					</div>
-				</div>
-			);
-		}
-		// 技术审核中
-		if (id && status === MainStatus.TechnicalReview) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核中"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer"></div>
-				</div>
-			);
-		}
-		// 技术审核完成  提价提交终审
-		if (id && status === MainStatus.TechnicalOver) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
-							{"技术审核已完成"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Tag
-							color={"#D4F3F2"}
-							style={{ color: "#000" }}
-							onClick={() => {
-								changeProcess(form, MainStatus.QuotationReview);
-							}}
-						>
-							{"提交终审"}
-						</Tag>
-					</div>
-				</div>
-			);
-		}
-		// 报价终审中
-		if (id && status === MainStatus.QuotationReview) {
-			// 特殊处理报价终审中
-			const ids = finalInfoList.map((i) => i.relationUserId);
-			const users = allUser.filter((i) => ids.includes(i.id));
-			return (
-				<div className="status-operate flex items-center">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag
-							color={"#FFEEE3"}
-							style={{ color: "#000", height: "fit-content" }}
-						>
-							{"报价终审中"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						{users.map((user: User) => {
-							const approveInfo = finalInfoList.find(
-								(i) => i.relationUserId === user.id,
-							);
-							// TODO 状态不统一会有bug
-							if (approveInfo.status === "approve") {
-								return (
-									<Badge
-										key={"Badge" + user.id}
-										count={<CheckCircleOutlined style={{ color: "green" }} />}
-									>
-										<Avatar
-											className="mx-2"
-											src={
-												<img
-													src={user.avatar}
-													alt="avatar"
-													title={user.nickname}
-												/>
-											}
-										/>
-									</Badge>
-								);
-							}
-							return (
-								<Avatar
-									key={"avatar" + user.id}
-									className="mx-2"
-									src={
-										<img src={user.avatar} alt="avatar" title={user.nickname} />
-									}
-								/>
-							);
-						})}
-					</div>
-				</div>
-			);
-		}
-		// 审批通过
-		if (id && status === MainStatus.Approved) {
-			return (
-				<>
-					<div className="status-operate flex">
-						<div className="flex">
-							<div className="mr-2">状态: </div>
-							<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
-								{"终审通过"}
-							</Tag>
-						</div>
-						<div className="flex cursor-pointer">
-							<div className="mr-2">操作: </div>
-							<Popconfirm
-								title="确认发起合同流程?"
-								onConfirm={() => {
-									console.log("form=", form);
-									dispatch(setCurSaleForm(form));
-									history.push("/dashboard/contract-manage?from=sale");
-								}}
-								okText="确认"
-								cancelText="取消"
-							>
-								<Tag
-									color={"#D4F3F2"}
-									style={{ color: "#000" }}
-									onClick={() => {}}
-								>
-									{"发起合同流程"}
-								</Tag>
-							</Popconfirm>
-						</div>
-					</div>
-					<div className="flex cursor-pointer mb-4">
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "need");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
-							</Tag>
-						</Popconfirm>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "noNeed");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag
-								className="ml-2"
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => {}}
-							>
-								{"新一轮报价（无需技术审批）"}
-							</Tag>
-						</Popconfirm>
-					</div>
-				</>
-			);
-		}
-		// 审批驳回
-		if (id && [MainStatus.ReviewFailed, MainStatus.Approved].includes(status)) {
-			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#FF9F9F"} style={{ color: "#000" }}>
-							{"审批驳回"}
-						</Tag>
-					</div>
-					<div className="flex cursor-pointer">
-						<div className="mr-2">操作: </div>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "need");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-								{"新一轮报价（需技术审批）"}
-							</Tag>
-						</Popconfirm>
-						<Popconfirm
-							title="是否发起新一轮报价?"
-							onConfirm={() => {
-								newSaleHandle(form, "noNeed");
-							}}
-							okText="确认"
-							cancelText="取消"
-						>
-							<Tag
-								className="ml-2"
-								color={"#D4F3F2"}
-								style={{ color: "#000" }}
-								onClick={() => {}}
-							>
-								{"新一轮报价（无需技术审批）"}
-							</Tag>
-						</Popconfirm>
-					</div>
-				</div>
-			);
-		}
-		// 未启动
-		return (
-			<div className="status-operate flex">
-				<div className="flex">
-					<div className="mr-2">状态: </div>
-					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"未启动"}
-					</Tag>
-				</div>
-				<div className="hidden">
-					<div className="mr-2">操作: </div>
-					<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-						{"开始处理"}
-					</Tag>
-				</div>
-			</div>
-		);
-	};
 	const SaveButton = () => {
 		if (modalType === "add") {
 			return (
@@ -1025,7 +679,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					{SaveButton()}
 				</div>
 			</div>
-			{StatusView()}
 			<div className="content">
 				<Form
 					form={inputForm}

@@ -36,99 +36,48 @@ interface FlowTableProps {
 
 const columns: any = [
 	{
-		title: "状态",
-		dataIndex: "status",
-		key: "status",
-		render: (text: string, record: any) => {
-			const { status } = record;
-			let item = _.find(SaleStatus, { value: status });
-			if (!item) {
-				item = SaleStatus[0];
-			}
-			return (
-				<Tag color={item.color} style={{ color: "#000" }}>
-					{item.label}
-				</Tag>
-			);
-		},
-	},
-	{
-		title: "单位名称",
-		dataIndex: "company",
-		key: "company",
-		type: "company",
+		title: "标准件名称",
+		dataIndex: "name",
+		key: "name",
+		type: "name",
 		render: (text: string, record: any) => {
 			return (
 				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.company || ""}
+					{record.name || ""}
 				</Tag>
 			);
 		},
 	},
 	{
-		title: "销售经理",
-		dataIndex: "salesManager",
-		key: "salesManager",
-		render: (text: string, record: any) => {
-			return (
-				<Tag color={"#F3F7FF"} style={{ color: "#000" }}>
-					{record.salesManager || ""}
-				</Tag>
-			);
-		},
-	},
-	{
-		title: "报价开始日期",
-		dataIndex: "quotationBegin",
-		key: "quotationBegin",
-		type: NumFieldType.DateTime,
-		render: (text: string, record: any) => {
-			const format = record.quotationBegin
-				? dayjs(record.quotationBegin).format("YYYY-MM-DD")
-				: "";
-			return <div>{format}</div>;
-		},
-	},
-	{
-		title: "产品规格书",
+		title: "配料单",
 		dataIndex: "specificationDetail",
 		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "阀门参数",
-		dataIndex: "valveDetail",
-		key: "valveDetail",
+		title: "BOM",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
+	},
+
+	{
+		title: "加工图纸包",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "初步选型型号",
-		dataIndex: "typeSelection",
-		key: "typeSelection",
-		render: (text: string, record: any) => {
-			const { typeSelection } = record;
-			let len = 0;
-			try {
-				len = JSON.parse(typeSelection).length;
-			} catch (error) {}
-			return (
-				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
-					{`共${len}个型号`}
-				</Tag>
-			);
-		},
+		title: "装配图纸包",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
 	},
 	{
-		title: "交期",
-		dataIndex: "quotationEnd",
-		key: "quotationEnd",
-		type: NumFieldType.DateTime,
-		render: (text: string, record: any) => {
-			const format = record.quotationEnd
-				? dayjs(record.quotationEnd).format("YYYY-MM-DD")
-				: "";
-			return <div>{format}</div>;
-		},
+		title: "作业指导书",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
+		type: NumFieldType.Attachment,
 	},
 ];
 const TableBody: React.FC<FlowTableProps> = ({

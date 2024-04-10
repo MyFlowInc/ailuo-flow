@@ -48,8 +48,8 @@ const CustomModalRoot = styled.div`
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	/* align-items: center; */
-	padding: 24px 20%  ;
+	align-items: center;
+	padding: 24px auto;
 	border-radius: 8px;
 	background-color: #ffffff;
 	pointer-events: auto;
@@ -57,6 +57,7 @@ const CustomModalRoot = styled.div`
 	height: 100%;
 	overflow: hidden;
 	.header {
+		width: 600px;
 		height: 18px;
 		display: flex;
 		.title {
@@ -69,6 +70,7 @@ const CustomModalRoot = styled.div`
 		margin-bottom: 16px;
 	}
 	.content {
+		width: 600px;
 		height: calc(100% - 80px);
 		max-width: 600px;
 		overflow: overlay;
@@ -186,7 +188,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -323,13 +325,10 @@ export const columns: any = [
 	},
 ];
 
-
 const CustomModalContext = React.createContext({});
 
-const ReviewForm: React.FC<CustomModalProps> = ({
-	editFlowItemRecord,
-}) => {
-	const modalType = 'edit' as any
+const ReviewForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
+	const modalType = "edit" as any;
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -341,8 +340,9 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
-	const { fetchContractList, hasApprovePermission } =
-		useContext(SaleManageContext) as any;
+	const { fetchContractList, hasApprovePermission } = useContext(
+		SaleManageContext,
+	) as any;
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -497,7 +497,7 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 		} catch (error) {
@@ -520,7 +520,7 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 		} catch (error) {
@@ -536,7 +536,6 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 			updateRecord();
 		}
 	};
-
 
 	const changeStatus = async (params: any) => {
 		await contractEdit(params);
@@ -566,7 +565,6 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 		}
 	};
 
-
 	const SaveButton = () => {
 		if (modalType === "add") {
 			return (
@@ -590,7 +588,6 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 	};
 	return (
 		<CustomModalRoot>
-
 			<div className="content">
 				<Form
 					form={inputForm}
@@ -621,8 +618,7 @@ const ReviewForm: React.FC<CustomModalProps> = ({
 						changeProcess,
 						hasApprovePermission,
 					}}
-				>
-				</CustomModalContext.Provider>
+				></CustomModalContext.Provider>
 			</div>
 		</CustomModalRoot>
 	);

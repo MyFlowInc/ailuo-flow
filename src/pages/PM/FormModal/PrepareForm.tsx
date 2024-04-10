@@ -48,8 +48,8 @@ const CustomModalRoot = styled.div`
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	/* align-items: center; */
-	padding: 24px 20%  ;
+	align-items: center;
+	padding: 24px auto;
 	border-radius: 8px;
 	background-color: #ffffff;
 	pointer-events: auto;
@@ -59,6 +59,7 @@ const CustomModalRoot = styled.div`
 	.header {
 		height: 18px;
 		display: flex;
+		width: 600px;
 		.title {
 			font-size: 18px;
 			font-family: "Harmony_Sans_Medium", sans-serif;
@@ -70,6 +71,7 @@ const CustomModalRoot = styled.div`
 	}
 	.content {
 		height: calc(100% - 80px);
+		width: 600px;
 		max-width: 600px;
 		overflow: overlay;
 	}
@@ -186,7 +188,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -323,13 +325,10 @@ export const columns: any = [
 	},
 ];
 
-
 const CustomModalContext = React.createContext({});
 
-const PrepareForm: React.FC<CustomModalProps> = ({
-	editFlowItemRecord,
-}) => {
-	const modalType = 'edit' as any
+const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
+	const modalType = "edit" as any;
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -341,8 +340,9 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
-	const { fetchContractList, hasApprovePermission } =
-		useContext(SaleManageContext) as any;
+	const { fetchContractList, hasApprovePermission } = useContext(
+		SaleManageContext,
+	) as any;
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -466,18 +466,6 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 		}
 	}, [form.status, open]);
 	// 终审情况
-	const [finalInfoList, setFinalInfoList] = useState<any[]>([]);
-	// 确定终审情况
-	useEffect(() => {
-		const fetchFinalInfoList = async () => {
-			const res = await finalInfoPage(form.id + "");
-			const record = _.get(res, "data.record");
-			setFinalInfoList(record);
-		};
-		if (form.status === ContractStatusMap.Reviewing) {
-			fetchFinalInfoList();
-		}
-	}, [form.id]);
 
 	// 新增记录
 	const createRecord = async () => {
@@ -497,7 +485,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 		} catch (error) {
@@ -520,7 +508,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 		} catch (error) {
@@ -536,7 +524,6 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 			updateRecord();
 		}
 	};
-
 
 	const changeStatus = async (params: any) => {
 		await contractEdit(params);
@@ -566,7 +553,6 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 		}
 	};
 
-
 	const SaveButton = () => {
 		if (modalType === "add") {
 			return (
@@ -591,7 +577,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 	return (
 		<CustomModalRoot>
 			<div className="header">
-				<div className="title">{'新建项目'}</div>
+				<div className="title">{"新建项目"}</div>
 			</div>
 			<div className="content">
 				<Form
@@ -612,19 +598,6 @@ const PrepareForm: React.FC<CustomModalProps> = ({
 						<NoFieldData />
 					)}
 				</Form>
-			</div>
-			<div className="footer">
-				<CustomModalContext.Provider
-					value={{
-						user,
-						finalInfoList,
-						form,
-						setForm,
-						changeProcess,
-						hasApprovePermission,
-					}}
-				>
-				</CustomModalContext.Provider>
 			</div>
 		</CustomModalRoot>
 	);

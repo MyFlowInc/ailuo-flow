@@ -188,7 +188,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -485,7 +485,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) {}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 		} catch (error) {
@@ -508,7 +508,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 		} catch (error) {
@@ -576,8 +576,8 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 	};
 	return (
 		<CustomModalRoot>
-			<div className="header">
-				<div className="title">{"新建项目"}</div>
+			<div className="header mt-4">
+				<div className="title ">{"新建项目"}</div>
 			</div>
 			<div className="content">
 				<Form

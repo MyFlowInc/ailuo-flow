@@ -13,6 +13,7 @@ import { IfetchSaleList } from "./types";
 import { UserOutlined } from "@ant-design/icons";
 import PrepareForm from "./FormModal/PrepareForm";
 import ReviewForm from "./FormModal/ReviewForm";
+import DataConfig from "./FormModal/DataConfig";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -66,12 +67,18 @@ const PreProductionManage: React.FC = () => {
 			return <ReviewForm />
 		}
 
+		if (current === 2) {
+			return <DataConfig />
+		}
+
 	}
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SaleManageContext.Provider value={{}}>
 				<DashboardRoot>
-					<PreSteps />
+					<div className="w-full" style={{ padding: '0 10%' }}>
+						<PreSteps />
+					</div>
 					{loading && <BaseLoading />}
 					{CurForm()}
 				</DashboardRoot>

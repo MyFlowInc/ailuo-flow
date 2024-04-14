@@ -10,124 +10,8 @@ import {
 import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
 import { TableTheme } from "../../../theme/theme";
+import styled from "styled-components";
 
-type InputRef = any;
-type FormInstance<T> = any;
-
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface Item {
-	key: string;
-	mode: string;
-	force: string;
-	num: number;
-	price: number;
-	total: number;
-}
-
-interface EditableRowProps {
-	index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-	const [form] = Form.useForm();
-	return (
-		<Form form={form} component={false}>
-			<EditableContext.Provider value={form}>
-				<tr {...props} />
-			</EditableContext.Provider>
-		</Form>
-	);
-};
-
-interface EditableCellProps {
-	title: React.ReactNode;
-	editable: boolean;
-	children: React.ReactNode;
-	dataIndex: keyof Item;
-	record: Item;
-	handleSave: (record: Item) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({
-	title,
-	editable,
-	children,
-	dataIndex,
-	record,
-	handleSave,
-	...restProps
-}) => {
-	const [editing, setEditing] = useState(false);
-	const inputRef = useRef<InputRef>(null);
-	const form = useContext(EditableContext)!;
-	const numKeys = ["num", "price"];
-	useEffect(() => {
-		if (editing) {
-			inputRef.current!.focus();
-		}
-	}, [editing]);
-
-	const toggleEdit = () => {
-		setEditing(!editing);
-		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-	};
-
-	const save = async () => {
-		try {
-			const values = await form.validateFields();
-			toggleEdit();
-			// console.log("Received values of form: ", record, values);
-			handleSave({ ...record, ...values });
-		} catch (errInfo) {
-			console.log("Save failed:", errInfo);
-		}
-	};
-
-	let childNode = children;
-
-	if (editable) {
-		childNode = editing ? (
-			<Form.Item style={{ margin: 0 }} name={dataIndex} rules={[]}>
-				{numKeys.includes(dataIndex) && (
-					<InputNumber
-						size="small"
-						style={{ width: "56px" }}
-						ref={inputRef}
-						onPressEnter={save}
-						onBlur={save}
-					/>
-				)}
-				{!numKeys.includes(dataIndex) && (
-					<Input
-						size="small"
-						style={{ width: "56px" }}
-						ref={inputRef}
-						onPressEnter={save}
-						onBlur={save}
-					/>
-				)}
-			</Form.Item>
-		) : (
-			<div
-				className="editable-cell-value-wrap"
-				style={{ paddingRight: 12 }}
-				onClick={toggleEdit}
-			>
-				{_.get(children, "1") ? children : "点击输入"}
-			</div>
-		);
-	}
-
-	return (
-		<td {...restProps} className="overflow-hidden">
-			{childNode}
-		</td>
-	);
-};
-const { Text } = Typography;
-
-type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
 	key: React.Key;
@@ -137,35 +21,93 @@ interface DataType {
 	price: number;
 	total: number;
 }
+const InfoCarrdContainer = styled.div`
+	display: flex;
+justify-content: space-around;
+	.item-col{
+		display: flex;
+		margin-top: 16px;
+	}
+	.content{
+		color: #848484;
+		margin-left: 8px;
+	}
+`
+const InfoCard = (props: any) => {
 
-type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
-const item = {
-	key: "0",
-	mode: "",
-	force: "",
-	num: 0,
-	price: 0,
-	total: 0,
-};
+	return <div className="w-full"  >
+		<div className="flex justify-between items-center mt-4" style={{ padding: "0 10%" }}>
+			<div style={{ fontSize: '20px', fontWeight: 'bold', marginLeft: '24px' }}>
+				土耳其项目
+			</div>
+			<div style={{
+				borderRadius: '5px',
+				border: '1px solid #707683',
+				width: '121px',
+				height: '24px',
+				fontSize: '12px',
+				color: '#707683',
+
+			}} className="flex justify-center items-center">
+				显示项目全部信息
+			</div>
+		</div>
+		<div style={{ minHeight: '24px', boxShadow: '0px 4px 10px 0px rgba(0, 0, 0, 0.1)' }}>
+			<InfoCarrdContainer>
+				<div className="flex flex-col mb-8" >
+					<div className="item-col">
+						<div>项目名称</div>
+						<div className="content">xxx容灾备份服务项目</div>
+					</div>
+					<div className="item-col">
+						<div>单位名称</div>
+						<div className="content">苏州xx生物科技有限公司</div>
+					</div>
+					<div className="item-col">
+						<div>单位联系方式</div>
+						<div className="content">文字</div>
+					</div>
+				</div>
+				<div className="flex flex-col">
+					<div className="item-col">
+						<div>销售经理</div>
+						<div className="content">周时雨</div>
+					</div>
+					<div className="item-col">
+						<div>合同编号</div>
+						<div className="content">文字00</div>
+					</div>
+					<div className="item-col">
+						<div>合同日期</div>
+						<div className="content">2024年x月x日</div>
+					</div>
+				</div>
+				<div className="flex  flex-col">
+					<div className="item-col">
+						<div>总价</div>
+						<div className="content">文字</div>
+					</div>
+					<div className="item-col">
+						<div>总数量</div>
+						<div className="content">文字</div>
+					</div>
+					<div className="item-col">
+						<div>交期</div>
+						<div className="content">2024年x月x日</div>
+					</div>
+				</div>
+			</InfoCarrdContainer>
+			<div className="flex jus">
+				mid
+			</div>
+		</div>
+	</div>
+
+}
 const DataConfig: React.FC = (props: any) => {
 	const { column, form, setForm } = props;
 
-	const [dataSource, setDataSource] = useState<DataType[]>([]);
-	const [count, setCount] = useState(1);
-	const debouncedSetForm = _.debounce(setForm, 300);
 
-	useEffect(() => {
-		let records = _.get(form, column.dataIndex) || [];
-		if (typeof records === "string") {
-			try {
-				records = JSON.parse(records);
-			} catch (error) {
-				records = [];
-			}
-		}
-		setDataSource(records);
-		setCount(records.length + 1);
-	}, [form.typeSelection]);
 
 	const [disabled, setDisabled] = useState(false);
 	useEffect(() => {
@@ -176,188 +118,21 @@ const DataConfig: React.FC = (props: any) => {
 		}
 	}, [column]);
 
-	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter((item) => item.key !== key);
-		setDataSource(newData);
-		// console.log("do update");
-		debouncedSetForm({
-			...form,
-			[column.dataIndex]: newData,
-		});
-	};
 
-	const defaultColumns: any = [
-		{
-			title: "初步选型型号",
-			dataIndex: "mode",
-			editable: true,
-		},
-		{
-			title: "额定扭矩/推力",
-			editable: true,
-			dataIndex: "force",
-		},
-		{
-			title: "数量",
-			editable: true,
-			dataIndex: "num",
-		},
-		{
-			editable: true,
-			title: "单价",
-			dataIndex: "price",
-			render: (text: any, record: any) => {
-				return (
-					<div className="flex items-center justify-around">
-						{record.price}
-						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
-					</div>
-				);
-			},
-		},
-		{
-			title: "总价",
-			width: 100,
-			dataIndex: "total",
-			render: (text: any, record: any) => {
-				return (
-					<div className="flex items-center justify-around">
-						{+record.num * +record.price}
-						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
-					</div>
-				);
-			},
-		},
-	];
-	const defaultColumnsTech: any = [
-		{
-			title: "初步选型型号",
-			dataIndex: "mode",
-			editable: true,
-		},
-		{
-			title: "额定扭矩/推力",
-			editable: true,
-			dataIndex: "force",
-		},
-		{
-			title: "数量",
-			editable: true,
-			dataIndex: "num",
-		},
-	];
-	const handleAdd = () => {
-		const newData: DataType = {
-			key: count,
-			mode: "",
-			force: "",
-			num: 0,
-			price: 0,
-			total: 0,
-		};
-		setDataSource([...dataSource, newData]);
-		debouncedSetForm({
-			// typeSelection
-			...form,
-			[column.dataIndex]: [...dataSource, newData],
-		});
-		setCount(count + 1);
-		// console.log("do update");
-	};
 
-	const handleSave = (row: DataType) => {
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.key === item.key);
-		const item = newData[index];
-		// hack
-		row.total = row.num * row.price;
 
-		newData.splice(index, 1, {
-			...item,
-			...row,
-		});
-		setDataSource(newData);
-		debouncedSetForm({
-			...form,
-			[column.dataIndex]: newData,
-		});
-		// console.log("do update");
-	};
-
-	const components = {
-		body: {
-			row: EditableRow,
-			cell: EditableCell,
-		},
-	};
-
-	const columns = defaultColumns.map((col: any) => {
-		if (!col.editable) {
-			return col;
-		}
-		return {
-			...col,
-			onCell: (record: DataType) => ({
-				record,
-				editable: col.editable,
-				dataIndex: col.dataIndex,
-				title: col.title,
-				handleSave,
-			}),
-		};
-	});
-	const summary = (pageData: any) => {
-		let totalBorrow = 0;
-		// @ts-ignore
-		pageData.forEach(({ total }) => {
-			totalBorrow += total;
-		});
-		const { currency } = form;
-		let momey = "¥";
-		if (currency === "美元") {
-			momey = "$";
-		}
-		if (currency === "欧元") {
-			momey = "€";
-		}
-
-		return (
-			<Table.Summary.Row>
-				<Table.Summary.Cell index={0}>总计：</Table.Summary.Cell>
-				<Table.Summary.Cell index={1} colSpan={4}>
-					<Text>{momey}</Text>
-					<Text className="ml-4">{totalBorrow}</Text>
-				</Table.Summary.Cell>
-			</Table.Summary.Row>
-		);
-	};
 	return (
 		<div className="w-full">
-			<div></div>
-			<div className="flex mb-4">
-				<div
-					className={["flex items-center ", disabled ? "hidden" : ""].join("")}
-					onClick={handleAdd}
-				>
-					<PlusCircleFilled size={14} />
-					<div className="ml-2">添加型号</div>
-				</div>
+			<div>
+				<InfoCard />
 			</div>
+
 			<div
 				className="w-full overflow-hidden overflow-x-auto"
 				style={{ pointerEvents: disabled ? "none" : "auto" }}
 			>
 				<ConfigProvider theme={TableTheme}>
-					<Table
-						size="small"
-						pagination={false}
-						components={components}
-						rowClassName={() => "editable-row"}
-						bordered
-						dataSource={dataSource}
-						columns={columns as ColumnTypes}
-						summary={summary}
-					/>
+
 				</ConfigProvider>
 			</div>
 		</div>

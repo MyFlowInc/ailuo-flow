@@ -1,4 +1,4 @@
-import { Route, Switch } from "react-router";
+import { Route, Switch, useLocation } from "react-router";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
 	fetchFlowStatus,
@@ -67,6 +67,20 @@ const DashboardRouterOutlet: React.FC = () => {
 	// 全局预览文件
 	const [isPdfModalViewOpen, setIsPdfModalViewOpen] = useState(false);
 	const [fileUrl, setFileUrl] = useState("");
+	//  特殊页面样式
+	const location = useLocation();
+	const [specialStyle, setSpecialStyle] = useState({})
+	useEffect(() => {
+		if (location.pathname.includes('pre-product-manage')) {
+			setSpecialStyle({
+				padding: '0px'
+			})
+			console.log(222, specialStyle)
+		} else {
+			setSpecialStyle({
+			})
+		}
+	}, [location])
 	const onDrawerClose = () => {
 		dispatch(setIsOpenDrawer(false));
 	};
@@ -233,15 +247,19 @@ const DashboardRouterOutlet: React.FC = () => {
 					>
 						<NavSide />
 					</Sider>
-					<Layout className="site-layout">
+					<Layout className="site-layout" style={specialStyle}>
 						<AppHeader />
 						<Content
 							style={{
-								minHeight: 280,
-								display: "flex",
-								background: colorBgContainer,
-								flex: 1,
-								padding: "0px 16px",
+								...{
+									minHeight: 280,
+									display: "flex",
+									background: colorBgContainer,
+									flex: 1,
+									padding: '0px 16px'
+
+								},
+								...specialStyle
 							}}
 						>
 							<div className="router-content">

@@ -13,17 +13,11 @@ import { TableTheme } from "../../../theme/theme";
 import styled from "styled-components";
 
 
-interface DataType {
-	key: React.Key;
-	mode: string;
-	force: string;
-	num: number;
-	price: number;
-	total: number;
-}
+
 const InfoCarrdContainer = styled.div`
 	display: flex;
-justify-content: space-around;
+	justify-content: space-around;
+	box-shadow: '0px 4px 10px 0px rgba(0, 0, 0, 0.1)' ;
 	.item-col{
 		display: flex;
 		margin-top: 16px;
@@ -52,7 +46,7 @@ const InfoCard = (props: any) => {
 				显示项目全部信息
 			</div>
 		</div>
-		<div style={{ minHeight: '24px', boxShadow: '0px 4px 10px 0px rgba(0, 0, 0, 0.1)' }}>
+		<div style={{ minHeight: '24px', }}>
 			<InfoCarrdContainer>
 				<div className="flex flex-col mb-8" >
 					<div className="item-col">

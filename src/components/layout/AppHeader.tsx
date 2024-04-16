@@ -36,6 +36,28 @@ const UIContent = styled.div`
 		}
 	}
 `;
+const SpecialUIContent = styled.div`
+	display: flex;
+	align-items: center;
+	height: 24px;
+	.title {
+		display: flex;
+		align-items: center;
+		height: 34px;
+		font-size: 18px;
+		font-weight: bold;
+		letter-spacing: 0em;
+		font-family: "Harmony_Sans_Bold";
+		color: #000000;
+
+		& > div:nth-child(1) {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding-right: 10px;
+		}
+	}
+`;
 
 const AppHeader: React.FC<AppHeaderProps> = (props) => {
 	const menus = useAppSelector(selectUserMenus);
@@ -62,6 +84,9 @@ const AppHeader: React.FC<AppHeaderProps> = (props) => {
 		const imgPath = getImgByName(component);
 		return <img src={imgPath} />;
 	};
+	if (location.pathname.includes("pre-product-manage")) {
+		return null;
+	}
 	return (
 		<Header
 			style={{
@@ -81,4 +106,24 @@ const AppHeader: React.FC<AppHeaderProps> = (props) => {
 	);
 };
 
+export const SpecialHeader = (props: any) => {
+	const { menu } = props;
+	return (
+		<Header
+			style={{
+				height: "34px",
+				lineHeight: "24px",
+				padding: "5px 16px",
+				background: "#ffffff",
+			}}
+		>
+			<SpecialUIContent>
+				<div className="title">
+					<div>{menu.icon}</div>
+					<div>{menu.name}</div>
+				</div>
+			</SpecialUIContent>
+		</Header>
+	);
+};
 export default AppHeader;

@@ -29,7 +29,7 @@ import {
 } from "../../../api/ailuo/sale";
 import { MainStatus } from "../../../api/ailuo/dict";
 import warnSvg from "../assets/warning.svg";
-import { SaleManageContext } from "../PreProductionManage";
+import { PreProductionContext } from "../PreProductionManage";
 import {
 	approveInfo,
 	finalApproveEdit,

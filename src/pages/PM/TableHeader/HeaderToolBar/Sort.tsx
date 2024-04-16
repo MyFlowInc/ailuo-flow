@@ -16,7 +16,7 @@ import { greyButtonTheme2 } from "../../../../theme/theme";
 import type { SelectProps } from "antd";
 import CloseFilled from "../../../../assets/icons/CloseFilled";
 import { NumFieldType } from "../../../../components/Dashboard/TableColumnRender";
-import { SaleManageContext } from "../../PreProductionManage";
+import { PreProductionContext } from "../../PreProductionManage";
 
 const getFileName = (url: string) => {
 	const file = url.split("/").pop();
@@ -63,7 +63,8 @@ const SortContent: React.FC<SearchContentProps> = ({
 	setFiltering,
 }) => {
 	const [form] = Form.useForm();
-	const { tableDataSource, setTableDataSource } = useContext(SaleManageContext);
+	const { tableDataSource, setTableDataSource } =
+		useContext(PreProductionContext);
 	const records = tableDataSource || ([] as any);
 
 	const [c, setConditionValue] = useState<string | "">("");

@@ -38,7 +38,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
-import { SaleManageContext } from "../PreProductionManage";
+import { PreProductionContext } from "../PreProductionManage";
 import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
@@ -188,7 +188,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -341,7 +341,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
 	const { fetchContractList, hasApprovePermission } = useContext(
-		SaleManageContext,
+		PreProductionContext,
 	) as any;
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
@@ -485,7 +485,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 		} catch (error) {
@@ -508,7 +508,7 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 		} catch (error) {

@@ -4,7 +4,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
-import { SaleManageContext } from "../PreProductionManage";
+import { PreProductionContext } from "../PreProductionManage";
 import { saleProjectRemoveBatch } from "../../../api/ailuo/sale";
 
 interface BatchHeaderRootProps {
@@ -35,7 +35,7 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 	selectedRows,
 	setSelectedRows,
 }) => {
-	const { fetchSaleList } = useContext(SaleManageContext)! as any;
+	const { fetchSaleList } = useContext(PreProductionContext)! as any;
 	const handleBatchDelete = () => {
 		Modal.confirm({
 			title: "是否确认批量删除选中条目?",

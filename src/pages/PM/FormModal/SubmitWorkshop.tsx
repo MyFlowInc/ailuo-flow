@@ -11,19 +11,20 @@ import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
 import { TableTheme } from "../../../theme/theme";
 import styled from "styled-components";
+import PrepareForm from "./PrepareForm";
 
-const DataConfigWrapper = styled.div`
+const SubmitWorkshopWrapper = styled.div`
 	padding: 0 0 0 144px;
 	margin-top: 24px;
 `;
 
-const DataConfig: React.FC<any> = (props: any) => {
-	const { step } = props;
+const SubmitWorkshop: React.FC<any> = (props: any) => {
 	const [form, setForm] = useState<any>({});
 	const [column, setColumn] = useState<any>([]);
 
 	return (
-		<DataConfigWrapper className="w-full">
+		<SubmitWorkshopWrapper className="w-full flex flex-col overflow-auto">
+			<PrepareForm />
 			<ConfigProvider theme={TableTheme}>
 				<ModelTable
 					key={"ModelTable" + props.key}
@@ -34,11 +35,11 @@ const DataConfig: React.FC<any> = (props: any) => {
 					}}
 				/>
 			</ConfigProvider>
-		</DataConfigWrapper>
+		</SubmitWorkshopWrapper>
 	);
 };
 
-export default DataConfig;
+export default SubmitWorkshop;
 
 type InputRef = any;
 type FormInstance<T> = any;

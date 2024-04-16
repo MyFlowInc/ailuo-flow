@@ -49,17 +49,11 @@ const CustomModalRoot = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 24px auto;
-	border-radius: 8px;
-	background-color: #ffffff;
-	pointer-events: auto;
-	max-height: 100%;
-	height: 100%;
-	overflow: hidden;
+
 	.header {
+		width: 100%;
 		height: 18px;
 		display: flex;
-		width: 600px;
 		.title {
 			font-size: 18px;
 			font-family: "Harmony_Sans_Medium", sans-serif;
@@ -70,9 +64,8 @@ const CustomModalRoot = styled.div`
 		margin-bottom: 16px;
 	}
 	.content {
+		width: 100%;
 		height: calc(100% - 80px);
-		width: 600px;
-		max-width: 600px;
 		overflow: overlay;
 	}
 
@@ -84,9 +77,6 @@ const CustomModalRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {
-	editFlowItemRecord?: any | undefined;
-}
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -205,100 +195,13 @@ export const columns: any = [
 			);
 		},
 	},
-	// {
-	// 	title: "总价",
-	// 	dataIndex: "totalPrice",
-	// 	key: "totalPrice",
-	// 	render: (
-	// 		column: any,
-	// 		key: string,
-	// 		form: any,
-	// 		setForm: (value: any) => void,
-	// 	) => {
-	// 		let totalPrice = 0;
-	// 		try {
-	// 			const list = form.typeSelection;
-	// 			list.forEach((item: any) => {
-	// 				totalPrice += +item.num * +item.price;
-	// 			});
-	// 		} catch (error) { }
-	// 		const { currency } = form;
-	// 		let sign = "";
-	// 		if (currency === "人民币") {
-	// 			sign = "¥";
-	// 		}
-	// 		if (currency === "美元") {
-	// 			sign = "$";
-	// 		}
-	// 		if (currency === "欧元") {
-	// 			sign = "€";
-	// 		}
-	// 		return (
-	// 			<div key={"name_" + key} className="w-full">
-	// 				<div className="w-full">
-	// 					<div className="flex mb-4">
-	// 						<div style={{ width: "100px" }}>总价</div>
-	// 						<div className="flex-1 flex items-center">
-	// 							{/* <span key={"totalPrice" + key}>{`${sign} ${totalPrice}`}</span> */}
-	// 							<Input
-	// 								disabled
-	// 								key={"totalPrice" + key}
-	// 								value={`${sign} ${totalPrice}`}
-	// 							/>
-	// 						</div>
-	// 					</div>
-	// 				</div>
-	// 			</div>
-	// 		);
-	// 	},
-	// },
 	{
 		title: "交期",
 		dataIndex: "quotationEnd",
 		key: "quotationEnd",
 		type: NumFieldType.DateTime,
 	},
-	// {
-	// 	title: "质保",
-	// 	dataIndex: "qualityTime",
-	// 	key: "qualityTime",
-	// 	type: NumFieldType.SingleText,
-	// },
-	// {
-	// 	title: "出口项目",
-	// 	dataIndex: "exportItem", // 'show' | 'hide'
-	// 	key: "exportItem",
-	// 	render: (
-	// 		column: any,
-	// 		key: string,
-	// 		form: any,
-	// 		setForm: (value: any) => void,
-	// 	) => {
-	// 		return (
-	// 			<div key={"exportItem_" + key} className="w-full">
-	// 				<ExportProject
-	// 					key={"exportItem" + key}
-	// 					{...{ column, form, setForm }}
-	// 				/>
-	// 			</div>
-	// 		);
-	// 	},
-	// },
-	// {
-	// 	title: "贸易方式",
-	// 	dataIndex: "modeTrade",
-	// 	key: "modeTrade",
-	// 	type: NumFieldType.MultiSelect,
-	// 	dictCode: "tarde_mode",
-	// 	showCtrlKey: "exportItem",
-	// },
-	// {
-	// 	title: "付款方式",
-	// 	dataIndex: "payType",
-	// 	key: "payType",
-	// 	type: NumFieldType.MultiSelect,
-	// 	dictCode: "pay",
-	// },
+
 	{
 		title: "技术规格表",
 		dataIndex: "technicalSheet",
@@ -325,9 +228,8 @@ export const columns: any = [
 	},
 ];
 
-const CustomModalContext = React.createContext({});
-
-const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
+const PrepareForm: React.FC<any> = (props: any) => {
+	const { editFlowItemRecord, step } = props;
 	const modalType = "edit" as any;
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
@@ -576,9 +478,11 @@ const PrepareForm: React.FC<CustomModalProps> = ({ editFlowItemRecord }) => {
 	};
 	return (
 		<CustomModalRoot>
-			<div className="header mt-4">
-				<div className="title ">{"新建项目"}</div>
-			</div>
+			{step == 0 && (
+				<div className="header mt-4">
+					<div className="title ">{"新建项目"}</div>
+				</div>
+			)}
 			<div className="content">
 				<Form
 					form={inputForm}

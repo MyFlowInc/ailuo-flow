@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { ConfigProvider } from "antd";
 import { Steps } from "antd";
 import { dashboardTheme } from "../../theme/theme";
@@ -10,6 +10,7 @@ import PrepareForm from "./FormModal/PrepareForm";
 import ReviewForm from "./FormModal/ReviewForm";
 import DataConfig from "./FormModal/DataConfig";
 import { SpecialHeader } from "../../components/layout/AppHeader";
+import SubmitWorkshop from "./FormModal/SubmitWorkshop";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -19,14 +20,15 @@ const DashboardRoot = styled.div`
 	}
 	.step-header {
 		background: #ffffff;
-
 		box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
+		padding-right: 200px;
 	}
 `;
 
 const InfoCarrdContainer = styled.div`
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
+	padding: 0 0 0 144px;
 	box-shadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.1)";
 	.item-col {
 		display: flex;
@@ -44,7 +46,7 @@ const InfoCard = (props: any) => {
 		<div className="w-full">
 			<div
 				className="flex justify-between items-center mt-4"
-				style={{ padding: "0 10%" }}
+				style={{ padding: "0 0 0 120px" }}
 			>
 				<div
 					style={{ fontSize: "20px", fontWeight: "bold", marginLeft: "24px" }}
@@ -167,7 +169,7 @@ export const PreProductionContext = React.createContext<any>({});
 
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
-	const [current, setCurrent] = useState(2);
+	const [current, setCurrent] = useState(0);
 
 	const PreSteps = () => {
 		const onChange = (value: number) => {
@@ -201,19 +203,43 @@ const PreProductionManage: React.FC = () => {
 		);
 	};
 	const CurForm = () => {
+		let res = null;
 		if (current === 0) {
-			return <PrepareForm />;
+			res = (
+				<div style={{ width: "600px" }}>
+					<PrepareForm />
+				</div>
+			);
 		}
 		if (current === 1) {
-			return <ReviewForm />;
+			res = (
+				<div style={{ width: "600px" }}>
+					<ReviewForm />
+				</div>
+			);
 		}
 
 		if (current === 2) {
-			return <DataConfig />;
+			res = <DataConfig step={"config"} />;
 		}
+		if (current === 3) {
+			res = <DataConfig step={"verify"} />;
+		}
+		if (current === 4) {
+			res = <SubmitWorkshop />;
+		}
+
+		return (
+			<div
+				className="w-full flex justify-center overflow-auto"
+				style={{ height: "calc(100% - 200px)" }}
+			>
+				{res}
+			</div>
+		);
 	};
 	const renderInfoCard = () => {
-		if (current === 2) {
+		if ([2, 3, 4].includes(current)) {
 			return (
 				<div>
 					<InfoCard />

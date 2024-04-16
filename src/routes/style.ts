@@ -30,7 +30,7 @@ export const RouterContainer = styled.div`
 	transition-duration: 0.5s;
 	// background: #edeff3;
 	background: #ffffff;
-
+ 
 	.router-content {
 		flex: 1;
 		position: relative;

@@ -23,8 +23,13 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 	const [column, setColumn] = useState<any>([]);
 
 	return (
-		<SubmitWorkshopWrapper className="w-full flex flex-col overflow-auto">
-			<PrepareForm />
+		<SubmitWorkshopWrapper
+			className="w-full flex flex-col"
+			style={{ paddingRight: "200px" }}
+		>
+			<div>
+				<PrepareForm />
+			</div>
 			<ConfigProvider theme={TableTheme}>
 				<ModelTable
 					key={"ModelTable" + props.key}

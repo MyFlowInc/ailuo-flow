@@ -231,7 +231,7 @@ const PreProductionManage: React.FC = () => {
 
 		return (
 			<div
-				className="w-full flex justify-center overflow-auto"
+				className="w-full flex justify-center overflow-auto mt-4"
 				style={{ height: "calc(100% - 200px)" }}
 			>
 				{res}
@@ -252,14 +252,16 @@ const PreProductionManage: React.FC = () => {
 		<ConfigProvider theme={dashboardTheme}>
 			<PreProductionContext.Provider value={{}}>
 				<DashboardRoot>
-					<div className="w-full step-header">
+					<div
+						className="w-full step-header"
+						style={{ boxShadow: [0, 1].includes(current) ? "unset" : "" }}
+					>
 						<div className="w-full flex items-center ">
 							<SpecialHeader menu={{ name: "预生产管理" }} />
 							<PreSteps />
 						</div>
 						{renderInfoCard()}
 					</div>
-					{loading && <BaseLoading />}
 					{CurForm()}
 				</DashboardRoot>
 			</PreProductionContext.Provider>

@@ -338,7 +338,7 @@ const ModelTable: React.FC = (props: any) => {
 	});
 
 	return (
-		<div className="w-full">
+		<div className="w-full" style={{ paddingRight: "200px" }}>
 			<div className="flex mb-4">
 				<div
 					className={["flex items-center ", disabled ? "hidden" : ""].join("")}

@@ -17,6 +17,8 @@ const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 	.ant-modal {
 		height: 100vh;
 	}
@@ -173,7 +175,6 @@ const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [current, setCurrent] = useState(0);
 	const params = useParams() as any;
-	console.log("location", params);
 	// 根据路由信息获取项目
 	useEffect(() => {
 		const fetchData = async () => {
@@ -186,7 +187,8 @@ const PreProductionManage: React.FC = () => {
 					pageNum: 1,
 					pageSize: 10,
 				});
-				console.log(1111, res);
+				const item = _.get(res, "data.record.0");
+				console.log("item", item);
 			} catch (error) {
 				console.log(error);
 			}
@@ -229,7 +231,7 @@ const PreProductionManage: React.FC = () => {
 		if (current === 0) {
 			res = (
 				<div style={{ width: "600px" }}>
-					<PrepareForm />
+					<PrepareForm step={0} />
 				</div>
 			);
 		}
@@ -250,11 +252,10 @@ const PreProductionManage: React.FC = () => {
 		if (current === 4) {
 			res = <SubmitWorkshop />;
 		}
-
 		return (
 			<div
-				className="w-full flex justify-center overflow-auto mt-4"
-				style={{ height: "calc(100% - 200px)" }}
+				className="w-full flex-1 flex justify-center overflow-hidden mt-4"
+			// style={{ height: "calc(100% - 200px)" }}
 			>
 				{res}
 			</div>

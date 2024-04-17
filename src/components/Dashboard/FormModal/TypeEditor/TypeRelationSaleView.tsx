@@ -7,7 +7,7 @@ import TurnView from "../../../../pages/Sale/TurnView";
 import { saleProjectList } from "../../../../api/ailuo/sale";
 import _ from "lodash";
 import styled from "styled-components";
-import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
+import { DashboardRouterOutletContext } from "../../../../context";
 
 const PriceRoot = styled.div`
 	height: fit-content;
@@ -25,6 +25,9 @@ const PriceRoot = styled.div`
 const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	const { form } = props;
 	const [saleInfo, setSaleInfo] = React.useState<any>({});
+	if (!DashboardRouterOutletContext) {
+		return null
+	}
 	const { setSaleId, setIsSaleModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
 	);

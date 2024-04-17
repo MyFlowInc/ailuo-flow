@@ -13,7 +13,7 @@ import {
 	techProjectList,
 } from "../../../api/ailuo/tech";
 import _ from "lodash";
-import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
+import { DashboardRouterOutletContext } from "../../../context";
 
 const CustomModalRoot = styled.div`
 	position: relative;

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 // import { DiscussModal } from "./FormModal/TypeEditor/TypeDiscuss";
 
 import type { DeveloperUser } from "../../store/globalSlice";
-import { DashboardRouterOutletContext } from "../../routes/DashboardRouterOutlet";
+import { DashboardRouterOutletContext } from "../../context";
 /**
  * The type of field returned by the interface	The type of the corresponding field
 			SingleText	single-line text

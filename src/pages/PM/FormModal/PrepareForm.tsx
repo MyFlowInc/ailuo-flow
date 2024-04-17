@@ -13,22 +13,15 @@ import {
 } from "antd";
 import {
 	blueButtonTheme,
-	greyButtonTheme,
-	redButtonTheme,
+
 } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import { ContractStatusMap } from "../../../api/ailuo/dict";
-import warnSvg from "../../Sale/assets/warning.svg";
-import {
-	approveInfo,
-	finalApproveEdit,
-	finalInfoPage,
-} from "../../../api/ailuo/approve";
+
 import _ from "lodash";
 import { noticeAdd } from "../../../api/ailuo/notice";
 import {
-	User,
 	selectAllUser,
 	selectIsFinance,
 	selectIsManager,
@@ -36,20 +29,18 @@ import {
 	setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { PreProductionContext } from "../PreProductionManage";
 import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
-import ExportProject from "../../Sale/ExportProject";
-const { TextArea } = Input;
+
 const CustomModalRoot = styled.div`
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-
+	height: 100%;
 	.header {
 		width: 100%;
 		height: 18px;
@@ -65,15 +56,16 @@ const CustomModalRoot = styled.div`
 	}
 	.content {
 		width: 100%;
-		height: calc(100% - 80px);
+		height: calc(100% - 100px);
 		overflow: overlay;
 	}
 
 	.footer {
 		display: flex;
-		align-items: center;
+		align-items: flex-end;
+		margin-bottom: 16px;
+		flex:1 ;
 		justify-content: space-between;
-		margin-left: 24px;
 	}
 `;
 
@@ -178,7 +170,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -387,7 +379,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) {}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 		} catch (error) {
@@ -410,7 +402,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 		} catch (error) {
@@ -462,7 +454,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					<Button type="primary">取消立项</Button>
 				</ConfigProvider>
 				<ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary">提交并进行立项审核</Button>
+					<Button className="ml-8" type="primary">提交并进行立项审核</Button>
 				</ConfigProvider>
 			</>
 		);

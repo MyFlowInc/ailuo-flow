@@ -4,7 +4,7 @@ import delPng from "../../components/Notify/assets/del.svg";
 import { noticeEdit, noticeRemove } from "../../api/ailuo/notice";
 import { useContext, useEffect, useState } from "react";
 import { ContractStatusMap, MainStatus } from "../../api/ailuo/dict";
-import { DashboardRouterOutletContext } from "../../routes/DashboardRouterOutlet";
+import { DashboardRouterOutletContext } from "../../context";
 const { Paragraph } = Typography;
 
 const NotifyItemRoot = styled.div`
@@ -93,7 +93,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 		try {
 			let c = JSON.parse(info.content);
 			setContent(c);
-		} catch (error) {}
+		} catch (error) { }
 	}, [info]);
 
 	const deleteHandle = async () => {
@@ -148,7 +148,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 				setContractId(contractId || "");
 				setIsContractModalViewOpen(true);
 			}
-		} catch (error) {}
+		} catch (error) { }
 		console.log(111, info);
 	};
 

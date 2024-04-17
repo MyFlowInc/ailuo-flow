@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { myFlowUpload } from "../../../../api/upload";
 import _ from "lodash";
 import { Button, Popover } from "antd";
-import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
+import { DashboardRouterOutletContext } from "../../../../context";
 
 interface TypeAttachmentProps {
 	cell: any;
@@ -22,10 +22,12 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 
 	const [fileList, setFileList] = useState<string[]>([]);
 
-
+	if (!DashboardRouterOutletContext) {
+		return null
+	}
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
-	);
+	)
 
 	// 权限处理
 	const [disabled, setDisabled] = useState(false);

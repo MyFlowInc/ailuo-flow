@@ -47,8 +47,8 @@ import {
 } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
-import { DashboardRouterOutletContext } from "../../../routes/DashboardRouterOutlet";
 import { CheckCircleOutlined } from "@ant-design/icons";
+import { DashboardRouterOutletContext } from "../../../context";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;

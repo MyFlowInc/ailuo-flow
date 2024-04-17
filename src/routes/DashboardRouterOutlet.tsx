@@ -32,9 +32,9 @@ import MyContractProcess from "../pages/Contract/MyContractProcess";
 import CustomContractModalView from "../pages/Contract/FormModal/CustomContractModalView";
 import SPDatabase from "../pages/SPL/SPDatabase";
 import PreProductionManage from "../pages/PM/PreProductionManage";
+import { DashboardRouterOutletContext } from "../context";
 
 const { Sider, Content } = Layout;
-export const DashboardRouterOutletContext = React.createContext<any>({});
 
 const DashboardRouterOutlet: React.FC = () => {
 	// 通过缓存自动登录
@@ -75,7 +75,6 @@ const DashboardRouterOutlet: React.FC = () => {
 			setSpecialStyle({
 				padding: "0px",
 			});
-			console.log(222, specialStyle);
 		} else {
 			setSpecialStyle({});
 		}

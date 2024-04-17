@@ -5,8 +5,8 @@
 import React, { useEffect, useContext } from "react";
 import _ from "lodash";
 import styled from "styled-components";
-import { DashboardRouterOutletContext } from "../../../../routes/DashboardRouterOutlet";
 import { techProjectList } from "../../../../api/ailuo/tech";
+import { DashboardRouterOutletContext } from "../../../../context";
 
 const PriceRoot = styled.div`
 	height: fit-content;
@@ -24,6 +24,9 @@ const PriceRoot = styled.div`
 const TypeRelationTechView: React.FC<any> = (props: any) => {
 	const { form } = props;
 	const [techInfo, setTechInfo] = React.useState<any>({});
+	if (!DashboardRouterOutletContext) {
+		return null
+	}
 	const { setTechId, setIsTechModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
 	);

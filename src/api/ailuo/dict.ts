@@ -171,6 +171,53 @@ export enum ContractStatusMap {
 	ReviewFailed = "review_failed",
 }
 
+export const SPLProductStatusList = [
+	{
+		id: "1780123698553700353",
+		label: "立项审核中",
+		value: "pro_reviewing",
+		color: "",
+	},
+	{
+		id: "1780124220534833154",
+		label: "立项审批驳回",
+		value: "pro_review_failed",
+		color: "",
+	},
+	{
+		id: "1780126517297954817",
+		label: "生产资料配置",
+		value: "materials",
+		color: "",
+	},
+	{
+		id: "1780128996119126018",
+		label: "生产资料审核",
+		value: "materials_rev",
+		color: "",
+	},
+	{
+		id: "1780130282054983682",
+		label: "提交车间中",
+		value: "sub_workshop",
+		color: "",
+	},
+	{
+		id: "1780518639209566209",
+		label: "提交车间",
+		value: "ended",
+		color: "",
+	},
+];
+export enum SPLProductStatusMap {
+	ProReviewing = "pro_reviewing",
+	ProReviewFailed = "pro_review_failed",
+	Materials = "materials",
+	MaterialsRev = "materials_rev",
+	SubWorkshop = "sub_workshop",
+	Ended = "ended",
+}
+
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
 	return Promise.resolve(SaleStatus);
 }

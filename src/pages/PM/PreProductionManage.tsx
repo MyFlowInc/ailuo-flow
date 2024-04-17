@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ConfigProvider } from "antd";
 import { Steps } from "antd";
 import { dashboardTheme } from "../../theme/theme";
@@ -11,6 +11,8 @@ import ReviewForm from "./FormModal/ReviewForm";
 import DataConfig from "./FormModal/DataConfig";
 import { SpecialHeader } from "../../components/layout/AppHeader";
 import SubmitWorkshop from "./FormModal/SubmitWorkshop";
+import { useHistory, useLocation, useParams } from "react-router";
+import { splProjectList } from "../../api/ailuo/spl-pre-product";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -170,7 +172,27 @@ export const PreProductionContext = React.createContext<any>({});
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [current, setCurrent] = useState(0);
-
+	const params = useParams() as any;
+	console.log("location", params);
+	// 根据路由信息获取项目
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const splId = params.splId;
+				if (!splId) return;
+				console.log("aaa", splId);
+				const res = await splProjectList({
+					id: splId,
+					pageNum: 1,
+					pageSize: 10,
+				});
+				console.log(1111, res);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+		fetchData();
+	}, [params.splId]);
 	const PreSteps = () => {
 		const onChange = (value: number) => {
 			console.log("onChange:", value);

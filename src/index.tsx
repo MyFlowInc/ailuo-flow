@@ -3,6 +3,7 @@ import App from "./App";
 import { Provider } from "react-redux";
 import store from "./store/index";
 import "./index.css";
+import React from "react";
 
 // import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 // import reportWebVitals from './reportWebVitals';
@@ -14,7 +15,7 @@ const root = createRoot(container!);
 root.render(
 	<Provider store={store}>
 		<App />
-	</Provider>
+	</Provider>,
 );
 
 // If you want your app to work offline and load faster, you can change

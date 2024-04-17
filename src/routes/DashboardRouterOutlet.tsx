@@ -69,18 +69,17 @@ const DashboardRouterOutlet: React.FC = () => {
 	const [fileUrl, setFileUrl] = useState("");
 	//  特殊页面样式
 	const location = useLocation();
-	const [specialStyle, setSpecialStyle] = useState({})
+	const [specialStyle, setSpecialStyle] = useState({});
 	useEffect(() => {
-		if (location.pathname.includes('pre-product-manage')) {
+		if (location.pathname.includes("pre-product-manage")) {
 			setSpecialStyle({
-				padding: '0px'
-			})
-			console.log(222, specialStyle)
+				padding: "0px",
+			});
+			console.log(222, specialStyle);
 		} else {
-			setSpecialStyle({
-			})
+			setSpecialStyle({});
 		}
-	}, [location])
+	}, [location]);
 	const onDrawerClose = () => {
 		dispatch(setIsOpenDrawer(false));
 	};
@@ -256,10 +255,9 @@ const DashboardRouterOutlet: React.FC = () => {
 									display: "flex",
 									background: colorBgContainer,
 									flex: 1,
-									padding: '0px 16px'
-
+									padding: "0px 16px",
 								},
-								...specialStyle
+								...specialStyle,
 							}}
 						>
 							<div className="router-content">
@@ -297,7 +295,10 @@ const DashboardRouterOutlet: React.FC = () => {
 										<SPDatabase />
 									</Route>
 									{/* 预生产管理 */}
-									<Route path="/dashboard/pre-product-manage" exact={true}>
+									<Route
+										path="/dashboard/pre-product-manage/:splId"
+										exact={true}
+									>
 										<PreProductionManage />
 									</Route>
 									{/* 爱罗标准件资料库 */}

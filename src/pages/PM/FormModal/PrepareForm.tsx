@@ -455,25 +455,16 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const SaveButton = () => {
-		if (modalType === "add") {
-			return (
-				<ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary" onClick={handleSaveRecord}>
-						创建
-					</Button>
-				</ConfigProvider>
-			);
-		}
-		if (saveButtonDisabled) {
-			return null;
-		}
+	const renderFooter = () => {
 		return (
-			<ConfigProvider theme={blueButtonTheme}>
-				<Button type="primary" onClick={handleSaveRecord}>
-					{"保存"}
-				</Button>
-			</ConfigProvider>
+			<>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button type="primary">取消立项</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button type="primary">提交并进行立项审核</Button>
+				</ConfigProvider>
+			</>
 		);
 	};
 	return (
@@ -503,6 +494,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					)}
 				</Form>
 			</div>
+			<div className="footer">{renderFooter()}</div>
 		</CustomModalRoot>
 	);
 };

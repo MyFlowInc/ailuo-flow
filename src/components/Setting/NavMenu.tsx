@@ -23,7 +23,7 @@ const MenuItem = styled.div<MenuItemProps>`
 	align-items: center;
 	justify-content: center;
 	width: ${({ width }) => width || "100%"};
-	heigth: 27px;
+	height: 27px;
 	line-height: 27px;
 	white-space: nowrap;
 	margin-bottom: 10px;
@@ -55,7 +55,10 @@ interface NavMenuProps {
 const NavMenu: React.FC<NavMenuProps> = () => {
 	const history = useHistory();
 	const { pathname } = useLocation();
-	const pathKey = pathname.substring(pathname.lastIndexOf("/") + 1, pathname.length);
+	const pathKey = pathname.substring(
+		pathname.lastIndexOf("/") + 1,
+		pathname.length,
+	);
 
 	const [curMenuKey, setCurMenuKey] = useState<string>(pathKey);
 
@@ -70,7 +73,8 @@ const NavMenu: React.FC<NavMenuProps> = () => {
 				selected={false}
 				onClick={() => {
 					history.go(-1);
-				}}>
+				}}
+			>
 				<div className="menuitem-icon">
 					<LeftOutlined style={{ color: "#707683", fontSize: 14 }} />
 				</div>
@@ -80,7 +84,8 @@ const NavMenu: React.FC<NavMenuProps> = () => {
 				selected={curMenuKey === "personal"}
 				onClick={() => {
 					history.replace("/setting/personal");
-				}}>
+				}}
+			>
 				<div className="menuitem-icon">
 					<PersonalFilled style={{ color: "#707683", fontSize: 14 }} />
 				</div>
@@ -90,7 +95,8 @@ const NavMenu: React.FC<NavMenuProps> = () => {
 				selected={curMenuKey === "security"}
 				onClick={() => {
 					history.replace("/setting/security");
-				}}>
+				}}
+			>
 				<div className="menuitem-icon">
 					<SecurityFilled style={{ color: "#707683", fontSize: 14 }} />
 				</div>

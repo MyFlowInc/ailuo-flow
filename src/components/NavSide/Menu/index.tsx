@@ -106,7 +106,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	// 我的合同审核
 	const handleContract = async () => {
@@ -118,7 +118,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	const handleNotice = async () => {
 		try {
@@ -126,7 +126,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	useEffect(() => {
@@ -187,8 +187,9 @@ const Menu: React.FC = () => {
 					path: "/spl-db",
 					title: "艾罗标准件资料库-开发中",
 				},
+				// TODO: 特殊处理
 				{
-					path: "/pre-product-manage",
+					path: "/pre-product-manage/4",
 					title: "预生产管理-开发中",
 				},
 			];

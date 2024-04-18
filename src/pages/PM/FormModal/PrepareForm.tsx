@@ -134,7 +134,7 @@ export const columns: any = [
 	},
 
 	{
-		title: "初步选型型号",
+		title: "执行机构型号",
 		dataIndex: "typeSelection",
 		key: "typeSelection",
 		render: (
@@ -303,7 +303,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			try {
-				// 处理初步选型型号
+				// 处理执行机构型号
 				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
 			} catch (error) {
 				temp.typeSelection = [];

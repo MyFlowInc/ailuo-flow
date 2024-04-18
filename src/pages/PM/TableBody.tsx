@@ -102,7 +102,7 @@ const columns: any = [
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "初步选型型号",
+		title: "执行机构型号",
 		dataIndex: "typeSelection",
 		key: "typeSelection",
 		render: (text: string, record: any) => {
@@ -110,7 +110,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) {}
+			} catch (error) { }
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}

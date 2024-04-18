@@ -596,7 +596,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		if (editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			try {
-				// 处理初步选型型号
+				// 处理执行机构型号
 				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
 			} catch (error) {
 				temp.typeSelection = [];

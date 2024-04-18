@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
-import { Tag } from "antd";
+import { Button, Popover, Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import { SaleStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
-import { PlusCircleFilled } from "@ant-design/icons";
+import { PlusCircleFilled, PlusOutlined } from "@ant-design/icons";
 
 const FlowTableRoot = styled.div`
 	width: 100%;
@@ -40,13 +40,21 @@ const columns: any = [
 		title: "标准件名称",
 		dataIndex: "name",
 		key: "name",
-		type: "name",
 		width: 200,
 		render: (text: string, record: any) => {
 			return (
-				<div>
+				<div className="flex justify-between" style={{ width: "160px" }}>
 					<span>{record.name}</span>
-					<PlusCircleFilled style={{ color: "#707683", fontSize: "12px" }} />
+					<Popover overlayInnerStyle={{ padding: 0 }} content={() => {
+						return <div className="p-1">
+
+							<Button type="link" onClick={() => { }}>
+								新建子级资料
+							</Button>
+						</div>
+					}}>
+						<PlusOutlined style={{ color: "#707683", fontSize: "12px" }} />
+					</Popover>
 				</div>
 			);
 		},
@@ -66,14 +74,14 @@ const columns: any = [
 
 	{
 		title: "加工图纸包",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
+		dataIndex: "processPkg",
+		key: "processPkg",
 		type: NumFieldType.Attachment,
 	},
 	{
 		title: "装配图纸包",
-		dataIndex: "processPkg",
-		key: "processPkg",
+		dataIndex: "fitOutPkg",
+		key: "fitOutPkg",
 		type: NumFieldType.Attachment,
 	},
 	{
@@ -99,6 +107,7 @@ const TableBody: React.FC<FlowTableProps> = ({
 				{...rest}
 			/>
 			<EditRecordModal
+				key={'edit-modal'}
 				open={open}
 				setOpen={setOpen}
 				editFlowItemRecord={editFlowItemRecord}

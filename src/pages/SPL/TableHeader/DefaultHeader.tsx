@@ -72,7 +72,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} />
+			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} key={'add-modal'} />
 		</DefaultHeaderRoot>
 	);
 };

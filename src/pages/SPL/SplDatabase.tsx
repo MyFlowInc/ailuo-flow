@@ -19,9 +19,9 @@ const DashboardRoot = styled.div`
 		height: 100vh;
 	}
 `;
-export const SaleManageContext = React.createContext<any>({});
+export const SplDatabaseContext = React.createContext<any>({});
 
-const SPDatabase: React.FC = () => {
+const SplDatabase: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
@@ -77,7 +77,7 @@ const SPDatabase: React.FC = () => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<SaleManageContext.Provider
+			<SplDatabaseContext.Provider
 				value={{ fetchList, tableDataSource, setTableDataSource }}
 			>
 				<DashboardRoot>
@@ -97,9 +97,9 @@ const SPDatabase: React.FC = () => {
 						setSelectedRows={setSelectedRows}
 					/>
 				</DashboardRoot>
-			</SaleManageContext.Provider>
+			</SplDatabaseContext.Provider>
 		</ConfigProvider>
 	);
 };
 
-export default SPDatabase;
+export default SplDatabase;

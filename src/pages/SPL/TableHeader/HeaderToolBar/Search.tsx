@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
 import SearchFilled from "../../../../assets/icons/SearchFilled";
-import { SaleManageContext } from "../../SplDatabase";
+import { SplDatabaseContext } from "../../SplDatabase";
 
 const SearchRoot = styled.div`
 	display: flex;
@@ -19,9 +19,9 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 	const options = columns;
 	const [inputValue, setInputValue] = useState<string>("");
 	const [selectValue, setSelectValue] = useState<string>("name");
-	const { fetchSaleList } = useContext(SaleManageContext);
+	const { fetchList } = useContext(SplDatabaseContext);
 	const handleSearch = async () => {
-		await fetchSaleList({
+		await fetchList({
 			search: {
 				[selectValue]: inputValue.trim(),
 			},

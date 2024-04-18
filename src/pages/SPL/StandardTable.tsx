@@ -9,7 +9,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import { SaleManageContext } from "./SplDatabase";
+import { SplDatabaseContext } from "./SplDatabase";
 import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 
@@ -120,7 +120,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-	const { fetchSaleList } = useContext(SaleManageContext);
+	const { fetchList } = useContext(SplDatabaseContext);
 	const isFinance = useAppSelector(selectIsFinance);
 
 	const getTableColumns = () => {
@@ -179,7 +179,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 	const pageNumChange = (page: number, pageSize: number) => {
 		curPage.current.pageNum = page;
 		setTimeout(() => {
-			fetchSaleList();
+			fetchList();
 		});
 	};
 

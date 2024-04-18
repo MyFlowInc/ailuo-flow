@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider } from "antd";
-
 import { dashboardTheme } from "../../theme/theme";
-import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
-
 import _ from "lodash";
 import styled from "styled-components";
-import { IfetchSaleList } from "./types";
-import { splFileDataList } from "../../api/ailuo/spl-db";
+import { splFileDataList, splFileDataRemove } from "../../api/ailuo/spl-db";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -23,6 +19,7 @@ export const SplDatabaseContext = React.createContext<any>({});
 
 const SplDatabase: React.FC = () => {
 	const [loading, setLoading] = useState(false);
+	const [isShowModal, setIsShowModal] = useState(false)
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
 		undefined,
@@ -35,7 +32,7 @@ const SplDatabase: React.FC = () => {
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
-			await saleProjectRemove(id);
+			await splFileDataRemove(id);
 			await fetchList();
 		} catch (error) {
 			console.log(error);
@@ -78,7 +75,7 @@ const SplDatabase: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SplDatabaseContext.Provider
-				value={{ fetchList, tableDataSource, setTableDataSource }}
+				value={{ fetchList, tableDataSource, setTableDataSource, isShowModal, setIsShowModal }}
 			>
 				<DashboardRoot>
 					{/* 表头 */}

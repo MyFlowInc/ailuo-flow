@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
 import { SplDatabaseContext } from "../SplDatabase";
-import { saleProjectRemoveBatch } from "../../../api/ailuo/sale";
+import { splFileDataRemoveBatch } from "../../../api/ailuo/spl-db";
 
 interface BatchHeaderRootProps {
 	isShow: boolean;
@@ -46,7 +46,7 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 			onOk: async () => {
 				const ids = selectedRows.map((item) => item.id);
 				try {
-					await saleProjectRemoveBatch(ids);
+					await splFileDataRemoveBatch(ids);
 					setSelectedRows([]);
 					await fetchList();
 				} catch (error) {

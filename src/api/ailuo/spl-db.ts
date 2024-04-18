@@ -19,6 +19,8 @@ export function splFileDataList(params: PageParams) {
 	});
 }
 
+
+
 interface SaveParams {
 	name: string;
 	[key: string]: any;
@@ -39,7 +41,7 @@ interface EditParams {
 export function splFileDataEdit(data: EditParams) {
 	return apiCall({
 		url: "api/sys/splFileData/edit",
-		method: "post",
+		method: "PUT",
 		data,
 	});
 }
@@ -49,5 +51,17 @@ export function splFileDataRemove(id: string | number) {
 		url: "api/sys/splFileData/remove",
 		method: "DELETE",
 		params: { id },
+	});
+}
+export function splFileDataRemoveBatch(ids: number[]) {
+	return apiCall({
+		url: "api/sys/splFileData/removeBatch",
+		method: "delete",
+		params: { ids },
+		paramsSerializer: {
+			serialize: ((params: any) => {
+				return qs.stringify(params, { arrayFormat: "repeat" });
+			}) as any,
+		} as any,
 	});
 }

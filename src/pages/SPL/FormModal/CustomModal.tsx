@@ -4,7 +4,6 @@ import {
 	ConfigProvider,
 	Form,
 	Button,
-	Input,
 } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
@@ -12,11 +11,7 @@ import {
 	blueButtonTheme,
 } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
-import {
-	saleProjectEdit,
-} from "../../../api/ailuo/sale";
 import { SplDatabaseContext } from "../SplDatabase";
-
 import _ from "lodash";
 import {
 
@@ -24,7 +19,7 @@ import {
 	selectUser,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { splFileDataAdd } from "../../../api/ailuo/spl-db";
+import { splFileDataAdd, splFileDataEdit } from "../../../api/ailuo/spl-db";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -205,11 +200,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			await inputForm.validateFields();
 			try {
-				params.typeSelection = JSON.stringify(params.typeSelection);
-				params.modeTrade = JSON.stringify(params.modeTrade);
-				params.payType = JSON.stringify(params.payType);
 			} catch (error) { }
-			await saleProjectEdit(excludeNull(params));
+			await splFileDataEdit(excludeNull(params));
 			await fetchList();
 			setOpen(false);
 		} catch (error) {

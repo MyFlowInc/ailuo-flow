@@ -1,1 +1,0 @@
-export type IfetchSaleList = (options?: { [key: string]: any }) => void

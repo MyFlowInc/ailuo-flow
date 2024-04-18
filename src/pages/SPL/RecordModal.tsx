@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "antd";
 import CustomModal from "./FormModal/CustomModal";
-import { IfetchSaleList } from "./types";
 
 interface AddRecordModalProps {
 	open: boolean;

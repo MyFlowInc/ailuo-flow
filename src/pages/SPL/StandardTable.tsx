@@ -113,7 +113,6 @@ interface StandardTableProps {
 const StandardTable: React.FC<StandardTableProps> = ({
 	columns,
 	datasource,
-
 	setSelectedRows,
 	curPage,
 	...rest

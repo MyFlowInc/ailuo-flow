@@ -4,10 +4,8 @@ import StandardTable from "./StandardTable";
 import { EditRecordModal } from "./RecordModal";
 import { Button, Popover, Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
-import { SaleStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
-import dayjs from "dayjs";
-import { PlusCircleFilled, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 const FlowTableRoot = styled.div`
 	width: 100%;

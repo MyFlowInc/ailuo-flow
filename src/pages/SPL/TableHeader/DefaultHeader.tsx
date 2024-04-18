@@ -1,17 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ConfigProvider, Button } from "antd";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { blueButtonTheme } from "../../../theme/theme";
 import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
 import { AddRecordModal } from "../RecordModal";
 
-import {
-	selectIsShowSaleModal,
-	setIsShowSaleModal,
-} from "../../../store/globalSlice";
 import { useLocation } from "react-router";
+import { SplDatabaseContext } from "../SplDatabase";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -42,13 +38,12 @@ interface DefaultHeaderProps {
 }
 
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
-	const dispatch = useAppDispatch();
 	const location = useLocation();
 	const { pathname } = location;
+	const { isShowModal, setIsShowModal } = useContext(SplDatabaseContext) as any
 
-	const isShowSaleModal = useAppSelector(selectIsShowSaleModal);
 	const setOpen = (value: boolean) => {
-		dispatch(setIsShowSaleModal(value));
+		setIsShowModal(value)
 	};
 	const HeaderButtonView = () => {
 		if (pathname === "/dashboard/spl-db") {
@@ -72,7 +67,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} key={'add-modal'} />
+			<AddRecordModal open={isShowModal} setOpen={setOpen} key={'add-modal'} />
 		</DefaultHeaderRoot>
 	);
 };

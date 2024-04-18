@@ -10,6 +10,7 @@ import TableBody from "./TableBody";
 import _ from "lodash";
 import styled from "styled-components";
 import { IfetchSaleList } from "./types";
+import { splFileDataList } from "../../api/ailuo/spl-db";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -35,7 +36,7 @@ const SPDatabase: React.FC = () => {
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
 			await saleProjectRemove(id);
-			await fetchSaleList();
+			await fetchList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -43,7 +44,7 @@ const SPDatabase: React.FC = () => {
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
 	// 获取销售列表
-	const fetchSaleList: IfetchSaleList = async (options: any = {}) => {
+	const fetchList = async (options: any = {}) => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
@@ -58,7 +59,7 @@ const SPDatabase: React.FC = () => {
 					...options.search,
 				};
 			}
-			const res = await saleProjectList(params);
+			const res = await splFileDataList(params);
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;
@@ -71,13 +72,13 @@ const SPDatabase: React.FC = () => {
 	};
 
 	useEffect(() => {
-		fetchSaleList();
+		fetchList();
 	}, []);
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SaleManageContext.Provider
-				value={{ fetchSaleList, tableDataSource, setTableDataSource }}
+				value={{ fetchList, tableDataSource, setTableDataSource }}
 			>
 				<DashboardRoot>
 					{/* 表头 */}

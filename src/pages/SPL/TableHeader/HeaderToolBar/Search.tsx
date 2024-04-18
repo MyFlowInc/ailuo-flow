@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { Space, Form, Input, Select } from "antd";
 import SearchFilled from "../../../../assets/icons/SearchFilled";
-import { SaleManageContext } from "../../SPDatabase";
+import { SaleManageContext } from "../../SplDatabase";
 
 const SearchRoot = styled.div`
 	display: flex;
@@ -33,7 +33,7 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 				layout="inline"
 				form={form}
 				name="SearchForm"
-				onValuesChange={() => {}}
+				onValuesChange={() => { }}
 			>
 				<Form.Item name="searchField" style={{ margin: 0, padding: 0 }}>
 					<Space.Compact>

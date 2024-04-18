@@ -7,6 +7,7 @@ import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import { SaleStatus } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { PlusCircleFilled } from "@ant-design/icons";
 
 const FlowTableRoot = styled.div`
 	width: 100%;
@@ -40,24 +41,26 @@ const columns: any = [
 		dataIndex: "name",
 		key: "name",
 		type: "name",
+		width: 200,
 		render: (text: string, record: any) => {
 			return (
-				<Tag color={"#FFF7F0"} style={{ color: "#000" }}>
-					{record.name || ""}
-				</Tag>
+				<div>
+					<span>{record.name}</span>
+					<PlusCircleFilled style={{ color: "#707683", fontSize: "12px" }} />
+				</div>
 			);
 		},
 	},
 	{
 		title: "配料单",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
+		dataIndex: "ingredientsList",
+		key: "ingredientsList",
 		type: NumFieldType.Attachment,
 	},
 	{
 		title: "BOM",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
+		dataIndex: "bom",
+		key: "bom",
 		type: NumFieldType.Attachment,
 	},
 
@@ -69,14 +72,14 @@ const columns: any = [
 	},
 	{
 		title: "装配图纸包",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
+		dataIndex: "processPkg",
+		key: "processPkg",
 		type: NumFieldType.Attachment,
 	},
 	{
 		title: "作业指导书",
-		dataIndex: "specificationDetail",
-		key: "specificationDetail",
+		dataIndex: "operationInstruction",
+		key: "operationInstruction",
 		type: NumFieldType.Attachment,
 	},
 ];

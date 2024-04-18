@@ -30,7 +30,7 @@ import ContractManage from "../pages/Contract/ContractManage";
 import MyContractManage from "../pages/Contract/MyContractManage";
 import MyContractProcess from "../pages/Contract/MyContractProcess";
 import CustomContractModalView from "../pages/Contract/FormModal/CustomContractModalView";
-import SPDatabase from "../pages/SPL/SPDatabase";
+import SPDatabase from "../pages/SPL/SplDatabase";
 import PreProductionManage from "../pages/PM/PreProductionManage";
 import { DashboardRouterOutletContext } from "../context";
 

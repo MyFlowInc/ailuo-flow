@@ -4,7 +4,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import { greyButtonTheme } from "../../../theme/theme";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
-import { SaleManageContext } from "../SPDatabase";
+import { SaleManageContext } from "../SplDatabase";
 import { saleProjectRemoveBatch } from "../../../api/ailuo/sale";
 
 interface BatchHeaderRootProps {

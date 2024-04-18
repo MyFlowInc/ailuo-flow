@@ -9,7 +9,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import { SaleManageContext } from "./SPDatabase";
+import { SaleManageContext } from "./SplDatabase";
 import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 

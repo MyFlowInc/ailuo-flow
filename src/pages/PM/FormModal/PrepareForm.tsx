@@ -13,14 +13,10 @@ import {
 } from "antd";
 import {
 	blueButtonTheme,
-
 } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
-import { ContractStatusMap } from "../../../api/ailuo/dict";
-
 import _ from "lodash";
-import { noticeAdd } from "../../../api/ailuo/notice";
 import {
 	selectAllUser,
 	selectIsFinance,
@@ -31,9 +27,9 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { PreProductionContext } from "../PreProductionManage";
-import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
+import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -119,19 +115,7 @@ export const columns: any = [
 		key: "contractTime",
 		type: NumFieldType.DateTime,
 	},
-	{
-		title: "执行机构形式",
-		dataIndex: "mechanismForm",
-		key: "mechanismForm",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "货币",
-		dataIndex: "currency",
-		key: "currency",
-		type: NumFieldType.SingleFixSelect,
-		dictCode: "currency",
-	},
+
 
 	{
 		title: "执行机构型号",
@@ -202,20 +186,20 @@ export const columns: any = [
 	},
 	{
 		title: "关联合同",
-		dataIndex: "otherFile",
-		key: "otherFile",
+		dataIndex: "relationContract",
+		key: "relationContract",
 		type: NumFieldType.Attachment,
 	},
 	{
 		title: "关联技术评审",
-		dataIndex: "relateTechProcess",
-		key: "relateTechProcess",
+		dataIndex: "relationReview",
+		key: "relationReview",
 		type: NumFieldType.RelationTechView,
 	},
 	{
 		title: "关联报价",
-		dataIndex: "relateQuote",
-		key: "relateQuote",
+		dataIndex: "relationSale",
+		key: "relationSale",
 		type: NumFieldType.RelationSaleView,
 	},
 ];
@@ -234,7 +218,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 
-	const { fetchContractList, hasApprovePermission } = useContext(
+	const { curProject } = useContext(
 		PreProductionContext,
 	) as any;
 
@@ -341,23 +325,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
-		if (form.status === ContractStatusMap.NotStarted) {
-			// 未启动
-			setAllDisabled(true);
-		} else if (form.status === ContractStatusMap.Reviewing) {
-			// 审批中
-			setAllDisabled(true);
-		} else if (form.status === ContractStatusMap.Approved) {
-			// 通过
-			setAllDisabled(true);
-		} else if (form.status === ContractStatusMap.ReviewFailed) {
-			// 驳回
-			setAllDisabled(true);
-		} else {
-			if (_.get(showDstColumns, "[0].disabled") !== false) {
-				setAllDisabled(false);
-			}
-		}
+
 	}, [form.status, open]);
 	// 终审情况
 
@@ -369,19 +337,8 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			if (!form.status) {
 				form.status = "not_started";
 			}
-			try {
-				if (form.typeSelection) {
-					form.typeSelection = JSON.stringify(form.typeSelection);
-				}
-				if (form.modeTrade) {
-					form.modeTrade = JSON.stringify(form.modeTrade);
-				}
-				if (form.payType) {
-					form.payType = JSON.stringify(form.payType);
-				}
-			} catch (error) { }
-			await contractAdd(excludeNull(form));
-			await fetchContractList();
+
+			// await contractAdd(excludeNull(form));
 		} catch (error) {
 			console.log(error);
 		}
@@ -403,8 +360,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				delete params.updateTime;
 				delete params.createTime;
 			} catch (error) { }
-			await contractEdit(excludeNull(params));
-			await fetchContractList();
+			// await contractEdit(excludeNull(params));
 		} catch (error) {
 			console.log(error);
 		}
@@ -420,28 +376,19 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	};
 
 	const changeStatus = async (params: any) => {
-		await contractEdit(params);
 	};
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
-		status: ContractStatusMap[keyof ContractStatusMap],
+		status: SPLProductStatusMap[keyof SPLProductStatusMap],
 	) => {
 		try {
 			const { id } = form;
-			if (status === ContractStatusMap.ReviewFailed) {
-				await changeStatus({ id, status, remark: form.remark } as any);
-			} else {
-				await changeStatus({ id, status });
-			}
+
 			// hack
 			form.status = status;
 			await handleSaveRecord();
-			// await setOpen(false);
-			// await fetchContractList();
-			if (status === ContractStatusMap.Reviewing) {
-				window.dispatchEvent(new Event("fersh-total-info"));
-			}
+
 		} catch (error) {
 			console.log(error);
 		}

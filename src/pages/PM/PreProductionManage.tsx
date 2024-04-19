@@ -173,7 +173,8 @@ export const PreProductionContext = React.createContext<any>({});
 
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
-	const [current, setCurrent] = useState(0);
+	const [currentStep, setCurrentStep] = useState(0);
+	const [curProject, setCurProject] = useState<any>({});
 	const params = useParams() as any;
 	// 根据路由信息获取项目
 	useEffect(() => {
@@ -189,6 +190,9 @@ const PreProductionManage: React.FC = () => {
 				});
 				const item = _.get(res, "data.record.0");
 				console.log("item", item);
+				if (!item) {
+					setCurProject(item)
+				}
 			} catch (error) {
 				console.log(error);
 			}
@@ -198,12 +202,12 @@ const PreProductionManage: React.FC = () => {
 	const PreSteps = () => {
 		const onChange = (value: number) => {
 			console.log("onChange:", value);
-			setCurrent(value);
+			setCurrentStep(value);
 		};
 		return (
 			<Steps
 				className="mt-4"
-				current={current}
+				current={currentStep}
 				onChange={onChange}
 				labelPlacement="vertical"
 				items={[
@@ -228,14 +232,14 @@ const PreProductionManage: React.FC = () => {
 	};
 	const CurForm = () => {
 		let res = null;
-		if (current === 0) {
+		if (currentStep === 0) {
 			res = (
 				<div style={{ width: "600px" }}>
 					<PrepareForm step={0} />
 				</div>
 			);
 		}
-		if (current === 1) {
+		if (currentStep === 1) {
 			res = (
 				<div style={{ width: "600px" }}>
 					<ReviewForm />
@@ -243,13 +247,13 @@ const PreProductionManage: React.FC = () => {
 			);
 		}
 
-		if (current === 2) {
+		if (currentStep === 2) {
 			res = <DataConfig step={"config"} />;
 		}
-		if (current === 3) {
+		if (currentStep === 3) {
 			res = <DataConfig step={"verify"} />;
 		}
-		if (current === 4) {
+		if (currentStep === 4) {
 			res = <SubmitWorkshop />;
 		}
 		return (
@@ -262,7 +266,7 @@ const PreProductionManage: React.FC = () => {
 		);
 	};
 	const renderInfoCard = () => {
-		if ([2, 3, 4].includes(current)) {
+		if ([2, 3, 4].includes(currentStep)) {
 			return (
 				<div>
 					<InfoCard />
@@ -277,7 +281,7 @@ const PreProductionManage: React.FC = () => {
 				<DashboardRoot>
 					<div
 						className="w-full step-header"
-						style={{ boxShadow: [0, 1].includes(current) ? "unset" : "" }}
+						style={{ boxShadow: [0, 1].includes(currentStep) ? "unset" : "" }}
 					>
 						<div className="w-full flex items-center ">
 							<SpecialHeader menu={{ name: "预生产管理" }} />

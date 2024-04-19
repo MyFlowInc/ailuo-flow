@@ -34,6 +34,7 @@ import {
 	selectIsFinance,
 	selectIsManager,
 	selectUser,
+	setCurContractForm,
 	setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -44,6 +45,7 @@ import { contractAdd, contractEdit } from "../../../api/ailuo/contract";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
 import ExportProject from "../../Sale/ExportProject";
+import { useHistory } from "react-router";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -569,6 +571,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
+	const history = useHistory();
 
 	const { fetchContractList, hasApprovePermission } =
 		useContext(ContracContext);
@@ -846,8 +849,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			// hack
 			form.status = status;
 			await handleSaveRecord();
-			// await setOpen(false);
-			// await fetchContractList();
 			if (status === ContractStatusMap.Reviewing) {
 				window.dispatchEvent(new Event("fersh-total-info"));
 			}
@@ -855,30 +856,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			console.log(error);
 		}
 	};
-	// 新一轮报价处理
-	const newSaleHandle = async (form: any, type: "need" | "noNeed") => {
+	const genProjectHandle = async (form: any, type: "next" | "roolback") => {
 		try {
-			let status = "";
-			if (type == "need") {
-				//
-				status = ContractStatusMap.Processing;
+			console.log(form, type);
+			if (type == "next") {
+				dispatch(setCurContractForm(form));
+				history.push("/dashboard/pre-product-manage/add");
 			}
-			if (type == "noNeed") {
-				// 下一步提交终审吧
-			}
-			console.log("newSaleHandle", form);
-			const { id, createTime, deleted, updateTime, ...params } = form;
-			// await notifyHandler(form, status); 	// 通知给后端做了
-			try {
-				params.typeSelection = JSON.stringify(params.typeSelection);
-				params.modeTrade = JSON.stringify(params.modeTrade);
-				params.payType = JSON.stringify(params.payType);
-			} catch (error) {}
-
-			params.status = status;
-			params.relationReview = form.id;
-			await contractAdd(excludeNull(params));
-			await fetchContractList();
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -1059,7 +1043,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							<Popconfirm
 								title="确认生成项目?"
 								onConfirm={() => {
-									newSaleHandle(form, "need");
+									genProjectHandle(form, "next");
 								}}
 								okText="确认"
 								cancelText="取消"
@@ -1111,7 +1095,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						<Popconfirm
 							title="撤回重改?"
 							onConfirm={() => {
-								// newSaleHandle(form, "need");
 								// TODO 有bug
 								changeProcess(form, ContractStatusMap.Processing);
 							}}

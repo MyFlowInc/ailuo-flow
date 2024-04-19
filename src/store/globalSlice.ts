@@ -43,6 +43,7 @@ export interface globalState {
 	isShowSaleModal: boolean; // 新建报价modal
 	isOpenDrawer: boolean; // 是否打开通知,
 	curSaleForm: any; // 从sale发起创建合同 带来的form
+	curContractForm: any; // 从contract发起创建项目 带来的form
 }
 
 const initialState: globalState = {
@@ -56,6 +57,7 @@ const initialState: globalState = {
 	isShowSaleModal: false, // 新建报价modal
 	isOpenDrawer: false, // 是否打开通知
 	curSaleForm: {},
+	curContractForm: {},
 };
 
 export const fetchFlowStatus = createAsyncThunk(
@@ -116,6 +118,9 @@ export const globalSlice = createSlice({
 		setCurSaleForm: (state, action) => {
 			state.curSaleForm = action.payload;
 		},
+		setCurContractForm: (state, action) => {
+			state.curContractForm = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(freshUser.fulfilled, (state, action) => {
@@ -134,6 +139,7 @@ export const {
 	setIsShowSaleModal,
 	setIsOpenDrawer,
 	setCurSaleForm,
+	setCurContractForm,
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;
@@ -151,6 +157,9 @@ export const selectIsOpenDrawer = (state: RootState) =>
 	state.global.isOpenDrawer;
 
 export const selectCurSaleForm = (state: RootState) => state.global.curSaleForm;
+
+export const selectCurContractForm = (state: RootState) =>
+	state.global.curContractForm;
 
 export const selectIsManager = (state: RootState) => {
 	const { user } = state.global;

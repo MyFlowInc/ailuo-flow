@@ -10,7 +10,7 @@ interface PageParams {
 	id?: string;
 	createBy?: string;
 }
-
+//  文件列表
 export function splFileDataList(params: PageParams) {
 	return apiCall({
 		url: "api/sys/splFileData/tree",
@@ -19,13 +19,11 @@ export function splFileDataList(params: PageParams) {
 	});
 }
 
-
-
 interface SaveParams {
 	name: string;
 	[key: string]: any;
 }
-
+// 新增文件记录
 export function splFileDataAdd(data: SaveParams) {
 	return apiCall({
 		url: "api/sys/splFileData/save",
@@ -38,6 +36,7 @@ interface EditParams {
 	id: string;
 	[key: string]: any;
 }
+// 修改
 export function splFileDataEdit(data: EditParams) {
 	return apiCall({
 		url: "api/sys/splFileData/edit",

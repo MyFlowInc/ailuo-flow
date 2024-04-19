@@ -11,9 +11,7 @@ import {
 	Avatar,
 	Badge,
 } from "antd";
-import {
-	blueButtonTheme,
-} from "../../../theme/theme";
+import { blueButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
@@ -30,6 +28,7 @@ import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
+import { splFolderFileCreate } from "../../../api/ailuo/spl-pre-product";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -60,7 +59,7 @@ const CustomModalRoot = styled.div`
 		display: flex;
 		align-items: flex-end;
 		margin-bottom: 16px;
-		flex:1 ;
+		flex: 1;
 		justify-content: space-between;
 	}
 `;
@@ -116,7 +115,6 @@ export const columns: any = [
 		type: NumFieldType.DateTime,
 	},
 
-
 	{
 		title: "执行机构型号",
 		dataIndex: "typeSelection",
@@ -154,7 +152,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -205,24 +203,19 @@ export const columns: any = [
 ];
 
 const PrepareForm: React.FC<any> = (props: any) => {
-	const { editFlowItemRecord, step } = props;
-	const modalType = "edit" as any;
+	const { editFlowItemRecord, step, modalType } = props;
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const allUser = useAppSelector(selectAllUser);
 	const dispatch = useAppDispatch();
-
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
 	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
-
-	const { curProject } = useContext(
-		PreProductionContext,
-	) as any;
-
+	const { curProject } = useContext(PreProductionContext) as any;
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
 		if (isFinance) {
@@ -292,21 +285,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			} catch (error) {
 				temp.typeSelection = [];
 			}
-			try {
-				// 处理modeTrade
-				temp.modeTrade = JSON.parse(temp.modeTrade || "[]");
-			} catch (error) {
-				temp.modeTrade = [];
-			}
-			try {
-				// 处理payType
-				temp.payType = JSON.parse(temp.payType || "[]");
-			} catch (error) {
-				temp.payType = [];
-			}
-			if (!temp.currency) {
-				temp.currency = "人民币";
-			}
+
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
@@ -314,7 +293,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			setForm((v: any) => {
 				return {
 					...v,
-					currency: "人民币",
 				};
 			});
 		}
@@ -325,7 +303,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
-
 	}, [form.status, open]);
 	// 终审情况
 
@@ -335,10 +312,10 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		try {
 			await inputForm.validateFields();
 			if (!form.status) {
-				form.status = "not_started";
+				form.status = SPLProductStatusMap.ProReviewing;
 			}
-
-			// await contractAdd(excludeNull(form));
+			const res = await splFolderFileCreate(excludeNull(form));
+			console.log(111, res);
 		} catch (error) {
 			console.log(error);
 		}
@@ -359,7 +336,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			// await contractEdit(excludeNull(params));
 		} catch (error) {
 			console.log(error);
@@ -367,6 +344,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	};
 
 	const handleSaveRecord = () => {
+		console.log(111, form, modalType);
 		inputForm.setFieldsValue(form);
 		if (modalType === "add") {
 			createRecord();
@@ -375,8 +353,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const changeStatus = async (params: any) => {
-	};
+	const changeStatus = async (params: any) => {};
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
@@ -388,7 +365,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			// hack
 			form.status = status;
 			await handleSaveRecord();
-
 		} catch (error) {
 			console.log(error);
 		}
@@ -401,7 +377,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					<Button type="primary">取消立项</Button>
 				</ConfigProvider>
 				<ConfigProvider theme={blueButtonTheme}>
-					<Button className="ml-8" type="primary">提交并进行立项审核</Button>
+					<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
+						提交并进行立项审核
+					</Button>
 				</ConfigProvider>
 			</>
 		);

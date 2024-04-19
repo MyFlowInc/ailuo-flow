@@ -13,6 +13,7 @@ import { SpecialHeader } from "../../components/layout/AppHeader";
 import SubmitWorkshop from "./FormModal/SubmitWorkshop";
 import { useHistory, useLocation, useParams } from "react-router";
 import { splProjectList } from "../../api/ailuo/spl-pre-product";
+import { getStore } from "../../store";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -176,22 +177,33 @@ const PreProductionManage: React.FC = () => {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
 	const params = useParams() as any;
+
 	// 根据路由信息获取项目
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const splId = params.splId;
-				if (!splId) return;
-				console.log("aaa", splId);
-				const res = await splProjectList({
-					id: splId,
-					pageNum: 1,
-					pageSize: 10,
-				});
-				const item = _.get(res, "data.record.0");
-				console.log("item", item);
-				if (!item) {
-					setCurProject(item);
+				if (!splId) {
+					// 错误情况
+					return;
+				} else if (splId === "addfromcontract") {
+					// 从合同创建
+					const curContractForm = getStore("global.curContractForm");
+					console.log("addfromcontract");
+				} else if (splId === "add") {
+					// 直接新建
+					console.log("addfromcontract");
+				} else {
+					// 打开已有的项目
+					const res = await splProjectList({
+						id: splId,
+						pageNum: 1,
+						pageSize: 10,
+					});
+					const item = _.get(res, "data.record.0");
+					if (!item) {
+						setCurProject(item);
+					}
 				}
 			} catch (error) {
 				console.log(error);
@@ -235,7 +247,7 @@ const PreProductionManage: React.FC = () => {
 		if (currentStep === 0) {
 			res = (
 				<div style={{ width: "600px" }}>
-					<PrepareForm step={0} />
+					<PrepareForm step={0} modalType="add" />
 				</div>
 			);
 		}

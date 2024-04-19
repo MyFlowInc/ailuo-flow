@@ -861,7 +861,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			console.log(form, type);
 			if (type == "next") {
 				dispatch(setCurContractForm(form));
-				history.push("/dashboard/pre-product-manage/add");
+				history.push("/dashboard/pre-product-manage/addfromcontract");
 			}
 		} catch (error) {
 			console.log(error);

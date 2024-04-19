@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { blueButtonTheme } from "../../../theme/theme";
 import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
-import { AddRecordModal } from "../RecordModal";
 
 import {
 	selectIsShowSaleModal,
@@ -72,7 +71,6 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} />
 		</DefaultHeaderRoot>
 	);
 };

@@ -191,7 +191,7 @@ const PreProductionManage: React.FC = () => {
 				const item = _.get(res, "data.record.0");
 				console.log("item", item);
 				if (!item) {
-					setCurProject(item)
+					setCurProject(item);
 				}
 			} catch (error) {
 				console.log(error);
@@ -259,7 +259,7 @@ const PreProductionManage: React.FC = () => {
 		return (
 			<div
 				className="w-full flex-1 flex justify-center overflow-hidden mt-4"
-			// style={{ height: "calc(100% - 200px)" }}
+				// style={{ height: "calc(100% - 200px)" }}
 			>
 				{res}
 			</div>

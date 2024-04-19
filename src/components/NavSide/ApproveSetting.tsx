@@ -84,15 +84,17 @@ const ApproveSetting: React.FC<any> = ({
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
 			let hasAccessUserList = _.get(res2, "data.record", []);
-			let hasAccessList = hasAccessUserList.map((item: any) => {
-				const user = allUserList.find(
-					(item2: any) => item2.id === item.relationUserId,
-				);
-				return {
-					...item,
-					userInfo: user,
-				};
-			});
+			let hasAccessList = hasAccessUserList
+				.map((item: any) => {
+					const user = allUserList.find(
+						(item2: any) => item2.id === item.relationUserId,
+					);
+					return {
+						...item,
+						userInfo: user,
+					};
+				})
+				.filter((i: any) => !!i.userInfo);
 			setAccessUserList(hasAccessList); // 有权限的人
 			if (!_.isEmpty(hasAccessList)) {
 				const item0 = hasAccessList[0];
@@ -207,19 +209,19 @@ const ApproveSetting: React.FC<any> = ({
 	const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
 		panelStyle,
 	) => [
-			{
-				key: "1",
-				label: <div style={{ fontSize: "16px" }}>总经理</div>,
-				children: getAccountList(manageList),
-				style: panelStyle,
-			},
-			{
-				key: "2",
-				label: <div style={{ fontSize: "16px" }}>财务部</div>,
-				children: getAccountList(financeList),
-				style: panelStyle,
-			},
-		];
+		{
+			key: "1",
+			label: <div style={{ fontSize: "16px" }}>总经理</div>,
+			children: getAccountList(manageList),
+			style: panelStyle,
+		},
+		{
+			key: "2",
+			label: <div style={{ fontSize: "16px" }}>财务部</div>,
+			children: getAccountList(financeList),
+			style: panelStyle,
+		},
+	];
 
 	const { token } = theme.useToken();
 	const panelStyle: React.CSSProperties = {
@@ -320,9 +322,11 @@ const ApproveSetting: React.FC<any> = ({
 				<Divider style={{ margin: "12px 0" }} />
 				<div style={{ color: "#3D3D3D" }}>当前审批人员</div>
 				<div className="avatar-list">
-					{accessUserList.map((item: any) => {
-						return ListItem(item);
-					})}
+					{accessUserList &&
+						accessUserList.length > 0 &&
+						accessUserList.map((item: any) => {
+							return ListItem(item);
+						})}
 					{accessUserList.length === 0 && (
 						<div className="mt-8 flex justify-center">暂未设置</div>
 					)}

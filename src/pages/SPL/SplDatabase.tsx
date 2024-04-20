@@ -19,7 +19,7 @@ export const SplDatabaseContext = React.createContext<any>({});
 
 const SplDatabase: React.FC = () => {
 	const [loading, setLoading] = useState(false);
-	const [isShowModal, setIsShowModal] = useState(false)
+	const [isShowModal, setIsShowModal] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
 	const [editFlowItemRecord, setEditFlowItemRecord] = useState<any | undefined>(
 		undefined,
@@ -57,11 +57,19 @@ const SplDatabase: React.FC = () => {
 				};
 			}
 			const res = await splFileDataList(params);
-			const list = _.get(res, "data.record") || [];
+			const list = _.get(res, "data") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;
+				if (item.children) {
+					const children = _.get(item, "children") || [];
+					children.forEach((c: any) => {
+						c.key = c.id;
+						delete c.children;
+					});
+				}
 			});
-			setTableDataSource(_.get(res, "data.record") || []);
+			console.log(111, res, list);
+			setTableDataSource(list || []);
 			curPage.current.total = _.get(res, "data.total");
 		} catch (error) {
 			console.log(error);
@@ -75,7 +83,13 @@ const SplDatabase: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SplDatabaseContext.Provider
-				value={{ fetchList, tableDataSource, setTableDataSource, isShowModal, setIsShowModal }}
+				value={{
+					fetchList,
+					tableDataSource,
+					setTableDataSource,
+					isShowModal,
+					setIsShowModal,
+				}}
 			>
 				<DashboardRoot>
 					{/* 表头 */}

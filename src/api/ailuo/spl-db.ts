@@ -13,7 +13,7 @@ interface PageParams {
 //  文件列表
 export function splFileDataList(params: PageParams) {
 	return apiCall({
-		url: "api/sys/splFileData/page",
+		url: "api/sys/splFileData/tree",
 		method: "get",
 		params,
 	});

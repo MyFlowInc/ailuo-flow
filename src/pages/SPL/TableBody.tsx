@@ -47,28 +47,37 @@ const TableBody: React.FC<FlowTableProps> = ({
 			render: (text: string, record: any) => {
 				return (
 					<div className="inline-block">
-						<div className="flex justify-between pr-2" style={{ width: "160px" }}>
-							<span className="truncate flex-1 w-0" title={record.name}>{record.name}</span>
-							<Popover
-								overlayInnerStyle={{ padding: 0 }}
-								content={() => {
-									return (
-										<div className="p-1">
-											<Button
-												type="link"
-												onClick={() => {
-													rest.setEditFlowItemRecord(record);
-													setIsShowAddModal(true);
-												}}
-											>
-												新建子级资料
-											</Button>
-										</div>
-									);
-								}}
-							>
-								<PlusOutlined style={{ color: "#707683", fontSize: "12px" }} />
-							</Popover>
+						<div
+							className="flex justify-between pr-2"
+							style={{ width: "160px" }}
+						>
+							<span className="truncate flex-1 w-0" title={record.name}>
+								{record.name}
+							</span>
+							{!record.parent && (
+								<Popover
+									overlayInnerStyle={{ padding: 0 }}
+									content={() => {
+										return (
+											<div className="p-1">
+												<Button
+													type="link"
+													onClick={() => {
+														rest.setEditFlowItemRecord(record);
+														setIsShowAddModal(true);
+													}}
+												>
+													新建子级资料
+												</Button>
+											</div>
+										);
+									}}
+								>
+									<PlusOutlined
+										style={{ color: "#707683", fontSize: "12px" }}
+									/>
+								</Popover>
+							)}
 						</div>
 					</div>
 				);

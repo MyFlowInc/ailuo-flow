@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, PlusCircleTwoTone } from "@ant-design/icons";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 
 import type { ColumnsType } from "antd/es/table";
@@ -12,6 +12,8 @@ import _ from "lodash";
 import { SplDatabaseContext } from "./SplDatabase";
 import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
+import ArrowRightSvg from "./assets/arrow-right.svg";
+import ArrowDownSvg from "./assets/arrow-down.svg";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -212,6 +214,24 @@ const StandardTable: React.FC<StandardTableProps> = ({
 				columns={tableColumns}
 				dataSource={datasource}
 				scroll={{ x: true, y: `calc(100vh - 240px)` }}
+				expandable={{
+					expandIcon: ({ expanded, onExpand, record }) =>
+						expanded ? (
+							<img
+								className="cursor-pointer mr-2 pb-[2px]"
+								src={ArrowDownSvg}
+								onClick={(e) => onExpand(record, e)}
+							/>
+						) : record.children?.length ? (
+							<img
+								className="cursor-pointer mr-2 pb-[2px]"
+								src={ArrowRightSvg}
+								onClick={(e) => onExpand(record, e)}
+							/>
+						) : (
+							<span className="mr-3"></span>
+						),
+				}}
 			/>
 			<div className="flex items-center justify-end mt-4">
 				<Pagination

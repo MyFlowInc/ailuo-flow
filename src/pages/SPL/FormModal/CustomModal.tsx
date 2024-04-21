@@ -1,23 +1,13 @@
 import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
-import {
-	ConfigProvider,
-	Form,
-	Button,
-} from "antd";
+import { ConfigProvider, Form, Button } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
-import {
-	blueButtonTheme,
-} from "../../../theme/theme";
+import { blueButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import { SplDatabaseContext } from "../SplDatabase";
 import _ from "lodash";
-import {
-
-	selectIsManager,
-	selectUser,
-} from "../../../store/globalSlice";
+import { selectIsManager, selectUser } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { splFileDataAdd, splFileDataEdit } from "../../../api/ailuo/spl-db";
 const CustomModalRoot = styled.div`
@@ -69,6 +59,7 @@ interface CustomModalProps {
 	setOpen: (value: boolean) => void;
 	modalType: string;
 	editFlowItemRecord?: any | undefined;
+	parent?: number;
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
@@ -120,8 +111,6 @@ export const columns: any = [
 	},
 ];
 
-
-
 const CustomModalContext = React.createContext({});
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -130,6 +119,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	editFlowItemRecord,
+	parent,
 }) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
@@ -137,7 +127,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
-	const { fetchList, } = useContext(SplDatabaseContext);
+	const { fetchList } = useContext(SplDatabaseContext);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 	const setAllDisabled = (disabled: boolean) => {
@@ -153,11 +143,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		setSaveButtonDisabled(disabled);
 	};
 
-
-
 	// 初始化form数据
 	useEffect(() => {
-		console.log('modal type', modalType, editFlowItemRecord)
+		console.log("modal type", modalType, editFlowItemRecord);
 
 		if (!open) {
 			return;
@@ -168,8 +156,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
-			setForm({
-			});
+			setForm({});
 		}
 	}, [open]);
 
@@ -181,8 +168,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			console.log("Received values of form: ", form);
 
 			try {
-			} catch (error) { }
-			await splFileDataAdd(excludeNull(form));
+			} catch (error) {}
+			await splFileDataAdd(excludeNull(parent ? { ...form, parent } : form));
 			await fetchList();
 			setOpen(false);
 		} catch (error) {
@@ -196,11 +183,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		const params = {
 			id,
 			...rest,
+			children: null,
 		};
+
 		try {
 			await inputForm.validateFields();
 			try {
-			} catch (error) { }
+			} catch (error) {}
 			await splFileDataEdit(excludeNull(params));
 			await fetchList();
 			setOpen(false);
@@ -217,7 +206,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			updateRecord();
 		}
 	};
-
 
 	const SaveButton = () => {
 		if (modalType === "add") {
@@ -261,7 +249,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			<div className="content">
 				<Form
 					form={inputForm}
-					name={modalType + '-' + 'recordForm'}
+					name={modalType + "-" + "recordForm"}
 					colon={false}
 					wrapperCol={{ flex: 1 }}
 					preserve={false}
@@ -278,9 +266,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					)}
 				</Form>
 			</div>
-			<div className="footer">
-
-			</div>
+			<div className="footer"></div>
 		</CustomModalRoot>
 	);
 };

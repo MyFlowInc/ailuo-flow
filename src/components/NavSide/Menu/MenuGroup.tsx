@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { CaretDownOutlined } from "@ant-design/icons";
+import { CaretDownOutlined, MoreOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import LineFilled from "../../../assets/icons/LineFilled";
+import { Button, Popover } from "antd";
 
 interface MenuGroupRootProps {
 	open?: boolean;
@@ -15,8 +16,8 @@ const MenuGroupRoot = styled.div<MenuGroupRootProps>`
 		overflow: hidden;
 
 		.group-title {
-			whitespace: nowrap;
-			margin: 10px 0px;
+			white-space: nowrap;
+			/* margin: 10px 0px; */
 			cursor: pointer;
 			padding-left: 16px;
 
@@ -74,8 +75,14 @@ const MenuGroup: React.FC<MenuGroupProps> = ({ title, children, collapsed, count
 			{title && !collapsed ? (
 				<div className="group-title-collapse">
 					<div className="group-title" onClick={handleToggleOpen}>
-						<span className="group-title-text">{title}</span>
-						<CaretDownOutlined className="group-title-icon" />
+						<div className="flex justify-between items-center">
+							<div className="flex">
+								<CaretDownOutlined className="group-title-icon" />
+								<span className="group-title-text">{title}</span>
+							</div>
+							<MenuExtraAction />
+						</div>
+
 					</div>
 					<div className="group-menu-items">{children}</div>
 				</div>
@@ -92,5 +99,50 @@ const MenuGroup: React.FC<MenuGroupProps> = ({ title, children, collapsed, count
 		</MenuGroupRoot>
 	);
 };
+
+const ExtraActionDiv = styled.div`
+	display: flex;
+	flex-direction: column;
+
+	.btn-content {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		height: 24px;
+		border-radius: 3px;
+		padding: 12px 8px;
+		font-size: 12px;
+		font-family: "Harmony_Regular", sans-serif;
+	}
+`;
+const MenuExtraAction: React.FC<any> = ({ menu, chooseMenu }) => {
+	const content = (
+		<ExtraActionDiv>
+			<Button
+				block
+				type="text"
+				rootClassName="btn-content"
+				onClick={() => {
+					chooseMenu(menu)
+				}}>
+				新建项目
+			</Button>
+		</ExtraActionDiv>
+	);
+
+	return (
+		<Popover
+			content={content}
+			zIndex={999}
+			placement="bottomLeft"
+			trigger="hover"
+			arrow={false}
+			overlayStyle={{ padding: "5px" }}
+			overlayInnerStyle={{ padding: "8px 4px" }}>
+			<MoreOutlined style={{ marginRight: "8px", fontSize: "14px", fontWeight: 800 }} />
+		</Popover>
+	);
+};
+
 
 export default MenuGroup;

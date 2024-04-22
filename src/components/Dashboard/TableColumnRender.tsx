@@ -65,7 +65,7 @@ export const NumFieldType = {
 	SingleFixSelect: 28,
 	RelationSaleView: 29, // 关联报价
 	MultiFixSelect: 30,
-	RelationTechView: 31,	// 关联技术评审
+	RelationTechView: 31, // 关联技术评审
 	DeniedField: 999, // no permission column
 };
 export const ReverSedNumFieldType = {
@@ -110,6 +110,7 @@ interface TableColumnRenderProps {
 	searchText: string;
 	users: DeveloperUser[];
 	view?: string;
+	isTree?: boolean;
 	children: React.ReactNode;
 }
 
@@ -125,10 +126,21 @@ const TableColumnRender: React.FC<TableColumnRenderProps> = ({
 	users,
 	view,
 	children,
+	isTree,
 	...restProps
 }) => {
 	// console.log("TableColumnRender", rIndex, cIndex, record, column, reader, writer, manager, searchText, users, view, children, restProps);
 	if (column === undefined || record === undefined) {
+		return <td {...restProps}>{children}</td>;
+	}
+	if (column.isTree) {
+		if (column.render) {
+			return (
+				<td className="flex" {...restProps}>
+					{[children && (children as any)[0], column.render(null, record)]}
+				</td>
+			);
+		}
 		return <td {...restProps}>{children}</td>;
 	}
 	if (column.render) {
@@ -305,14 +317,15 @@ const Attachment: React.FC<{
 	value: any;
 	children?: React.ReactNode;
 }> = ({ value }) => {
-
-	const { setFileUrl, setIsPdfModalViewOpen } = useContext(DashboardRouterOutletContext)
+	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
+		DashboardRouterOutletContext,
+	);
 
 	const clickHandle = (e: any, url: string) => {
-		e.preventDefault()
-		setFileUrl(`/preview?url=${url.replace('http', 'https')}`)
-		setIsPdfModalViewOpen(true)
-	}
+		e.preventDefault();
+		setFileUrl(`/preview?url=${url.replace("http", "https")}`);
+		setIsPdfModalViewOpen(true);
+	};
 	const [fileList, setFileList] = useState<string[]>([]);
 
 	useEffect(() => {
@@ -324,22 +337,32 @@ const Attachment: React.FC<{
 		} catch (error) {
 			setFileList([value]);
 		}
-	}, [value])
+	}, [value]);
 
 	if (!_.isEmpty(fileList)) {
 		return (
 			<div>
 				{fileList.map((value: string, idx: number) => {
-					const suffix = value.substring(value.lastIndexOf(".") + 1).toLowerCase();
-					if (suffix === "pdf" || suffix === "docx" || ['jpg', 'png', 'jpeg'].includes(suffix)) {
+					const suffix = value
+						.substring(value.lastIndexOf(".") + 1)
+						.toLowerCase();
+					if (
+						suffix === "pdf" ||
+						suffix === "docx" ||
+						["jpg", "png", "jpeg"].includes(suffix)
+					) {
 						return (
-							<div key={'Attachment_' + idx} className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300" onClick={(e) => clickHandle(e, value)}  >
+							<div
+								key={"Attachment_" + idx}
+								className="text-blue-500 hover:text-blue-800 cursor-pointer flex items-center transition-colors duration-300"
+								onClick={(e) => clickHandle(e, value)}
+							>
 								{getFileName(value)}
 							</div>
 						);
 					} else {
 						return (
-							<a key={'Attachment_' + idx} href={value} target="blank">
+							<a key={"Attachment_" + idx} href={value} target="blank">
 								{getFileName(value)}
 							</a>
 						);
@@ -349,9 +372,7 @@ const Attachment: React.FC<{
 		);
 	}
 
-
 	return <></>;
-
 };
 
 const SingleNumber: React.FC<{

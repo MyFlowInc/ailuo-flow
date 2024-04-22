@@ -66,9 +66,15 @@ const SplDatabase: React.FC = () => {
 						c.key = c.id;
 						delete c.children;
 					});
+					if (item.children.length) {
+						item.ingredientsList = null;
+						item.bom = null;
+						item.fitOutPkg = null;
+						item.operationInstruction = null;
+						item.processPkg = null;
+					}
 				}
 			});
-			console.log(111, res, list);
 			setTableDataSource(list || []);
 			curPage.current.total = _.get(res, "data.total");
 		} catch (error) {

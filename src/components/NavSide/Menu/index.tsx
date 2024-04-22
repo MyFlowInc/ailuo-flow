@@ -180,25 +180,25 @@ const Menu: React.FC = () => {
 	const fetchMenu = async () => {
 		try {
 			const res = await getUserMenu();
-			const menus: any = _.get(res, "data.0.children") || [];
+			const menus: any = _.get(res, "data") || [];
 			menus.sort((a: any, b: any) => a.sort - b.sort);
 			// 菜单列表
-			const testMenus = [
-				{
-					path: "/spl-db",
-					title: "艾罗标准件资料库-开发中",
-				},
-				// TODO: 特殊处理
-				{
-					path: "/pre-product-manage/add",
-					title: "预生产管理-开发中",
-				},
-			];
-			menus.push(...testMenus);
+			// const testMenus = [
+			// 	{
+			// 		path: "/spl-db",
+			// 		title: "艾罗标准件资料库-开发中",
+			// 	},
+			// 	// TODO: 特殊处理
+			// 	{
+			// 		path: "/pre-product-manage/add",
+			// 		title: "预生产管理-开发中",
+			// 	},
+			// ];
+			// menus.push(...testMenus);
 			setMenus(menus);
 			dispatch(setUserMenus(menus));
 			if (menus && menus.length > 0 && location.pathname === "/dashboard") {
-				history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
+				// history.push(`/dashboard` + menus[0].path); // 默认打开第一个路由
 			}
 		} catch (error) {
 			console.log("error", error);
@@ -212,11 +212,14 @@ const Menu: React.FC = () => {
 		<MenuContext.Provider value={{ totalInfo }}>
 			<MenuRoot collapsed={collapsed}>
 				<div className="menu-content">
-					<MenuGroupContext
-						menuList={menus}
-						title="销售部"
-						groupStyle={{ paddingBottom: "18px" }}
-					/>
+					{menus.map((menu: any, idx: number) => (
+						<MenuGroupContext
+							key={"MenuGroupContext_" + idx}
+							menuList={menu.children || []}
+							title={menu.title}
+							groupStyle={{ paddingBottom: "18px" }}
+						/>
+					))}
 				</div>
 				<div className="menu-extra">
 					<MenuGroup>

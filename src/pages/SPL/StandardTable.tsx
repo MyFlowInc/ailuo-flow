@@ -14,6 +14,7 @@ import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import ArrowRightSvg from "./assets/arrow-right.svg";
 import ArrowDownSvg from "./assets/arrow-down.svg";
+import { FlowItemTableDataType } from "./TableBody";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -30,7 +31,8 @@ interface StandardTableActionProps {
 	setOpen: (v: boolean) => void;
 	deleteFlowItem: (id: number) => void;
 	setEditFlowItemRecord: (v: any) => void;
-
+	setImportFlowItemRecord?: (v: FlowItemTableDataType) => void;
+	isImport?: boolean;
 	children?: React.ReactNode;
 }
 
@@ -40,6 +42,8 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	setOpen,
 	deleteFlowItem,
 	setEditFlowItemRecord,
+	isImport,
+	setImportFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
 
@@ -66,31 +70,43 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 	return (
 		<Space>
-			<Button
-				type="text"
-				icon={
-					<EditFilled
-						style={{
-							fontSize: "12px",
-							color: `${!true ? "#d9d9d9" : "#707683"}`,
-						}}
+			{!isImport ? (
+				<>
+					<Button
+						type="text"
+						icon={
+							<EditFilled
+								style={{
+									fontSize: "12px",
+									color: `${!true ? "#d9d9d9" : "#707683"}`,
+								}}
+							/>
+						}
+						onClick={() => handleEditRecord(text, record)}
 					/>
-				}
-				onClick={() => handleEditRecord(text, record)}
-			/>
-			<Button
-				type="text"
-				icon={
-					<DeleteFilled
-						style={{
-							fontSize: "12px",
-							color: `${isFinance ? "#d9d9d9" : "#707683"}`,
-						}}
+					<Button
+						type="text"
+						icon={
+							<DeleteFilled
+								style={{
+									fontSize: "12px",
+									color: `${isFinance ? "#d9d9d9" : "#707683"}`,
+								}}
+							/>
+						}
+						disabled={isFinance}
+						onClick={() => handleDeleteRecord(text, record)}
 					/>
-				}
-				disabled={isFinance}
-				onClick={() => handleDeleteRecord(text, record)}
-			/>
+				</>
+			) : (
+				<Button
+					type="text"
+					className="text-blue-500"
+					onClick={() => setImportFlowItemRecord?.(record)}
+				>
+					导入
+				</Button>
+			)}
 		</Space>
 	);
 };

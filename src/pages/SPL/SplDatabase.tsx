@@ -3,7 +3,7 @@ import { ConfigProvider } from "antd";
 import { dashboardTheme } from "../../theme/theme";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
-import TableBody from "./TableBody";
+import TableBody, { FlowItemTableDataType } from "./TableBody";
 import _ from "lodash";
 import styled from "styled-components";
 import { splFileDataList, splFileDataRemove } from "../../api/ailuo/spl-db";
@@ -17,7 +17,15 @@ const DashboardRoot = styled.div`
 `;
 export const SplDatabaseContext = React.createContext<any>({});
 
-const SplDatabase: React.FC = () => {
+interface SplDatabaseProp {
+	isImport?: boolean;
+	setImportFlowItemRecord?: (v: FlowItemTableDataType) => void;
+}
+
+const SplDatabase: React.FC<SplDatabaseProp> = ({
+	isImport,
+	setImportFlowItemRecord,
+}) => {
 	const [loading, setLoading] = useState(false);
 	const [isShowModal, setIsShowModal] = useState(false);
 	const [selectedRows, setSelectedRows] = useState<any[]>([]); //  多选
@@ -99,10 +107,13 @@ const SplDatabase: React.FC = () => {
 			>
 				<DashboardRoot>
 					{/* 表头 */}
-					<TableHeader
-						selectedRows={selectedRows}
-						setSelectedRows={setSelectedRows}
-					/>
+					{!isImport && (
+						<TableHeader
+							selectedRows={selectedRows}
+							setSelectedRows={setSelectedRows}
+						/>
+					)}
+
 					{loading && <BaseLoading />}
 					{/* 表格主体 */}
 					<TableBody
@@ -112,6 +123,8 @@ const SplDatabase: React.FC = () => {
 						deleteFlowItem={deleteFlowItemHandler}
 						setEditFlowItemRecord={setEditFlowItemRecord}
 						setSelectedRows={setSelectedRows}
+						isImport={isImport}
+						setImportFlowItemRecord={setImportFlowItemRecord}
 					/>
 				</DashboardRoot>
 			</SplDatabaseContext.Provider>

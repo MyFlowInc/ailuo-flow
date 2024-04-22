@@ -8,6 +8,7 @@ import { useLocation } from "react-router";
 import { IMenu } from "../../../api/ailuo/menu";
 import { getImgByName } from "./MenuIconMap";
 import ApproveSetting from "../ApproveSetting";
+import MenuGroup from "./MenuGroup";
 
 interface MenuItemWrapProps {
 	collapsed: boolean;
@@ -43,7 +44,8 @@ interface MenuGroupContextProps {
 	children?: React.ReactNode;
 }
 
-const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
+const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
+	const { menuList, title, groupStyle } = props;
 	const collapsed = useAppSelector(selectCollapsed);
 	const isManager = useAppSelector(selectIsManager);
 	const location = useLocation();
@@ -66,35 +68,42 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = ({ menuList }) => {
 			isManager && ["/quote-manage", "/contract-manage"].includes(path);
 		return isShow ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	};
-
+	console.log(111, menuList);
 	return (
 		<div>
-			{menuList.map((item, index) => {
-				const isSelected = "/dashboard" + item.path === location.pathname;
-				return (
-					<MenuItemWrap collapsed={collapsed} key={"MenuItemWrap_" + index}>
-						<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
-						<MenuItem
-							collapsed={collapsed}
-							menuKey={`${item.path}`}
-							menuName={item.title}
-							icon={<div> {getIcon(item)} </div>}
-							isExtraShow
-							isSelected={isSelected}
-							extra={extra(item)}
-						/>
-					</MenuItemWrap>
-				);
-			})}
-			{isManager && (
-				<ApproveSetting
-					{...{
-						approveModalVisible,
-						setApproveModalVisible,
-						curMenu: approveMenuItem,
-					}}
-				/>
-			)}
+			<MenuGroup
+				title={title}
+				collapsed={collapsed}
+				count={menuList || menuList.length || 0}
+				style={groupStyle}
+			>
+				{menuList.map((item: any, index: number) => {
+					const isSelected = "/dashboard" + item.path === location.pathname;
+					return (
+						<MenuItemWrap collapsed={collapsed} key={"MenuItemWrap_" + index}>
+							<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
+							<MenuItem
+								collapsed={collapsed}
+								menuKey={`${item.path}`}
+								menuName={item.title}
+								icon={<div> {getIcon(item)} </div>}
+								isExtraShow
+								isSelected={isSelected}
+								extra={extra(item)}
+							/>
+						</MenuItemWrap>
+					);
+				})}
+				{isManager && (
+					<ApproveSetting
+						{...{
+							approveModalVisible,
+							setApproveModalVisible,
+							curMenu: approveMenuItem,
+						}}
+					/>
+				)}
+			</MenuGroup>
 		</div>
 	);
 };

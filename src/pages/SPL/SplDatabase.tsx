@@ -75,7 +75,6 @@ const SplDatabase: React.FC = () => {
 					}
 				}
 			});
-			console.log(111, res, list);
 			setTableDataSource(list || []);
 			curPage.current.total = _.get(res, "data.total");
 		} catch (error) {

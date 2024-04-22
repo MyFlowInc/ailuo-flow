@@ -46,7 +46,7 @@ const TableBody: React.FC<FlowTableProps> = ({
 			isTree: true,
 			render: (text: string, record: any) => {
 				return (
-					<div className="inline-block">
+					<div key={"name" + record.key} className="inline-block">
 						<div
 							className="flex justify-between pr-2"
 							style={{ width: "160px" }}

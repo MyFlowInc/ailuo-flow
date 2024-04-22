@@ -290,7 +290,7 @@ const DashboardRouterOutlet: React.FC = () => {
 										<MyContractProcess />
 									</Route>
 									{/* 爱罗标准件资料库 */}
-									<Route path="/dashboard/spl-db" exact={true}>
+									<Route path="/dashboard/spl/file-data" exact={true}>
 										<SPDatabase />
 									</Route>
 									{/* 预生产管理 */}

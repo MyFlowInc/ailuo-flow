@@ -7,6 +7,9 @@
 import { apiCall } from "../../network";
 import qs from "qs";
 
+
+
+
 interface FileCreateParams {
 	name: string;
 }
@@ -33,3 +36,11 @@ export function splProjectList(params: ListParams) {
 		params,
 	});
 }
+export function splFolderFileTree(params: ListParams) {
+	return apiCall({
+		url: "api/sys/splFolderFile/tree",
+		method: "GET",
+		params,
+	});
+}
+

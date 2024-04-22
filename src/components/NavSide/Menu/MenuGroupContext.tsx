@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../store/hooks";
 import { selectCollapsed, selectIsManager } from "../../../store/globalSlice";
 import MenuItem from "./MenuItem";
 import MenuExtraAction from "./MenuExtraAction";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import { IMenu } from "../../../api/ailuo/menu";
 import { getImgByName } from "./MenuIconMap";
 import ApproveSetting from "../ApproveSetting";
 import MenuGroup from "./MenuGroup";
+import { splFolderFileTree } from "../../../api/ailuo/spl-pre-product";
+import { Tree } from "antd";
+import _ from "lodash";
 
 interface MenuItemWrapProps {
 	collapsed: boolean;
@@ -19,6 +22,7 @@ const MenuItemWrap = styled.div<MenuItemWrapProps>`
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
+	padding-left: 12px;
 
 	.menu-drag-icon {
 		position: relative;
@@ -44,6 +48,9 @@ interface MenuGroupContextProps {
 	children?: React.ReactNode;
 }
 
+
+
+
 const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 	const { menuList, title, groupStyle } = props;
 	const collapsed = useAppSelector(selectCollapsed);
@@ -52,6 +59,21 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 	const [approveModalVisible, setApproveModalVisible] =
 		useState<boolean>(false);
 	const [approveMenuItem, setApproveMenuItem] = useState<any>({});
+	const [preProductList, setPreProductList] = useState<any>([]);
+	const fetchPreProductList = async () => {
+		try {
+			const res = await splFolderFileTree({
+				pageNum: 1,
+				pageSize: 10,
+			});
+			setPreProductList(res.data);
+		} catch (err) { }
+	}
+	useEffect(() => {
+		if (title === "PM") {
+			fetchPreProductList();
+		}
+	}, [title])
 
 	const getIcon = (menu: IMenu) => {
 		const { component } = menu;
@@ -68,7 +90,63 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 			isManager && ["/quote-manage", "/contract-manage"].includes(path);
 		return isShow ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	};
-	console.log(111, menuList);
+	const renderPMList = (props: any) => {
+		const { preProductList } = props
+		const history = useHistory();
+		const [treeData, setTreeData] = useState([]) as any
+		useEffect(() => {
+			if (!_.isEmpty(preProductList)) {
+				const keys = Object.keys(preProductList)
+				const data = keys.map((key: string) => {
+					const children = preProductList[key]
+					// 给children子元素添加key
+					children.forEach((child: any) => {
+						child.key = 'product_root_' + child.id
+						child.title = child.name
+						if (!_.isEmpty(child.children)) {
+							child.children = child.children.map((item: any) => {
+								item.key = 'product_pre_' + item.id
+								if (item.type === 'pre_product') {
+									item.title = '预生产管理'
+									item.path = '/dashboard/pre-product-manage/' + item.id
+								}
+								return item
+							})
+						}
+					});
+					return {
+						title: key,
+						key: key,
+						children
+					}
+				})
+				setTreeData(data)
+			}
+		}, [preProductList])
+		const selectHandler = (selectedKeys: any, e: any) => {
+			console.log(selectedKeys, e);
+			const path = _.get(e, 'node.path')
+			if (path) {
+				history.push(path)
+			}
+		}
+		return <MenuGroup
+			title={title}
+			collapsed={collapsed}
+			count={treeData || treeData.length || 0}
+			style={groupStyle}
+
+		>
+			<Tree className="ml-8" rootStyle={{ background: 'rgb(232, 236, 241)' }} onSelect={selectHandler} treeData={treeData} />
+		</MenuGroup>
+
+	}
+	if (title === 'PM') {
+		console.log(111, preProductList);
+		return <>
+			{renderPMList({ preProductList })}
+		</>
+	}
 	return (
 		<div>
 			<MenuGroup

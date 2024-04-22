@@ -43,18 +43,16 @@ const MenuExtraAction: React.FC<MenuExtraActionProps> = ({ menu, chooseMenu }) =
 	);
 
 	return (
-		<React.Fragment>
-			<Popover
-				content={content}
-				zIndex={999}
-				placement="bottomLeft"
-				trigger="hover"
-				arrow={false}
-				overlayStyle={{ padding: "5px" }}
-				overlayInnerStyle={{ padding: "8px 4px" }}>
-				<MoreOutlined style={{ marginRight: "8px", fontSize: "14px", fontWeight: 800 }} />
-			</Popover>
-		</React.Fragment>
+		<Popover
+			content={content}
+			zIndex={999}
+			placement="bottomLeft"
+			trigger="hover"
+			arrow={false}
+			overlayStyle={{ padding: "5px" }}
+			overlayInnerStyle={{ padding: "8px 4px" }}>
+			<MoreOutlined style={{ marginRight: "8px", fontSize: "14px", fontWeight: 800 }} />
+		</Popover>
 	);
 };
 

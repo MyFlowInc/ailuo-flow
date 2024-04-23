@@ -3,6 +3,7 @@ import { CaretDownOutlined, MoreOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import LineFilled from "../../../assets/icons/LineFilled";
 import { Button, Popover } from "antd";
+import { useHistory } from "react-router";
 
 interface MenuGroupRootProps {
 	open?: boolean;
@@ -116,6 +117,8 @@ const ExtraActionDiv = styled.div`
 	}
 `;
 const MenuExtraAction: React.FC<any> = ({ menu, chooseMenu }) => {
+	const history = useHistory();
+
 	const content = (
 		<ExtraActionDiv>
 			<Button
@@ -123,7 +126,7 @@ const MenuExtraAction: React.FC<any> = ({ menu, chooseMenu }) => {
 				type="text"
 				rootClassName="btn-content"
 				onClick={() => {
-					chooseMenu(menu)
+					history.push('/dashboard/pre-product-manage/add')
 				}}>
 				新建项目
 			</Button>

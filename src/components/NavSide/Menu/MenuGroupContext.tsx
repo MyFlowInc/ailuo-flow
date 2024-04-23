@@ -97,7 +97,6 @@ const PMList = (props: any) => {
 			history.push(path);
 		}
 	};
-	console.log(111, treeData, treeDefaultExpandedKeys);
 	if (_.isEmpty(treeData)) return null;
 	return (
 		<MenuGroup

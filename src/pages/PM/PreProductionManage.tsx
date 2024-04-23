@@ -189,10 +189,8 @@ const PreProductionManage: React.FC = () => {
 				} else if (splId === "addfromcontract") {
 					// 从合同创建
 					const curContractForm = getStore("global.curContractForm");
-					console.log("addfromcontract");
 				} else if (splId === "add") {
 					// 直接新建
-					console.log("addfromcontract");
 				} else {
 					// 打开已有的项目
 					const res = await splProjectList({

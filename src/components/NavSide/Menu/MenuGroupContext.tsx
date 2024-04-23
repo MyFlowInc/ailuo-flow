@@ -48,8 +48,74 @@ interface MenuGroupContextProps {
 	children?: React.ReactNode;
 }
 
+const PMList = (props: any) => {
+	const { title, groupStyle, collapsed, preProductList } = props;
 
+	const history = useHistory();
+	const [treeData, setTreeData] = useState([]) as any;
+	const [treeDefaultExpandedKeys, setTreeDefaultExpandedKeys] = useState(
+		[],
+	) as any;
+	useEffect(() => {
+		if (!_.isEmpty(preProductList)) {
+			const keys = Object.keys(preProductList);
+			const expandKeys = [];
+			expandKeys.push(...keys);
+			const data = keys.map((key: string) => {
+				const children = preProductList[key];
+				// 给children子元素添加key
+				children.forEach((child: any) => {
+					child.key = "product_root_" + child.id;
+					child.title = child.name;
 
+					if (!_.isEmpty(child.children)) {
+						child.children = child.children.map((item: any) => {
+							item.key = "product_pre_" + item.id;
+							if (item.type === "pre_product") {
+								item.title = "预生产管理";
+								item.path = "/dashboard/pre-product-manage/" + item.id;
+							}
+							return item;
+						});
+					}
+				});
+				return {
+					title: key,
+					key: key,
+					children,
+				};
+			});
+			setTreeData(data);
+
+			setTreeDefaultExpandedKeys(expandKeys);
+		}
+	}, [preProductList]);
+	const selectHandler = (selectedKeys: any, e: any) => {
+		console.log(selectedKeys, e);
+		const path = _.get(e, "node.path");
+		if (path) {
+			history.push(path);
+		}
+	};
+	console.log(111, treeData, treeDefaultExpandedKeys);
+	if (_.isEmpty(treeData)) return null;
+	return (
+		<MenuGroup
+			title={title}
+			collapsed={collapsed}
+			count={treeData || treeData.length || 0}
+			style={groupStyle}
+		>
+			<Tree
+				className="ml-8"
+				rootStyle={{ background: "rgb(232, 236, 241)" }}
+				onSelect={selectHandler}
+				defaultExpandedKeys={treeDefaultExpandedKeys}
+				treeData={treeData}
+			/>
+		</MenuGroup>
+	);
+};
 
 const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 	const { menuList, title, groupStyle } = props;
@@ -67,13 +133,20 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 				pageSize: 10,
 			});
 			setPreProductList(res.data);
-		} catch (err) { }
-	}
+		} catch (err) {}
+	};
 	useEffect(() => {
 		if (title === "PM") {
 			fetchPreProductList();
 		}
-	}, [title])
+	}, [title]);
+
+	useEffect(() => {
+		window.addEventListener("fresh-pre-product-list", fetchPreProductList);
+		return () => {
+			window.removeEventListener("fresh-pre-product-list", fetchPreProductList);
+		};
+	});
 
 	const getIcon = (menu: IMenu) => {
 		const { component } = menu;
@@ -90,62 +163,11 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 			isManager && ["/quote-manage", "/contract-manage"].includes(path);
 		return isShow ? <MenuExtraAction {...{ menu, chooseMenu }} /> : null;
 	};
-	const renderPMList = (props: any) => {
-		const { preProductList } = props
-		const history = useHistory();
-		const [treeData, setTreeData] = useState([]) as any
-		useEffect(() => {
-			if (!_.isEmpty(preProductList)) {
-				const keys = Object.keys(preProductList)
-				const data = keys.map((key: string) => {
-					const children = preProductList[key]
-					// 给children子元素添加key
-					children.forEach((child: any) => {
-						child.key = 'product_root_' + child.id
-						child.title = child.name
-						if (!_.isEmpty(child.children)) {
-							child.children = child.children.map((item: any) => {
-								item.key = 'product_pre_' + item.id
-								if (item.type === 'pre_product') {
-									item.title = '预生产管理'
-									item.path = '/dashboard/pre-product-manage/' + item.id
-								}
-								return item
-							})
-						}
-					});
-					return {
-						title: key,
-						key: key,
-						children
-					}
-				})
-				setTreeData(data)
-			}
-		}, [preProductList])
-		const selectHandler = (selectedKeys: any, e: any) => {
-			console.log(selectedKeys, e);
-			const path = _.get(e, 'node.path')
-			if (path) {
-				history.push(path)
-			}
-		}
-		return <MenuGroup
-			title={title}
-			collapsed={collapsed}
-			count={treeData || treeData.length || 0}
-			style={groupStyle}
 
-		>
-			<Tree className="ml-8" rootStyle={{ background: 'rgb(232, 236, 241)' }} onSelect={selectHandler} treeData={treeData} />
-		</MenuGroup>
-
-	}
-	if (title === 'PM') {
-		console.log(111, preProductList);
-		return <>
-			{renderPMList({ preProductList })}
-		</>
+	if (title === "PM") {
+		return (
+			<PMList {...{ menuList, title, groupStyle, collapsed, preProductList }} />
+		);
 	}
 	return (
 		<div>

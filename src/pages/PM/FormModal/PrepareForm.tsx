@@ -316,6 +316,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			}
 			const res = await splFolderFileCreate(excludeNull(form));
 			console.log(111, res);
+			window.dispatchEvent(new Event("fresh-pre-product-list"));
 		} catch (error) {
 			console.log(error);
 		}

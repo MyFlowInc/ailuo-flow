@@ -91,7 +91,6 @@ const PMList = (props: any) => {
 		}
 	}, [preProductList]);
 	const selectHandler = (selectedKeys: any, e: any) => {
-		console.log(selectedKeys, e);
 		const path = _.get(e, "node.path");
 		if (path) {
 			history.push(path);
@@ -132,7 +131,7 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 				pageSize: 10,
 			});
 			setPreProductList(res.data);
-		} catch (err) {}
+		} catch (err) { }
 	};
 	useEffect(() => {
 		if (title === "PM") {

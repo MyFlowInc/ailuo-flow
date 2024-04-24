@@ -75,13 +75,13 @@ const MenuGroup: React.FC<MenuGroupProps> = ({ title, children, collapsed, count
 		<MenuGroupRoot open={open} n={count || 0} style={style}>
 			{title && !collapsed ? (
 				<div className="group-title-collapse">
-					<div className="group-title" onClick={handleToggleOpen}>
+					<div className="group-title">
 						<div className="flex justify-between items-center">
 							<div className="flex">
-								<CaretDownOutlined className="group-title-icon" />
+								<CaretDownOutlined onClick={handleToggleOpen} className="group-title-icon" />
 								<span className="group-title-text">{title}</span>
 							</div>
-							<MenuExtraAction />
+							<MenuExtraAction title={title} />
 						</div>
 
 					</div>
@@ -116,16 +116,18 @@ const ExtraActionDiv = styled.div`
 		font-family: "Harmony_Regular", sans-serif;
 	}
 `;
-const MenuExtraAction: React.FC<any> = ({ menu, chooseMenu }) => {
+const MenuExtraAction: React.FC<any> = ({ title }) => {
 	const history = useHistory();
-
+	console.log(111, title)
+	if (title !== 'PM') return null
 	const content = (
 		<ExtraActionDiv>
 			<Button
 				block
 				type="text"
 				rootClassName="btn-content"
-				onClick={() => {
+				onClick={(e: any) => {
+					e.stopPropagation();
 					history.push('/dashboard/pre-product-manage/add')
 				}}>
 				新建项目

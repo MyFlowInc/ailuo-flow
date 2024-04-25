@@ -10,8 +10,9 @@ import {
 	Popconfirm,
 	Avatar,
 	Badge,
+	message,
 } from "antd";
-import { blueButtonTheme } from "../../../theme/theme";
+import { blueButtonTheme, greyButtonTheme, redButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
@@ -29,6 +30,9 @@ import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 import { splFolderFileCreate } from "../../../api/ailuo/spl-pre-product";
+import TextArea from "antd/es/input/TextArea";
+import warnSvg from "../../Sale/assets/warning.svg";
+import { useHistory, useLocation } from "react-router";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -152,7 +156,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -186,19 +190,21 @@ export const columns: any = [
 		title: "关联合同",
 		dataIndex: "relationContract",
 		key: "relationContract",
-		type: NumFieldType.Attachment,
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "关联技术评审",
 		dataIndex: "relationReview",
 		key: "relationReview",
-		type: NumFieldType.RelationTechView,
+		// type: NumFieldType.RelationTechView,
+		type: NumFieldType.SingleText,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relationSale",
 		key: "relationSale",
-		type: NumFieldType.RelationSaleView,
+		// type: NumFieldType.RelationSaleView,
+		type: NumFieldType.SingleText,
 	},
 ];
 
@@ -207,12 +213,14 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+	const location = useLocation();
+	const history = useHistory();
+
 	const allUser = useAppSelector(selectAllUser);
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
-	const curSaleForm = useAppSelector((state) => state.global.curSaleForm);
 	const { curProject } = useContext(PreProductionContext) as any;
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
@@ -231,46 +239,60 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		setSaveButtonDisabled(disabled);
 	};
 
-	// new feature 从 sale 跳过来创建 合同
 	useEffect(() => {
-		if (location.search.includes("from=sale") && !_.isEmpty(curSaleForm)) {
-			console.log(2222, curSaleForm);
+		console.log('useEffect', props, curProject)
+		if (_.isEmpty(curProject)) {
+			return
+		}
+		if (location.pathname.includes('addfromcontract')) {
+			console.log('router from addfromcontract');
 			const {
-				id,
+				id, // 合同id
 				name,
 				company,
+				phone,
 				salesManager,
-				mechanismForm,
-				currency,
+				uuid,	// 合同编号
+				contractTime,
 				typeSelection,
 				quotationEnd,
-				qualityTime,
-				payType,
+				relateTechProcess,
 				relationSale,
-				exportItem,
-				modeTrade,
-			} = curSaleForm;
+				relationReview
+			} = curProject;
 			setForm((v: any) => {
 				return {
 					...v,
 					name,
 					company,
+					phone,
 					salesManager,
-					mechanismForm,
-					currency,
+					uuid,	// 合同编号
+					contractTime,
 					typeSelection,
 					quotationEnd,
-					qualityTime,
-					payType,
-					exportItem,
-					modeTrade,
-					relationReview: id + "", // 关联技术
-					relationSale: relationSale, // 关联报价
+					relationContract: id, // 合同id
+					relationReview: relationSale, //关联技术评审
+					relationSale: relationReview, //关联报价
 				};
 			});
-			dispatch(setCurSaleForm({}));
 		}
-	}, [curSaleForm]);
+		if (location.pathname.includes('add')) {
+			console.log(2222, curProject);
+			setForm({});
+		}
+		if (!_.isEmpty(curProject)) {
+			const temp = curProject
+			try {
+				// 处理初步选型型号
+				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+			} catch (error) {
+				temp.typeSelection = [];
+			}
+			setForm(temp);
+		}
+	}, [curProject]);
+
 	// 初始化form数据
 	useEffect(() => {
 		if (!open) {
@@ -311,12 +333,21 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		inputForm.setFieldsValue(form);
 		try {
 			await inputForm.validateFields();
-			if (!form.status) {
-				form.status = SPLProductStatusMap.ProReviewing;
+			if (!form.name) {
+				message.warning('请填写名称')
+				return
+			}
+			// 创建 
+			form.status = SPLProductStatusMap.ProReviewing;
+			if (form.typeSelection) {
+				form.typeSelection = JSON.stringify(form.typeSelection);
 			}
 			const res = await splFolderFileCreate(excludeNull(form));
-			console.log(111, res);
-			window.dispatchEvent(new Event("fresh-pre-product-list"));
+			console.log('创建预生产', res)
+			if (res.msg === 'success') {
+				window.dispatchEvent(new Event("fresh-pre-product-list"));
+				history.push('/dashboard/pre-product-manage/' + res.data.id);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -337,7 +368,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) {}
+			} catch (error) { }
 			// await contractEdit(excludeNull(params));
 		} catch (error) {
 			console.log(error);
@@ -345,7 +376,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	};
 
 	const handleSaveRecord = () => {
-		console.log(111, form, modalType);
 		inputForm.setFieldsValue(form);
 		if (modalType === "add") {
 			createRecord();
@@ -354,7 +384,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const changeStatus = async (params: any) => {};
+	const changeStatus = async (params: any) => { };
 	// 修改审批状态
 	const changeProcess = async (
 		form: any,
@@ -371,19 +401,184 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const renderFooter = () => {
+	const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
+
+		const clickHandle = async () => {
+			setApproveModal(false);
+
+			const { id } = user;
+			try {
+
+			} catch (error) {
+				console.log(error);
+			} finally {
+			}
+		};
 		return (
-			<>
-				<ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary">取消立项</Button>
-				</ConfigProvider>
-				<ConfigProvider theme={blueButtonTheme}>
-					<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
-						提交并进行立项审核
-					</Button>
-				</ConfigProvider>
-			</>
+			<div className="flex flex-col items-center" style={{ width: "300px" }}>
+				<div className="flex mb-4 mt-4">
+					<img src={warnSvg} />
+					<div>审批通过后，本项目将进入下一阶段</div>;
+				</div>
+				<div className="flex mb-4">
+					<ConfigProvider theme={greyButtonTheme}>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							className="mr-8"
+							onClick={() => {
+								setApproveModal(false);
+							}}
+						>
+							取消
+						</Button>
+					</ConfigProvider>
+					<ConfigProvider theme={blueButtonTheme}>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							onClick={() => {
+								clickHandle();
+							}}
+						>
+							通过
+						</Button>
+					</ConfigProvider>
+				</div>
+			</div>
 		);
+	};
+
+	const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
+
+		const [rejectReason, setRejectReason] = useState("");
+		const rejectHandle = async () => {
+			setRejectModal(false);
+
+			const { id } = user;
+			try {
+
+			} catch (error) {
+				console.log(error);
+			} finally {
+			}
+		};
+		return (
+			<div className="flex flex-col" style={{ width: "300px" }}>
+				<div
+					className="mb-4 mt-4"
+					style={{
+						fontFamily: "HarmonyOS Sans",
+						fontSize: "14px",
+					}}
+				>
+					填写驳回理由
+				</div>
+				<div>
+					<TextArea
+						rows={4}
+						value={rejectReason}
+						onChange={(e: any) => setRejectReason(e.target.value)}
+					/>
+				</div>
+				<div className="flex justify-center mb-4 mt-4">
+					<ConfigProvider theme={greyButtonTheme}>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							className="mr-8"
+							onClick={() => {
+								setRejectModal(false);
+							}}
+						>
+							取消
+						</Button>
+					</ConfigProvider>
+					<ConfigProvider theme={redButtonTheme}>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							onClick={() => {
+								rejectHandle();
+							}}
+						>
+							驳回
+						</Button>
+					</ConfigProvider>
+				</div>
+			</div>
+		);
+	};
+	const renderFooter = () => {
+		const [approveModal, setApproveModal] = useState(false);
+		const [rejectModal, setRejectModal] = useState(false);
+
+		console.log(11, step)
+		if (step === SPLProductStatusMap.ProStart) {	// 立项准备
+			return (
+				<>
+					<ConfigProvider theme={blueButtonTheme}>
+						<Button type="primary">取消立项</Button>
+					</ConfigProvider>
+					<ConfigProvider theme={blueButtonTheme}>
+						<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
+							提交并进行立项审核
+						</Button>
+					</ConfigProvider>
+				</>
+			);
+		}
+		if (step == SPLProductStatusMap.ProReviewing) {	// 立项审核
+			return (
+				<>
+					<ConfigProvider theme={redButtonTheme}>
+						<Popover
+							open={rejectModal}
+							onOpenChange={(newOpen: boolean) => {
+								setRejectModal(newOpen);
+							}}
+							content={() => {
+								return RejectConfirm({ rejectModal, setRejectModal });
+							}}
+							trigger="click"
+						>
+							<Button
+								style={{ width: "80px" }}
+								type="primary"
+								className="mr-8"
+								onClick={() => {
+									setRejectModal(true);
+								}}
+							>
+								驳回
+							</Button>
+						</Popover>
+					</ConfigProvider>
+					<ConfigProvider theme={blueButtonTheme}>
+						<Popover
+							open={approveModal}
+							onOpenChange={(newOpen: boolean) => {
+								setApproveModal(newOpen);
+							}}
+							content={() => {
+								return ApproveConfirm({ approveModal, setApproveModal });
+							}}
+							trigger="click"
+						>
+							<Button
+								style={{ width: "80px" }}
+								type="primary"
+								onClick={() => {
+									setApproveModal(true);
+								}}
+							>
+								通过
+							</Button>
+						</Popover>
+					</ConfigProvider></>
+			);
+		}
+		return null
 	};
 	return (
 		<CustomModalRoot>

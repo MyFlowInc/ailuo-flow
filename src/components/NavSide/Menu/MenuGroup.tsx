@@ -118,7 +118,6 @@ const ExtraActionDiv = styled.div`
 `;
 const MenuExtraAction: React.FC<any> = ({ title }) => {
 	const history = useHistory();
-	console.log(111, title)
 	if (title !== 'PM') return null
 	const content = (
 		<ExtraActionDiv>

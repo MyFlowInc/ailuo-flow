@@ -14,6 +14,7 @@ import SubmitWorkshop from "./FormModal/SubmitWorkshop";
 import { useHistory, useLocation, useParams } from "react-router";
 import { splProjectList } from "../../api/ailuo/spl-pre-product";
 import { getStore } from "../../store";
+import { SPLProductStatusMap } from "../../api/ailuo/dict";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -180,6 +181,7 @@ const PreProductionManage: React.FC = () => {
 
 	// 根据路由信息获取项目
 	useEffect(() => {
+		console.log('useEffect', params);
 		const fetchData = async () => {
 			try {
 				const splId = params.splId;
@@ -189,7 +191,18 @@ const PreProductionManage: React.FC = () => {
 				} else if (splId === "addfromcontract") {
 					// 从合同创建
 					const curContractForm = getStore("global.curContractForm");
+					console.log(2222, curContractForm)
+					if (!_.isEmpty(curContractForm)) {
+						const form = {
+							...curContractForm,
+							status: SPLProductStatusMap.ProStart
+						}
+						setCurProject(form)
+					}
 				} else if (splId === "add") {
+					setCurProject({
+						status: SPLProductStatusMap.ProStart
+					})
 					// 直接新建
 				} else {
 					// 打开已有的项目
@@ -199,8 +212,17 @@ const PreProductionManage: React.FC = () => {
 						pageSize: 10,
 					});
 					const item = _.get(res, "data.record.0");
-					if (!item) {
+					if (item) {
+						const { status } = item
+						console.log(111, status)
 						setCurProject(item);
+
+						if (status === SPLProductStatusMap.ProStart) {
+							setCurrentStep(0);
+						}
+						if (status === SPLProductStatusMap.ProReviewing) {
+							setCurrentStep(1);
+						}
 					}
 				}
 			} catch (error) {
@@ -208,7 +230,7 @@ const PreProductionManage: React.FC = () => {
 			}
 		};
 		fetchData();
-	}, [params.splId]);
+	}, [params.splId,]);
 	const PreSteps = () => {
 		const onChange = (value: number) => {
 			console.log("onChange:", value);
@@ -245,14 +267,14 @@ const PreProductionManage: React.FC = () => {
 		if (currentStep === 0) {
 			res = (
 				<div style={{ width: "600px" }}>
-					<PrepareForm step={0} modalType="add" />
+					<PrepareForm step={SPLProductStatusMap.ProStart} modalType="add" />
 				</div>
 			);
 		}
 		if (currentStep === 1) {
 			res = (
 				<div style={{ width: "600px" }}>
-					<ReviewForm />
+					<ReviewForm step={SPLProductStatusMap.ProReviewing} modalType="edit" />
 				</div>
 			);
 		}
@@ -269,7 +291,7 @@ const PreProductionManage: React.FC = () => {
 		return (
 			<div
 				className="w-full flex-1 flex justify-center overflow-hidden mt-4"
-				// style={{ height: "calc(100% - 200px)" }}
+			// style={{ height: "calc(100% - 200px)" }}
 			>
 				{res}
 			</div>
@@ -287,7 +309,9 @@ const PreProductionManage: React.FC = () => {
 	};
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<PreProductionContext.Provider value={{}}>
+			<PreProductionContext.Provider value={{
+				curProject
+			}}>
 				<DashboardRoot>
 					<div
 						className="w-full step-header"

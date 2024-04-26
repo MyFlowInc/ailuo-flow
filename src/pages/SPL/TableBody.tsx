@@ -21,13 +21,14 @@ export interface FlowItemTableDataType {
 }
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
-
+	isImport?: boolean;
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
 		total: number;
 	}>;
 	editFlowItemRecord: FlowItemTableDataType | undefined;
+	setImportFlowItemRecord?: (v: FlowItemTableDataType) => void;
 	setEditFlowItemRecord: (v: FlowItemTableDataType) => void;
 	deleteFlowItem: (id: number) => void;
 	setSelectedRows: (v: FlowItemTableDataType[]) => void;

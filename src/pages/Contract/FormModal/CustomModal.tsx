@@ -197,7 +197,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -230,7 +230,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) {}
+			} catch (error) { }
 			const { currency } = form;
 			let sign = "";
 			if (currency === "人民币") {
@@ -729,7 +729,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) {}
+			} catch (error) { }
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -753,7 +753,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) {}
+			} catch (error) { }
 			await contractEdit(excludeNull(params));
 			await fetchContractList();
 			setOpen(false);
@@ -858,7 +858,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 	const genProjectHandle = async (form: any, type: "next" | "roolback") => {
 		try {
-			console.log(form, type);
 			if (type == "next") {
 				dispatch(setCurContractForm(form));
 				history.push("/dashboard/pre-product-manage/addfromcontract");
@@ -1064,7 +1063,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => {}}
+									onClick={() => { }}
 								>
 									{"撤回重改"}
 								</Tag>

@@ -47,8 +47,32 @@ const InfoCarrdContainer = styled.div`
 	}
 `;
 const InfoCard = (props: any) => {
-	const [showMore, setShowMore] = useState(false);
+	const { project } = props
+	const { name, company, phone, salesManager, uuid, contractTime, typeSelection, quotationEnd } = project || {}
 
+	const getTotalNum = () => {
+		let totalNum = 0;
+		try {
+			const list = JSON.parse(typeSelection);;
+			list.forEach((item: any) => {
+				totalNum += +item.num;
+			});
+		} catch (error) { }
+		return totalNum
+	}
+	const getTotalPrice = () => {
+		let totalPrice = 0;
+		try {
+			const list = JSON.parse(typeSelection);
+			list.forEach((item: any) => {
+				totalPrice += +item.num * +item.price;
+			});
+		} catch (error) { }
+		console.log(222, typeSelection, totalPrice)
+
+		return totalPrice
+	}
+	const [showMore, setShowMore] = useState(false);
 	return (
 		<div className="w-full">
 			<div
@@ -58,7 +82,7 @@ const InfoCard = (props: any) => {
 				<div
 					style={{ fontSize: "20px", fontWeight: "bold", marginLeft: "24px" }}
 				>
-					土耳其项目
+					{project.name}
 				</div>
 				<div
 					style={{
@@ -79,43 +103,43 @@ const InfoCard = (props: any) => {
 					<div className="flex flex-col mb-8">
 						<div className="item-col">
 							<div>项目名称</div>
-							<div className="content">xxx容灾备份服务项目</div>
+							<div className="content">{name}</div>
 						</div>
 						<div className="item-col">
 							<div>单位名称</div>
-							<div className="content">苏州xx生物科技有限公司</div>
+							<div className="content">{company}</div>
 						</div>
 						<div className="item-col">
 							<div>单位联系方式</div>
-							<div className="content">文字</div>
+							<div className="content">{phone}</div>
 						</div>
 					</div>
 					<div className="flex flex-col">
 						<div className="item-col">
 							<div>销售经理</div>
-							<div className="content">周时雨</div>
+							<div className="content"> {salesManager}</div>
 						</div>
 						<div className="item-col">
 							<div>合同编号</div>
-							<div className="content">文字00</div>
+							<div className="content"> {uuid}</div>
 						</div>
 						<div className="item-col">
 							<div>合同日期</div>
-							<div className="content">2024年x月x日</div>
+							<div className="content"> {contractTime}</div>
 						</div>
 					</div>
 					<div className="flex  flex-col">
 						<div className="item-col">
 							<div>总价</div>
-							<div className="content">文字</div>
+							<div className="content"> {getTotalPrice()}</div>
 						</div>
 						<div className="item-col">
 							<div>总数量</div>
-							<div className="content">文字</div>
+							<div className="content"> {getTotalNum()}</div>
 						</div>
 						<div className="item-col">
 							<div>交期</div>
-							<div className="content">2024年x月x日</div>
+							<div className="content">	{quotationEnd}</div>
 						</div>
 					</div>
 				</InfoCarrdContainer>
@@ -189,11 +213,34 @@ const PreProductionManage: React.FC = () => {
 			} else if (splId === "addfromcontract") {
 				setCurrentStep(0);
 				// 从合同创建
-				const curContractForm = getStore("global.curContractForm");
-				console.log(2222, curContractForm)
+				const curContractForm = { ...getStore("global.curContractForm") };
 				if (!_.isEmpty(curContractForm)) {
+					const { id, // 合同id
+						name,
+						company,
+						phone,
+						salesManager,
+						uuid,	// 合同编号
+						contractTime,
+						typeSelection,
+						quotationEnd,
+						relateTechProcess,
+						relationSale,
+						relationReview } = curContractForm
+
 					const form = {
-						...curContractForm,
+						id, // 合同id
+						name,
+						company,
+						phone,
+						salesManager,
+						uuid,	// 合同编号
+						contractTime,
+						typeSelection,
+						quotationEnd,
+						relateTechProcess,
+						relationSale,
+						relationReview,
 						status: SPLProductStatusMap.ProStart
 					}
 					setCurProject(form)
@@ -215,7 +262,7 @@ const PreProductionManage: React.FC = () => {
 				if (item) {
 					const { status } = item
 					setCurProject(item);
-					console.log('setCurProject', item)
+					console.log('setCurProject', item.status, item)
 					if (status === SPLProductStatusMap.ProStart) {
 						setCurrentStep(0);
 					}
@@ -240,7 +287,6 @@ const PreProductionManage: React.FC = () => {
 	}
 	const PreSteps = () => {
 		const onChange = (value: number) => {
-			console.log("onChange:", value);
 			setCurrentStep(value);
 		};
 		return (
@@ -271,14 +317,14 @@ const PreProductionManage: React.FC = () => {
 	};
 	const CurForm = () => {
 		let res = null;
-		if (currentStep === 0) {
+		if (currentStep === 0) {	// 立项
 			res = (
 				<div style={{ width: "600px" }}>
 					<PrepareForm step={SPLProductStatusMap.ProStart} modalType="add" />
 				</div>
 			);
 		}
-		if (currentStep === 1) {
+		if (currentStep === 1) { // 审核
 			res = (
 				<div style={{ width: "600px" }}>
 					<ReviewForm step={SPLProductStatusMap.ProReviewing} modalType="edit" />
@@ -286,14 +332,14 @@ const PreProductionManage: React.FC = () => {
 			);
 		}
 
-		if (currentStep === 2) {
-			res = <DataConfig step={"config"} />;
+		if (currentStep === 2) {  // 生产资料配置
+			res = <DataConfig step={SPLProductStatusMap.Materials} />;
 		}
-		if (currentStep === 3) {
-			res = <DataConfig step={"verify"} />;
+		if (currentStep === 3) { // 生产资料审核
+			res = <DataConfig step={SPLProductStatusMap.MaterialsRev} />;
 		}
-		if (currentStep === 4) {
-			res = <SubmitWorkshop />;
+		if (currentStep === 4) {	// 提交车间
+			res = <SubmitWorkshop step={SPLProductStatusMap.SubWorkshop} />;
 		}
 		return (
 			<div
@@ -308,7 +354,7 @@ const PreProductionManage: React.FC = () => {
 		if ([2, 3, 4].includes(currentStep)) {
 			return (
 				<div>
-					<InfoCard />
+					<InfoCard project={curProject} />
 				</div>
 			);
 		}

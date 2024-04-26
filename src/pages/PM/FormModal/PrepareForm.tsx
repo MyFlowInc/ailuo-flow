@@ -275,18 +275,17 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					relationSale: relationReview, //关联报价
 				};
 			});
-		}
-		if (location.pathname.includes('add')) {
-			console.log(2222, curProject);
+		} else if (location.pathname.includes('add')) {
 			setForm({});
-		}
-		if (!_.isEmpty(curProject)) {
+		} else if (!_.isEmpty(curProject)) {
 			const temp = curProject
-			try {
-				// 处理初步选型型号
-				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
-			} catch (error) {
-				temp.typeSelection = [];
+			if (typeof temp.typeSelection === 'string') {
+				try {
+					// 处理初步选型型号
+					temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+				} catch (error) {
+					temp.typeSelection = [];
+				}
 			}
 			setForm(temp);
 		}
@@ -330,6 +329,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
+		console.log(1111, form)
 		try {
 			await inputForm.validateFields();
 			if (!form.name) {
@@ -364,14 +364,26 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		};
 		try {
 			await inputForm.validateFields();
+			if (!form.name) {
+				message.warning('请填写名称')
+				return
+			}
 			try {
-				params.typeSelection = JSON.stringify(params.typeSelection);
-				params.modeTrade = JSON.stringify(params.modeTrade);
-				params.payType = JSON.stringify(params.payType);
+				form.status = SPLProductStatusMap.ProReviewing;
+				if (form.typeSelection) {
+					form.typeSelection = JSON.stringify(form.typeSelection);
+				}
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
-			// await contractEdit(excludeNull(params));
+				await splPreProjectEdit({
+					...form,
+					status: SPLProductStatusMap.ProReviewing,
+				})
+				await freshData()
+
+			} catch (error) {
+				console.log(error);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -379,7 +391,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 
 	const handleSaveRecord = () => {
 		inputForm.setFieldsValue(form);
-		if (modalType === "add") {
+
+		const id = form.id;
+		if (!id) {
 			createRecord();
 		} else {
 			updateRecord();
@@ -395,11 +409,11 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			const { id } = user;
 			try {
 				console.log('通过', curProject)
-				splPreProjectEdit({
+				await splPreProjectEdit({
 					id: curProject.id,
 					status: SPLProductStatusMap.Materials,
 				})
-				freshData()
+				await freshData()
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -448,7 +462,12 @@ const PrepareForm: React.FC<any> = (props: any) => {
 
 			const { id } = user;
 			try {
-
+				console.log('驳回', curProject)
+				await splPreProjectEdit({
+					id: curProject.id,
+					status: SPLProductStatusMap.ProStart,
+				})
+				await freshData()
 			} catch (error) {
 				console.log(error);
 			} finally {

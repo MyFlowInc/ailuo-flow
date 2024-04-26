@@ -52,6 +52,8 @@ interface EditParams {
 // eidt
 
 export function splPreProjectEdit(data: EditParams) {
+	delete data.updateTime;
+	delete data.createTime;
 	return apiCall({
 		url: "api/sys/splProject/edit",
 		method: "PUT",

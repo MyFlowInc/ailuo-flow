@@ -210,6 +210,7 @@ export const SPLProductStatusList = [
 	},
 ];
 export enum SPLProductStatusMap {
+	ProStart = 'pro_start',
 	ProReviewing = "pro_reviewing",
 	ProReviewFailed = "pro_review_failed",
 	Materials = "materials",

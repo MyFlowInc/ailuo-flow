@@ -23,6 +23,7 @@ import { approveInfo, approvePersonRemove, approveSaveBath } from "../../../api/
 import SearchFilled from "../../../assets/icons/SearchFilled";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { accountList } from "../../../api/user";
+import { useParams } from "react-router";
 
 
 const FormRoot = styled.div`
@@ -42,31 +43,24 @@ const FormRoot = styled.div`
 	}
 `;
 
-const ApproveSetting: React.FC<any> = ({
+const ApproveModal: React.FC<any> = ({
 	approveModalVisible,
 	setApproveModalVisible,
-	curMenu,
+	approveType
 }) => {
 	const [accessUserList, setAccessUserList] = useState([]);
 	const [manageList, setManageList] = useState([]);
 	const [financeList, setFinanceList] = useState([]);
+	const [productList, setProductList] = useState([]);	//生产技术部
+	const [techList, setTechList] = useState([]); // 技术部
 	const [curSelectedIds, setCurSelectedIds] = useState<string[]>([]); // user id
 	const [filterValue, setFilterValue] = useState("");
 	const [loading, setLoading] = useState(false);
-	const [belong, setBelong] = useState("");
-	const [type, setType] = useState("and");
+	const [belong, setBelong] = useState("pre_product");
+	const [type, setType] = useState("or");
+	const params = useParams() as any;
 
-	useEffect(() => {
-		let belong = "";
-		const path = _.get(curMenu, "path") || "";
-		if (path.includes("quote")) {
-			belong = "sale";
-		}
-		if (path.includes("contract")) {
-			belong = "contract";
-		}
-		setBelong(belong);
-	});
+
 	// 获取账号列表
 	useEffect(() => {
 		approveModalVisible && belong && fetchUserList();
@@ -79,6 +73,8 @@ const ApproveSetting: React.FC<any> = ({
 			let allUserList = _.get(res, "data.record", []);
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
+			const pList = allUserList.filter((item: any) => item.code === "product");
+			const tList = allUserList.filter((item: any) => item.code === "tech");
 			let hasAccessUserList = _.get(res2, "data.record", []);
 			let hasAccessList = hasAccessUserList
 				.map((item: any) => {
@@ -102,6 +98,8 @@ const ApproveSetting: React.FC<any> = ({
 
 			setManageList(mList);
 			setFinanceList(fList);
+			setProductList(pList);
+			setTechList(tList);
 		} catch (error) {
 			console.log(error);
 		}
@@ -217,6 +215,18 @@ const ApproveSetting: React.FC<any> = ({
 				children: getAccountList(financeList),
 				style: panelStyle,
 			},
+			{
+				key: "3",
+				label: <div style={{ fontSize: "16px" }}>生产技术部</div>,
+				children: getAccountList(productList),
+				style: panelStyle,
+			},
+			{
+				key: "4",
+				label: <div style={{ fontSize: "16px" }}>技术部</div>,
+				children: getAccountList(techList),
+				style: panelStyle,
+			},
 		];
 
 	const { token } = theme.useToken();
@@ -232,13 +242,19 @@ const ApproveSetting: React.FC<any> = ({
 	};
 	// 新增
 	const handleSave = async () => {
+		const splId = params.splId;
+		if (!splId) {
+			// 错误情况
+			message.warning("项目不存在");
+			return;
+		}
 		setLoading(true);
 		const p1 = curSelectedIds;
 		const p2 = accessUserList.map((item: any) => {
 			return item.userInfo.id;
 		});
 		const diffIds = _.difference(p1, p2);
-		console.log(p1, p2, diffIds, accessUserList);
+		// console.log(p1, p2, diffIds, accessUserList);
 		try {
 			const params = curSelectedIds.map((id) => {
 				const relationUser = _.find(accessUserList, {
@@ -251,10 +267,12 @@ const ApproveSetting: React.FC<any> = ({
 						belong,
 						type,
 						id: relationUser.id,
+						projectSaleId: splId,
 					};
 				}
 				return {
 					carbonUserId: id,
+					projectSaleId: splId,
 					relationUserId: id,
 					belong,
 					type,
@@ -308,15 +326,15 @@ const ApproveSetting: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
-				<div className="mb-4" style={{ color: "#3D3D3D" }}>
+				{/* <div className="mb-4" style={{ color: "#3D3D3D" }}>
 					审批方式
 				</div>
 				<Radio.Group onChange={radioOnChange} value={type}>
 					<Radio value={"and"}>会签</Radio>
 					<Radio value={"or"}>或签</Radio>
-				</Radio.Group>
-				<Divider style={{ margin: "12px 0" }} />
-				<div style={{ color: "#3D3D3D" }}>当前审批人员</div>
+				</Radio.Group> */}
+				{/* <Divider style={{ margin: "12px 0" }} /> */}
+				<div style={{ color: "#3D3D3D", fontSize: '14px' }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList &&
 						accessUserList.length > 0 &&
@@ -395,4 +413,4 @@ const ApproveSetting: React.FC<any> = ({
 	);
 };
 
-export default ApproveSetting;
+export default ApproveModal;

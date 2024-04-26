@@ -140,11 +140,13 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 	}, [title]);
 
 	useEffect(() => {
-		window.addEventListener("fresh-pre-product-list", fetchPreProductList);
+		if (title === "PM") {
+			window.addEventListener("fresh-pre-product-list", fetchPreProductList);
+		}
 		return () => {
 			window.removeEventListener("fresh-pre-product-list", fetchPreProductList);
 		};
-	});
+	}, []);
 
 	const getIcon = (menu: IMenu) => {
 		const { component } = menu;

@@ -46,7 +46,7 @@ const FormRoot = styled.div`
 const ApproveModal: React.FC<any> = ({
 	approveModalVisible,
 	setApproveModalVisible,
-
+	approveType
 }) => {
 	const [accessUserList, setAccessUserList] = useState([]);
 	const [manageList, setManageList] = useState([]);
@@ -71,7 +71,6 @@ const ApproveModal: React.FC<any> = ({
 			const res = await accountList();
 			const res2 = await approveInfo({ belong }); // 审批信息
 			let allUserList = _.get(res, "data.record", []);
-			console.log(2222, allUserList)
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
 			const pList = allUserList.filter((item: any) => item.code === "product");

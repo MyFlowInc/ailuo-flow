@@ -54,18 +54,18 @@ const DataConfig: React.FC<any> = (props: any) => {
 	return (
 		<DataConfigWrapper className="w-full">
 			<ConfigProvider theme={TableTheme}>
-				<div style={{ height: '500px' }}>
+				{/* <div style={{ height: '500px' }}>
 					<SplDatabase isImport />
-				</div>
+				</div> */}
 
-				{/* <SPLModeSelect
+				<SPLModeSelect
 					key={"ModelTable" + props.key}
 					{...{
 						column,
 						form,
 						setForm,
 					}}
-				/> */}
+				/>
 				<div className="flex w-full justify-center items-center">{renderFooter()}</div>
 			</ConfigProvider>
 		</DataConfigWrapper>

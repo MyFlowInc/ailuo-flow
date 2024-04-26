@@ -15,7 +15,7 @@ import { useHistory, useLocation, useParams } from "react-router";
 import { splProjectList } from "../../api/ailuo/spl-pre-product";
 import { getStore } from "../../store";
 import { SPLProductStatusMap } from "../../api/ailuo/dict";
-import ApproveModal from "./FormModal/EstablishApproveModal";
+import ApproveModal from "./FormModal/ApproveModal";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -201,6 +201,7 @@ export const PreProductionContext = React.createContext<any>({});
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [isShowApproveModal, setIsShowApproveModal] = useState(false);
+	const [approveType, setApproveType] = useState("");	// pre_product
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
 	const params = useParams() as any;
@@ -287,6 +288,7 @@ const PreProductionManage: React.FC = () => {
 	}
 	const PreSteps = () => {
 		const onChange = (value: number) => {
+			// return 
 			setCurrentStep(value);
 		};
 		return (

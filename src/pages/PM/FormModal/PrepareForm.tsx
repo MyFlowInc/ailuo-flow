@@ -29,7 +29,7 @@ import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
-import { splFolderFileCreate } from "../../../api/ailuo/spl-pre-product";
+import { splFolderFileCreate, splPreProjectEdit } from "../../../api/ailuo/spl-pre-product";
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
@@ -221,7 +221,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
-	const { curProject } = useContext(PreProductionContext) as any;
+	const { curProject, setIsShowApproveModal, freshData } = useContext(PreProductionContext) as any;
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const setAllDisabled = (disabled: boolean) => {
@@ -240,7 +240,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		console.log('useEffect', props, curProject)
 		if (_.isEmpty(curProject)) {
 			return
 		}
@@ -347,6 +346,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			if (res.msg === 'success') {
 				window.dispatchEvent(new Event("fresh-pre-product-list"));
 				history.push('/dashboard/pre-product-manage/' + res.data.id);
+				setTimeout(() => {
+					setIsShowApproveModal(true);
+				}, 500)
 			}
 		} catch (error) {
 			console.log(error);
@@ -384,31 +386,20 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const changeStatus = async (params: any) => { };
-	// 修改审批状态
-	const changeProcess = async (
-		form: any,
-		status: SPLProductStatusMap[keyof SPLProductStatusMap],
-	) => {
-		try {
-			const { id } = form;
 
-			// hack
-			form.status = status;
-			await handleSaveRecord();
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
 	const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
-
 		const clickHandle = async () => {
 			setApproveModal(false);
 
 			const { id } = user;
 			try {
-
+				console.log('通过', curProject)
+				splPreProjectEdit({
+					id: curProject.id,
+					status: SPLProductStatusMap.Materials,
+				})
+				freshData()
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -513,7 +504,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		const [approveModal, setApproveModal] = useState(false);
 		const [rejectModal, setRejectModal] = useState(false);
 
-		console.log(11, step)
 		if (step === SPLProductStatusMap.ProStart) {	// 立项准备
 			return (
 				<>

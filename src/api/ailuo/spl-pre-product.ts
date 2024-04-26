@@ -44,3 +44,17 @@ export function splFolderFileTree(params: ListParams) {
 	});
 }
 
+
+interface EditParams {
+	id: string
+	[key: string]: any
+}
+// eidt
+
+export function splPreProjectEdit(data: EditParams) {
+	return apiCall({
+		url: "api/sys/splProject/edit",
+		method: "PUT",
+		data,
+	});
+}

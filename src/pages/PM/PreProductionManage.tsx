@@ -15,6 +15,7 @@ import { useHistory, useLocation, useParams } from "react-router";
 import { splProjectList } from "../../api/ailuo/spl-pre-product";
 import { getStore } from "../../store";
 import { SPLProductStatusMap } from "../../api/ailuo/dict";
+import ApproveModal from "./FormModal/ApproveModal";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -175,62 +176,68 @@ export const PreProductionContext = React.createContext<any>({});
 
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
+	const [isShowApproveModal, setIsShowApproveModal] = useState(false);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
 	const params = useParams() as any;
-
-	// 根据路由信息获取项目
-	useEffect(() => {
-		console.log('useEffect', params);
-		const fetchData = async () => {
-			try {
-				const splId = params.splId;
-				if (!splId) {
-					// 错误情况
-					return;
-				} else if (splId === "addfromcontract") {
-					// 从合同创建
-					const curContractForm = getStore("global.curContractForm");
-					console.log(2222, curContractForm)
-					if (!_.isEmpty(curContractForm)) {
-						const form = {
-							...curContractForm,
-							status: SPLProductStatusMap.ProStart
-						}
-						setCurProject(form)
-					}
-				} else if (splId === "add") {
-					setCurProject({
+	const fetchData = async () => {
+		try {
+			const splId = params.splId;
+			if (!splId) {
+				// 错误情况
+				return;
+			} else if (splId === "addfromcontract") {
+				setCurrentStep(0);
+				// 从合同创建
+				const curContractForm = getStore("global.curContractForm");
+				console.log(2222, curContractForm)
+				if (!_.isEmpty(curContractForm)) {
+					const form = {
+						...curContractForm,
 						status: SPLProductStatusMap.ProStart
-					})
-					// 直接新建
-				} else {
-					// 打开已有的项目
-					const res = await splProjectList({
-						id: splId,
-						pageNum: 1,
-						pageSize: 10,
-					});
-					const item = _.get(res, "data.record.0");
-					if (item) {
-						const { status } = item
-						console.log(111, status)
-						setCurProject(item);
-
-						if (status === SPLProductStatusMap.ProStart) {
-							setCurrentStep(0);
-						}
-						if (status === SPLProductStatusMap.ProReviewing) {
-							setCurrentStep(1);
-						}
+					}
+					setCurProject(form)
+				}
+			} else if (splId === "add") {
+				setCurrentStep(0);
+				setCurProject({
+					status: SPLProductStatusMap.ProStart
+				})
+				// 直接新建
+			} else {
+				// 打开已有的项目
+				const res = await splProjectList({
+					id: splId,
+					pageNum: 1,
+					pageSize: 10,
+				});
+				const item = _.get(res, "data.record.0");
+				if (item) {
+					const { status } = item
+					setCurProject(item);
+					console.log('setCurProject', item)
+					if (status === SPLProductStatusMap.ProStart) {
+						setCurrentStep(0);
+					}
+					if (status === SPLProductStatusMap.ProReviewing) {
+						setCurrentStep(1);
+					}
+					if (status === SPLProductStatusMap.Materials) {
+						setCurrentStep(2);
 					}
 				}
-			} catch (error) {
-				console.log(error);
 			}
-		};
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	// 根据路由信息获取项目
+	useEffect(() => {
 		fetchData();
 	}, [params.splId,]);
+	const freshData = async () => {
+		await fetchData()
+	}
 	const PreSteps = () => {
 		const onChange = (value: number) => {
 			console.log("onChange:", value);
@@ -310,7 +317,9 @@ const PreProductionManage: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<PreProductionContext.Provider value={{
-				curProject
+				curProject,
+				setIsShowApproveModal,
+				freshData
 			}}>
 				<DashboardRoot>
 					<div
@@ -324,6 +333,7 @@ const PreProductionManage: React.FC = () => {
 						{renderInfoCard()}
 					</div>
 					{CurForm()}
+					<ApproveModal approveModalVisible={isShowApproveModal} setApproveModalVisible={setIsShowApproveModal} />
 				</DashboardRoot>
 			</PreProductionContext.Provider>
 		</ConfigProvider>

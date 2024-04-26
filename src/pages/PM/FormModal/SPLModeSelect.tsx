@@ -319,7 +319,6 @@ const SPLModeSelect: React.FC = (props: any) => {
 			},
 		},
 		{
-			editable: true,
 			title: "操作",
 			dataIndex: "action",
 			render: (text: any, record: any) => {

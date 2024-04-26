@@ -15,7 +15,7 @@ import { useHistory, useLocation, useParams } from "react-router";
 import { splProjectList } from "../../api/ailuo/spl-pre-product";
 import { getStore } from "../../store";
 import { SPLProductStatusMap } from "../../api/ailuo/dict";
-import ApproveModal from "./FormModal/ApproveModal";
+import ApproveModal from "./FormModal/EstablishApproveModal";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;

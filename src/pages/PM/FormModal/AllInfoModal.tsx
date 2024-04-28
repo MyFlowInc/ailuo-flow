@@ -205,7 +205,7 @@ const AllInfoModal: React.FC<any> = (props: any) => {
   const [showDstColumns, setShowDstColumns] = useState(columns.map((item: any) => {
     return {
       ...item,
-      disabled: false,
+      disabled: true,
     };
   }));
   const [inputForm] = Form.useForm();

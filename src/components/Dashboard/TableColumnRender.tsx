@@ -313,7 +313,7 @@ const getFileName = (url: string) => {
 	return fileName;
 };
 
-const Attachment: React.FC<{
+export const Attachment: React.FC<{
 	value: any;
 	children?: React.ReactNode;
 }> = ({ value }) => {

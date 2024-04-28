@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Modal } from "antd";
 import { Steps } from "antd";
 import { dashboardTheme } from "../../theme/theme";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
@@ -16,6 +16,7 @@ import { splProjectList } from "../../api/ailuo/spl-pre-product";
 import { getStore } from "../../store";
 import { SPLProductStatusMap } from "../../api/ailuo/dict";
 import ApproveModal from "./FormModal/ApproveModal";
+import AllInfoModal from "./FormModal/AllInfoModal";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -49,7 +50,7 @@ const InfoCarrdContainer = styled.div`
 const InfoCard = (props: any) => {
 	const { project } = props
 	const { name, company, phone, salesManager, uuid, contractTime, typeSelection, quotationEnd } = project || {}
-
+	const [isShowInfoModal, setIsShowInfoModal] = useState(false)
 	const getTotalNum = () => {
 		let totalNum = 0;
 		try {
@@ -73,6 +74,9 @@ const InfoCard = (props: any) => {
 		return totalPrice
 	}
 	const [showMore, setShowMore] = useState(false);
+	const openModal = () => {
+		setIsShowInfoModal(true)
+	}
 	return (
 		<div className="w-full">
 			<div
@@ -93,10 +97,13 @@ const InfoCard = (props: any) => {
 						fontSize: "12px",
 						color: "#707683",
 					}}
-					className="flex justify-center items-center"
+					className="flex justify-center items-center cursor-pointer"
+					onClick={openModal}
 				>
 					显示项目全部信息
 				</div>
+				<AllInfoModal {...{ isShowInfoModal, setIsShowInfoModal, project }} />
+
 			</div>
 			<div style={{ minHeight: "24px" }}>
 				<InfoCarrdContainer style={{ display: showMore ? "flex" : "none" }}>

@@ -8,11 +8,13 @@ import { myFlowUpload } from "../../../../api/upload";
 import _ from "lodash";
 import { Button, Popover } from "antd";
 import { DashboardRouterOutletContext } from "../../../../context";
+import SplDatabaseModal from "../../SplDatabaseModal";
 
 interface TypeAttachmentProps {
 	cell: any;
 	form: any;
 	setForm: any;
+	enableSplDatabase?: boolean;
 }
 
 const TypeAttachment: React.FC<TypeAttachmentProps> = (
@@ -23,11 +25,12 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	const [fileList, setFileList] = useState<string[]>([]);
 
 	if (!DashboardRouterOutletContext) {
-		return null
+		return null;
 	}
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
-	)
+	);
+	const [isShowSplDatabaseModal, setIsShowSplDatabaseModal] = useState(false);
 
 	// 权限处理
 	const [disabled, setDisabled] = useState(false);
@@ -52,7 +55,6 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			console.log(error);
 			setFileList([urls]);
 		}
-
 	}, [form]);
 
 	const getFileName = (url: string) => {
@@ -122,7 +124,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	};
 	const previewHandle = (idx: number) => {
 		const url = fileList[idx] as any;
-		console.log('previewHandle', url);
+		console.log("previewHandle", url);
 		setFileUrl(`/preview?url=${url.replace("http", "https")}`);
 		setIsPdfModalViewOpen(true);
 	};
@@ -135,22 +137,55 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			[cell.key]: JSON.stringify(fileList),
 		});
 	};
+
+	const handleShowSplDatabase = () => {
+		setIsShowSplDatabaseModal(true);
+	};
+
 	const content = (idx: number) => {
 		return (
 			<div className="p-1">
-				<Button disabled={disabled} type="link" danger onClick={() => { deleteHandle(idx) }}>
+				<Button
+					disabled={disabled}
+					type="link"
+					danger
+					onClick={() => {
+						deleteHandle(idx);
+					}}
+				>
 					删除
 				</Button>
-				<Button type="link" onClick={() => { downLoadHandle(idx) }}>
+				<Button
+					type="link"
+					onClick={() => {
+						downLoadHandle(idx);
+					}}
+				>
 					下载
 				</Button>
-				<Button type="link" onClick={() => { previewHandle(idx) }}>
+				<Button
+					type="link"
+					onClick={() => {
+						previewHandle(idx);
+					}}
+				>
 					预览
 				</Button>
 				{/* 继续上传 */}
-				<Button type="link" onClick={uploadHandler}>
-					继续上传
-				</Button>
+				{props.enableSplDatabase ? (
+					<>
+						<Button type="link" onClick={uploadHandler}>
+							本地新增
+						</Button>
+						<Button type="link" onClick={handleShowSplDatabase}>
+							资料库新增
+						</Button>
+					</>
+				) : (
+					<Button type="link" onClick={uploadHandler}>
+						继续上传
+					</Button>
+				)}
 			</div>
 		);
 	};
@@ -159,38 +194,81 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 		return (
 			<div>
 				{fileList.map((url, index) => {
-					return <div key={'file' + index}>
-						<Popover overlayInnerStyle={{ padding: 0 }} content={() => {
-							return content(index)
-						}}>
-							<span
-								style={{
-									color: "#1677ff",
-									cursor: "pointer",
-									transition: "color 0.3s",
+					return (
+						<div key={"file" + index}>
+							<Popover
+								overlayInnerStyle={{ padding: 0 }}
+								content={() => {
+									return content(index);
 								}}
 							>
-								{getFileName(url)}
-							</span>
-						</Popover>
-					</div>
+								<span
+									style={{
+										color: "#1677ff",
+										cursor: "pointer",
+										transition: "color 0.3s",
+									}}
+								>
+									{getFileName(url)}
+								</span>
+							</Popover>
+						</div>
+					);
 				})}
 			</div>
 		);
 	}
 
+	const enableSplDatabaseUpload = () => {
+		return (
+			<>
+				<Popover
+					overlayInnerStyle={{ padding: 0 }}
+					content={() => (
+						<div>
+							<Button type="link" onClick={uploadHandler}>
+								本地新增
+							</Button>
+							<Button type="link" onClick={handleShowSplDatabase}>
+								资料库新增
+							</Button>
+						</div>
+					)}
+				>
+					<span
+						style={{
+							color: "#1677ff",
+							cursor: "pointer",
+							transition: "color 0.3s",
+						}}
+					>
+						{"上传"}
+					</span>
+				</Popover>
+				<SplDatabaseModal
+					open={isShowSplDatabaseModal}
+					setOpen={(open: boolean) => setIsShowSplDatabaseModal(open)}
+				></SplDatabaseModal>
+			</>
+		);
+	};
+
 	return (
 		<div>
-			<span
-				onClick={uploadHandler}
-				style={{
-					color: "#1677ff",
-					cursor: "pointer",
-					transition: "color 0.3s",
-				}}
-			>
-				{"上传"}
-			</span>
+			{props.enableSplDatabase ? (
+				enableSplDatabaseUpload()
+			) : (
+				<span
+					onClick={uploadHandler}
+					style={{
+						color: "#1677ff",
+						cursor: "pointer",
+						transition: "color 0.3s",
+					}}
+				>
+					{"上传"}
+				</span>
+			)}
 		</div>
 	);
 };

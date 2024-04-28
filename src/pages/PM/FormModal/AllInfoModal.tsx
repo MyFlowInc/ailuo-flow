@@ -319,7 +319,7 @@ const AllInfoModal: React.FC<any> = (props: any) => {
   };
 
   return (
-    <Modal title="Basic Modal" open={isShowInfoModal} footer={null} onCancel={handleCancel}>
+    <Modal title="项目信息" open={isShowInfoModal} footer={null} onCancel={handleCancel}>
 
       <CustomModalRoot>
         <div className="content">

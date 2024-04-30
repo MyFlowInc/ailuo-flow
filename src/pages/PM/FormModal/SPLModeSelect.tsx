@@ -246,6 +246,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 						setForm={() => {}}
 						cell={{ key: "ingredientsList" }}
 						form={{}}
+						enableSplDatabase
 					></TypeAttachment>
 				);
 			},
@@ -263,6 +264,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 						setForm={() => {}}
 						cell={{ key: "bom" }}
 						form={{}}
+						enableSplDatabase
 					></TypeAttachment>
 				);
 			},
@@ -280,6 +282,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 						setForm={() => {}}
 						cell={{ key: "processPkg" }}
 						form={{}}
+						enableSplDatabase
 					></TypeAttachment>
 				);
 			},
@@ -297,6 +300,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 						setForm={() => {}}
 						cell={{ key: "fitOutPkg" }}
 						form={{}}
+						enableSplDatabase
 					></TypeAttachment>
 				);
 			},
@@ -314,6 +318,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 						setForm={() => {}}
 						cell={{ key: "operationInstruction" }}
 						form={{}}
+						enableSplDatabase
 					></TypeAttachment>
 				);
 			},
@@ -399,7 +404,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 	});
 
 	return (
-		<div className="w-full" style={{ paddingRight: "200px" }}>
+		<div className="w-full pb-10" style={{ paddingRight: "200px" }}>
 			<div className="flex mb-4">
 				<div
 					className={["flex items-center ", disabled ? "hidden" : ""].join("")}

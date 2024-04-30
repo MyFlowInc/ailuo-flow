@@ -48,19 +48,28 @@ const InfoCarrdContainer = styled.div`
 	}
 `;
 const InfoCard = (props: any) => {
-	const { project } = props
-	const { name, company, phone, salesManager, uuid, contractTime, typeSelection, quotationEnd } = project || {}
-	const [isShowInfoModal, setIsShowInfoModal] = useState(false)
+	const { project } = props;
+	const {
+		name,
+		company,
+		phone,
+		salesManager,
+		uuid,
+		contractTime,
+		typeSelection,
+		quotationEnd,
+	} = project || {};
+	const [isShowInfoModal, setIsShowInfoModal] = useState(false);
 	const getTotalNum = () => {
 		let totalNum = 0;
 		try {
-			const list = JSON.parse(typeSelection);;
+			const list = JSON.parse(typeSelection);
 			list.forEach((item: any) => {
 				totalNum += +item.num;
 			});
-		} catch (error) { }
-		return totalNum
-	}
+		} catch (error) {}
+		return totalNum;
+	};
 	const getTotalPrice = () => {
 		let totalPrice = 0;
 		try {
@@ -68,15 +77,13 @@ const InfoCard = (props: any) => {
 			list.forEach((item: any) => {
 				totalPrice += +item.num * +item.price;
 			});
-		} catch (error) { }
-		console.log(222, typeSelection, totalPrice)
-
-		return totalPrice
-	}
+		} catch (error) {}
+		return totalPrice;
+	};
 	const [showMore, setShowMore] = useState(false);
 	const openModal = () => {
-		setIsShowInfoModal(true)
-	}
+		setIsShowInfoModal(true);
+	};
 	return (
 		<div className="w-full">
 			<div
@@ -103,7 +110,6 @@ const InfoCard = (props: any) => {
 					显示项目全部信息
 				</div>
 				<AllInfoModal {...{ isShowInfoModal, setIsShowInfoModal, project }} />
-
 			</div>
 			<div style={{ minHeight: "24px" }}>
 				<InfoCarrdContainer style={{ display: showMore ? "flex" : "none" }}>
@@ -146,7 +152,7 @@ const InfoCard = (props: any) => {
 						</div>
 						<div className="item-col">
 							<div>交期</div>
-							<div className="content">	{quotationEnd}</div>
+							<div className="content"> {quotationEnd}</div>
 						</div>
 					</div>
 				</InfoCarrdContainer>
@@ -208,7 +214,7 @@ export const PreProductionContext = React.createContext<any>({});
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [isShowApproveModal, setIsShowApproveModal] = useState(false);
-	const [approveType, setApproveType] = useState("");	// pre_product
+	const [approveType, setApproveType] = useState(""); // pre_product
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
 	const params = useParams() as any;
@@ -223,18 +229,20 @@ const PreProductionManage: React.FC = () => {
 				// 从合同创建
 				const curContractForm = { ...getStore("global.curContractForm") };
 				if (!_.isEmpty(curContractForm)) {
-					const { id, // 合同id
+					const {
+						id, // 合同id
 						name,
 						company,
 						phone,
 						salesManager,
-						uuid,	// 合同编号
+						uuid, // 合同编号
 						contractTime,
 						typeSelection,
 						quotationEnd,
 						relateTechProcess,
 						relationSale,
-						relationReview } = curContractForm
+						relationReview,
+					} = curContractForm;
 
 					const form = {
 						id, // 合同id
@@ -242,22 +250,22 @@ const PreProductionManage: React.FC = () => {
 						company,
 						phone,
 						salesManager,
-						uuid,	// 合同编号
+						uuid, // 合同编号
 						contractTime,
 						typeSelection,
 						quotationEnd,
 						relateTechProcess,
 						relationSale,
 						relationReview,
-						status: SPLProductStatusMap.ProStart
-					}
-					setCurProject(form)
+						status: SPLProductStatusMap.ProStart,
+					};
+					setCurProject(form);
 				}
 			} else if (splId === "add") {
 				setCurrentStep(0);
 				setCurProject({
-					status: SPLProductStatusMap.ProStart
-				})
+					status: SPLProductStatusMap.ProStart,
+				});
 				// 直接新建
 			} else {
 				// 打开已有的项目
@@ -268,9 +276,9 @@ const PreProductionManage: React.FC = () => {
 				});
 				const item = _.get(res, "data.record.0");
 				if (item) {
-					const { status } = item
+					const { status } = item;
 					setCurProject(item);
-					console.log('setCurProject', item.status, item)
+					console.log("setCurProject", item.status, item);
 					if (status === SPLProductStatusMap.ProStart) {
 						setCurrentStep(0);
 					}
@@ -279,6 +287,12 @@ const PreProductionManage: React.FC = () => {
 					}
 					if (status === SPLProductStatusMap.Materials) {
 						setCurrentStep(2);
+					}
+					if (status === SPLProductStatusMap.MaterialsRev) {
+						setCurrentStep(3);
+					}
+					if (status === SPLProductStatusMap.SubWorkshop) {
+						setCurrentStep(4);
 					}
 				}
 			}
@@ -289,13 +303,13 @@ const PreProductionManage: React.FC = () => {
 	// 根据路由信息获取项目
 	useEffect(() => {
 		fetchData();
-	}, [params.splId,]);
+	}, [params.splId]);
 	const freshData = async () => {
-		await fetchData()
-	}
+		await fetchData();
+	};
 	const PreSteps = () => {
 		const onChange = (value: number) => {
-			// return 
+			// return
 			setCurrentStep(value);
 		};
 		return (
@@ -326,34 +340,42 @@ const PreProductionManage: React.FC = () => {
 	};
 	const CurForm = () => {
 		let res = null;
-		if (currentStep === 0) {	// 立项
+		if (currentStep === 0) {
+			// 立项
 			res = (
 				<div style={{ width: "600px" }}>
 					<PrepareForm step={SPLProductStatusMap.ProStart} modalType="add" />
 				</div>
 			);
 		}
-		if (currentStep === 1) { // 审核
+		if (currentStep === 1) {
+			// 审核
 			res = (
 				<div style={{ width: "600px" }}>
-					<ReviewForm step={SPLProductStatusMap.ProReviewing} modalType="edit" />
+					<ReviewForm
+						step={SPLProductStatusMap.ProReviewing}
+						modalType="edit"
+					/>
 				</div>
 			);
 		}
 
-		if (currentStep === 2) {  // 生产资料配置
+		if (currentStep === 2) {
+			// 生产资料配置
 			res = <DataConfig step={SPLProductStatusMap.Materials} />;
 		}
-		if (currentStep === 3) { // 生产资料审核
+		if (currentStep === 3) {
+			// 生产资料审核
 			res = <DataConfig step={SPLProductStatusMap.MaterialsRev} />;
 		}
-		if (currentStep === 4) {	// 提交车间
+		if (currentStep === 4) {
+			// 提交车间
 			res = <SubmitWorkshop step={SPLProductStatusMap.SubWorkshop} />;
 		}
 		return (
 			<div
 				className="w-full flex-1 flex justify-center overflow-hidden mt-4"
-			// style={{ height: "calc(100% - 200px)" }}
+				// style={{ height: "calc(100% - 200px)" }}
 			>
 				{res}
 			</div>
@@ -371,11 +393,13 @@ const PreProductionManage: React.FC = () => {
 	};
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<PreProductionContext.Provider value={{
-				curProject,
-				setIsShowApproveModal,
-				freshData
-			}}>
+			<PreProductionContext.Provider
+				value={{
+					curProject,
+					setIsShowApproveModal,
+					freshData,
+				}}
+			>
 				<DashboardRoot>
 					<div
 						className="w-full step-header"
@@ -388,7 +412,10 @@ const PreProductionManage: React.FC = () => {
 						{renderInfoCard()}
 					</div>
 					{CurForm()}
-					<ApproveModal approveModalVisible={isShowApproveModal} setApproveModalVisible={setIsShowApproveModal} />
+					<ApproveModal
+						approveModalVisible={isShowApproveModal}
+						setApproveModalVisible={setIsShowApproveModal}
+					/>
 				</DashboardRoot>
 			</PreProductionContext.Provider>
 		</ConfigProvider>

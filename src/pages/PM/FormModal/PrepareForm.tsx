@@ -12,7 +12,11 @@ import {
 	Badge,
 	message,
 } from "antd";
-import { blueButtonTheme, greyButtonTheme, redButtonTheme } from "../../../theme/theme";
+import {
+	blueButtonTheme,
+	greyButtonTheme,
+	redButtonTheme,
+} from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
@@ -29,7 +33,10 @@ import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
-import { splFolderFileCreate, splPreProjectEdit } from "../../../api/ailuo/spl-pre-product";
+import {
+	splFolderFileCreate,
+	splPreProjectEdit,
+} from "../../../api/ailuo/spl-pre-product";
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
@@ -156,7 +163,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -221,7 +228,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
-	const { curProject, setIsShowApproveModal, freshData } = useContext(PreProductionContext) as any;
+	const { curProject, setIsShowApproveModal, freshData } = useContext(
+		PreProductionContext,
+	) as any;
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const setAllDisabled = (disabled: boolean) => {
@@ -241,23 +250,23 @@ const PrepareForm: React.FC<any> = (props: any) => {
 
 	useEffect(() => {
 		if (_.isEmpty(curProject)) {
-			return
+			return;
 		}
-		if (location.pathname.includes('addfromcontract')) {
-			console.log('router from addfromcontract');
+		if (location.pathname.includes("addfromcontract")) {
+			console.log("router from addfromcontract");
 			const {
 				id, // 合同id
 				name,
 				company,
 				phone,
 				salesManager,
-				uuid,	// 合同编号
+				uuid, // 合同编号
 				contractTime,
 				typeSelection,
 				quotationEnd,
 				relateTechProcess,
 				relationSale,
-				relationReview
+				relationReview,
 			} = curProject;
 			setForm((v: any) => {
 				return {
@@ -266,7 +275,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					company,
 					phone,
 					salesManager,
-					uuid,	// 合同编号
+					uuid, // 合同编号
 					contractTime,
 					typeSelection,
 					quotationEnd,
@@ -275,11 +284,11 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					relationSale: relationReview, //关联报价
 				};
 			});
-		} else if (location.pathname.includes('add')) {
+		} else if (location.pathname.includes("add")) {
 			setForm({});
 		} else if (!_.isEmpty(curProject)) {
-			const temp = curProject
-			if (typeof temp.typeSelection === 'string') {
+			const temp = curProject;
+			if (typeof temp.typeSelection === "string") {
 				try {
 					// 处理初步选型型号
 					temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
@@ -329,26 +338,26 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		console.log(1111, form)
+		console.log(1111, form);
 		try {
 			await inputForm.validateFields();
 			if (!form.name) {
-				message.warning('请填写名称')
-				return
+				message.warning("请填写名称");
+				return;
 			}
-			// 创建 
+			// 创建
 			form.status = SPLProductStatusMap.ProReviewing;
 			if (form.typeSelection) {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 			}
 			const res = await splFolderFileCreate(excludeNull(form));
-			console.log('创建预生产', res)
-			if (res.msg === 'success') {
+			console.log("创建预生产", res);
+			if (res.msg === "success") {
 				window.dispatchEvent(new Event("fresh-pre-product-list"));
-				history.push('/dashboard/pre-product-manage/' + res.data.id);
+				history.push("/dashboard/pre-product-manage/" + res.data.id);
 				setTimeout(() => {
 					setIsShowApproveModal(true);
-				}, 500)
+				}, 500);
 			}
 		} catch (error) {
 			console.log(error);
@@ -365,8 +374,8 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		try {
 			await inputForm.validateFields();
 			if (!form.name) {
-				message.warning('请填写名称')
-				return
+				message.warning("请填写名称");
+				return;
 			}
 			try {
 				form.status = SPLProductStatusMap.ProReviewing;
@@ -378,9 +387,8 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				await splPreProjectEdit({
 					...form,
 					status: SPLProductStatusMap.ProReviewing,
-				})
-				await freshData()
-
+				});
+				await freshData();
 			} catch (error) {
 				console.log(error);
 			}
@@ -400,20 +408,20 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-
-
-	const ApproveConfirm: (p: any) => any = ({ approveModal, setApproveModal }) => {
+	const ApproveConfirm: (p: any) => any = ({
+		approveModal,
+		setApproveModal,
+	}) => {
 		const clickHandle = async () => {
 			setApproveModal(false);
 
 			const { id } = user;
 			try {
-				console.log('通过', curProject)
 				await splPreProjectEdit({
 					id: curProject.id,
 					status: SPLProductStatusMap.Materials,
-				})
-				await freshData()
+				});
+				await freshData();
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -455,19 +463,18 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	};
 
 	const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-
 		const [rejectReason, setRejectReason] = useState("");
 		const rejectHandle = async () => {
 			setRejectModal(false);
 
 			const { id } = user;
 			try {
-				console.log('驳回', curProject)
+				console.log("驳回", curProject);
 				await splPreProjectEdit({
 					id: curProject.id,
 					status: SPLProductStatusMap.ProStart,
-				})
-				await freshData()
+				});
+				await freshData();
 			} catch (error) {
 				console.log(error);
 			} finally {
@@ -523,7 +530,8 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		const [approveModal, setApproveModal] = useState(false);
 		const [rejectModal, setRejectModal] = useState(false);
 
-		if (step === SPLProductStatusMap.ProStart) {	// 立项准备
+		if (step === SPLProductStatusMap.ProStart) {
+			// 立项准备
 			return (
 				<>
 					<ConfigProvider theme={blueButtonTheme}>
@@ -537,7 +545,8 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				</>
 			);
 		}
-		if (step == SPLProductStatusMap.ProReviewing) {	// 立项审核
+		if (step == SPLProductStatusMap.ProReviewing) {
+			// 立项审核
 			return (
 				<>
 					<ConfigProvider theme={redButtonTheme}>
@@ -584,10 +593,11 @@ const PrepareForm: React.FC<any> = (props: any) => {
 								通过
 							</Button>
 						</Popover>
-					</ConfigProvider></>
+					</ConfigProvider>
+				</>
 			);
 		}
-		return null
+		return null;
 	};
 	return (
 		<CustomModalRoot>

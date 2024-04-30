@@ -208,6 +208,11 @@ export const SPLProductStatusList = [
 		value: "ended",
 		color: "",
 	},
+	{
+		id: "1785128711080505346",
+		label: "预生产变更中",
+		value: "pro_change"
+	}
 ];
 export enum SPLProductStatusMap {
 	ProStart = 'pro_start',
@@ -217,6 +222,7 @@ export enum SPLProductStatusMap {
 	MaterialsRev = "materials_rev",
 	SubWorkshop = "sub_workshop",
 	Ended = "ended",
+	ProChange = 'pro_change'
 }
 
 export function dictFlowStatus(): Promise<IFlowStatus[]> {

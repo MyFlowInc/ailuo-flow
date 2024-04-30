@@ -10,7 +10,6 @@ import {
 	Typography,
 	message,
 } from "antd";
-import { CloseCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
 import {
 	TableTheme,
@@ -184,7 +183,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 							type="primary"
 							onClick={handleSaveRecord}
 							style={{ width: "100px" }}
-							// style={{ padding: "0 40px" }}
+						// style={{ padding: "0 40px" }}
 						>
 							保存
 						</Button>
@@ -195,7 +194,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 							type="primary"
 							style={{ width: "100px" }}
 							onClick={handleSubmit}
-							// style={{ padding: "0 40px" }}
+						// style={{ padding: "0 40px" }}
 						>
 							提交审核
 						</Button>
@@ -262,7 +261,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 							type="primary"
 							onClick={handleSaveRecord}
 							style={{ width: "100px" }}
-							// style={{ padding: "0 40px" }}
+						// style={{ padding: "0 40px" }}
 						>
 							修改项目基本信息
 						</Button>
@@ -272,7 +271,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 							type="primary"
 							onClick={handleSaveRecord}
 							style={{ width: "100px" }}
-							// style={{ padding: "0 40px" }}
+						// style={{ padding: "0 40px" }}
 						>
 							修改生产资料配置
 						</Button>
@@ -283,7 +282,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 							type="primary"
 							style={{ width: "100px" }}
 							onClick={handleSubmit}
-							// style={{ padding: "0 40px" }}
+						// style={{ padding: "0 40px" }}
 						>
 							提交车间
 						</Button>

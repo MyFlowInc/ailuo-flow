@@ -183,7 +183,7 @@ const item = {
 	operationInstruction: [],
 };
 const SPLModeSelect: React.FC = (props: any) => {
-	const { column, form, setForm } = props;
+	const { column, form, setForm, rootStyle } = props;
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [count, setCount] = useState(1);
 	const debouncedSetForm = _.debounce(setForm, 300);
@@ -243,7 +243,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => {}}
+						setForm={() => { }}
 						cell={{ key: "ingredientsList" }}
 						form={{}}
 						enableSplDatabase
@@ -261,7 +261,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => {}}
+						setForm={() => { }}
 						cell={{ key: "bom" }}
 						form={{}}
 						enableSplDatabase
@@ -279,7 +279,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => {}}
+						setForm={() => { }}
 						cell={{ key: "processPkg" }}
 						form={{}}
 						enableSplDatabase
@@ -297,7 +297,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => {}}
+						setForm={() => { }}
 						cell={{ key: "fitOutPkg" }}
 						form={{}}
 						enableSplDatabase
@@ -315,7 +315,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => {}}
+						setForm={() => { }}
 						cell={{ key: "operationInstruction" }}
 						form={{}}
 						enableSplDatabase
@@ -404,7 +404,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 	});
 
 	return (
-		<div className="w-full pb-10" style={{ paddingRight: "200px" }}>
+		<div className={'w-full pb-10'} style={rootStyle ? rootStyle : { paddingRight: "200px" }}>
 			<div className="flex mb-4">
 				<div
 					className={["flex items-center ", disabled ? "hidden" : ""].join("")}

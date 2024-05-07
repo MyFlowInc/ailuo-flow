@@ -15,6 +15,7 @@ interface TypeAttachmentProps {
 	form: any;
 	setForm: any;
 	enableSplDatabase?: boolean;
+	splDatabaseField?: string;
 }
 
 const TypeAttachment: React.FC<TypeAttachmentProps> = (
@@ -114,7 +115,6 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 	};
 	const downLoadHandle = (idx: number) => {
 		const url = fileList[idx] as any;
-		console.log(111, url);
 		var downloadLink = document.createElement("a");
 		downloadLink.href = url.replace("http", "https");
 		downloadLink.download = url.split("/").pop();
@@ -140,6 +140,33 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 
 	const handleShowSplDatabase = () => {
 		setIsShowSplDatabaseModal(true);
+	};
+
+	const handleSplDatabaseImport = (record: any) => {
+		let list = [...fileList];
+		if (record[props.splDatabaseField as string]) {
+			list = [
+				...fileList,
+				...JSON.parse(record[props.splDatabaseField as string]),
+			];
+		}
+		// 同步
+		setFileList(list);
+		setForm({
+			...form,
+			[cell.key]: JSON.stringify(list),
+		});
+		setIsShowSplDatabaseModal(false)
+	};
+
+	const renderSplDatabaseModal = () => {
+		return (
+			<SplDatabaseModal
+				open={isShowSplDatabaseModal}
+				setOpen={(open: boolean) => setIsShowSplDatabaseModal(open)}
+				setImportFlowItemRecord={handleSplDatabaseImport}
+			></SplDatabaseModal>
+		);
 	};
 
 	const content = (idx: number) => {
@@ -215,6 +242,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 						</div>
 					);
 				})}
+				{renderSplDatabaseModal()}
 			</div>
 		);
 	}
@@ -245,10 +273,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 						{"上传"}
 					</span>
 				</Popover>
-				<SplDatabaseModal
-					open={isShowSplDatabaseModal}
-					setOpen={(open: boolean) => setIsShowSplDatabaseModal(open)}
-				></SplDatabaseModal>
+				{renderSplDatabaseModal()}
 			</>
 		);
 	};

@@ -11,13 +11,15 @@ import {
 } from "antd";
 import { PlusCircleFilled } from "@ant-design/icons";
 import _ from "lodash";
-import { TableTheme } from "../../../theme/theme";
+import { TableTheme, blueButtonTheme } from "../../../theme/theme";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
 import {
 	Attachment,
 	NumFieldType,
 } from "../../../components/Dashboard/TableColumnRender";
 import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/TypeAttachment";
+import SplDatabaseModal from "../../../components/Dashboard/SplDatabaseModal";
+import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
 type InputRef = any;
 type FormInstance<T> = any;
 
@@ -25,13 +27,13 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 
 interface Item {
 	key: string;
-	mode: string;
+	name: string;
 	force: string;
-	ingredientsList: [];
-	bom: [];
-	processPkg: [];
-	fitOutPkg: [];
-	operationInstruction: [];
+	ingredientsList: string;
+	bom: string;
+	processPkg: string;
+	fitOutPkg: string;
+	operationInstruction: string;
 }
 
 interface EditableRowProps {
@@ -163,26 +165,16 @@ type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
 	key: React.Key;
-	mode: string;
+	name: string;
 	force: string;
-	ingredientsList: [];
-	bom: [];
-	processPkg: [];
-	fitOutPkg: [];
-	operationInstruction: [];
+	ingredientsList: string;
+	bom: string;
+	processPkg: string;
+	fitOutPkg: string;
+	operationInstruction: string;
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
-const item = {
-	key: "0",
-	mode: "",
-	force: "",
-	ingredientsList: [],
-	bom: [],
-	processPkg: [],
-	fitOutPkg: [],
-	operationInstruction: [],
-};
 const SPLModeSelect: React.FC = (props: any) => {
 	const { column, form, setForm, rootStyle } = props;
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -191,6 +183,9 @@ const SPLModeSelect: React.FC = (props: any) => {
 	const [isShowGenerateIndexRender, setIsShowGenerateIndexRender] =
 		useState(false);
 	const [firstIndex, setFirstIndex] = useState("");
+	const [isShowSplDatabaseModal, setIsShowSplDatabaseModal] = useState(false);
+	const [importType, setImportType] = useState<SplDatabaseImportTypeEnum>(0);
+	const [currentIndex, setCurrentIndex] = useState(0);
 
 	useEffect(() => {
 		let records = _.get(form, column.dataIndex) || [];
@@ -254,12 +249,35 @@ const SPLModeSelect: React.FC = (props: any) => {
 		);
 	};
 
+	const renderAttachment = (
+		text: any,
+		record: any,
+		index: number,
+		key: any,
+	) => {
+		return (
+			<TypeAttachment
+				setForm={(form: any) => {
+					dataSource[index] = {
+						...dataSource[index],
+						...form,
+					};
+					setDataSource([...dataSource]);
+				}}
+				cell={{ key }}
+				form={{ [key]: record[key] }}
+				enableSplDatabase
+				splDatabaseField={key}
+			></TypeAttachment>
+		);
+	};
+
 	const defaultColumns: any = [
 		{
 			title: "型号",
-			dataIndex: "mode",
+			dataIndex: "name",
 			editable: true,
-			key: "mode",
+			key: "name",
 		},
 		{
 			width: 90,
@@ -280,98 +298,56 @@ const SPLModeSelect: React.FC = (props: any) => {
 			dataIndex: "ingredientsList",
 			key: "ingredientsList",
 			type: NumFieldType.Attachment,
-			render: (text: any, record: any) => {
-				return text.length ? (
-					<Attachment value={record[text]} />
-				) : (
-					<TypeAttachment
-						setForm={() => {}}
-						cell={{ key: "ingredientsList" }}
-						form={{}}
-						enableSplDatabase
-					></TypeAttachment>
-				);
-			},
+			render: (text: any, record: any, index: number) =>
+				renderAttachment(text, record, index, "ingredientsList"),
 		},
 		{
 			title: "BOM",
 			dataIndex: "bom",
 			key: "bom",
 			type: NumFieldType.Attachment,
-			render: (text: any, record: any) => {
-				return text.length ? (
-					<Attachment value={record[text]} />
-				) : (
-					<TypeAttachment
-						setForm={() => {}}
-						cell={{ key: "bom" }}
-						form={{}}
-						enableSplDatabase
-					></TypeAttachment>
-				);
-			},
+			render: (text: any, record: any, index: number) =>
+				renderAttachment(text, record, index, "bom"),
 		},
 		{
 			title: "加工图纸包",
 			dataIndex: "processPkg",
 			key: "processPkg",
 			type: NumFieldType.Attachment,
-			render: (text: any, record: any) => {
-				return text.length ? (
-					<Attachment value={record[text]} />
-				) : (
-					<TypeAttachment
-						setForm={() => {}}
-						cell={{ key: "processPkg" }}
-						form={{}}
-						enableSplDatabase
-					></TypeAttachment>
-				);
-			},
+			render: (text: any, record: any, index: number) =>
+				renderAttachment(text, record, index, "processPkg"),
 		},
 		{
 			title: "装配图纸包",
 			dataIndex: "fitOutPkg",
 			key: "fitOutPkg",
 			type: NumFieldType.Attachment,
-			render: (text: any, record: any) => {
-				return text.length ? (
-					<Attachment value={record[text]} />
-				) : (
-					<TypeAttachment
-						setForm={() => {}}
-						cell={{ key: "fitOutPkg" }}
-						form={{}}
-						enableSplDatabase
-					></TypeAttachment>
-				);
-			},
+			render: (text: any, record: any, index: number) =>
+				renderAttachment(text, record, index, "fitOutPkg"),
 		},
 		{
 			title: "作业指导书",
 			dataIndex: "operationInstruction",
 			key: "operationInstruction",
 			type: NumFieldType.Attachment,
-			render: (text: any, record: any) => {
-				return text.length ? (
-					<Attachment value={record[text]} />
-				) : (
-					<TypeAttachment
-						setForm={() => {}}
-						cell={{ key: "operationInstruction" }}
-						form={{}}
-						enableSplDatabase
-					></TypeAttachment>
-				);
-			},
+			render: (text: any, record: any, index: number) =>
+				renderAttachment(text, record, index, "operationInstruction"),
 		},
 		{
 			title: "操作",
 			dataIndex: "action",
-			render: (text: any, record: any) => {
+			render: (text: any, record: any, index: number) => {
 				return (
 					<div className="flex items-center justify-around">
-						<Button type="text" className="text-[#5966D6]">
+						<Button
+							type="text"
+							className="text-[#5966D6]"
+							onClick={() => {
+								setImportType(SplDatabaseImportTypeEnum.同型号导入);
+								setIsShowSplDatabaseModal(true);
+								setCurrentIndex(index);
+							}}
+						>
 							一键导入同型号所有资料
 						</Button>
 						<DeleteFilled
@@ -387,13 +363,13 @@ const SPLModeSelect: React.FC = (props: any) => {
 	const handleAdd = () => {
 		const newData: DataType = {
 			key: count,
-			mode: "",
+			name: "",
 			force: "",
-			ingredientsList: [],
-			bom: [],
-			processPkg: [],
-			fitOutPkg: [],
-			operationInstruction: [],
+			ingredientsList: "",
+			bom: "",
+			processPkg: "",
+			fitOutPkg: "",
+			operationInstruction: "",
 		};
 		setDataSource([...dataSource, newData]);
 		debouncedSetForm({
@@ -445,12 +421,41 @@ const SPLModeSelect: React.FC = (props: any) => {
 		};
 	});
 
+	const handleBatchInsert = (fields: string[], record: any) => {
+		fields.forEach((field) => {
+			const value = dataSource[currentIndex]?.[field as keyof DataType];
+			if (value) {
+				dataSource[currentIndex][field as keyof DataType] = JSON.stringify([
+					...JSON.parse(value as string),
+					...JSON.parse(record[field]),
+				]);
+			} else {
+				dataSource[currentIndex][field as keyof DataType] = record[field];
+			}
+		});
+		setDataSource([...dataSource]);
+	};
+
+	const onSplDatabaseImport = (record: any) => {
+		setIsShowSplDatabaseModal(false);
+		handleBatchInsert(
+			[
+				"ingredientsList",
+				"bom",
+				"fitOutPkg",
+				"operationInstruction",
+				"processPkg",
+			],
+			record,
+		);
+	};
+
 	return (
 		<div
 			className={"w-full pb-10"}
 			style={rootStyle ? rootStyle : { paddingRight: "200px" }}
 		>
-			<div className="flex mb-4">
+			<div className="flex mb-4 justify-between items-center">
 				<div
 					className={[
 						"flex items-center cursor-pointer",
@@ -461,6 +466,17 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<PlusCircleFilled size={14} />
 					<div className="ml-2">添加型号</div>
 				</div>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						type="primary"
+						onClick={() => {
+							setImportType(SplDatabaseImportTypeEnum.多型号导入);
+							setIsShowSplDatabaseModal(true);
+						}}
+					>
+						一键导入多型号所有资料
+					</Button>
+				</ConfigProvider>
 			</div>
 			<div
 				className="w-full overflow-hidden overflow-x-auto"
@@ -475,9 +491,21 @@ const SPLModeSelect: React.FC = (props: any) => {
 						bordered
 						dataSource={dataSource}
 						columns={columns as ColumnTypes}
+						rowSelection={{
+							fixed: true,
+							onChange: (selectedRowKeys, selectedRows) => {
+								console.log(selectedRowKeys);
+							},
+						}}
 					/>
 				</ConfigProvider>
 			</div>
+			<SplDatabaseModal
+				open={isShowSplDatabaseModal}
+				setOpen={setIsShowSplDatabaseModal}
+				importType={importType}
+				setImportFlowItemRecord={onSplDatabaseImport}
+			></SplDatabaseModal>
 		</div>
 	);
 };

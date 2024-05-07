@@ -99,13 +99,17 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					/>
 				</>
 			) : (
-				<Button
-					type="text"
-					className="text-blue-500"
-					onClick={() => setImportFlowItemRecord?.(record)}
-				>
-					导入
-				</Button>
+				!record.children?.length && (
+					<Button
+						type="text"
+						className="text-blue-500"
+						onClick={() => {
+							setImportFlowItemRecord?.(record);
+						}}
+					>
+						导入
+					</Button>
+				)
 			)}
 		</Space>
 	);

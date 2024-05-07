@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { Modal } from "antd";
 import SplDatabase from "../../../pages/SPL/SplDatabase";
 import LinkSvg from "../assets/link.svg";
+import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
 interface SplDatabaseModalProps {
 	open: boolean;
+	importType?: SplDatabaseImportTypeEnum;
 	setOpen: (a: boolean) => void;
+	setImportFlowItemRecord?: (a: any) => void;
 }
 const SplDatabaseModal: React.FC<SplDatabaseModalProps> = ({
 	open,
 	setOpen,
+	...rest
 }) => {
 	const handleOk = () => {
 		setOpen(false);
@@ -36,7 +40,7 @@ const SplDatabaseModal: React.FC<SplDatabaseModalProps> = ({
 			onCancel={handleCancel}
 			footer={null}
 		>
-			<SplDatabase isImport></SplDatabase>
+			<SplDatabase isImport {...rest}></SplDatabase>
 		</Modal>
 	);
 };

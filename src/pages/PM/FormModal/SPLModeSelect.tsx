@@ -5,6 +5,7 @@ import {
 	Form,
 	Input,
 	InputNumber,
+	Popover,
 	Table,
 	Typography,
 } from "antd";
@@ -187,6 +188,9 @@ const SPLModeSelect: React.FC = (props: any) => {
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [count, setCount] = useState(1);
 	const debouncedSetForm = _.debounce(setForm, 300);
+	const [isShowGenerateIndexRender, setIsShowGenerateIndexRender] =
+		useState(false);
+	const [firstIndex, setFirstIndex] = useState("");
 
 	useEffect(() => {
 		let records = _.get(form, column.dataIndex) || [];
@@ -220,6 +224,36 @@ const SPLModeSelect: React.FC = (props: any) => {
 		});
 	};
 
+	const handleGenerateIndex = () => {
+		setIsShowGenerateIndexRender(false);
+	};
+
+	const generateIndexRender = () => {
+		return (
+			<Popover
+				content={
+					<div className="flex items-center">
+						<Input
+							placeholder="输入首个序列号"
+							value={firstIndex}
+							onChange={(e) => setFirstIndex(e.target.value)}
+						></Input>
+						<a className="ml-2 whitespace-nowrap" onClick={handleGenerateIndex}>
+							确认
+						</a>
+					</div>
+				}
+				trigger="click"
+				open={isShowGenerateIndexRender}
+				onOpenChange={(newOpen: boolean) =>
+					setIsShowGenerateIndexRender(newOpen)
+				}
+			>
+				<span className="ml-2 cursor-pointer text-[#5966D6]">生成</span>
+			</Popover>
+		);
+	};
+
 	const defaultColumns: any = [
 		{
 			title: "型号",
@@ -228,7 +262,15 @@ const SPLModeSelect: React.FC = (props: any) => {
 			key: "mode",
 		},
 		{
-			title: "序列号",
+			width: 90,
+			title: ({ sortOrder, sortColumn, filters }: any) => {
+				return (
+					<div>
+						序列号
+						{generateIndexRender()}
+					</div>
+				);
+			},
 			editable: true,
 			dataIndex: "force",
 			key: "force",
@@ -243,7 +285,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => { }}
+						setForm={() => {}}
 						cell={{ key: "ingredientsList" }}
 						form={{}}
 						enableSplDatabase
@@ -261,7 +303,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => { }}
+						setForm={() => {}}
 						cell={{ key: "bom" }}
 						form={{}}
 						enableSplDatabase
@@ -279,7 +321,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => { }}
+						setForm={() => {}}
 						cell={{ key: "processPkg" }}
 						form={{}}
 						enableSplDatabase
@@ -297,7 +339,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => { }}
+						setForm={() => {}}
 						cell={{ key: "fitOutPkg" }}
 						form={{}}
 						enableSplDatabase
@@ -315,7 +357,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 					<Attachment value={record[text]} />
 				) : (
 					<TypeAttachment
-						setForm={() => { }}
+						setForm={() => {}}
 						cell={{ key: "operationInstruction" }}
 						form={{}}
 						enableSplDatabase
@@ -404,10 +446,16 @@ const SPLModeSelect: React.FC = (props: any) => {
 	});
 
 	return (
-		<div className={'w-full pb-10'} style={rootStyle ? rootStyle : { paddingRight: "200px" }}>
+		<div
+			className={"w-full pb-10"}
+			style={rootStyle ? rootStyle : { paddingRight: "200px" }}
+		>
 			<div className="flex mb-4">
 				<div
-					className={["flex items-center ", disabled ? "hidden" : ""].join("")}
+					className={[
+						"flex items-center cursor-pointer",
+						disabled ? "hidden" : "",
+					].join("")}
 					onClick={handleAdd}
 				>
 					<PlusCircleFilled size={14} />

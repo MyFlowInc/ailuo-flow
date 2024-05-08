@@ -15,6 +15,7 @@ import { useAppSelector } from "../../store/hooks";
 import ArrowRightSvg from "./assets/arrow-right.svg";
 import ArrowDownSvg from "./assets/arrow-down.svg";
 import { FlowItemTableDataType } from "./TableBody";
+import { SplDatabaseImportTypeEnum } from "../../enums/commonEnum";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -33,6 +34,7 @@ interface StandardTableActionProps {
 	setEditFlowItemRecord: (v: any) => void;
 	setImportFlowItemRecord?: (v: FlowItemTableDataType) => void;
 	isImport?: boolean;
+	importType?: SplDatabaseImportTypeEnum;
 	children?: React.ReactNode;
 }
 
@@ -43,6 +45,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	deleteFlowItem,
 	setEditFlowItemRecord,
 	isImport,
+	importType,
 	setImportFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
@@ -129,6 +132,7 @@ interface StandardTableProps {
 	columns: any[];
 	datasource: any[];
 	setSelectedRows: (v: any[]) => void;
+	importType?: SplDatabaseImportTypeEnum;
 	children?: React.ReactNode;
 }
 
@@ -165,6 +169,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 			{
 				title: "操作",
 				dataIndex: "actions",
+				hidden: rest.importType == SplDatabaseImportTypeEnum.多型号导入,
 				render: (text: string, record: any) => (
 					<StandardTableAction text={text} record={record} {...rest} />
 				),
@@ -230,7 +235,13 @@ const StandardTable: React.FC<StandardTableProps> = ({
 						cell: TableColumnRender,
 					},
 				}}
-				rowSelection={isFinance ? undefined : rowSelection}
+				rowSelection={
+					isFinance ||
+					rest.importType == SplDatabaseImportTypeEnum.单字段导入 ||
+					rest.importType == SplDatabaseImportTypeEnum.同型号导入
+						? undefined
+						: rowSelection
+				}
 				columns={tableColumns}
 				dataSource={datasource}
 				scroll={{ x: true, y: `calc(100vh - 240px)` }}

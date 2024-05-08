@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import DefaultHeader from "./DefaultHeader";
 import BatchHeader from "./BatchHeader";
+import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
 
 const HeaderRoot = styled.div`
 	display: flex;
@@ -33,6 +34,8 @@ const DefaultHeaderGroup = styled(({ children, ...rest }) => (
 interface HeaderProps {
 	selectedRows: any[];
 	setSelectedRows: (v: any[]) => void;
+	isImport?: boolean;
+	importType?: SplDatabaseImportTypeEnum;
 	children?: React.ReactNode;
 }
 
@@ -56,6 +59,7 @@ const Header: React.FC<HeaderProps> = ({
 					hasSelected={hasSelected}
 					selectedRows={selectedRows}
 					setSelectedRows={setSelectedRows}
+					{...rest}
 				/>
 			</DefaultHeaderGroup>
 		</HeaderRoot>

@@ -6,6 +6,7 @@ import { Button, Popover, Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { PlusOutlined } from "@ant-design/icons";
+import { SplDatabaseImportTypeEnum } from "../../enums/commonEnum";
 
 const FlowTableRoot = styled.div`
 	width: 100%;
@@ -22,6 +23,7 @@ export interface FlowItemTableDataType {
 interface FlowTableProps {
 	tableDataSource: any[]; // 数据源
 	isImport?: boolean;
+	importType?: SplDatabaseImportTypeEnum;
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;

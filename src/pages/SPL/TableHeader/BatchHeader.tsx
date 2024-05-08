@@ -2,10 +2,11 @@ import React, { useContext } from "react";
 import { ConfigProvider, Button, Space, Modal } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import styled from "styled-components";
-import { greyButtonTheme } from "../../../theme/theme";
+import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import DeleteFilled from "../../../assets/icons/DeleteFilled";
 import { SplDatabaseContext } from "../SplDatabase";
 import { splFileDataRemoveBatch } from "../../../api/ailuo/spl-db";
+import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
 
 interface BatchHeaderRootProps {
 	isShow: boolean;
@@ -26,6 +27,8 @@ const BatchHeaderRoot = styled.div<BatchHeaderRootProps>`
 interface BatchHeaderProps {
 	hasSelected: boolean;
 	selectedRows: any[];
+	isImport?: boolean;
+	importType?: SplDatabaseImportTypeEnum;
 	setSelectedRows: (v: any[]) => void;
 	children?: React.ReactNode;
 }
@@ -34,6 +37,8 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 	hasSelected,
 	selectedRows,
 	setSelectedRows,
+	isImport,
+	importType,
 }) => {
 	const { fetchList } = useContext(SplDatabaseContext)! as any;
 	const handleBatchDelete = () => {
@@ -62,17 +67,27 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 	return (
 		<BatchHeaderRoot isShow={hasSelected}>
 			<Space size={13}>
-				<ConfigProvider theme={greyButtonTheme}>
-					<Button
-						type="primary"
-						icon={
-							<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />
-						}
-						onClick={handleBatchDelete}
-					>
-						删除
-					</Button>
-				</ConfigProvider>
+				{!isImport ? (
+					<ConfigProvider theme={greyButtonTheme}>
+						<Button
+							type="primary"
+							icon={
+								<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />
+							}
+							onClick={handleBatchDelete}
+						>
+							删除
+						</Button>
+					</ConfigProvider>
+				) : importType === SplDatabaseImportTypeEnum.多型号导入 ? (
+					<ConfigProvider theme={blueButtonTheme}>
+						<Button type="primary" onClick={() => {}}>
+							导入
+						</Button>
+					</ConfigProvider>
+				) : (
+					""
+				)}
 			</Space>
 		</BatchHeaderRoot>
 	);

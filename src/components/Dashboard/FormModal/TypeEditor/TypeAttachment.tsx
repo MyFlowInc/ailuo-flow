@@ -9,6 +9,7 @@ import _ from "lodash";
 import { Button, Popover } from "antd";
 import { DashboardRouterOutletContext } from "../../../../context";
 import SplDatabaseModal from "../../SplDatabaseModal";
+import { SplDatabaseImportTypeEnum } from "../../../../enums/commonEnum";
 
 interface TypeAttachmentProps {
 	cell: any;
@@ -163,6 +164,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 		return (
 			<SplDatabaseModal
 				open={isShowSplDatabaseModal}
+				importType={SplDatabaseImportTypeEnum.单字段导入}
 				setOpen={(open: boolean) => setIsShowSplDatabaseModal(open)}
 				setImportFlowItemRecord={handleSplDatabaseImport}
 			></SplDatabaseModal>

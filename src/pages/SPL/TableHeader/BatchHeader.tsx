@@ -30,6 +30,7 @@ interface BatchHeaderProps {
 	isImport?: boolean;
 	importType?: SplDatabaseImportTypeEnum;
 	setSelectedRows: (v: any[]) => void;
+	onBatchImport?: (v: any[]) => void;
 	children?: React.ReactNode;
 }
 
@@ -39,6 +40,7 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 	setSelectedRows,
 	isImport,
 	importType,
+	onBatchImport,
 }) => {
 	const { fetchList } = useContext(SplDatabaseContext)! as any;
 	const handleBatchDelete = () => {
@@ -64,6 +66,21 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 		});
 	};
 
+	const handleBatchImport = () => {
+		onBatchImport?.(
+			selectedRows.filter(
+				(item) =>
+					!(
+						!item.ingredientsList &&
+						!item.bom &&
+						!item.processPkg &&
+						!item.fitOutPkg &&
+						!item.operationInstruction
+					),
+			),
+		);
+	};
+
 	return (
 		<BatchHeaderRoot isShow={hasSelected}>
 			<Space size={13}>
@@ -81,7 +98,7 @@ const BatchHeader: React.FC<BatchHeaderProps> = ({
 					</ConfigProvider>
 				) : importType === SplDatabaseImportTypeEnum.多型号导入 ? (
 					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={() => {}}>
+						<Button type="primary" onClick={handleBatchImport}>
 							导入
 						</Button>
 					</ConfigProvider>

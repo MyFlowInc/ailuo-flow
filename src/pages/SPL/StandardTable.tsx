@@ -196,7 +196,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 
 	useEffect(() => {
 		getTableColumns();
-	}, [columns]);
+	}, [columns, rest.importType]);
 
 	useEffect(() => {
 		setSelectedRowKeys([]);

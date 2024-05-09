@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import SplDatabase from "../../../pages/SPL/SplDatabase";
 import LinkSvg from "../assets/link.svg";
@@ -8,6 +8,7 @@ interface SplDatabaseModalProps {
 	importType?: SplDatabaseImportTypeEnum;
 	setOpen: (a: boolean) => void;
 	setImportFlowItemRecord?: (a: any) => void;
+	onBatchImport?: (a: any) => void;
 }
 const SplDatabaseModal: React.FC<SplDatabaseModalProps> = ({
 	open,
@@ -40,7 +41,7 @@ const SplDatabaseModal: React.FC<SplDatabaseModalProps> = ({
 			onCancel={handleCancel}
 			footer={null}
 		>
-			<SplDatabase isImport {...rest}></SplDatabase>
+			<SplDatabase isImport open={open} {...rest}></SplDatabase>
 		</Modal>
 	);
 };

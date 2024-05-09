@@ -28,7 +28,7 @@ const EditableContext = React.createContext<FormInstance<any> | null>(null);
 interface Item {
 	key: string;
 	name: string;
-	force: string;
+	serialNumber: string;
 	ingredientsList: string;
 	bom: string;
 	processPkg: string;
@@ -166,7 +166,7 @@ type EditableTableProps = Parameters<typeof Table>[0];
 interface DataType {
 	key: React.Key;
 	name: string;
-	force: string;
+	serialNumber: string;
 	ingredientsList: string;
 	bom: string;
 	processPkg: string;
@@ -186,6 +186,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 	const [isShowSplDatabaseModal, setIsShowSplDatabaseModal] = useState(false);
 	const [importType, setImportType] = useState<SplDatabaseImportTypeEnum>(0);
 	const [currentIndex, setCurrentIndex] = useState(0);
+	const [selectRowKeys, setSelectRowKeys] = useState<any[]>([]);
 
 	useEffect(() => {
 		let records = _.get(form, column.dataIndex) || [];
@@ -219,8 +220,39 @@ const SPLModeSelect: React.FC = (props: any) => {
 		});
 	};
 
+	const generateSerialNumber = (inputSerial: string, interval: number) => {
+		const regex = /(.*)(\d{6})$/;
+		const match = inputSerial.match(regex);
+		if (match) {
+			const nonDigitPart = match[1]; // 非数字部分
+			const digitPart = match[2]; // 数字部分
+			const incrementedDigitPart = (
+				parseInt(digitPart, 10) + interval
+			).toString();
+			// 确保数字部分是6位，不足6位时前面补0
+			const paddedIncrementedDigitPart = incrementedDigitPart.padStart(6, "0");
+			const newSerial = `${nonDigitPart}${paddedIncrementedDigitPart}`;
+			return newSerial;
+		} else {
+			// 如果没有匹配到数字部分 返回 '000001'
+			return inputSerial + "000001";
+		}
+	};
+
 	const handleGenerateIndex = () => {
 		setIsShowGenerateIndexRender(false);
+		let currentSerialNumber = firstIndex;
+		let isFirst = true;
+		dataSource.map((item, index) => {
+			if (selectRowKeys.includes(item.key)) {
+				item.serialNumber = isFirst
+					? generateSerialNumber(currentSerialNumber, 0)
+					: generateSerialNumber(currentSerialNumber, 1);
+				isFirst = false;
+				currentSerialNumber = item.serialNumber;
+			}
+		});
+		setDataSource([...dataSource]);
 	};
 
 	const generateIndexRender = () => {
@@ -240,9 +272,10 @@ const SPLModeSelect: React.FC = (props: any) => {
 				}
 				trigger="click"
 				open={isShowGenerateIndexRender}
-				onOpenChange={(newOpen: boolean) =>
-					setIsShowGenerateIndexRender(newOpen)
-				}
+				onOpenChange={(newOpen: boolean) => {
+					setFirstIndex("");
+					setIsShowGenerateIndexRender(newOpen);
+				}}
 			>
 				<span className="ml-2 cursor-pointer text-[#5966D6]">生成</span>
 			</Popover>
@@ -290,8 +323,8 @@ const SPLModeSelect: React.FC = (props: any) => {
 				);
 			},
 			editable: true,
-			dataIndex: "force",
-			key: "force",
+			dataIndex: "serialNumber",
+			key: "serialNumber",
 		},
 		{
 			title: "配料单",
@@ -343,9 +376,9 @@ const SPLModeSelect: React.FC = (props: any) => {
 							type="text"
 							className="text-[#5966D6]"
 							onClick={() => {
+								setCurrentIndex(index);
 								setImportType(SplDatabaseImportTypeEnum.同型号导入);
 								setIsShowSplDatabaseModal(true);
-								setCurrentIndex(index);
 							}}
 						>
 							一键导入同型号所有资料
@@ -364,7 +397,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 		const newData: DataType = {
 			key: count,
 			name: "",
-			force: "",
+			serialNumber: "",
 			ingredientsList: "",
 			bom: "",
 			processPkg: "",
@@ -422,14 +455,15 @@ const SPLModeSelect: React.FC = (props: any) => {
 	});
 
 	const handleBatchInsert = (fields: string[], record: any) => {
+		// todo currentIndex不变
 		fields.forEach((field) => {
 			const value = dataSource[currentIndex]?.[field as keyof DataType];
-			if (value) {
+			if (value && record[field]) {
 				dataSource[currentIndex][field as keyof DataType] = JSON.stringify([
 					...JSON.parse(value as string),
 					...JSON.parse(record[field]),
 				]);
-			} else {
+			} else if (record[field]) {
 				dataSource[currentIndex][field as keyof DataType] = record[field];
 			}
 		});
@@ -448,6 +482,33 @@ const SPLModeSelect: React.FC = (props: any) => {
 			],
 			record,
 		);
+	};
+
+	const onBatchImport = (selectedRow: any) => {
+		dataSource.push(
+			...selectedRow.map((item: any, index: number) => ({
+				ingredientsList: item.ingredientsList,
+				bom: item.bom,
+				fitOutPkg: item.fitOutPkg,
+				operationInstruction: item.operationInstruction,
+				processPkg: item.processPkg,
+				key: new Date().getTime() + index,
+			})),
+		);
+
+		setDataSource([
+			...dataSource.filter(
+				(item) =>
+					!(
+						!item.ingredientsList &&
+						!item.bom &&
+						!item.processPkg &&
+						!item.fitOutPkg &&
+						!item.operationInstruction
+					),
+			),
+		]);
+		setIsShowSplDatabaseModal(false);
 	};
 
 	return (
@@ -494,7 +555,8 @@ const SPLModeSelect: React.FC = (props: any) => {
 						rowSelection={{
 							fixed: true,
 							onChange: (selectedRowKeys, selectedRows) => {
-								console.log(selectedRowKeys);
+								console.log(selectedRows);
+								setSelectRowKeys(selectedRowKeys);
 							},
 						}}
 					/>
@@ -505,6 +567,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 				setOpen={setIsShowSplDatabaseModal}
 				importType={importType}
 				setImportFlowItemRecord={onSplDatabaseImport}
+				onBatchImport={onBatchImport}
 			></SplDatabaseModal>
 		</div>
 	);

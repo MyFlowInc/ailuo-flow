@@ -19,15 +19,19 @@ const DashboardRoot = styled.div`
 export const SplDatabaseContext = React.createContext<any>({});
 
 interface SplDatabaseProp {
+	open?: boolean;
 	isImport?: boolean;
 	importType?: SplDatabaseImportTypeEnum;
 	setImportFlowItemRecord?: (v: FlowItemTableDataType) => void;
+	onBatchImport?: (v: any[]) => void;
 }
 
 const SplDatabase: React.FC<SplDatabaseProp> = ({
+	open,
 	isImport,
 	importType,
 	setImportFlowItemRecord,
+	onBatchImport,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [isShowModal, setIsShowModal] = useState(false);
@@ -97,6 +101,12 @@ const SplDatabase: React.FC<SplDatabaseProp> = ({
 		fetchList();
 	}, []);
 
+	useEffect(() => {
+		console.log(open);
+		// to do 变化监听不到
+	  setSelectedRows([])
+	},[open])
+
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<SplDatabaseContext.Provider
@@ -115,6 +125,7 @@ const SplDatabase: React.FC<SplDatabaseProp> = ({
 						setSelectedRows={setSelectedRows}
 						isImport={isImport}
 						importType={importType}
+						onBatchImport={onBatchImport}
 					/>
 
 					{loading && <BaseLoading />}

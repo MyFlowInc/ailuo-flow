@@ -36,6 +36,7 @@ interface HeaderProps {
 	setSelectedRows: (v: any[]) => void;
 	isImport?: boolean;
 	importType?: SplDatabaseImportTypeEnum;
+	onBatchImport?: (v: any[]) => void;
 	children?: React.ReactNode;
 }
 

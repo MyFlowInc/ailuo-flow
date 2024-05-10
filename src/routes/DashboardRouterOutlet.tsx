@@ -33,7 +33,7 @@ import CustomContractModalView from "../pages/Contract/FormModal/CustomContractM
 import SplDatabase from "../pages/SPL/SplDatabase";
 import PreProductionManage from "../pages/PM/PreProductionManage";
 import { DashboardRouterOutletContext } from "../context";
-
+import MyAgentPage from "../pages/PM/MyAgentPage";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -300,6 +300,15 @@ const DashboardRouterOutlet: React.FC = () => {
 									>
 										<PreProductionManage />
 									</Route>
+
+									{/* 我的代办测试路由 */}
+									<Route
+										path="/dashboard/my-agent-page"
+										exact={true}
+									>
+										<MyAgentPage />
+									</Route>
+
 									{/* 爱罗标准件资料库 */}
 									<Route path="/dashboard/spl-db" exact={true}>
 										<SplDatabase />

@@ -19,9 +19,9 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 	const options = columns;
 	const [inputValue, setInputValue] = useState<string>("");
 	const [selectValue, setSelectValue] = useState<string>("name");
-	const { fetchSaleList } = useContext(PreProductionContext);
+	const { fetchAgentList } = useContext(PreProductionContext);
 	const handleSearch = async () => {
-		await fetchSaleList({
+		await fetchAgentList({
 			search: {
 				[selectValue]: inputValue.trim(),
 			},
@@ -33,7 +33,7 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 				layout="inline"
 				form={form}
 				name="SearchForm"
-				onValuesChange={() => {}}
+				onValuesChange={() => { }}
 			>
 				<Form.Item name="searchField" style={{ margin: 0, padding: 0 }}>
 					<Space.Compact>

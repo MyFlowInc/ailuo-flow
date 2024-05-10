@@ -75,7 +75,7 @@ const MyAgentPage: React.FC = () => {
             <Table.Column title="创建日期" dataIndex="createTime" key="createTime" />
             <Table.Column title="节点名称" dataIndex="status" key="status"
               render={(status: string) => {
-                if (status === 'pro_start') {
+                if (status === 'pro_reviewing') {
                   return <span className="status-start">立项审核中</span>;
                 } else if (status === 'materials_rev') {
                   // 如果有其他状态需要处理，可以在这里添加对应的逻辑
@@ -96,7 +96,8 @@ const MyAgentPage: React.FC = () => {
               key="id"
               render={(_: any, record: Data) => (
                 <Space size="middle">
-                  <Link to={`/dashboard/pre-product-manage/?splId=${record.projectSaleId}&approveId=${record.id}`}>查看</Link>
+                  {/* 有bug，传一个参数没事，应该是接那边的问题，传两个参数预生产页面不跳到自己该去的状态页面 */}
+                  <Link to={`/dashboard/pre-product-manage/${record.projectSaleId}&approveId=${record.id}`}>查看</Link>
                 </Space>
               )}
             />

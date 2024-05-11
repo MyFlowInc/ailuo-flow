@@ -33,7 +33,7 @@ import CustomContractModalView from "../pages/Contract/FormModal/CustomContractM
 import SplDatabase from "../pages/SPL/SplDatabase";
 import PreProductionManage from "../pages/PM/PreProductionManage";
 import { DashboardRouterOutletContext } from "../context";
-import MyAgentPage from "../pages/PM/MyAgentPage";
+import MyAgentPage from "../pages/MyAgentPage/MyAgentPage";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {

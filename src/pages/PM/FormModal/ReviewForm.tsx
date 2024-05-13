@@ -3,14 +3,20 @@ import React, { useEffect, useState } from "react";
 import _ from "lodash";
 
 import PrepareForm from "./PrepareForm";
-import { finalInfoPage } from "../../../api/ailuo/approve";
+import { flowApproveInfo } from "../../../api/ailuo/approve";
 
 const ReviewForm: React.FC<any> = (props: any) => {
 	const { splId } = props;
 	const [accessList, setAccessList] = useState<any[]>([]);
-	const getAclList = async (id: string) => {
+	const getAclList = async () => {
 		try {
-			const res = await finalInfoPage(id);
+			let params: any = {
+				pageNum: 1,
+				pageSize: 10,
+				projectSaleId: splId,
+				auditType: "pro_reviewing",
+			};
+			const res = await flowApproveInfo(params);
 			setAccessList(_.get(res, "data.record") || []);
 		} catch (error) {
 			console.log(error);
@@ -18,11 +24,13 @@ const ReviewForm: React.FC<any> = (props: any) => {
 	};
 	useEffect(() => {
 		if (splId) {
-			getAclList(splId);
+			getAclList();
 		}
 	}, [splId]);
 
-	return <PrepareForm {...props} accessList={accessList} />;
+	return (
+		<PrepareForm {...props} accessList={accessList} getAclList={getAclList} />
+	);
 };
 
 export default ReviewForm;

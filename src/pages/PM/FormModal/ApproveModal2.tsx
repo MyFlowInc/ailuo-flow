@@ -1,3 +1,5 @@
+// 生产资料审核
+
 import type { CollapseProps } from "antd";
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
@@ -47,10 +49,9 @@ const FormRoot = styled.div`
 	}
 `;
 
-const ApproveModal: React.FC<any> = ({
+const ApproveModal2: React.FC<any> = ({
 	approveModalVisible,
 	setApproveModalVisible,
-	approveType,
 }) => {
 	const [accessUserList, setAccessUserList] = useState([]); // 所有账户
 	const [manageList, setManageList] = useState([]); //总经理
@@ -63,9 +64,7 @@ const ApproveModal: React.FC<any> = ({
 	const [belong, setBelong] = useState("pre_product"); // 哪种类型的审批
 	const [type, setType] = useState("and"); // 会签或签
 	const params = useParams() as any;
-	const {   freshData } = useContext(
-		PreProductionContext,
-	) as any;
+	const { freshData } = useContext(PreProductionContext) as any;
 
 	// 获取账号列表
 	useEffect(() => {
@@ -271,13 +270,13 @@ const ApproveModal: React.FC<any> = ({
 					relationUserId: id,
 					belong,
 					type: "and",
-					audittype: "pro_reviewing",
+					audittype: "materials_rev",
 				};
 			});
 
 			await approveSaveBath(params);
 			// await fetchUserList();
-			await freshData()
+			await freshData();
 
 			setTimeout(() => {
 				setLoading(false);
@@ -309,7 +308,7 @@ const ApproveModal: React.FC<any> = ({
 
 	return (
 		<Modal
-			title="审批设置"
+			title="生产资料审批"
 			open={approveModalVisible}
 			footer={null}
 			onCancel={() => {
@@ -404,4 +403,4 @@ const ApproveModal: React.FC<any> = ({
 	);
 };
 
-export default ApproveModal;
+export default ApproveModal2;

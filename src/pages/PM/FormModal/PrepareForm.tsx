@@ -24,10 +24,12 @@ import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 import {
 	splFolderFileCreate,
 	splPreProjectEdit,
+	splProjectList,
 } from "../../../api/ailuo/spl-pre-product";
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
+import { finalApproveEdit } from "../../../api/ailuo/approve";
 
 const ApproveConfirm: (p: any) => any = ({
 	approveModal,
@@ -35,20 +37,38 @@ const ApproveConfirm: (p: any) => any = ({
 	user,
 	curProject,
 	freshData,
+	accessList,
 }) => {
 	const clickHandle = async () => {
 		setApproveModal(false);
 
 		const { id } = user;
+		const item = _.find(accessList, { relationUserId: id });
+		if (!item) {
+			return;
+		}
+		const approveId = item.id;
 		try {
-			await splPreProjectEdit({
-				id: curProject.id,
-				status: SPLProductStatusMap.Materials,
+			await finalApproveEdit({
+				id: approveId,
+				status: "approve", // 通过
 			});
-			await freshData();
+			//  获取项目信息
+			const res1 = await splProjectList({
+				id: curProject.id,
+				pageNum: 1,
+				pageSize: 10,
+			});
+			const project = _.get(res1, "data.record[0]");
+			if (!project) {
+				return;
+			}
+			if (project.status === "materials") {
+				freshData(); // 刷新项目信息
+				return;
+			}
 		} catch (error) {
 			console.log(error);
-		} finally {
 		}
 	};
 	return (
@@ -156,14 +176,45 @@ const RejectConfirm: (p: any) => any = ({
 	);
 };
 const renderFooter = (props: any) => {
-	const { hasAccess, step, handleSaveRecord, user, curProject, freshData } =
-		props;
+	const {
+		hasAccess,
+		step,
+		handleSaveRecord,
+		user,
+		curProject,
+		freshData,
+		accessList,
+	} = props;
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
+	const [isReviewing, setIsReviewing] = useState(false);
+
+	// 判断是否是 审核中
+	useEffect(() => {
+		if (!_.isEmpty(accessList)) {
+			const item = _.find(accessList, { relationUserId: user.id });
+			if (!item) {
+				return;
+			}
+			if (item.status !== "product_start") {
+				// 是否是审核中判断
+				setIsReviewing(true);
+			}
+		}
+	}, [curProject, accessList]);
 
 	if (!hasAccess) {
 		return;
 	}
+	console.log(111, isReviewing);
+	if (isReviewing) {
+		return (
+			<ConfigProvider theme={redButtonTheme}>
+				<Button type="primary">审核中...</Button>
+			</ConfigProvider>
+		);
+	}
+
 	if (step === SPLProductStatusMap.ProStart) {
 		// 立项准备
 		return (
@@ -224,6 +275,7 @@ const renderFooter = (props: any) => {
 								user,
 								curProject,
 								freshData,
+								accessList,
 							});
 						}}
 						trigger="click"
@@ -524,7 +576,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			setHasAccess(true);
 		} else {
 			const item = _.find(accessList, { relationUserId: user.id });
-			console.log("cur user", accessList, user, item);
+			// console.log("cur user", accessList, user, item);
 
 			if (!item) {
 				setAllDisabled(true);
@@ -642,6 +694,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					user,
 					curProject,
 					freshData,
+					accessList,
 				})}
 			</div>
 		</CustomModalRoot>

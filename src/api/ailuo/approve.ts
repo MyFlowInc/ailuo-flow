@@ -71,13 +71,22 @@ export function approvePersonRemove(id: number) {
 // 终审阶段会签
 
 // 确定终审情况
-export function finalInfoPage(projectSaleId?: string) {
+export function finalInfoPage(projectSaleId?: string,) {
 	let params: any = {
 		pageNum: 1,
 		pageSize: 10,
 		projectSaleId,
 	};
 
+	return apiCall({
+		url: "api/sys/projectFlowApprove/page",
+		method: "get",
+		params,
+	});
+}
+
+// PM的审批 用新接口 支持auditType
+export function flowApproveInfo(params: any) {
 	return apiCall({
 		url: "api/sys/projectFlowApprove/page",
 		method: "get",

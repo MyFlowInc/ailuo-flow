@@ -17,6 +17,7 @@ import { getStore } from "../../store";
 import { SPLProductStatusMap } from "../../api/ailuo/dict";
 import ApproveModal from "./FormModal/ApproveModal";
 import AllInfoModal from "./FormModal/AllInfoModal";
+import ApproveModal2 from "./FormModal/ApproveModal2";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -213,7 +214,8 @@ export const PreProductionContext = React.createContext<any>({});
 
 const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
-	const [isShowApproveModal, setIsShowApproveModal] = useState(false);
+	const [isShowApproveModal, setIsShowApproveModal] = useState(false); // 立项准备审核
+	const [isShowApproveModal2, setIsShowApproveModal2] = useState(false); // 生产资料设置 审核
 	const [approveType, setApproveType] = useState(""); // pre_product
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
@@ -308,8 +310,8 @@ const PreProductionManage: React.FC = () => {
 	};
 	const PreSteps = () => {
 		const onChange = (value: number) => {
-			// return
-			setCurrentStep(value);
+			return;
+			// setCurrentStep(value);
 		};
 		return (
 			<Steps
@@ -366,7 +368,12 @@ const PreProductionManage: React.FC = () => {
 		}
 		if (currentStep === 3) {
 			// 生产资料审核
-			res = <DataConfig step={SPLProductStatusMap.MaterialsRev} />;
+			res = (
+				<DataConfig
+					step={SPLProductStatusMap.MaterialsRev}
+					splId={params.splId}
+				/>
+			);
 		}
 		if (currentStep === 4) {
 			// 提交车间
@@ -397,6 +404,7 @@ const PreProductionManage: React.FC = () => {
 				value={{
 					curProject,
 					setIsShowApproveModal,
+					setIsShowApproveModal2,
 					freshData,
 				}}
 			>
@@ -415,6 +423,10 @@ const PreProductionManage: React.FC = () => {
 					<ApproveModal
 						approveModalVisible={isShowApproveModal}
 						setApproveModalVisible={setIsShowApproveModal}
+					/>
+					<ApproveModal2
+						approveModalVisible={isShowApproveModal2}
+						setApproveModalVisible={setIsShowApproveModal2}
 					/>
 				</DashboardRoot>
 			</PreProductionContext.Provider>

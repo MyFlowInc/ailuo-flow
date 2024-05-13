@@ -1,17 +1,6 @@
 import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
-import {
-	ConfigProvider,
-	Form,
-	Button,
-	Tag,
-	Popover,
-	Input,
-	Popconfirm,
-	Avatar,
-	Badge,
-	message,
-} from "antd";
+import { ConfigProvider, Form, Button, Popover, Input, message } from "antd";
 import {
 	blueButtonTheme,
 	greyButtonTheme,
@@ -25,7 +14,6 @@ import {
 	selectIsFinance,
 	selectIsManager,
 	selectUser,
-	setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import ModeSelectTable from "../../Sale/ModeSelectTable";
@@ -40,6 +28,222 @@ import {
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
+
+const ApproveConfirm: (p: any) => any = ({
+	approveModal,
+	setApproveModal,
+	user,
+	curProject,
+	freshData,
+}) => {
+	const clickHandle = async () => {
+		setApproveModal(false);
+
+		const { id } = user;
+		try {
+			await splPreProjectEdit({
+				id: curProject.id,
+				status: SPLProductStatusMap.Materials,
+			});
+			await freshData();
+		} catch (error) {
+			console.log(error);
+		} finally {
+		}
+	};
+	return (
+		<div className="flex flex-col items-center" style={{ width: "300px" }}>
+			<div className="flex mb-4 mt-4">
+				<img src={warnSvg} />
+				<div>审批通过后，本项目将进入下一阶段</div>;
+			</div>
+			<div className="flex mb-4">
+				<ConfigProvider theme={greyButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						className="mr-8"
+						onClick={() => {
+							setApproveModal(false);
+						}}
+					>
+						取消
+					</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						onClick={() => {
+							clickHandle();
+						}}
+					>
+						通过
+					</Button>
+				</ConfigProvider>
+			</div>
+		</div>
+	);
+};
+
+const RejectConfirm: (p: any) => any = ({
+	setRejectModal,
+	user,
+	curProject,
+	freshData,
+}) => {
+	const [rejectReason, setRejectReason] = useState("");
+	const rejectHandle = async () => {
+		setRejectModal(false);
+
+		const { id } = user;
+		try {
+			console.log("驳回", curProject);
+			await splPreProjectEdit({
+				id: curProject.id,
+				status: SPLProductStatusMap.ProStart,
+			});
+			await freshData();
+		} catch (error) {
+			console.log(error);
+		} finally {
+		}
+	};
+	return (
+		<div className="flex flex-col" style={{ width: "300px" }}>
+			<div
+				className="mb-4 mt-4"
+				style={{
+					fontFamily: "HarmonyOS Sans",
+					fontSize: "14px",
+				}}
+			>
+				填写驳回理由
+			</div>
+			<div>
+				<TextArea
+					rows={4}
+					value={rejectReason}
+					onChange={(e: any) => setRejectReason(e.target.value)}
+				/>
+			</div>
+			<div className="flex justify-center mb-4 mt-4">
+				<ConfigProvider theme={greyButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						className="mr-8"
+						onClick={() => {
+							setRejectModal(false);
+						}}
+					>
+						取消
+					</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={redButtonTheme}>
+					<Button
+						style={{ width: "80px" }}
+						type="primary"
+						onClick={() => {
+							rejectHandle();
+						}}
+					>
+						驳回
+					</Button>
+				</ConfigProvider>
+			</div>
+		</div>
+	);
+};
+const renderFooter = (props: any) => {
+	const { hasAccess, step, handleSaveRecord, user, curProject, freshData } =
+		props;
+	const [approveModal, setApproveModal] = useState(false);
+	const [rejectModal, setRejectModal] = useState(false);
+
+	if (!hasAccess) {
+		return;
+	}
+	if (step === SPLProductStatusMap.ProStart) {
+		// 立项准备
+		return (
+			<>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button type="primary">取消立项</Button>
+				</ConfigProvider>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
+						提交并进行立项审核
+					</Button>
+				</ConfigProvider>
+			</>
+		);
+	}
+	if (step == SPLProductStatusMap.ProReviewing) {
+		// 立项审核
+		return (
+			<>
+				<ConfigProvider theme={redButtonTheme}>
+					<Popover
+						open={rejectModal}
+						onOpenChange={(newOpen: boolean) => {
+							setRejectModal(newOpen);
+						}}
+						content={() => {
+							return RejectConfirm({
+								setRejectModal,
+								user,
+								curProject,
+								freshData,
+							});
+						}}
+						trigger="click"
+					>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							className="mr-8"
+							onClick={() => {
+								setRejectModal(true);
+							}}
+						>
+							驳回
+						</Button>
+					</Popover>
+				</ConfigProvider>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Popover
+						open={approveModal}
+						onOpenChange={(newOpen: boolean) => {
+							setApproveModal(newOpen);
+						}}
+						content={() => {
+							return ApproveConfirm({
+								approveModal,
+								setApproveModal,
+								user,
+								curProject,
+								freshData,
+							});
+						}}
+						trigger="click"
+					>
+						<Button
+							style={{ width: "80px" }}
+							type="primary"
+							onClick={() => {
+								setApproveModal(true);
+							}}
+						>
+							通过
+						</Button>
+					</Popover>
+				</ConfigProvider>
+			</>
+		);
+	}
+	return null;
+};
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -216,7 +420,10 @@ export const columns: any = [
 ];
 
 const PrepareForm: React.FC<any> = (props: any) => {
-	const { editFlowItemRecord, step, modalType } = props;
+	const { step, modalType, accessList } = props;
+	const { curProject, setIsShowApproveModal, freshData } = useContext(
+		PreProductionContext,
+	) as any;
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -228,16 +435,17 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
-	const { curProject, setIsShowApproveModal, freshData } = useContext(
-		PreProductionContext,
-	) as any;
+	const [hasAccess, setHasAccess] = useState(false);
+
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const setAllDisabled = (disabled: boolean) => {
-		disabled = isManager ? false : disabled;
-		if (isFinance) {
-			disabled = true;
-		}
+		// disabled = isManager ? false : disabled;
+		// if (isFinance) {
+		// 	disabled = true;
+		// }
+		console.log("setAllDisabled1111", disabled);
+
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -247,7 +455,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		setShowDstColumns(newCol);
 		setSaveButtonDisabled(disabled);
 	};
-
+	// 初始化form数据
 	useEffect(() => {
 		if (_.isEmpty(curProject)) {
 			return;
@@ -300,39 +508,23 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	}, [curProject]);
 
-	// 初始化form数据
-	useEffect(() => {
-		if (!open) {
-			setForm({});
-			return;
-		}
-		if (modalType === "edit" && editFlowItemRecord) {
-			const { key, ...temp } = editFlowItemRecord;
-			try {
-				// 处理执行机构型号
-				temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
-			} catch (error) {
-				temp.typeSelection = [];
-			}
-
-			setForm(temp);
-			inputForm.setFieldsValue(temp);
-		}
-		if (modalType === "add") {
-			setForm((v: any) => {
-				return {
-					...v,
-				};
-			});
-		}
-	}, [open]);
-
 	// 控制 只读和编辑
 	useEffect(() => {
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
-	}, [form.status, open]);
+		if (_.isEmpty(accessList)) {
+			setAllDisabled(true);
+		}
+		const item = _.find(accessList, { relationUserId: user.id });
+		console.log("cur user", user, item);
+
+		if (!item) {
+			setAllDisabled(true);
+		} else {
+			setAllDisabled(false);
+		}
+	}, [accessList]);
 	// 终审情况
 
 	// 新增记录
@@ -407,197 +599,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		}
 	};
 
-	const ApproveConfirm: (p: any) => any = ({
-		approveModal,
-		setApproveModal,
-	}) => {
-		const clickHandle = async () => {
-			setApproveModal(false);
-
-			const { id } = user;
-			try {
-				await splPreProjectEdit({
-					id: curProject.id,
-					status: SPLProductStatusMap.Materials,
-				});
-				await freshData();
-			} catch (error) {
-				console.log(error);
-			} finally {
-			}
-		};
-		return (
-			<div className="flex flex-col items-center" style={{ width: "300px" }}>
-				<div className="flex mb-4 mt-4">
-					<img src={warnSvg} />
-					<div>审批通过后，本项目将进入下一阶段</div>;
-				</div>
-				<div className="flex mb-4">
-					<ConfigProvider theme={greyButtonTheme}>
-						<Button
-							style={{ width: "80px" }}
-							type="primary"
-							className="mr-8"
-							onClick={() => {
-								setApproveModal(false);
-							}}
-						>
-							取消
-						</Button>
-					</ConfigProvider>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button
-							style={{ width: "80px" }}
-							type="primary"
-							onClick={() => {
-								clickHandle();
-							}}
-						>
-							通过
-						</Button>
-					</ConfigProvider>
-				</div>
-			</div>
-		);
-	};
-
-	const RejectConfirm: (p: any) => any = ({ rejectModal, setRejectModal }) => {
-		const [rejectReason, setRejectReason] = useState("");
-		const rejectHandle = async () => {
-			setRejectModal(false);
-
-			const { id } = user;
-			try {
-				console.log("驳回", curProject);
-				await splPreProjectEdit({
-					id: curProject.id,
-					status: SPLProductStatusMap.ProStart,
-				});
-				await freshData();
-			} catch (error) {
-				console.log(error);
-			} finally {
-			}
-		};
-		return (
-			<div className="flex flex-col" style={{ width: "300px" }}>
-				<div
-					className="mb-4 mt-4"
-					style={{
-						fontFamily: "HarmonyOS Sans",
-						fontSize: "14px",
-					}}
-				>
-					填写驳回理由
-				</div>
-				<div>
-					<TextArea
-						rows={4}
-						value={rejectReason}
-						onChange={(e: any) => setRejectReason(e.target.value)}
-					/>
-				</div>
-				<div className="flex justify-center mb-4 mt-4">
-					<ConfigProvider theme={greyButtonTheme}>
-						<Button
-							style={{ width: "80px" }}
-							type="primary"
-							className="mr-8"
-							onClick={() => {
-								setRejectModal(false);
-							}}
-						>
-							取消
-						</Button>
-					</ConfigProvider>
-					<ConfigProvider theme={redButtonTheme}>
-						<Button
-							style={{ width: "80px" }}
-							type="primary"
-							onClick={() => {
-								rejectHandle();
-							}}
-						>
-							驳回
-						</Button>
-					</ConfigProvider>
-				</div>
-			</div>
-		);
-	};
-	const renderFooter = () => {
-		const [approveModal, setApproveModal] = useState(false);
-		const [rejectModal, setRejectModal] = useState(false);
-
-		if (step === SPLProductStatusMap.ProStart) {
-			// 立项准备
-			return (
-				<>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary">取消立项</Button>
-					</ConfigProvider>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
-							提交并进行立项审核
-						</Button>
-					</ConfigProvider>
-				</>
-			);
-		}
-		if (step == SPLProductStatusMap.ProReviewing) {
-			// 立项审核
-			return (
-				<>
-					<ConfigProvider theme={redButtonTheme}>
-						<Popover
-							open={rejectModal}
-							onOpenChange={(newOpen: boolean) => {
-								setRejectModal(newOpen);
-							}}
-							content={() => {
-								return RejectConfirm({ rejectModal, setRejectModal });
-							}}
-							trigger="click"
-						>
-							<Button
-								style={{ width: "80px" }}
-								type="primary"
-								className="mr-8"
-								onClick={() => {
-									setRejectModal(true);
-								}}
-							>
-								驳回
-							</Button>
-						</Popover>
-					</ConfigProvider>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Popover
-							open={approveModal}
-							onOpenChange={(newOpen: boolean) => {
-								setApproveModal(newOpen);
-							}}
-							content={() => {
-								return ApproveConfirm({ approveModal, setApproveModal });
-							}}
-							trigger="click"
-						>
-							<Button
-								style={{ width: "80px" }}
-								type="primary"
-								onClick={() => {
-									setApproveModal(true);
-								}}
-							>
-								通过
-							</Button>
-						</Popover>
-					</ConfigProvider>
-				</>
-			);
-		}
-		return null;
-	};
 	return (
 		<CustomModalRoot>
 			{step == 0 && (
@@ -625,7 +626,16 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					)}
 				</Form>
 			</div>
-			<div className="footer">{renderFooter()}</div>
+			<div className="footer">
+				{renderFooter({
+					hasAccess,
+					step,
+					handleSaveRecord,
+					user,
+					curProject,
+					freshData,
+				})}
+			</div>
 		</CustomModalRoot>
 	);
 };

@@ -354,6 +354,7 @@ const PreProductionManage: React.FC = () => {
 					<ReviewForm
 						step={SPLProductStatusMap.ProReviewing}
 						modalType="edit"
+						splId={params.splId}
 					/>
 				</div>
 			);

@@ -178,7 +178,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const isManager = useAppSelector(selectIsManager);
 
 	const setAllDisabled = (disabled: boolean) => {
-		disabled = isManager ? false : disabled;
+		// disabled = isManager ? false : disabled;	// 经理例外
 
 		const newCol = showDstColumns.map((item: any) => {
 			return {

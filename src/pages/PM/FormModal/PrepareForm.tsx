@@ -430,7 +430,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const location = useLocation();
 	const history = useHistory();
 
-	const allUser = useAppSelector(selectAllUser);
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
@@ -440,12 +439,10 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const setAllDisabled = (disabled: boolean) => {
-		// disabled = isManager ? false : disabled;
-		// if (isFinance) {
-		// 	disabled = true;
-		// }
-		console.log("setAllDisabled1111", disabled);
-
+		disabled = isManager ? false : disabled;
+		if (isFinance) {
+			disabled = true;
+		}
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -516,16 +513,27 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (_.isEmpty(accessList)) {
 			setAllDisabled(true);
 		}
-		const item = _.find(accessList, { relationUserId: user.id });
-		console.log("cur user", user, item);
 
-		if (!item) {
-			setAllDisabled(true);
-		} else {
+		if (location.pathname.includes("addfromcontract")) {
+			console.log("router from addfromcontract");
 			setAllDisabled(false);
+			setHasAccess(true);
+		} else if (location.pathname.includes("add")) {
+			setForm({});
+			setAllDisabled(false);
+			setHasAccess(true);
+		} else {
+			const item = _.find(accessList, { relationUserId: user.id });
+			console.log("cur user", accessList, user, item);
+
+			if (!item) {
+				setAllDisabled(true);
+			} else {
+				setAllDisabled(false);
+				setHasAccess(true);
+			}
 		}
 	}, [accessList]);
-	// 终审情况
 
 	// 新增记录
 	const createRecord = async () => {

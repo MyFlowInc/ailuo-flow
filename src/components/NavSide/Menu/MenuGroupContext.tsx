@@ -49,8 +49,7 @@ interface MenuGroupContextProps {
 }
 
 const PMList = (props: any) => {
-	const { title, groupStyle, collapsed, preProductList } = props;
-
+	const { title, groupStyle, collapsed, preProductList, menuList } = props;
 	const history = useHistory();
 	const [treeData, setTreeData] = useState([]) as any;
 	const [treeDefaultExpandedKeys, setTreeDefaultExpandedKeys] = useState(
@@ -89,11 +88,13 @@ const PMList = (props: any) => {
 
 			setTreeDefaultExpandedKeys(expandKeys);
 		} else {
-			setTreeData([{
-				key: '暂无数据,请添加',
-				title: '暂无数据,请添加',
-				children: [],
-			}])
+			setTreeData([
+				{
+					key: "暂无数据,请添加",
+					title: "暂无数据,请添加",
+					children: [],
+				},
+			]);
 		}
 	}, [preProductList]);
 	const selectHandler = (selectedKeys: any, e: any) => {
@@ -101,6 +102,11 @@ const PMList = (props: any) => {
 		if (path) {
 			history.push(path);
 		}
+	};
+	const getIcon = (menu: IMenu) => {
+		const { component } = menu;
+		const imgPath = getImgByName(component);
+		return <img src={imgPath} />;
 	};
 	if (_.isEmpty(treeData)) return null;
 	return (
@@ -110,6 +116,22 @@ const PMList = (props: any) => {
 			count={treeData || treeData.length || 0}
 			style={groupStyle}
 		>
+			{menuList.map((item: any, index: number) => {
+				const isSelected = "/dashboard" + item.path === location.pathname;
+				return (
+					<MenuItemWrap collapsed={collapsed} key={"MenuItemWrap_" + index}>
+						<div className="menu-drag-icon">{/* <HolderOutlined /> */}</div>
+						<MenuItem
+							collapsed={collapsed}
+							menuKey={`${item.path}`}
+							menuName={item.title}
+							icon={<div> {getIcon(item)} </div>}
+							isExtraShow
+							isSelected={isSelected}
+						/>
+					</MenuItemWrap>
+				);
+			})}
 			<Tree
 				className="ml-8"
 				rootStyle={{ background: "rgb(232, 236, 241)" }}
@@ -137,7 +159,7 @@ const MenuGroupContext: React.FC<MenuGroupContextProps> = (props: any) => {
 				pageSize: 10,
 			});
 			setPreProductList(res.data);
-		} catch (err) { }
+		} catch (err) {}
 	};
 	useEffect(() => {
 		if (title === "PM") {

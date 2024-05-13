@@ -19,12 +19,15 @@ import {
 import _ from "lodash";
 import { CaretRightOutlined, DeleteFilled } from "@ant-design/icons";
 import type { CSSProperties } from "react";
-import { approveInfo, approvePersonRemove, approveSaveBath } from "../../../api/ailuo/approve";
+import {
+	approveInfo,
+	approvePersonRemove,
+	approveSaveBath,
+} from "../../../api/ailuo/approve";
 import SearchFilled from "../../../assets/icons/SearchFilled";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { accountList } from "../../../api/user";
 import { useParams } from "react-router";
-
 
 const FormRoot = styled.div`
 	display: flex;
@@ -46,20 +49,19 @@ const FormRoot = styled.div`
 const ApproveModal: React.FC<any> = ({
 	approveModalVisible,
 	setApproveModalVisible,
-	approveType
+	approveType,
 }) => {
 	const [accessUserList, setAccessUserList] = useState([]); // 所有账户
-	const [manageList, setManageList] = useState([]);	//总经理
-	const [financeList, setFinanceList] = useState([]);	//财务部
-	const [productList, setProductList] = useState([]);	//生产技术部
+	const [manageList, setManageList] = useState([]); //总经理
+	const [financeList, setFinanceList] = useState([]); //财务部
+	const [productList, setProductList] = useState([]); //生产技术部
 	const [techList, setTechList] = useState([]); // 技术部
 	const [curSelectedIds, setCurSelectedIds] = useState<string[]>([]); // user id
-	const [filterValue, setFilterValue] = useState("");	// 搜索功能
+	const [filterValue, setFilterValue] = useState(""); // 搜索功能
 	const [loading, setLoading] = useState(false);
-	const [belong, setBelong] = useState("pre_product");	// 哪种类型的审批
-	const [type, setType] = useState("and");	// 会签或签
+	const [belong, setBelong] = useState("pre_product"); // 哪种类型的审批
+	const [type, setType] = useState("and"); // 会签或签
 	const params = useParams() as any;
-
 
 	// 获取账号列表
 	useEffect(() => {
@@ -144,7 +146,7 @@ const ApproveModal: React.FC<any> = ({
 	};
 
 	const onChange = (e: any, id: string) => {
-		console.log(e, id);
+		// console.log(e, id);
 		const { checked } = e.target;
 		if (checked) {
 			const isHas = curSelectedIds.includes(id);
@@ -202,31 +204,31 @@ const ApproveModal: React.FC<any> = ({
 	const getItems: (panelStyle: CSSProperties) => CollapseProps["items"] = (
 		panelStyle,
 	) => [
-			{
-				key: "1",
-				label: <div style={{ fontSize: "16px" }}>总经理</div>,
-				children: getAccountList(manageList),
-				style: panelStyle,
-			},
-			{
-				key: "2",
-				label: <div style={{ fontSize: "16px" }}>财务部</div>,
-				children: getAccountList(financeList),
-				style: panelStyle,
-			},
-			{
-				key: "3",
-				label: <div style={{ fontSize: "16px" }}>生产技术部</div>,
-				children: getAccountList(productList),
-				style: panelStyle,
-			},
-			{
-				key: "4",
-				label: <div style={{ fontSize: "16px" }}>技术部</div>,
-				children: getAccountList(techList),
-				style: panelStyle,
-			},
-		];
+		{
+			key: "1",
+			label: <div style={{ fontSize: "16px" }}>总经理</div>,
+			children: getAccountList(manageList),
+			style: panelStyle,
+		},
+		{
+			key: "2",
+			label: <div style={{ fontSize: "16px" }}>财务部</div>,
+			children: getAccountList(financeList),
+			style: panelStyle,
+		},
+		{
+			key: "3",
+			label: <div style={{ fontSize: "16px" }}>生产技术部</div>,
+			children: getAccountList(productList),
+			style: panelStyle,
+		},
+		{
+			key: "4",
+			label: <div style={{ fontSize: "16px" }}>技术部</div>,
+			children: getAccountList(techList),
+			style: panelStyle,
+		},
+	];
 
 	const { token } = theme.useToken();
 	const panelStyle: React.CSSProperties = {
@@ -264,8 +266,8 @@ const ApproveModal: React.FC<any> = ({
 					projectSaleId: splId,
 					relationUserId: id,
 					belong,
-					type: 'and',
-					audittype: 'pro_reviewing',
+					type: "and",
+					audittype: "pro_reviewing",
 				};
 			});
 
@@ -317,7 +319,7 @@ const ApproveModal: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
-				<div style={{ color: "#3D3D3D", fontSize: '14px' }}>当前审批人员</div>
+				<div style={{ color: "#3D3D3D", fontSize: "14px" }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList &&
 						accessUserList.length > 0 &&

@@ -338,7 +338,6 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		console.log(1111, form);
 		try {
 			await inputForm.validateFields();
 			if (!form.name) {

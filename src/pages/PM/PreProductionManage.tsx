@@ -278,7 +278,6 @@ const PreProductionManage: React.FC = () => {
 				if (item) {
 					const { status } = item;
 					setCurProject(item);
-					console.log("setCurProject", item.status, item);
 					if (status === SPLProductStatusMap.ProStart) {
 						setCurrentStep(0);
 					}

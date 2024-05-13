@@ -48,16 +48,16 @@ const ApproveModal: React.FC<any> = ({
 	setApproveModalVisible,
 	approveType
 }) => {
-	const [accessUserList, setAccessUserList] = useState([]);
-	const [manageList, setManageList] = useState([]);
-	const [financeList, setFinanceList] = useState([]);
+	const [accessUserList, setAccessUserList] = useState([]); // 所有账户
+	const [manageList, setManageList] = useState([]);	//总经理
+	const [financeList, setFinanceList] = useState([]);	//财务部
 	const [productList, setProductList] = useState([]);	//生产技术部
 	const [techList, setTechList] = useState([]); // 技术部
 	const [curSelectedIds, setCurSelectedIds] = useState<string[]>([]); // user id
-	const [filterValue, setFilterValue] = useState("");
+	const [filterValue, setFilterValue] = useState("");	// 搜索功能
 	const [loading, setLoading] = useState(false);
-	const [belong, setBelong] = useState("pre_product");
-	const [type, setType] = useState("or");
+	const [belong, setBelong] = useState("pre_product");	// 哪种类型的审批
+	const [type, setType] = useState("and");	// 会签或签
 	const params = useParams() as any;
 
 
@@ -69,33 +69,32 @@ const ApproveModal: React.FC<any> = ({
 	const fetchUserList = async () => {
 		try {
 			const res = await accountList();
-			const res2 = await approveInfo({ belong }); // 审批信息
+			// const res2 = await approveInfo({ belong }); // 审批信息
 			let allUserList = _.get(res, "data.record", []);
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
 			const pList = allUserList.filter((item: any) => item.code === "product");
 			const tList = allUserList.filter((item: any) => item.code === "tech");
-			let hasAccessUserList = _.get(res2, "data.record", []);
-			let hasAccessList = hasAccessUserList
-				.map((item: any) => {
-					const user = allUserList.find(
-						(item2: any) => item2.id === item.relationUserId,
-					);
-					return {
-						...item,
-						userInfo: user,
-					};
-				})
-				.filter((i: any) => !!i.userInfo);
-			setAccessUserList(hasAccessList); // 有权限的人
-			if (!_.isEmpty(hasAccessList)) {
-				const item0 = hasAccessList[0];
-				const type = _.get(item0, "type");
-				type && setType(type);
-			}
-			const ids = hasAccessList.map((item: any) => item.userInfo.id);
-			setCurSelectedIds(ids);
-
+			// let hasAccessUserList = _.get(res2, "data.record", []);	// 已经有权限的人
+			// let hasAccessList = hasAccessUserList
+			// 	.map((item: any) => {
+			// 		const user = allUserList.find(
+			// 			(item2: any) => item2.id === item.relationUserId,
+			// 		);
+			// 		return {
+			// 			...item,
+			// 			userInfo: user,
+			// 		};
+			// 	})
+			// 	.filter((i: any) => !!i.userInfo);
+			// setAccessUserList(hasAccessList); // 有权限的人
+			// if (!_.isEmpty(hasAccessList)) {
+			// 	const item0 = hasAccessList[0];
+			// 	const type = _.get(item0, "type");
+			// 	type && setType(type);
+			// }
+			// const ids = hasAccessList.map((item: any) => item.userInfo.id);
+			// setCurSelectedIds(ids);
 			setManageList(mList);
 			setFinanceList(fList);
 			setProductList(pList);
@@ -260,27 +259,19 @@ const ApproveModal: React.FC<any> = ({
 				const relationUser = _.find(accessUserList, {
 					relationUserId: id,
 				}) as any;
-				if (!_.isEmpty(relationUser)) {
-					return {
-						carbonUserId: id,
-						relationUserId: id,
-						belong,
-						type,
-						id: relationUser.id,
-						projectSaleId: splId,
-					};
-				}
 				return {
 					carbonUserId: id,
 					projectSaleId: splId,
 					relationUserId: id,
 					belong,
-					type,
+					type: 'and',
+					audittype: 'pro_reviewing',
 				};
 			});
 
 			await approveSaveBath(params);
 			await fetchUserList();
+
 			setTimeout(() => {
 				setLoading(false);
 			}, 1000);
@@ -326,14 +317,6 @@ const ApproveModal: React.FC<any> = ({
 			}}
 		>
 			<FormRoot>
-				{/* <div className="mb-4" style={{ color: "#3D3D3D" }}>
-					审批方式
-				</div>
-				<Radio.Group onChange={radioOnChange} value={type}>
-					<Radio value={"and"}>会签</Radio>
-					<Radio value={"or"}>或签</Radio>
-				</Radio.Group> */}
-				{/* <Divider style={{ margin: "12px 0" }} /> */}
 				<div style={{ color: "#3D3D3D", fontSize: '14px' }}>当前审批人员</div>
 				<div className="avatar-list">
 					{accessUserList &&
@@ -404,7 +387,7 @@ const ApproveModal: React.FC<any> = ({
 								handleSave();
 							}}
 						>
-							保存
+							提交
 						</Button>
 					</ConfigProvider>
 				</div>

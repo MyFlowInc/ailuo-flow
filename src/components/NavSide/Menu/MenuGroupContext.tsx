@@ -88,6 +88,12 @@ const PMList = (props: any) => {
 			setTreeData(data);
 
 			setTreeDefaultExpandedKeys(expandKeys);
+		} else {
+			setTreeData([{
+				key: '暂无数据,请添加',
+				title: '暂无数据,请添加',
+				children: [],
+			}])
 		}
 	}, [preProductList]);
 	const selectHandler = (selectedKeys: any, e: any) => {

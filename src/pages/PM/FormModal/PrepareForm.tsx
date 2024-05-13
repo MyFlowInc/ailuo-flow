@@ -338,7 +338,6 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	// 新增记录
 	const createRecord = async () => {
 		inputForm.setFieldsValue(form);
-		console.log(1111, form);
 		try {
 			await inputForm.validateFields();
 			if (!form.name) {
@@ -346,7 +345,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				return;
 			}
 			// 创建
-			form.status = SPLProductStatusMap.ProReviewing;
+			form.status = SPLProductStatusMap.ProStart;
 			if (form.typeSelection) {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 			}

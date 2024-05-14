@@ -455,7 +455,6 @@ const SPLModeSelect: React.FC = (props: any) => {
 	});
 
 	const handleBatchInsert = (fields: string[], record: any) => {
-		// todo currentIndex不变
 		fields.forEach((field) => {
 			const value = dataSource[currentIndex]?.[field as keyof DataType];
 			if (value && record[field]) {
@@ -562,13 +561,15 @@ const SPLModeSelect: React.FC = (props: any) => {
 					/>
 				</ConfigProvider>
 			</div>
-			<SplDatabaseModal
-				open={isShowSplDatabaseModal}
-				setOpen={setIsShowSplDatabaseModal}
-				importType={importType}
-				setImportFlowItemRecord={onSplDatabaseImport}
-				onBatchImport={onBatchImport}
-			></SplDatabaseModal>
+			{isShowSplDatabaseModal && (
+				<SplDatabaseModal
+					open={isShowSplDatabaseModal}
+					setOpen={setIsShowSplDatabaseModal}
+					importType={importType}
+					setImportFlowItemRecord={onSplDatabaseImport}
+					onBatchImport={onBatchImport}
+				></SplDatabaseModal>
+			)}
 		</div>
 	);
 };

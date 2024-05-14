@@ -244,7 +244,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 						</div>
 					);
 				})}
-				{renderSplDatabaseModal()}
+				{isShowSplDatabaseModal && renderSplDatabaseModal()}
 			</div>
 		);
 	}
@@ -275,7 +275,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 						{"上传"}
 					</span>
 				</Popover>
-				{renderSplDatabaseModal()}
+				{isShowSplDatabaseModal && renderSplDatabaseModal()}
 			</>
 		);
 	};

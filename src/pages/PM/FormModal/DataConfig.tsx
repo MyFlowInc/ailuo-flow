@@ -195,7 +195,7 @@ const renderFooter = (props: any) => {
 				pageNum: 1,
 				pageSize: 10,
 				projectSaleId: splId,
-				auditType: "materials_rev",
+				audittype: "materials_rev",
 			};
 			const res = await flowApproveInfo(params);
 			setAccessList(_.get(res, "data.record") || []);

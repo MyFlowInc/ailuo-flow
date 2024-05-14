@@ -20,6 +20,7 @@ import {
 import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/TypeAttachment";
 import SplDatabaseModal from "../../../components/Dashboard/SplDatabaseModal";
 import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
+import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 type InputRef = any;
 type FormInstance<T> = any;
 
@@ -174,12 +175,22 @@ interface DataType {
 	operationInstruction: string;
 }
 
+interface SPLModeSelectProps {
+	dataSource: DataType[];
+	setDataSource: (dataSource: DataType[]) => void;
+	rootStyle?: React.CSSProperties;
+	step: SPLProductStatusMap;
+}
+
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
-const SPLModeSelect: React.FC = (props: any) => {
-	const { column, form, setForm, rootStyle } = props;
-	const [dataSource, setDataSource] = useState<DataType[]>([]);
+const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
+	rootStyle,
+	dataSource,
+	setDataSource,
+	step,
+}) => {
+	// const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [count, setCount] = useState(1);
-	const debouncedSetForm = _.debounce(setForm, 300);
 	const [isShowGenerateIndexRender, setIsShowGenerateIndexRender] =
 		useState(false);
 	const [firstIndex, setFirstIndex] = useState("");
@@ -187,37 +198,40 @@ const SPLModeSelect: React.FC = (props: any) => {
 	const [importType, setImportType] = useState<SplDatabaseImportTypeEnum>(0);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectRowKeys, setSelectRowKeys] = useState<any[]>([]);
-
-	useEffect(() => {
-		let records = _.get(form, column.dataIndex) || [];
-		if (typeof records === "string") {
-			try {
-				records = JSON.parse(records);
-			} catch (error) {
-				records = [];
-			}
-		}
-		setDataSource(records);
-		setCount(records.length + 1);
-	}, [form.typeSelection]);
-
 	const [disabled, setDisabled] = useState(false);
+
 	useEffect(() => {
-		if (_.get(column, "disabled")) {
-			setDisabled(true);
-		} else {
-			setDisabled(false);
-		}
-	}, [column]);
+		setDisabled(
+			step === SPLProductStatusMap.MaterialsRev ||
+				step === SPLProductStatusMap.SubWorkshop ||
+				step === SPLProductStatusMap.Ended,
+		);
+	}, [step]);
+
+	// useEffect(() => {
+	// 	let records = _.get(form, column.dataIndex) || [];
+	// 	if (typeof records === "string") {
+	// 		try {
+	// 			records = JSON.parse(records);
+	// 		} catch (error) {
+	// 			records = [];
+	// 		}
+	// 	}
+	// 	setDataSource(records);
+	// 	setCount(records.length + 1);
+	// }, [form.typeSelection]);
+
+	// useEffect(() => {
+	// 	if (_.get(column, "disabled")) {
+	// 		setDisabled(true);
+	// 	} else {
+	// 		setDisabled(false);
+	// 	}
+	// }, [column]);
 
 	const handleDelete = (key: React.Key) => {
 		const newData = dataSource.filter((item) => item.key !== key);
 		setDataSource(newData);
-		// console.log("do update");
-		debouncedSetForm({
-			...form,
-			[column.dataIndex]: newData,
-		});
 	};
 
 	const generateSerialNumber = (inputSerial: string, interval: number) => {
@@ -288,7 +302,9 @@ const SPLModeSelect: React.FC = (props: any) => {
 		index: number,
 		key: any,
 	) => {
-		return (
+		return disabled ? (
+			<Attachment value={record[key]}></Attachment>
+		) : (
 			<TypeAttachment
 				setForm={(form: any) => {
 					dataSource[index] = {
@@ -318,7 +334,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 				return (
 					<div>
 						序列号
-						{generateIndexRender()}
+						{!disabled && generateIndexRender()}
 					</div>
 				);
 			},
@@ -369,6 +385,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 		{
 			title: "操作",
 			dataIndex: "action",
+			hidden: disabled,
 			render: (text: any, record: any, index: number) => {
 				return (
 					<div className="flex items-center justify-around">
@@ -405,11 +422,6 @@ const SPLModeSelect: React.FC = (props: any) => {
 			operationInstruction: "",
 		};
 		setDataSource([...dataSource, newData]);
-		debouncedSetForm({
-			// typeSelection
-			...form,
-			[column.dataIndex]: [...dataSource, newData],
-		});
 		setCount(count + 1);
 		// console.log("do update");
 	};
@@ -424,10 +436,6 @@ const SPLModeSelect: React.FC = (props: any) => {
 			...row,
 		});
 		setDataSource(newData);
-		debouncedSetForm({
-			...form,
-			[column.dataIndex]: newData,
-		});
 		// console.log("do update");
 	};
 
@@ -515,14 +523,13 @@ const SPLModeSelect: React.FC = (props: any) => {
 			className={"w-full pb-10"}
 			style={rootStyle ? rootStyle : { paddingRight: "200px" }}
 		>
-			<div className="flex mb-4 justify-between items-center">
-				<div
-					className={[
-						"flex items-center cursor-pointer",
-						disabled ? "hidden" : "",
-					].join("")}
-					onClick={handleAdd}
-				>
+			<div
+				className={[
+					"flex mb-4 justify-between items-center",
+					disabled && "!hidden",
+				].join(" ")}
+			>
+				<div className={"flex items-center cursor-pointer"} onClick={handleAdd}>
 					<PlusCircleFilled size={14} />
 					<div className="ml-2">添加型号</div>
 				</div>
@@ -540,7 +547,7 @@ const SPLModeSelect: React.FC = (props: any) => {
 			</div>
 			<div
 				className="w-full overflow-hidden overflow-x-auto"
-				style={{ pointerEvents: disabled ? "none" : "auto" }}
+				// style={{ pointerEvents: disabled ? "none" : "auto" }}
 			>
 				<ConfigProvider theme={TableTheme}>
 					<Table

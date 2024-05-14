@@ -27,6 +27,17 @@ import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import { useAppSelector } from "../../../store/hooks";
 import { selectUser } from "../../../store/globalSlice";
 
+export interface DataType {
+	key: React.Key;
+	name: string;
+	serialNumber: string;
+	ingredientsList: string;
+	bom: string;
+	processPkg: string;
+	fitOutPkg: string;
+	operationInstruction: string;
+}
+
 const ApproveConfirm: (p: {
 	setApproveModal: any;
 	curProject: any;
@@ -117,6 +128,11 @@ const RejectConfirm: (p: any) => any = ({
 
 		try {
 			console.log("驳回", curProject);
+			await finalApproveEdit({
+				id: curProject.id,
+				status: "reject", // 通过
+				remark: rejectReason,
+			});
 			await splPreProjectEdit({
 				id: curProject.id,
 				status: SPLProductStatusMap.Materials,
@@ -182,6 +198,7 @@ const renderFooter = (props: any) => {
 		freshData,
 		splId,
 		user,
+		setDataSource,
 	} = props;
 
 	const [approveModal, setApproveModal] = useState(false);
@@ -204,9 +221,21 @@ const renderFooter = (props: any) => {
 		}
 	};
 
+	const getDataSource = async () => {
+		const res = await splProjectList({
+			id: curProject.id,
+			pageNum: 1,
+			pageSize: 10,
+		});
+		setDataSource(
+			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+		);
+	};
+
 	useEffect(() => {
 		if (splId) {
 			getAclList();
+			getDataSource();
 		}
 	}, [splId]);
 
@@ -370,6 +399,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 	const [form, setForm] = useState<any>({});
 	const [column, setColumn] = useState<any>([]);
 	const user = useAppSelector(selectUser);
+	const [dataSource, setDataSource] = useState<DataType[]>([]);
 
 	const { curProject, setIsShowApproveModal2, freshData } = useContext(
 		PreProductionContext,
@@ -415,6 +445,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 			}
 			await splPreProjectEdit({
 				...form,
+				typeSelection: JSON.stringify(dataSource),
 				status: SPLProductStatusMap.ProReviewing,
 			});
 		} catch (error) {
@@ -423,6 +454,10 @@ const DataConfig: React.FC<any> = (props: any) => {
 	};
 	//
 	const handleSubmit = async () => {
+		await splPreProjectEdit({
+			id: form.id,
+			typeSelection: JSON.stringify(dataSource),
+		});
 		setIsShowApproveModal2(true);
 	};
 
@@ -432,9 +467,9 @@ const DataConfig: React.FC<any> = (props: any) => {
 				<SPLModeSelect
 					key={"ModelTable" + props.key}
 					{...{
-						column,
-						form,
-						setForm,
+						dataSource,
+						setDataSource,
+						step,
 					}}
 				/>
 				<div
@@ -449,6 +484,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 						curProject,
 						freshData,
 						splId,
+						setDataSource,
 					})}
 				</div>
 			</ConfigProvider>

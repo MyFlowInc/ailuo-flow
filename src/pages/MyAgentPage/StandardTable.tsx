@@ -56,7 +56,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 	return (
 		<Space>
-			<Link to={`/dashboard/pre-product-manage/${record.projectSaleId}&approveId=${record.id}`}>查看</Link>
+			<Link to={`/dashboard/pre-product-manage/${record.projectSaleId}`}>查看</Link>
 			{/* <Link to={`/dashboard/pre-product-manage/${record.projectSaleId}`}>查看</Link> */}
 
 		</Space >

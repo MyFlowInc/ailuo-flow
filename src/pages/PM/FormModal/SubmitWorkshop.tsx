@@ -18,6 +18,7 @@ import { PreProductionContext } from "../PreProductionManage";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 import UpdateWorkshop from "./UpdateWorkshop";
 import { splPreProjectEdit } from "../../../api/ailuo/spl-pre-product";
+import { DataType } from "./DataConfig";
 
 
 const SubmitWorkshopWrapper = styled.div`
@@ -28,12 +29,19 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 	const { step } = props
 	const [form, setForm] = useState<any>({});
 	const [column, setColumn] = useState<any>([]);
+	const [dataSource, setDataSource] = useState<DataType[]>([])
 	const { curProject, setIsShowApproveModal, freshData } = useContext(
 		PreProductionContext,
 	) as any;
 	if (curProject.status === SPLProductStatusMap.ProChange) {
 		return <UpdateWorkshop />
 	}
+
+
+	useEffect(() => {
+		
+	}, [])
+	
 
 	const handleSaveRecord = () => {
 
@@ -89,7 +97,10 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 						column,
 						form,
 						setForm,
-						rootStyle: {}
+						rootStyle: {},
+						dataSource,
+						setDataSource,
+						step,
 					}}
 				/>
 			</ConfigProvider>

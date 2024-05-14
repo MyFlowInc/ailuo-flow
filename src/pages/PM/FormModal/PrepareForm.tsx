@@ -63,10 +63,11 @@ const ApproveConfirm: (p: any) => any = ({
 			if (!project) {
 				return;
 			}
-			if (project.status === "materials") {
-				freshData(); // 刷新项目信息
-				return;
-			}
+			freshData()
+			// if (project.status === "materials") {
+			// 	freshData(); // 刷新项目信息
+			// 	return;
+			// }
 		} catch (error) {
 			console.log(error);
 		}
@@ -574,6 +575,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			setForm({});
 			setAllDisabled(false);
 			setHasAccess(true);
+		} else if (step === SPLProductStatusMap.ProStart) {
+			setAllDisabled(false);
+			setHasAccess(true);
 		} else {
 			const item = _.find(accessList, { relationUserId: user.id });
 			// console.log("cur user", accessList, user, item);
@@ -629,7 +633,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				return;
 			}
 			try {
-				form.status = SPLProductStatusMap.ProReviewing;
+				// form.status = SPLProductStatusMap.ProReviewing;
 				if (form.typeSelection) {
 					form.typeSelection = JSON.stringify(form.typeSelection);
 				}
@@ -637,9 +641,10 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				delete params.createTime;
 				await splPreProjectEdit({
 					...form,
-					status: SPLProductStatusMap.ProReviewing,
+					// status: SPLProductStatusMap.ProReviewing,
 				});
-				await freshData();
+				// await freshData();
+				setIsShowApproveModal(true);
 			} catch (error) {
 				console.log(error);
 			}

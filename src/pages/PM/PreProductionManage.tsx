@@ -310,8 +310,9 @@ const PreProductionManage: React.FC = () => {
 	};
 	const PreSteps = () => {
 		const onChange = (value: number) => {
-			return;
-			// setCurrentStep(value);
+			// step change
+			// return;
+			setCurrentStep(value);
 		};
 		return (
 			<Steps

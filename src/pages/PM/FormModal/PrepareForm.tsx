@@ -38,6 +38,7 @@ const ApproveConfirm: (p: any) => any = ({
 	curProject,
 	freshData,
 	accessList,
+	setIsReviewing,
 }) => {
 	const clickHandle = async () => {
 		setApproveModal(false);
@@ -63,11 +64,16 @@ const ApproveConfirm: (p: any) => any = ({
 			if (!project) {
 				return;
 			}
-			freshData()
-			// if (project.status === "materials") {
-			// 	freshData(); // 刷新项目信息
-			// 	return;
-			// }
+
+			if (project.status !== "materials") {
+				// 没进入下一步都是待审核
+				setIsReviewing(true);
+			}
+
+			if (project.status === "materials") {
+				freshData(); // 刷新项目信息
+				return;
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -277,6 +283,7 @@ const renderFooter = (props: any) => {
 								curProject,
 								freshData,
 								accessList,
+								setIsReviewing,
 							});
 						}}
 						trigger="click"

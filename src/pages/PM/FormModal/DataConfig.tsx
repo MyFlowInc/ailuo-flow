@@ -76,10 +76,11 @@ const ApproveConfirm: (p: {
 			if (!project) {
 				return;
 			}
-			if (project.status === "materials") {
-				freshData(); // 刷新项目信息
-				return;
-			}
+			freshData()
+			// if (project.status === "materials") {
+			// 	freshData(); // 刷新项目信息
+			// 	return;
+			// }
 		} catch (error) {
 			console.log(error);
 		}
@@ -248,7 +249,7 @@ const renderFooter = (props: any) => {
 			if (!item) {
 				return;
 			}
-			if (item.status !== "materials_rev") {
+			if (item.status !== "product_start") {
 				// 是否是审核中判断
 				setIsReviewing(true);
 			}

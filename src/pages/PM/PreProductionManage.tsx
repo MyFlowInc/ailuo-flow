@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ConfigProvider, Modal } from "antd";
+import { Button, ConfigProvider, Modal } from "antd";
 import { Steps } from "antd";
-import { dashboardTheme } from "../../theme/theme";
+import { dashboardTheme, redButtonTheme } from "../../theme/theme";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 
 import _ from "lodash";
@@ -18,6 +18,7 @@ import { SPLProductStatusMap } from "../../api/ailuo/dict";
 import ApproveModal from "./FormModal/ApproveModal";
 import AllInfoModal from "./FormModal/AllInfoModal";
 import ApproveModal2 from "./FormModal/ApproveModal2";
+import { WarningOutlined } from "@ant-design/icons";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -219,6 +220,9 @@ const PreProductionManage: React.FC = () => {
 	const [approveType, setApproveType] = useState(""); // pre_product
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
+	const [curStatus, setCurStatus] = useState<SPLProductStatusMap>(
+		SPLProductStatusMap.ProStart,
+	);
 	const params = useParams() as any;
 	const fetchData = async () => {
 		try {
@@ -279,6 +283,7 @@ const PreProductionManage: React.FC = () => {
 				const item = _.get(res, "data.record.0");
 				if (item) {
 					const { status } = item;
+					setCurStatus(status);
 					setCurProject(item);
 					if (status === SPLProductStatusMap.ProStart) {
 						setCurrentStep(0);
@@ -294,6 +299,12 @@ const PreProductionManage: React.FC = () => {
 					}
 					if (status === SPLProductStatusMap.SubWorkshop) {
 						setCurrentStep(4);
+					}
+					if (status === SPLProductStatusMap.Ended) {
+						setCurrentStep(5);
+					}
+					if (status === SPLProductStatusMap.ProChange) {
+						setCurrentStep(5);
 					}
 				}
 			}
@@ -314,6 +325,7 @@ const PreProductionManage: React.FC = () => {
 			// return;
 			setCurrentStep(value);
 		};
+
 		return (
 			<Steps
 				className="mt-4"
@@ -376,7 +388,7 @@ const PreProductionManage: React.FC = () => {
 				/>
 			);
 		}
-		if (currentStep === 4) {
+		if (currentStep === 4 || currentStep === 5) {
 			// 提交车间
 			res = <SubmitWorkshop step={SPLProductStatusMap.SubWorkshop} />;
 		}
@@ -390,7 +402,7 @@ const PreProductionManage: React.FC = () => {
 		);
 	};
 	const renderInfoCard = () => {
-		if ([2, 3, 4].includes(currentStep)) {
+		if ([2, 3, 4, 5].includes(currentStep)) {
 			return (
 				<div>
 					<InfoCard project={curProject} />
@@ -411,13 +423,25 @@ const PreProductionManage: React.FC = () => {
 			>
 				<DashboardRoot>
 					<div
-						className="w-full step-header"
+						className="w-full step-header relative"
 						style={{ boxShadow: [0, 1].includes(currentStep) ? "unset" : "" }}
 					>
 						<div className="w-full flex items-center ">
 							<SpecialHeader menu={{ name: "预生产管理" }} />
 							<PreSteps />
 						</div>
+						{currentStep === 5 && (
+							<ConfigProvider theme={redButtonTheme}>
+								<Button
+									className="absolute right-[70px] top-[20px]"
+									type="primary"
+									icon={<WarningOutlined />}
+								>
+									预生产变更中
+								</Button>
+							</ConfigProvider>
+						)}
+
 						{renderInfoCard()}
 					</div>
 					{CurForm()}

@@ -13,6 +13,7 @@ import {
 	message,
 } from "antd";
 import {
+	TableTheme,
 	blueButtonTheme,
 	greyButtonTheme,
 	redButtonTheme,
@@ -36,10 +37,13 @@ import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 import {
 	splFolderFileCreate,
 	splPreProjectEdit,
+	splProjectList,
 } from "../../../api/ailuo/spl-pre-product";
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
+import SPLModeSelect from "./SPLModeSelect";
+import { DataType } from "./DataConfig";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -163,7 +167,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -232,6 +236,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		PreProductionContext,
 	) as any;
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+	const [dataSource, setDataSource] = useState<DataType[]>([]);
 
 	const setAllDisabled = (disabled: boolean) => {
 		disabled = isManager ? false : disabled;
@@ -247,6 +252,21 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		setShowDstColumns(newCol);
 		setSaveButtonDisabled(disabled);
 	};
+
+	const getDataSource = async () => {
+		const res = await splProjectList({
+			id: curProject.id,
+			pageNum: 1,
+			pageSize: 10,
+		});
+		setDataSource(
+			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+		);
+	};
+
+	useEffect(() => {
+		getDataSource();
+	}, []);
 
 	useEffect(() => {
 		if (_.isEmpty(curProject)) {
@@ -349,7 +369,6 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			if (form.typeSelection) {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 			}
-
 		} catch (error) {
 			console.log(error);
 		}
@@ -398,11 +417,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		}
 	};
 
-
-
-
 	const renderFooter = () => {
-
 		return (
 			<>
 				<ConfigProvider theme={blueButtonTheme}>
@@ -415,7 +430,6 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				</ConfigProvider>
 			</>
 		);
-
 	};
 	return (
 		<CustomModalRoot>
@@ -444,6 +458,17 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 					)}
 				</Form>
 			</div>
+			<ConfigProvider theme={TableTheme}>
+				<SPLModeSelect
+					key={"ModelTable" + props.key}
+					{...{
+						dataSource,
+						setDataSource,
+						step,
+						rootStyle:{}
+					}}
+				/>
+			</ConfigProvider>
 			<div className="footer">{renderFooter()}</div>
 		</CustomModalRoot>
 	);

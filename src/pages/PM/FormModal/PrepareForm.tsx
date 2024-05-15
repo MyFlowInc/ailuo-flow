@@ -51,8 +51,9 @@ const ApproveConfirm: (p: any) => any = ({
 		const approveId = item.id;
 		try {
 			await finalApproveEdit({
-				id: approveId,
+				projectSaleId: curProject.id,
 				status: "approve", // 通过
+				audittype: SPLProductStatusMap.ProReviewing,
 			});
 			//  获取项目信息
 			const res1 = await splProjectList({

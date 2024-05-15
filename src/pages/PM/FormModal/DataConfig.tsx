@@ -62,8 +62,9 @@ const ApproveConfirm: (p: {
 		const approveId = item.id;
 		try {
 			await finalApproveEdit({
-				id: approveId,
+				projectSaleId: curProject.id,
 				status: "approve", // 通过
+				audittype: SPLProductStatusMap.MaterialsRev,
 			});
 			//  获取项目信息
 			const res1 = await splProjectList({
@@ -129,9 +130,10 @@ const RejectConfirm: (p: any) => any = ({
 		try {
 			console.log("驳回", curProject);
 			await finalApproveEdit({
-				id: curProject.id,
-				status: "reject", // 通过
+				projectSaleId: curProject.id,
+				status: "reject", // 驳回
 				remark: rejectReason,
+				audittype: SPLProductStatusMap.MaterialsRev,
 			});
 			await splPreProjectEdit({
 				id: curProject.id,

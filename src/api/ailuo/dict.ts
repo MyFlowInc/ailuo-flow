@@ -222,7 +222,8 @@ export enum SPLProductStatusMap {
 	MaterialsRev = "materials_rev",
 	SubWorkshop = "sub_workshop",
 	Ended = "ended",
-	ProChange = 'pro_change'
+	ProChange = 'pro_change',
+	ChangeReview = 'change_review',
 }
 
 export function dictFlowStatus(): Promise<IFlowStatus[]> {

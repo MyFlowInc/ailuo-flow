@@ -204,7 +204,8 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 		setDisabled(
 			step === SPLProductStatusMap.MaterialsRev ||
 				step === SPLProductStatusMap.SubWorkshop ||
-				step === SPLProductStatusMap.Ended,
+				step === SPLProductStatusMap.Ended ||
+				step === SPLProductStatusMap.ChangeReview,
 		);
 	}, [step]);
 
@@ -325,7 +326,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 		{
 			title: "型号",
 			dataIndex: "name",
-			editable: true,
+			editable: !disabled,
 			key: "name",
 		},
 		{
@@ -338,7 +339,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 					</div>
 				);
 			},
-			editable: true,
+			editable: !disabled,
 			dataIndex: "serialNumber",
 			key: "serialNumber",
 		},
@@ -520,8 +521,8 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 
 	return (
 		<div
-			className={"w-full pb-10"}
-			style={rootStyle ? rootStyle : { paddingRight: "200px" }}
+			className={"pb-10"}
+			style={rootStyle ? rootStyle : { paddingRight: "200px", width: "100%" }}
 		>
 			<div
 				className={[

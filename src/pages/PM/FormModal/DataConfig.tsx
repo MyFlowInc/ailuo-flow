@@ -136,10 +136,6 @@ const RejectConfirm: (p: any) => any = ({
 				remark: rejectReason,
 				audittype: SPLProductStatusMap.MaterialsRev,
 			});
-			await splPreProjectEdit({
-				id: curProject.id,
-				status: SPLProductStatusMap.Materials,
-			});
 			await freshData();
 		} catch (error) {
 			console.log(error);

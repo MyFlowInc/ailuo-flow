@@ -19,6 +19,7 @@ import ApproveModal from "./FormModal/ApproveModal";
 import AllInfoModal from "./FormModal/AllInfoModal";
 import ApproveModal2 from "./FormModal/ApproveModal2";
 import { WarningOutlined } from "@ant-design/icons";
+import ApproveModal3 from "./FormModal/ApproveModal3";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -62,6 +63,8 @@ const InfoCard = (props: any) => {
 		quotationEnd,
 	} = project || {};
 	const [isShowInfoModal, setIsShowInfoModal] = useState(false);
+	const [showMore, setShowMore] = useState(false);
+
 	const getTotalNum = () => {
 		let totalNum = 0;
 		try {
@@ -82,7 +85,6 @@ const InfoCard = (props: any) => {
 		} catch (error) {}
 		return totalPrice;
 	};
-	const [showMore, setShowMore] = useState(false);
 	const openModal = () => {
 		setIsShowInfoModal(true);
 	};
@@ -217,6 +219,7 @@ const PreProductionManage: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [isShowApproveModal, setIsShowApproveModal] = useState(false); // 立项准备审核
 	const [isShowApproveModal2, setIsShowApproveModal2] = useState(false); // 生产资料设置 审核
+	const [isShowApproveModal3, setIsShowApproveModal3] = useState(false); // 预生产变更 审核
 	const [approveType, setApproveType] = useState(""); // pre_product
 	const [currentStep, setCurrentStep] = useState(0);
 	const [curProject, setCurProject] = useState<any>({});
@@ -304,6 +307,9 @@ const PreProductionManage: React.FC = () => {
 						setCurrentStep(5);
 					}
 					if (status === SPLProductStatusMap.ProChange) {
+						setCurrentStep(5);
+					}
+					if (status === SPLProductStatusMap.ChangeReview) {
 						setCurrentStep(5);
 					}
 				}
@@ -411,6 +417,35 @@ const PreProductionManage: React.FC = () => {
 		}
 		return null;
 	};
+	const renderStatusTag = () => {
+		if (currentStep === 5 && curStatus === SPLProductStatusMap.ProChange) {
+			return (
+				<ConfigProvider theme={redButtonTheme}>
+					<Button
+						className="absolute right-[70px] top-[20px]"
+						type="primary"
+						icon={<WarningOutlined />}
+					>
+						预生产变更中
+					</Button>
+				</ConfigProvider>
+			);
+		}
+		if (currentStep === 5 && curStatus === SPLProductStatusMap.ChangeReview) {
+			return (
+				<ConfigProvider theme={redButtonTheme}>
+					<Button
+						className="absolute right-[70px] top-[20px]"
+						type="primary"
+						icon={<WarningOutlined />}
+					>
+						变更审核中
+					</Button>
+				</ConfigProvider>
+			);
+		}
+		return null
+	};
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<PreProductionContext.Provider
@@ -418,6 +453,7 @@ const PreProductionManage: React.FC = () => {
 					curProject,
 					setIsShowApproveModal,
 					setIsShowApproveModal2,
+					setIsShowApproveModal3,
 					freshData,
 				}}
 			>
@@ -430,18 +466,7 @@ const PreProductionManage: React.FC = () => {
 							<SpecialHeader menu={{ name: "预生产管理" }} />
 							<PreSteps />
 						</div>
-						{currentStep === 5 && (
-							<ConfigProvider theme={redButtonTheme}>
-								<Button
-									className="absolute right-[70px] top-[20px]"
-									type="primary"
-									icon={<WarningOutlined />}
-								>
-									预生产变更中
-								</Button>
-							</ConfigProvider>
-						)}
-
+						{renderStatusTag()}
 						{renderInfoCard()}
 					</div>
 					{CurForm()}
@@ -452,6 +477,10 @@ const PreProductionManage: React.FC = () => {
 					<ApproveModal2
 						approveModalVisible={isShowApproveModal2}
 						setApproveModalVisible={setIsShowApproveModal2}
+					/>
+					<ApproveModal3
+						approveModalVisible={isShowApproveModal3}
+						setApproveModalVisible={setIsShowApproveModal3}
 					/>
 				</DashboardRoot>
 			</PreProductionContext.Provider>

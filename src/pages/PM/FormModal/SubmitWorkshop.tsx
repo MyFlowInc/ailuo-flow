@@ -21,7 +21,10 @@ import SPLModeSelect from "./SPLModeSelect";
 import { PreProductionContext } from "../PreProductionManage";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
 import UpdateWorkshop from "./UpdateWorkshop";
-import { splPreProjectEdit } from "../../../api/ailuo/spl-pre-product";
+import {
+	splPreProjectEdit,
+	splProjectList,
+} from "../../../api/ailuo/spl-pre-product";
 import { DataType } from "./DataConfig";
 
 const SubmitWorkshopWrapper = styled.div`
@@ -36,12 +39,17 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 	const { curProject, setIsShowApproveModal, freshData } = useContext(
 		PreProductionContext,
 	) as any;
-	if (curProject.status === SPLProductStatusMap.ProChange) {
-		return <UpdateWorkshop />;
-	}
 
-	useEffect(() => {}, []);
-
+	const getDataSource = async () => {
+		const res = await splProjectList({
+			id: curProject.id,
+			pageNum: 1,
+			pageSize: 10,
+		});
+		setDataSource(
+			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+		);
+	};
 	const handleSaveRecord = async () => {
 		try {
 			await splPreProjectEdit({
@@ -82,6 +90,10 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 		} catch (error) {}
 	};
 
+	useEffect(() => {
+		getDataSource();
+	}, []);
+
 	const renderFooter = () => {
 		if (curProject.status === SPLProductStatusMap.SubWorkshop) {
 			return (
@@ -120,7 +132,10 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 		}
 		return null;
 	};
-	return (
+	return curProject.status === SPLProductStatusMap.ProChange ||
+		curProject.status === SPLProductStatusMap.ChangeReview ? (
+		<UpdateWorkshop />
+	) : (
 		<SubmitWorkshopWrapper
 			className="w-full flex flex-col"
 			style={{ paddingRight: "200px" }}

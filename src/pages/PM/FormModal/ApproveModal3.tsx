@@ -270,7 +270,7 @@ const ApproveModal3: React.FC<any> = ({
 					relationUserId: id,
 					belong,
 					type: "and",
-					audittype: "pro_change",
+					audittype: "change_review",
 				};
 			});
 

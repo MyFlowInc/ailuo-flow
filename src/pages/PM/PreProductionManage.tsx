@@ -360,8 +360,8 @@ const PreProductionManage: React.FC = () => {
 	const PreSteps = () => {
 		const onChange = (value: number) => {
 			// step change
-			// return;
-			setCurrentStep(value);
+			return;
+			// setCurrentStep(value);
 		};
 
 		return (

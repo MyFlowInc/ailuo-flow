@@ -48,7 +48,8 @@ const CustomModalRoot = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	height: 100%;
+	height: 600px;
+  overflow-y: auto;
 	.header {
 		width: 100%;
 		height: 18px;
@@ -64,8 +65,8 @@ const CustomModalRoot = styled.div`
 	}
 	.content {
 		width: 100%;
-		height: calc(100% - 100px);
-		overflow: overlay;
+		/* height: calc(100% - 100px); */
+		/* overflow: overlay; */
 	}
 
 	.footer {
@@ -330,10 +331,11 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 
 	return (
 		<Modal
-			title="项目信息"
+			title={"修改时间：" + form.createTime}
 			open={isShowInfoModal}
 			footer={null}
 			onCancel={handleCancel}
+      width={"60%"}
 		>
 			<CustomModalRoot>
 				<div className="content">

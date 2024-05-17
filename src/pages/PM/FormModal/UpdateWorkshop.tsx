@@ -401,6 +401,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				await splPreProjectEdit({
 					...form,
 					typeSelection: JSON.stringify(dataSource),
+					identiFication: 1,
 				});
 				await freshData();
 			} catch (error) {

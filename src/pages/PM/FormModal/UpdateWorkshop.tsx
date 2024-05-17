@@ -321,6 +321,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		}
 		if (curProject.status === SPLProductStatusMap.ChangeReview) {
 			setAllDisabled(true);
+		} else {
+			setAllDisabled(false);
 		}
 	}, [curProject]);
 

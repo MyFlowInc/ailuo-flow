@@ -121,7 +121,10 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 				</>
 			);
 		}
-		if (curProject.status === SPLProductStatusMap.Ended) {
+		if (
+			curProject.status === SPLProductStatusMap.Ended &&
+			Number(curProject.turnTime) < 2
+		) {
 			return (
 				<ConfigProvider theme={redButtonTheme}>
 					<Button key={"base-info"} type="primary" onClick={handleProChange}>

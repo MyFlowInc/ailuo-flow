@@ -28,6 +28,8 @@ interface ListParams {
 	status?: string;
 	id?: string;
 	createBy?: string;
+	version?: number;
+	uuid?: string;
 }
 export function splProjectList(params: ListParams) {
 	return apiCall({

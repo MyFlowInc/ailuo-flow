@@ -20,6 +20,7 @@ import AllInfoModal from "./FormModal/AllInfoModal";
 import ApproveModal2 from "./FormModal/ApproveModal2";
 import { WarningOutlined } from "@ant-design/icons";
 import ApproveModal3 from "./FormModal/ApproveModal3";
+import HistoryModal from "./FormModal/HistoryModal";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -61,8 +62,10 @@ const InfoCard = (props: any) => {
 		contractTime,
 		typeSelection,
 		quotationEnd,
+		turnTime,
 	} = project || {};
 	const [isShowInfoModal, setIsShowInfoModal] = useState(false);
+	const [isShowHistoryModal, setIsShowHistoryModal] = useState(false);
 	const [showMore, setShowMore] = useState(false);
 
 	const getTotalNum = () => {
@@ -88,6 +91,9 @@ const InfoCard = (props: any) => {
 	const openModal = () => {
 		setIsShowInfoModal(true);
 	};
+	const openHistoryModal = () => {
+		setIsShowHistoryModal(true);
+	};
 	return (
 		<div className="w-full">
 			<div
@@ -99,21 +105,47 @@ const InfoCard = (props: any) => {
 				>
 					{project.name}
 				</div>
-				<div
-					style={{
-						borderRadius: "5px",
-						border: "1px solid #707683",
-						width: "121px",
-						height: "24px",
-						fontSize: "12px",
-						color: "#707683",
-					}}
-					className="flex justify-center items-center cursor-pointer"
-					onClick={openModal}
-				>
-					显示项目全部信息
+				<div className="flex items-center">
+					{Number(turnTime) >= 2 && (
+						<div
+							style={{
+								borderRadius: "5px",
+								border: "1px solid #5966D6",
+								width: "121px",
+								height: "24px",
+								fontSize: "12px",
+								color: "#5966D6",
+								marginRight: "12px",
+							}}
+							className="flex justify-center items-center cursor-pointer"
+							onClick={openHistoryModal}
+						>
+							显示历史变更
+						</div>
+					)}
+
+					<div
+						style={{
+							borderRadius: "5px",
+							border: "1px solid #707683",
+							width: "121px",
+							height: "24px",
+							fontSize: "12px",
+							color: "#707683",
+						}}
+						className="flex justify-center items-center cursor-pointer"
+						onClick={openModal}
+					>
+						显示项目全部信息
+					</div>
 				</div>
+
 				<AllInfoModal {...{ isShowInfoModal, setIsShowInfoModal, project }} />
+				<HistoryModal
+					open={isShowHistoryModal}
+					setOpen={setIsShowHistoryModal}
+					project={project}
+				></HistoryModal>
 			</div>
 			<div style={{ minHeight: "24px" }}>
 				<InfoCarrdContainer style={{ display: showMore ? "flex" : "none" }}>
@@ -444,7 +476,7 @@ const PreProductionManage: React.FC = () => {
 				</ConfigProvider>
 			);
 		}
-		return null
+		return null;
 	};
 	return (
 		<ConfigProvider theme={dashboardTheme}>

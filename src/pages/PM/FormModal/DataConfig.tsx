@@ -445,7 +445,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 			await splPreProjectEdit({
 				...form,
 				mechanismForm: JSON.stringify(dataSource),
-				status: SPLProductStatusMap.ProReviewing,
+				// status: SPLProductStatusMap.ProReviewing,
 			});
 		} catch (error) {
 			console.log(error);

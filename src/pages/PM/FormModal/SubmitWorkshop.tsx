@@ -47,7 +47,7 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 			pageSize: 10,
 		});
 		setDataSource(
-			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+			JSON.parse(_.get(res, "data.record[0].mechanismForm") || "[]"),
 		);
 	};
 	const handleSaveRecord = async () => {

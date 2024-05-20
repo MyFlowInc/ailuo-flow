@@ -209,27 +209,6 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 		);
 	}, [step]);
 
-	// useEffect(() => {
-	// 	let records = _.get(form, column.dataIndex) || [];
-	// 	if (typeof records === "string") {
-	// 		try {
-	// 			records = JSON.parse(records);
-	// 		} catch (error) {
-	// 			records = [];
-	// 		}
-	// 	}
-	// 	setDataSource(records);
-	// 	setCount(records.length + 1);
-	// }, [form.typeSelection]);
-
-	// useEffect(() => {
-	// 	if (_.get(column, "disabled")) {
-	// 		setDisabled(true);
-	// 	} else {
-	// 		setDisabled(false);
-	// 	}
-	// }, [column]);
-
 	const handleDelete = (key: React.Key) => {
 		const newData = dataSource.filter((item) => item.key !== key);
 		setDataSource(newData);

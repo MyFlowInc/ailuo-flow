@@ -227,7 +227,7 @@ const renderFooter = (props: any) => {
 			pageSize: 10,
 		});
 		setDataSource(
-			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+			JSON.parse(_.get(res, "data.record[0].mechanismForm") || "[]"),
 		);
 	};
 
@@ -444,7 +444,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 			}
 			await splPreProjectEdit({
 				...form,
-				typeSelection: JSON.stringify(dataSource),
+				mechanismForm: JSON.stringify(dataSource),
 				status: SPLProductStatusMap.ProReviewing,
 			});
 		} catch (error) {
@@ -455,7 +455,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 	const handleSubmit = async () => {
 		await splPreProjectEdit({
 			id: form.id,
-			typeSelection: JSON.stringify(dataSource),
+			mechanismForm: JSON.stringify(dataSource),
 		});
 		setIsShowApproveModal2(true);
 	};

@@ -261,7 +261,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			pageSize: 10,
 		});
 		setDataSource(
-			JSON.parse(_.get(res, "data.record[0].typeSelection") || "[]"),
+			JSON.parse(_.get(res, "data.record[0].mechanismForm") || "[]"),
 		);
 	};
 
@@ -284,6 +284,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				uuid, // 合同编号
 				contractTime,
 				typeSelection,
+				mechanismForm,
 				quotationEnd,
 				relateTechProcess,
 				relationSale,
@@ -299,6 +300,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 					uuid, // 合同编号
 					contractTime,
 					typeSelection,
+					mechanismForm,
 					quotationEnd,
 					relationContract: id, // 合同id
 					relationReview: relationSale, //关联技术评审
@@ -395,14 +397,14 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			}
 			try {
 				// form.status = SPLProductStatusMap.ProReviewing;
-				// if (form.typeSelection) {
-				// 	form.typeSelection = JSON.stringify(form.typeSelection);
-				// }
+				if (form.typeSelection) {
+					form.typeSelection = JSON.stringify(form.typeSelection);
+				}
 				delete params.updateTime;
 				delete params.createTime;
 				await splPreProjectEdit({
 					...form,
-					typeSelection: JSON.stringify(dataSource),
+					mechanismForm: JSON.stringify(dataSource),
 					identiFication: 1,
 				});
 				await freshData();

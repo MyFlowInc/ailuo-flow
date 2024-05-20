@@ -262,7 +262,8 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				salesManager,
 				uuid, // 合同编号
 				contractTime,
-				typeSelection,
+        typeSelection,
+        mechanismForm,
 				quotationEnd,
 				relateTechProcess,
 				relationSale,
@@ -277,7 +278,8 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 					salesManager,
 					uuid, // 合同编号
 					contractTime,
-					typeSelection,
+          typeSelection,
+          mechanismForm,
 					quotationEnd,
 					relationContract: id, // 合同id
 					relationReview: relationSale, //关联技术评审
@@ -295,6 +297,9 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				} catch (error) {
 					temp.typeSelection = [];
 				}
+			}
+      if (temp.mechanismForm == null) {
+        temp.mechanismForm = '[]'
 			}
 			setForm(temp);
 		}
@@ -360,7 +365,7 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				</div>
 				<SPLModeSelect
 					{...{
-						dataSource: form.typeSelection,
+						dataSource: form.mechanismForm,
 						setDataSource: () => {},
 						step: SPLProductStatusMap.ChangeReview,
 						rootStyle: { width: "100%" },

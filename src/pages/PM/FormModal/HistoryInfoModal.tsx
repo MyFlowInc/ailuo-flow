@@ -297,10 +297,16 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				} catch (error) {
 					temp.typeSelection = [];
 				}
-			}
-      if (temp.mechanismForm == null) {
-        temp.mechanismForm = '[]'
-			}
+      }
+			if (typeof temp.mechanismForm === "string") {
+				try {
+					// 处理初步选型型号
+          temp.mechanismForm = JSON.parse(temp.mechanismForm || "[]");
+				} catch (error) {
+					temp.mechanismForm = [];
+				}
+      }
+      
 			setForm(temp);
 		}
 	}, [projectInfo]);

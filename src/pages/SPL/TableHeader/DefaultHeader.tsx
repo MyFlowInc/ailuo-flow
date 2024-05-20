@@ -46,7 +46,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 		setIsShowModal(value)
 	};
 	const HeaderButtonView = () => {
-		if (pathname === "/dashboard/spl-db") {
+		if (pathname === "/dashboard/spl/file-data") {
 			return (
 				<ConfigProvider theme={blueButtonTheme}>
 					<Button

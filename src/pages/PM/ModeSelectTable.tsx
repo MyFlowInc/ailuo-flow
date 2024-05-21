@@ -306,7 +306,7 @@ const ModeSelectTable: React.FC = (props: any) => {
 		},
 	};
 
-	const columns = (isTechRole ? defaultColumnsTech : defaultColumns).map(
+	const columns = defaultColumns.map(
 		(col: any) => {
 			if (!col.editable) {
 				return col;

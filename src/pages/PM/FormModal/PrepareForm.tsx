@@ -210,7 +210,6 @@ const renderFooter = (props: any) => {
 			}
 		}
 	}, [curProject, accessList]);
-
 	if (!hasAccess) {
 		return;
 	}
@@ -500,7 +499,10 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
 
 	const setAllDisabled = (disabled: boolean) => {
-		disabled = isManager ? false : disabled;
+		disabled =
+			isManager && curProject.status !== SPLProductStatusMap.ProReviewing
+				? false
+				: disabled;
 		if (isFinance) {
 			disabled = true;
 		}
@@ -586,6 +588,12 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		} else if (step === SPLProductStatusMap.ProStart) {
 			setAllDisabled(false);
 			setHasAccess(true);
+		} else if (step === SPLProductStatusMap.ProReviewing) {
+			setAllDisabled(true);
+			const item = _.find(accessList, { relationUserId: user.id });
+			if (item) {
+				setHasAccess(true);
+			}
 		} else {
 			const item = _.find(accessList, { relationUserId: user.id });
 			// console.log("cur user", accessList, user, item);

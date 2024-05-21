@@ -199,7 +199,7 @@ export const columns: any = [
 		type: NumFieldType.Attachment,
 	},
 	{
-		title: "关联合同",
+		title: "合同附件",
 		dataIndex: "relationContract",
 		key: "relationContract",
 		type: NumFieldType.SingleText,

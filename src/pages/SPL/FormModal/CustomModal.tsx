@@ -156,6 +156,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {
+			inputForm.resetFields();
 			setForm({});
 		}
 	}, [open]);

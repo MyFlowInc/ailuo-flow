@@ -67,6 +67,7 @@ export const NumFieldType = {
 	MultiFixSelect: 30,
 	RelationTechView: 31, // 关联技术评审
 	DeniedField: 999, // no permission column
+	Blank: 9999, //不显示value
 };
 export const ReverSedNumFieldType = {
 	"0": "NotSupport",

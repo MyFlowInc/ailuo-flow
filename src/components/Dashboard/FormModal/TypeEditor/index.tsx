@@ -149,6 +149,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 		case NumFieldType.RelationTechView:
 			CellEditor = <TypeRelationTechView cell={cell} {...rest} />;
 			break;
+		case NumFieldType.Blank:
+			CellEditor = <div></div>
+			break;
 		default:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;
 	}

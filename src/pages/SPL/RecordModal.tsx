@@ -66,7 +66,7 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
 			modalRender={modalRender}
 			width={500}
 			wrapClassName="overflow-hidden"
-			style={{ height: "100vh", overflow: "hidden" }}
+			style={{ overflow: "hidden" }}
 		></Modal>
 	);
 };

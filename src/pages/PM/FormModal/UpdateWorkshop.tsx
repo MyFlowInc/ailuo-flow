@@ -29,7 +29,6 @@ import {
 	setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
@@ -45,6 +44,7 @@ import { useHistory, useLocation } from "react-router";
 import SPLModeSelect from "./SPLModeSelect";
 import { DataType } from "./DataConfig";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
+import ModeSelectTable from "../ModeSelectTable";
 
 const CustomModalRoot = styled.div`
 	position: relative;

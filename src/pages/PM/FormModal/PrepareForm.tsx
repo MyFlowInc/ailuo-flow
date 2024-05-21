@@ -16,7 +16,6 @@ import {
 	selectUser,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
@@ -30,6 +29,7 @@ import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
 import { finalApproveEdit } from "../../../api/ailuo/approve";
+import ModeSelectTable from "../ModeSelectTable";
 
 const ApproveConfirm: (p: any) => any = ({
 	approveModal,

@@ -25,7 +25,6 @@ import {
   setCurSaleForm,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import ModeSelectTable from "../../Sale/ModeSelectTable";
 import { PreProductionContext } from "../PreProductionManage";
 import CellEditorContext from "../../Sale/FormModal/CellEditorContext";
 import { NoFieldData } from "../../Sale/FormModal/NoFieldData";
@@ -34,6 +33,7 @@ import { splFolderFileCreate, splPreProjectEdit } from "../../../api/ailuo/spl-p
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
 import { useHistory, useLocation } from "react-router";
+import ModeSelectTable from "../ModeSelectTable";
 
 const CustomModalRoot = styled.div`
 	position: relative;

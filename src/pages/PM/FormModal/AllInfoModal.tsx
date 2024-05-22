@@ -14,7 +14,7 @@ import {
   Modal,
 } from "antd";
 import { blueButtonTheme, greyButtonTheme, redButtonTheme } from "../../../theme/theme";
-import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
+import { Attachment, NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
 import {
@@ -179,11 +179,28 @@ export const columns: any = [
     type: NumFieldType.Attachment,
   },
   {
-    title: "合同附件",
-    dataIndex: "relationContract",
-    key: "relationContract",
-    type: NumFieldType.SingleText,
-  },
+		title: "合同附件",
+		dataIndex: "otherFile",
+		key: "otherFile",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+		) => {
+			return (
+				<div key={"name_" + key} className="w-full mt-4">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>合同附件</div>
+							<div className="flex-1 flex items-center">
+								<Attachment value={form[column.key]}></Attachment>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
+	},
   {
     title: "关联技术评审",
     dataIndex: "relationReview",
@@ -254,7 +271,8 @@ const AllInfoModal: React.FC<any> = (props: any) => {
         quotationEnd,
         relateTechProcess,
         relationSale,
-        relationReview
+        relationReview,
+        otherFile,
       } = curProject;
       setForm((v: any) => {
         return {
@@ -267,6 +285,7 @@ const AllInfoModal: React.FC<any> = (props: any) => {
           contractTime,
           typeSelection,
           quotationEnd,
+          otherFile,
           relationContract: id, // 合同id
           relationReview: relationSale, //关联技术评审
           relationSale: relationReview, //关联报价

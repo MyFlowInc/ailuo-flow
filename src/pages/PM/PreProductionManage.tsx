@@ -283,6 +283,7 @@ const PreProductionManage: React.FC = () => {
 						relateTechProcess,
 						relationSale,
 						relationReview,
+						otherFile,
 					} = curContractForm;
 
 					const form = {
@@ -298,6 +299,7 @@ const PreProductionManage: React.FC = () => {
 						relateTechProcess,
 						relationSale,
 						relationReview,
+						otherFile,
 						status: SPLProductStatusMap.ProStart,
 					};
 					setCurProject(form);

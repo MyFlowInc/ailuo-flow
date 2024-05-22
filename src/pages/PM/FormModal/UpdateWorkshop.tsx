@@ -18,7 +18,7 @@ import {
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
-import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
+import { Attachment, NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
 import {
@@ -200,9 +200,26 @@ export const columns: any = [
 	},
 	{
 		title: "合同附件",
-		dataIndex: "relationContract",
-		key: "relationContract",
-		type: NumFieldType.SingleText,
+		dataIndex: "otherFile",
+		key: "otherFile",
+		render: (
+			column: any,
+			key: string,
+			form: any,
+		) => {
+			return (
+				<div key={"name_" + key} className="w-full mt-4">
+					<div className="w-full">
+						<div className="flex mb-4">
+							<div style={{ width: "100px" }}>合同附件</div>
+							<div className="flex-1 flex items-center">
+								<Attachment value={form[column.key]}></Attachment>
+							</div>
+						</div>
+					</div>
+				</div>
+			);
+		},
 	},
 	{
 		title: "关联技术评审",
@@ -289,6 +306,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				relateTechProcess,
 				relationSale,
 				relationReview,
+				otherFile,
 			} = curProject;
 			setForm((v: any) => {
 				return {
@@ -302,6 +320,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 					typeSelection,
 					mechanismForm,
 					quotationEnd,
+					otherFile,
 					relationContract: id, // 合同id
 					relationReview: relationSale, //关联技术评审
 					relationSale: relationReview, //关联报价

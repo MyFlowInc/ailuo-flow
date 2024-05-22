@@ -461,21 +461,21 @@ export const columns: any = [
 		title: "合同附件",
 		dataIndex: "relationContract",
 		key: "relationContract",
-		type: NumFieldType.Blank,
+		type: NumFieldType.TextOnly,
 	},
 	{
 		title: "关联技术评审",
 		dataIndex: "relationReview",
 		key: "relationReview",
 		// type: NumFieldType.RelationTechView,
-		type: NumFieldType.Blank,
+		type: NumFieldType.TextOnly,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relationSale",
 		key: "relationSale",
 		// type: NumFieldType.RelationSaleView,
-		type: NumFieldType.Blank,
+		type: NumFieldType.TextOnly,
 	},
 ];
 

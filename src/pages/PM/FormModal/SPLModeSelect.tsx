@@ -303,16 +303,17 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 
 	const defaultColumns: any = [
 		{
+			width: 90,
 			title: "型号",
 			dataIndex: "name",
 			editable: !disabled,
 			key: "name",
 		},
 		{
-			width: 90,
+			width: 100,
 			title: ({ sortOrder, sortColumn, filters }: any) => {
 				return (
-					<div>
+					<div className="w-24">
 						序列号
 						{!disabled && generateIndexRender()}
 					</div>
@@ -323,6 +324,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 			key: "serialNumber",
 		},
 		{
+			width: 120,
 			title: "配料单",
 			dataIndex: "ingredientsList",
 			key: "ingredientsList",
@@ -331,6 +333,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				renderAttachment(text, record, index, "ingredientsList"),
 		},
 		{
+			width: 100,
 			title: "BOM",
 			dataIndex: "bom",
 			key: "bom",
@@ -339,6 +342,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				renderAttachment(text, record, index, "bom"),
 		},
 		{
+			width: 150,
 			title: "加工图纸包",
 			dataIndex: "processPkg",
 			key: "processPkg",
@@ -347,6 +351,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				renderAttachment(text, record, index, "processPkg"),
 		},
 		{
+			width: 150,
 			title: "装配图纸包",
 			dataIndex: "fitOutPkg",
 			key: "fitOutPkg",
@@ -355,6 +360,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				renderAttachment(text, record, index, "fitOutPkg"),
 		},
 		{
+			width: 150,
 			title: "作业指导书",
 			dataIndex: "operationInstruction",
 			key: "operationInstruction",
@@ -363,6 +369,7 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				renderAttachment(text, record, index, "operationInstruction"),
 		},
 		{
+			width: 200,
 			title: "操作",
 			dataIndex: "action",
 			hidden: disabled,

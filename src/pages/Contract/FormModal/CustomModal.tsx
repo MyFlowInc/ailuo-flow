@@ -865,7 +865,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					)
 				) {
 					message.warning("您没有权限");
-					return
+					return;
 				}
 				dispatch(setCurContractForm(form));
 				history.push("/dashboard/pre-product-manage/addfromcontract");

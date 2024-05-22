@@ -142,13 +142,14 @@ export function logout() {
 }
 
 // 用户列表
-export function accountList() {
+export function accountList(params:any={}) {
 	return apiCall({
 		url: "api/sys/user/page",
 		method: "get",
 		params: {
 			pageNum: 1,
-			pageSize: 999
+			pageSize: 999,
+			...params
 		}
 	});
 }

@@ -74,6 +74,9 @@ const ApproveModal3: React.FC<any> = ({
 	const fetchUserList = async () => {
 		try {
 			const res = await accountList();
+			const res2 = await accountList({ remark: 'product_default' });
+			
+			setAccessUserList(_.get(res2, "data.record", []));
 			// const res2 = await approveInfo({ belong }); // 审批信息
 			let allUserList = _.get(res, "data.record", []);
 			const mList = allUserList.filter((item: any) => item.code === "manage");
@@ -110,12 +113,11 @@ const ApproveModal3: React.FC<any> = ({
 	};
 
 	const ListItem = (item: any) => {
-		const { id, userInfo } = item;
-		let { avatar, nickname, postName } = userInfo;
+		let { avatar, nickname, postName,id } = item;
 		return (
 			<div
 				className="flex justify-between items-center mt-4"
-				key={"item_user_" + userInfo.id}
+				key={"item_user_" + id}
 			>
 				<div className="flex items-center">
 					<img
@@ -132,7 +134,7 @@ const ApproveModal3: React.FC<any> = ({
 					</div>
 				</div>
 
-				<div className="options">
+				{/* <div className="options">
 					<Popconfirm
 						title="确认移除?"
 						onConfirm={() => {
@@ -143,7 +145,7 @@ const ApproveModal3: React.FC<any> = ({
 					>
 						<DeleteFilled style={{ fontSize: "12px", color: "#707683" }} />
 					</Popconfirm>
-				</div>
+				</div> */}
 			</div>
 		);
 	};
@@ -165,7 +167,7 @@ const ApproveModal3: React.FC<any> = ({
 	};
 
 	const getAccountList = (accountList: any) => {
-		const hasAccessIds = accessUserList.map((item: any) => item.userInfo.id);
+		const hasAccessIds = accessUserList.map((item: any) => item.id);
 
 		return (
 			<div className="flex flex-col pd-4">
@@ -255,7 +257,7 @@ const ApproveModal3: React.FC<any> = ({
 		setLoading(true);
 		const p1 = curSelectedIds;
 		const p2 = accessUserList.map((item: any) => {
-			return item.userInfo.id;
+			return item.id;
 		});
 		const diffIds = _.difference(p1, p2);
 		// console.log(p1, p2, diffIds, accessUserList);

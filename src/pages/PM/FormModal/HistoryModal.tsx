@@ -32,8 +32,8 @@ const HistoryModal: React.FC<HistoryModalProps> = ({
 	const columns = [
 		{
 			title: "修改时间",
-			dataIndex: "updateTime",
-			key: "updateTime",
+			dataIndex: "createTime",
+			key: "createTime",
 			render: (text: any, record: any, index: any) => {
 				return <div className="text-[#5966D6]">{text}</div>;
 			},

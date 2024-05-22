@@ -189,25 +189,8 @@ export const columns: any = [
 	{
 		title: "合同附件",
 		dataIndex: "otherFile",
-		key: "otherFile",
-		render: (
-			column: any,
-			key: string,
-			form: any,
-		) => {
-			return (
-				<div key={"name_" + key} className="w-full mt-4">
-					<div className="w-full">
-						<div className="flex mb-4">
-							<div style={{ width: "100px" }}>合同附件</div>
-							<div className="flex-1 flex items-center">
-								<Attachment value={form[column.key]}></Attachment>
-							</div>
-						</div>
-					</div>
-				</div>
-			);
-		},
+    key: "otherFile",
+    type: NumFieldType.Attachment,
 	},
 	{
 		title: "关联技术评审",

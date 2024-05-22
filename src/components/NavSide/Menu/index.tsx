@@ -14,7 +14,7 @@ import MenuGroup from "./MenuGroup";
 import { getUserMenu } from "../../../api/ailuo/menu";
 import MenuGroupContext from "./MenuGroupContext";
 import { useHistory, useLocation } from "react-router";
-import { saleProjectList } from "../../../api/ailuo/sale";
+import { AgentProjectList, saleProjectList } from "../../../api/ailuo/sale";
 import { ContractStatusMap, MainStatus } from "../../../api/ailuo/dict";
 import _ from "lodash";
 import { noticeListFetch } from "../../../api/ailuo/notice";
@@ -95,6 +95,7 @@ const Menu: React.FC = () => {
 		myQuote: 0,
 		notice: 0,
 		myContract: 0,
+		myAgent: 0,
 	});
 	// 我的报价审核
 	const handleQuote = async () => {
@@ -106,7 +107,7 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 	// 我的合同审核
 	const handleContract = async () => {
@@ -118,7 +119,12 @@ const Menu: React.FC = () => {
 			});
 			const list = _.get(res, "data.record") || [];
 			return list.length;
-		} catch (error) { }
+		} catch (error) {}
+	};
+	const handleAgent = async () => {
+		const res = await AgentProjectList({ pageNum: 1, pageSize: 50 });
+		const list = _.get(res, "data") || [];
+		return list.length;
 	};
 	const handleNotice = async () => {
 		try {
@@ -126,7 +132,7 @@ const Menu: React.FC = () => {
 			const record = _.get(res, "data.record");
 			const unRead = record.filter((item: any) => !item.isRead);
 			return unRead.length;
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	useEffect(() => {
@@ -139,10 +145,12 @@ const Menu: React.FC = () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
 		const myContract = (await handleContract()) || 0;
+		const myAgent = (await handleAgent()) || 0;
 		setTotalInfo({
 			myQuote,
 			notice,
 			myContract,
+			myAgent,
 		});
 	};
 	// TODO: 调试可以关闭
@@ -152,11 +160,13 @@ const Menu: React.FC = () => {
 		const myQuote = (await handleQuote()) || 0;
 		const notice = (await handleNotice()) || 0;
 		const myContract = (await handleContract()) || 0;
+		const myAgent = (await handleAgent()) || 0;
 
 		setTotalInfo({
 			myQuote,
 			notice,
 			myContract,
+			myAgent,
 		});
 	};
 
@@ -184,9 +194,10 @@ const Menu: React.FC = () => {
 			menus.sort((a: any, b: any) => a.sort - b.sort);
 			setMenus(menus);
 			dispatch(setUserMenus(menus));
+
 			if (menus && menus.length > 0 && location.pathname === "/dashboard") {
 				const children = menus[0].children || [];
-				history.push(`/dashboard` + _.get(children, '0.path')); // 默认打开第一个路由
+				history.push(`/dashboard` + _.get(children, "0.path")); // 默认打开第一个路由
 			}
 		} catch (error) {
 			console.log("error", error);

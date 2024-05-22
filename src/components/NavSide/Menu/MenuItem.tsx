@@ -107,6 +107,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
 		const myQuote = totalInfo?.myQuote;
 		const notice = totalInfo?.notice;
 		const myContract = totalInfo?.myContract;
+		const myAgent = totalInfo?.myAgent;
 		if (menuKey === "/my-quote-process" && myQuote) {
 			return (
 				<div className="flex items-center">
@@ -129,6 +130,14 @@ const MenuItem: React.FC<MenuItemProps> = ({
 				<div className="flex items-center">
 					<div>{menuName}</div>
 					<Badge className="ml-2" count={notice}></Badge>
+				</div>
+			);
+		}
+		if (menuKey === '/my-agent-page') {
+			return (
+				<div className="flex items-center">
+					<div>{menuName}</div>
+					<Badge className="ml-2" count={myAgent}></Badge>
 				</div>
 			);
 		}

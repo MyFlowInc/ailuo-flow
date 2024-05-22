@@ -153,6 +153,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
+			inputForm.resetFields();
 			inputForm.setFieldsValue(temp);
 		}
 		if (modalType === "add") {

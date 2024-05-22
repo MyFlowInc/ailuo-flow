@@ -7,9 +7,6 @@
 import { apiCall } from "../../network";
 import qs from "qs";
 
-
-
-
 interface FileCreateParams {
 	name: string;
 }
@@ -46,10 +43,17 @@ export function splFolderFileTree(params: ListParams) {
 	});
 }
 
+export function splProjectRemove(params: { id: string }) {
+	return apiCall({
+		url: "api/sys/splProject/remove",
+		method: "DELETE",
+		params,
+	});
+}
 
 interface EditParams {
-	id: string
-	[key: string]: any
+	id: string;
+	[key: string]: any;
 }
 // eidt
 

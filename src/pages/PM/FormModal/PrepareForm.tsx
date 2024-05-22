@@ -1,6 +1,14 @@
 import React, { useState, useEffect, FC, useContext } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Popover, Input, message } from "antd";
+import {
+	ConfigProvider,
+	Form,
+	Button,
+	Popover,
+	Input,
+	message,
+	Popconfirm,
+} from "antd";
 import {
 	blueButtonTheme,
 	greyButtonTheme,
@@ -27,10 +35,11 @@ import {
 	splFolderFileCreate,
 	splPreProjectEdit,
 	splProjectList,
+	splProjectRemove,
 } from "../../../api/ailuo/spl-pre-product";
 import TextArea from "antd/es/input/TextArea";
 import warnSvg from "../../Sale/assets/warning.svg";
-import { useHistory, useLocation } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import { finalApproveEdit } from "../../../api/ailuo/approve";
 import ModeSelectTable from "../ModeSelectTable";
 import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/TypeAttachment";
@@ -196,7 +205,11 @@ const renderFooter = (props: any) => {
 		curProject,
 		freshData,
 		accessList,
+		setForm,
 	} = props;
+	const routerParams = useParams() as any;
+	const history = useHistory()
+
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
 	const [isReviewing, setIsReviewing] = useState(false);
@@ -226,12 +239,32 @@ const renderFooter = (props: any) => {
 		);
 	}
 
+	const handleRemoveProject = async () => {
+		if (
+			routerParams.splId === "addfromcontract" ||
+			routerParams.splId === "add"
+		) {
+			setForm({})
+		} else if (routerParams.splId) {
+			await splProjectRemove({ id: routerParams.splId })
+			history.push("/");
+		}
+	};
+
 	if (step === SPLProductStatusMap.ProStart) {
 		// 立项准备
 		return (
 			<>
 				<ConfigProvider theme={blueButtonTheme}>
-					<Button type="primary">取消立项</Button>
+					<Popconfirm
+						title="确认"
+						description="你确定要取消立项吗？"
+						onConfirm={handleRemoveProject}
+						okText="确定"
+						cancelText="关闭"
+					>
+						<Button type="primary">取消立项</Button>
+					</Popconfirm>
 				</ConfigProvider>
 				<ConfigProvider theme={blueButtonTheme}>
 					<Button className="ml-8" type="primary" onClick={handleSaveRecord}>
@@ -726,6 +759,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					curProject,
 					freshData,
 					accessList,
+					setForm,
 				})}
 			</div>
 		</CustomModalRoot>

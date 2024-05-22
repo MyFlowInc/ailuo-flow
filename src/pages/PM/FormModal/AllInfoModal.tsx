@@ -302,11 +302,13 @@ const AllInfoModal: React.FC<any> = (props: any) => {
     }
     if (projectInfo) {
       const { key, ...temp } = projectInfo;
-      try {
-        // 处理执行机构型号
-        temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
-      } catch (error) {
-        temp.typeSelection = [];
+      if (typeof temp.typeSelection === 'string') {
+        try {
+          // 处理初步选型型号
+          temp.typeSelection = JSON.parse(temp.typeSelection || "[]");
+        } catch (error) {
+          temp.typeSelection = [];
+        }
       }
       setForm(temp);
       inputForm.setFieldsValue(temp);

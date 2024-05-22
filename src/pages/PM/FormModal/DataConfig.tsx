@@ -76,7 +76,7 @@ const ApproveConfirm: (p: {
 			if (!project) {
 				return;
 			}
-			freshData()
+			freshData();
 			// if (project.status === "materials") {
 			// 	freshData(); // 刷新项目信息
 			// 	return;
@@ -232,9 +232,12 @@ const renderFooter = (props: any) => {
 	};
 
 	useEffect(() => {
+		getDataSource();
+	}, []);
+
+	useEffect(() => {
 		if (splId) {
 			getAclList();
-			getDataSource();
 		}
 	}, [splId]);
 

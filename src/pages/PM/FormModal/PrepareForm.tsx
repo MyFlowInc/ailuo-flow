@@ -383,8 +383,8 @@ export const columns: any = [
 	},
 	{
 		title: "合同编号",
-		dataIndex: "desc",
-		key: "desc",
+		dataIndex: "relationFileData",
+		key: "relationFileData",
 		type: NumFieldType.SingleText,
 	},
 	{
@@ -533,7 +533,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				phone,
 				salesManager,
 				uuid, // 合同编号
-				desc,
+				relationFileData,
 				contractTime,
 				quotationBegin,
 				typeSelection,
@@ -551,7 +551,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					phone,
 					salesManager,
 					uuid, // 合同编号
-					desc,
+					relationFileData,
 					contractTime,
 					quotationBegin,
 					typeSelection,

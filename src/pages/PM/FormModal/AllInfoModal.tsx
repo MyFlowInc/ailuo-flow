@@ -100,8 +100,8 @@ export const columns: any = [
   },
   {
     title: "合同编号",
-    dataIndex: "desc",
-    key: "desc",
+    dataIndex: "relationFileData",
+    key: "relationFileData",
     type: NumFieldType.SingleText,
   },
   {
@@ -257,7 +257,7 @@ const AllInfoModal: React.FC<any> = (props: any) => {
         relationSale,
         relationReview,
         otherFile,
-        desc,
+        relationFileData,
       } = curProject;
       setForm((v: any) => {
         return {
@@ -275,7 +275,7 @@ const AllInfoModal: React.FC<any> = (props: any) => {
           relationContract: id, // 合同id
           relationReview: relationSale, //关联技术评审
           relationSale: relationReview, //关联报价
-          desc,
+          relationFileData,
         };
       });
     } else if (location.pathname.includes('add')) {

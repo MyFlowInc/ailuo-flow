@@ -63,7 +63,7 @@ const InfoCard = (props: any) => {
 		typeSelection,
 		quotationEnd,
 		turnTime,
-		desc,
+		relationFileData,
 		quotationBegin,
 	} = project || {};
 	const [isShowInfoModal, setIsShowInfoModal] = useState(false);
@@ -172,7 +172,7 @@ const InfoCard = (props: any) => {
 						</div>
 						<div className="item-col">
 							<div>合同编号</div>
-							<div className="content"> {desc}</div>
+							<div className="content"> {relationFileData}</div>
 						</div>
 						<div className="item-col">
 							<div>合同日期</div>
@@ -286,7 +286,7 @@ const PreProductionManage: React.FC = () => {
 						relationSale,
 						relationReview,
 						otherFile,
-						desc,
+						relationFileData,
 						quotationBegin,
 					} = curContractForm;
 
@@ -304,7 +304,7 @@ const PreProductionManage: React.FC = () => {
 						relationSale,
 						relationReview,
 						otherFile,
-						desc,
+						relationFileData,
 						quotationBegin,
 						status: SPLProductStatusMap.ProStart,
 					};

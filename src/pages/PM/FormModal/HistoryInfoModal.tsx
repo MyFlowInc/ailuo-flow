@@ -108,14 +108,14 @@ export const columns: any = [
 	},
 	{
 		title: "合同编号",
-		dataIndex: "uuid",
-		key: "uuid",
+		dataIndex: "desc",
+		key: "desc",
 		type: NumFieldType.SingleText,
 	},
 	{
 		title: "合同日期",
-		dataIndex: "contractTime",
-		key: "contractTime",
+		dataIndex: "quotationBegin",
+		key: "quotationBegin",
 		type: NumFieldType.DateTime,
 	},
 
@@ -261,7 +261,8 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				phone,
 				salesManager,
 				uuid, // 合同编号
-				contractTime,
+        contractTime,
+        quotationBegin,
         typeSelection,
         mechanismForm,
 				quotationEnd,
@@ -269,6 +270,7 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 				relationSale,
         relationReview,
         otherFile,
+        desc,
 			} = projectInfo;
 			setForm((v: any) => {
 				return {
@@ -278,14 +280,16 @@ const HistoryInfoModal: React.FC<any> = (props: any) => {
 					phone,
 					salesManager,
 					uuid, // 合同编号
-					contractTime,
+          contractTime,
+          quotationBegin,
           typeSelection,
           mechanismForm,
           quotationEnd,
           otherFile,
 					relationContract: id, // 合同id
 					relationReview: relationSale, //关联技术评审
-					relationSale: relationReview, //关联报价
+          relationSale: relationReview, //关联报价
+          desc,
 				};
 			});
 		} else if (location.pathname.includes("add")) {

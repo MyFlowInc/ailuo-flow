@@ -120,14 +120,14 @@ export const columns: any = [
 	},
 	{
 		title: "合同编号",
-		dataIndex: "uuid",
-		key: "uuid",
+		dataIndex: "desc",
+		key: "desc",
 		type: NumFieldType.SingleText,
 	},
 	{
 		title: "合同日期",
-		dataIndex: "contractTime",
-		key: "contractTime",
+		dataIndex: "quotationBegin",
+		key: "quotationBegin",
 		type: NumFieldType.DateTime,
 	},
 
@@ -282,7 +282,9 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				phone,
 				salesManager,
 				uuid, // 合同编号
+				desc,
 				contractTime,
+				quotationBegin,
 				typeSelection,
 				mechanismForm,
 				quotationEnd,
@@ -299,7 +301,9 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 					phone,
 					salesManager,
 					uuid, // 合同编号
+					desc,
 					contractTime,
+					quotationBegin,
 					typeSelection,
 					mechanismForm,
 					quotationEnd,

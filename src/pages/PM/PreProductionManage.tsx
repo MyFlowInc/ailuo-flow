@@ -63,6 +63,8 @@ const InfoCard = (props: any) => {
 		typeSelection,
 		quotationEnd,
 		turnTime,
+		desc,
+		quotationBegin,
 	} = project || {};
 	const [isShowInfoModal, setIsShowInfoModal] = useState(false);
 	const [isShowHistoryModal, setIsShowHistoryModal] = useState(false);
@@ -170,11 +172,11 @@ const InfoCard = (props: any) => {
 						</div>
 						<div className="item-col">
 							<div>合同编号</div>
-							<div className="content"> {uuid}</div>
+							<div className="content"> {desc}</div>
 						</div>
 						<div className="item-col">
 							<div>合同日期</div>
-							<div className="content"> {contractTime}</div>
+							<div className="content"> {quotationBegin}</div>
 						</div>
 					</div>
 					<div className="flex  flex-col">
@@ -284,6 +286,8 @@ const PreProductionManage: React.FC = () => {
 						relationSale,
 						relationReview,
 						otherFile,
+						desc,
+						quotationBegin,
 					} = curContractForm;
 
 					const form = {
@@ -300,6 +304,8 @@ const PreProductionManage: React.FC = () => {
 						relationSale,
 						relationReview,
 						otherFile,
+						desc,
+						quotationBegin,
 						status: SPLProductStatusMap.ProStart,
 					};
 					setCurProject(form);

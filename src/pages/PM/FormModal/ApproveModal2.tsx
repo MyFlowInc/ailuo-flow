@@ -262,7 +262,7 @@ const ApproveModal2: React.FC<any> = ({
 		const diffIds = _.difference(p1, p2);
 		// console.log(p1, p2, diffIds, accessUserList);
 		try {
-			const params = curSelectedIds.map((id) => {
+			let params = curSelectedIds.map((id) => {
 				const relationUser = _.find(accessUserList, {
 					relationUserId: id,
 				}) as any;
@@ -275,6 +275,17 @@ const ApproveModal2: React.FC<any> = ({
 					audittype: "materials_rev",
 				};
 			});
+
+			if (!params.length) {
+			
+				params = [
+					// @ts-ignore
+					{
+						projectSaleId: splId,
+						audittype: "pro_reviewing",
+					},
+				];
+			}
 
 			await approveSaveBath(params);
 			// await fetchUserList();

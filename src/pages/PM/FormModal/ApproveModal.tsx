@@ -63,9 +63,7 @@ const ApproveModal: React.FC<any> = ({
 	const [belong, setBelong] = useState("pre_product"); // 哪种类型的审批
 	const [type, setType] = useState("and"); // 会签或签
 	const params = useParams() as any;
-	const {   freshData } = useContext(
-		PreProductionContext,
-	) as any;
+	const { freshData } = useContext(PreProductionContext) as any;
 
 	// 获取账号列表
 	useEffect(() => {
@@ -75,8 +73,8 @@ const ApproveModal: React.FC<any> = ({
 	const fetchUserList = async () => {
 		try {
 			const res = await accountList();
-			const res2 = await accountList({ remark: 'product_default' });
-			
+			const res2 = await accountList({ remark: "product_default" });
+
 			setAccessUserList(_.get(res2, "data.record", []));
 			// const res2 = await approveInfo({ belong }); // 审批信息
 			let allUserList = _.get(res, "data.record", []);
@@ -114,7 +112,7 @@ const ApproveModal: React.FC<any> = ({
 	};
 
 	const ListItem = (item: any) => {
-		let { avatar, nickname, postName,id } = item;
+		let { avatar, nickname, postName, id } = item;
 		return (
 			<div
 				className="flex justify-between items-center mt-4"
@@ -263,7 +261,7 @@ const ApproveModal: React.FC<any> = ({
 		const diffIds = _.difference(p1, p2);
 		// console.log(p1, p2, diffIds, accessUserList);
 		try {
-			const params = curSelectedIds.map((id) => {
+			let params = curSelectedIds.map((id) => {
 				const relationUser = _.find(accessUserList, {
 					relationUserId: id,
 				}) as any;
@@ -276,10 +274,20 @@ const ApproveModal: React.FC<any> = ({
 					audittype: "pro_reviewing",
 				};
 			});
+			if (!params.length) {
+			
+				params = [
+					// @ts-ignore
+					{
+						projectSaleId: splId,
+						audittype: "pro_reviewing",
+					},
+				];
+			}
 
 			await approveSaveBath(params);
 			// await fetchUserList();
-			await freshData()
+			await freshData();
 
 			setTimeout(() => {
 				setLoading(false);

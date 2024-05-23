@@ -666,6 +666,10 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			}
 			const res = await splFolderFileCreate(excludeNull(form));
 			console.log("创建预生产", res);
+			if (res.code == 500) {
+				message.error(res.msg);
+				return;
+			}
 			if (res.msg === "success") {
 				window.dispatchEvent(new Event("fresh-pre-product-list"));
 				history.push("/dashboard/pre-product-manage/" + res.data.id);

@@ -490,8 +490,8 @@ export const columns: any = [
 
 	{
 		title: "技术规格表",
-		dataIndex: "technicalSheet",
-		key: "technicalSheet",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{
@@ -504,15 +504,13 @@ export const columns: any = [
 		title: "关联技术评审",
 		dataIndex: "relationReview",
 		key: "relationReview",
-		// type: NumFieldType.RelationTechView,
-		type: NumFieldType.TextOnly,
+		type: NumFieldType.RelationTechView,
 	},
 	{
 		title: "关联报价",
 		dataIndex: "relationSale",
 		key: "relationSale",
-		// type: NumFieldType.RelationSaleView,
-		type: NumFieldType.TextOnly,
+		type: NumFieldType.RelationSaleView,
 	},
 ];
 

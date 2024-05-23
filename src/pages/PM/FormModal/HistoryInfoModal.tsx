@@ -182,8 +182,8 @@ export const columns: any = [
 
 	{
 		title: "技术规格表",
-		dataIndex: "technicalSheet",
-		key: "technicalSheet",
+		dataIndex: "specificationDetail",
+		key: "specificationDetail",
 		type: NumFieldType.Attachment,
 	},
 	{

@@ -282,7 +282,7 @@ const ApproveModal3: React.FC<any> = ({
 					// @ts-ignore
 					{
 						projectSaleId: splId,
-						audittype: "pro_reviewing",
+						audittype: "change_review",
 					},
 				];
 			}

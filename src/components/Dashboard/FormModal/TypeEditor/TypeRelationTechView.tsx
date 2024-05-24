@@ -41,11 +41,9 @@ const TypeRelationTechView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		const { relationSale } = form;
+		const { relationReview } = form;
 		// console.log(' TechView', form)
-
-		// TODO: 后端没有统一字段
-		const techId = relationSale;
+		const techId = relationReview;
 		if (techId) {
 			fetchSaleInfo(techId);
 		}

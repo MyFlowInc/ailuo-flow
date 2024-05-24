@@ -309,8 +309,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 					quotationEnd,
 					otherFile,
 					relationContract: id, // 合同id
-					relationReview: relationSale, //关联技术评审
-					relationSale: relationReview, //关联报价
+					relationReview: relationReview, //关联技术评审
+					relationSale: relationSale, //关联报价
 				};
 			});
 		} else if (location.pathname.includes("add")) {

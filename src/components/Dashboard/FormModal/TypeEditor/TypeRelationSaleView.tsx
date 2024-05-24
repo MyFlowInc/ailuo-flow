@@ -42,10 +42,9 @@ const TypeRelationSaleView: React.FC<any> = (props: any) => {
 	};
 
 	useEffect(() => {
-		const { linkSale, relationReview } = form; // relationReview 后端取名字搞反了
+		const { linkSale, relationSale } = form;
 		// console.log(' SaleView', form)
-		// TODO: 后端没有统一字段
-		const saleId = linkSale || relationReview;
+		const saleId = linkSale || relationSale;
 		if (saleId) {
 			fetchSaleInfo(saleId);
 		}

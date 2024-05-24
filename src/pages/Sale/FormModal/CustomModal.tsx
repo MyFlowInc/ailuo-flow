@@ -560,6 +560,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			return;
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
+			inputForm.resetFields()
 			const { key, ...temp } = editFlowItemRecord;
 			try {
 				// 处理初步选型型号
@@ -589,6 +590,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			setForm({
 				currency: "人民币",
 			});
+			inputForm.resetFields()
 		}
 	}, [open]);
 

@@ -46,7 +46,6 @@ const TypeRelationTechView: React.FC<any> = (props: any) => {
 
 		// TODO: 后端没有统一字段
 		const techId = relationSale;
-		debugger
 		if (techId) {
 			fetchSaleInfo(techId);
 		}

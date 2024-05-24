@@ -80,7 +80,9 @@ const ApproveModal: React.FC<any> = ({
 			let allUserList = _.get(res, "data.record", []);
 			const mList = allUserList.filter((item: any) => item.code === "manage");
 			const fList = allUserList.filter((item: any) => item.code === "finance");
-			const pList = allUserList.filter((item: any) => item.code === "product_tech");
+			const pList = allUserList.filter(
+				(item: any) => item.code === "product_tech",
+			);
 			const tList = allUserList.filter((item: any) => item.code === "tech");
 			// let hasAccessUserList = _.get(res2, "data.record", []);	// 已经有权限的人
 			// let hasAccessList = hasAccessUserList
@@ -274,16 +276,18 @@ const ApproveModal: React.FC<any> = ({
 					audittype: "pro_reviewing",
 				};
 			});
-			if (!params.length) {
-			
-				params = [
-					// @ts-ignore
-					{
-						projectSaleId: splId,
-						audittype: "pro_reviewing",
-					},
-				];
-			}
+
+			params = [
+				...params,
+				...accessUserList.map((item: any) => ({
+					carbonUserId: item.id,
+					projectSaleId: splId,
+					relationUserId: item.id,
+					belong,
+					type: "and",
+					audittype: "pro_reviewing",
+				})),
+			];
 
 			await approveSaveBath(params);
 			// await fetchUserList();

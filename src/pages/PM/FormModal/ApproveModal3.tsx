@@ -276,16 +276,17 @@ const ApproveModal3: React.FC<any> = ({
 				};
 			});
 
-			if (!params.length) {
-			
-				params = [
-					// @ts-ignore
-					{
-						projectSaleId: splId,
-						audittype: "change_review",
-					},
-				];
-			}
+			params = [
+				...params,
+				...accessUserList.map((item: any) => ({
+					carbonUserId: item.id,
+					projectSaleId: splId,
+					relationUserId: item.id,
+					belong,
+					type: "and",
+					audittype: "change_review",
+				})),
+			];
 
 			await approveSaveBath(params);
 			// await fetchUserList();

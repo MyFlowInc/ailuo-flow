@@ -140,9 +140,11 @@ const RejectConfirm: (p: any) => any = ({
 		const { id } = user;
 		try {
 			console.log("驳回", curProject);
-			await splPreProjectEdit({
-				id: curProject.id,
-				status: SPLProductStatusMap.ProStart,
+			await finalApproveEdit({
+				projectSaleId: curProject.id,
+				status: "reject", // 驳回
+				remark: rejectReason,
+				audittype: SPLProductStatusMap.ProReviewing,
 			});
 			await freshData();
 		} catch (error) {

@@ -18,7 +18,10 @@ import {
 	greyButtonTheme,
 	redButtonTheme,
 } from "../../../theme/theme";
-import { Attachment, NumFieldType } from "../../../components/Dashboard/TableColumnRender";
+import {
+	Attachment,
+	NumFieldType,
+} from "../../../components/Dashboard/TableColumnRender";
 
 import _ from "lodash";
 import {
@@ -440,17 +443,22 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		freshData: any;
 		user: any;
 		accessList: any;
+		setIsReviewing: any;
+		getAclList: any;
 	}) => ReactNode = ({
 		setApproveModal,
 		curProject,
 		freshData,
 		user,
 		accessList,
+		setIsReviewing,
+		getAclList,
 	}) => {
 		const clickHandle = async () => {
 			setApproveModal(false);
 
 			const { id } = user;
+			await getAclList('pro_change')
 			const item = _.find(accessList, { relationUserId: id });
 			if (!item) {
 				return;
@@ -472,6 +480,11 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				if (!project) {
 					return;
 				}
+				if (project.status !== "ended") {
+					// 没进入下一步都是待审核
+					setIsReviewing(true);
+				}
+
 				freshData();
 				// if (project.status === "materials") {
 				// 	freshData(); // 刷新项目信息
@@ -590,14 +603,15 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		const [approveModal, setApproveModal] = useState(false);
 		const [rejectModal, setRejectModal] = useState(false);
 		const [accessList, setAccessList] = useState<any[]>([]);
+		const [isReviewing, setIsReviewing] = useState(false);
 
-		const getAclList = async () => {
+		const getAclList = async (audittype: string) => {
 			try {
 				let params: any = {
 					pageNum: 1,
 					pageSize: 10,
 					projectSaleId: curProject.id,
-					audittype: "materials_rev",
+					audittype,
 				};
 				const res = await flowApproveInfo(params);
 				setAccessList(_.get(res, "data.record") || []);
@@ -615,8 +629,30 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		};
 
 		useEffect(() => {
-			getAclList();
+			getAclList("change_review");
 		}, []);
+
+		// 判断是否是 审核中
+		useEffect(() => {
+			if (!_.isEmpty(accessList)) {
+				const item = _.find(accessList, { relationUserId: user.id });
+				if (!item) {
+					return;
+				}
+				if (item.status !== "product_start") {
+					// 是否是审核中判断
+					setIsReviewing(true);
+				}
+			}
+		}, [curProject, accessList]);
+
+		if (isReviewing) {
+			return (
+				<ConfigProvider theme={redButtonTheme}>
+					<Button type="primary">审核中...</Button>
+				</ConfigProvider>
+			);
+		}
 
 		if (curProject.status === SPLProductStatusMap.ProChange) {
 			return (
@@ -677,6 +713,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 									freshData,
 									user,
 									accessList,
+									setIsReviewing,
+									getAclList,
 								});
 							}}
 							trigger="click"

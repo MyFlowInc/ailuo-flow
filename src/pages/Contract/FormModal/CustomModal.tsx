@@ -634,6 +634,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	}, [curSaleForm]);
 	// 初始化form数据
 	useEffect(() => {
+		inputForm.resetFields()
 		if (!open) {
 			setForm({});
 			return;

@@ -44,12 +44,14 @@ const ApproveConfirm: (p: {
 	freshData: any;
 	user: any;
 	accessList: any;
+	setIsReviewing: any;
 }) => ReactNode = ({
 	setApproveModal,
 	curProject,
 	freshData,
 	user,
 	accessList,
+	setIsReviewing
 }) => {
 	const clickHandle = async () => {
 		setApproveModal(false);
@@ -75,6 +77,10 @@ const ApproveConfirm: (p: {
 			const project = _.get(res1, "data.record[0]");
 			if (!project) {
 				return;
+			}
+			if (project.status !== "sub_workshop") {
+				// 没进入下一步都是待审核
+				setIsReviewing(true);
 			}
 			freshData();
 			// if (project.status === "materials") {
@@ -334,6 +340,7 @@ const renderFooter = (props: any) => {
 								freshData,
 								user,
 								accessList,
+								setIsReviewing,
 							});
 						}}
 						trigger="click"

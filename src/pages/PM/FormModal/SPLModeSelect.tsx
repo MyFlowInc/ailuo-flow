@@ -21,6 +21,8 @@ import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/T
 import SplDatabaseModal from "../../../components/Dashboard/SplDatabaseModal";
 import { SplDatabaseImportTypeEnum } from "../../../enums/commonEnum";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
+import { useAppSelector } from "../../../store/hooks";
+import { selectIsFinance } from "../../../store/globalSlice";
 type InputRef = any;
 type FormInstance<T> = any;
 
@@ -189,7 +191,8 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 	setDataSource,
 	step,
 }) => {
-	// const [dataSource, setDataSource] = useState<DataType[]>([]);
+	// const [dataSource, setDataSource] = useState<DataType[]>([])
+	const isFinance = useAppSelector(selectIsFinance);;
 	const [count, setCount] = useState(1);
 	const [isShowGenerateIndexRender, setIsShowGenerateIndexRender] =
 		useState(false);
@@ -207,6 +210,9 @@ const SPLModeSelect: React.FC<SPLModeSelectProps> = ({
 				step === SPLProductStatusMap.Ended ||
 				step === SPLProductStatusMap.ChangeReview,
 		);
+		if (isFinance) {
+			setDisabled(true);
+		}
 	}, [step]);
 
 	const handleDelete = (key: React.Key) => {

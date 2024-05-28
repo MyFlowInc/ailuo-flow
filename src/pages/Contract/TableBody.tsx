@@ -95,8 +95,8 @@ const columns: any = [
 		key: "contractTime",
 		type: NumFieldType.DateTime,
 		render: (text: string, record: any) => {
-			const format = record.quotationBegin
-				? dayjs(record.quotationBegin).format("YYYY-MM-DD")
+			const format = record.contractTime
+				? dayjs(record.contractTime).format("YYYY-MM-DD")
 				: "";
 			return <div>{format}</div>;
 		},
@@ -111,7 +111,7 @@ const columns: any = [
 			let len = 0;
 			try {
 				len = JSON.parse(typeSelection).length;
-			} catch (error) {}
+			} catch (error) { }
 			return (
 				<Tag color={"#E8F2FF"} style={{ color: "#2D88FD" }}>
 					{`共${len}个型号`}
@@ -132,7 +132,7 @@ const columns: any = [
 				list.forEach((item: any) => {
 					num += +item.num;
 				});
-			} catch (error) {}
+			} catch (error) { }
 			return <span>{num}</span>;
 		},
 	},
@@ -149,7 +149,7 @@ const columns: any = [
 					// totalPrice += +item.price;
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) {}
+			} catch (error) { }
 			const { currency } = record;
 			let sign = "";
 			if (currency === "人民币") {

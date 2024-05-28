@@ -458,7 +458,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			setApproveModal(false);
 
 			const { id } = user;
-			await getAclList('pro_change')
+			await getAclList("pro_change");
 			const item = _.find(accessList, { relationUserId: id });
 			if (!item) {
 				return;
@@ -645,6 +645,10 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				}
 			}
 		}, [curProject, accessList]);
+
+		if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+			return null;
+		}
 
 		if (isReviewing) {
 			return (

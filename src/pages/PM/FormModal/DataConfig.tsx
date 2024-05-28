@@ -25,7 +25,7 @@ import warnSvg from "../../Sale/assets/warning.svg";
 import TextArea from "antd/es/input/TextArea";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import { useAppSelector } from "../../../store/hooks";
-import { selectUser } from "../../../store/globalSlice";
+import { selectIsFinance, selectUser } from "../../../store/globalSlice";
 
 export interface DataType {
 	key: React.Key;
@@ -51,7 +51,7 @@ const ApproveConfirm: (p: {
 	freshData,
 	user,
 	accessList,
-	setIsReviewing
+	setIsReviewing,
 }) => {
 	const clickHandle = async () => {
 		setApproveModal(false);
@@ -206,6 +206,8 @@ const renderFooter = (props: any) => {
 		setDataSource,
 	} = props;
 
+	const isFinance = useAppSelector(selectIsFinance);
+
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
 	const [accessList, setAccessList] = useState<any[]>([]);
@@ -260,6 +262,10 @@ const renderFooter = (props: any) => {
 			}
 		}
 	}, [curProject, accessList]);
+
+	if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+		return null;
+	}
 
 	// console.log(111, isReviewing);
 	if (isReviewing) {

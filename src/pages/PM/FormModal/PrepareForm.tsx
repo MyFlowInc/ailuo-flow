@@ -211,6 +211,7 @@ const renderFooter = (props: any) => {
 	} = props;
 	const routerParams = useParams() as any;
 	const history = useHistory()
+	const isFinance = useAppSelector(selectIsFinance);
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -253,6 +254,10 @@ const renderFooter = (props: any) => {
 		}
 	};
 
+	if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+		return null;
+	}
+	
 	if (step === SPLProductStatusMap.ProStart) {
 		// 立项准备
 		return (

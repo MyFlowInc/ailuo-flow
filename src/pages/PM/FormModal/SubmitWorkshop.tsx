@@ -26,6 +26,8 @@ import {
 	splProjectList,
 } from "../../../api/ailuo/spl-pre-product";
 import { DataType } from "./DataConfig";
+import { useAppSelector } from "../../../store/hooks";
+import { selectIsFinance } from "../../../store/globalSlice";
 
 const SubmitWorkshopWrapper = styled.div`
 	padding: 0 0 0 144px;
@@ -33,6 +35,8 @@ const SubmitWorkshopWrapper = styled.div`
 `;
 const SubmitWorkshop: React.FC<any> = (props: any) => {
 	const { step } = props;
+	const isFinance = useAppSelector(selectIsFinance);
+	
 	const [form, setForm] = useState<any>({});
 	const [column, setColumn] = useState<any>([]);
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -95,6 +99,11 @@ const SubmitWorkshop: React.FC<any> = (props: any) => {
 	}, []);
 
 	const renderFooter = () => {
+
+		if (isFinance) {
+			return null;
+		}
+
 		if (curProject.status === SPLProductStatusMap.SubWorkshop) {
 			return (
 				<>

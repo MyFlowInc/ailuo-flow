@@ -580,6 +580,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 				relationSale,
 				relationReview,
 				otherFile,
+				specificationDetail,
 			} = curProject;
 			setForm((v: any) => {
 				return {
@@ -598,6 +599,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					relationContract: id, // 合同id
 					relationReview: relationReview, //关联技术评审
 					relationSale: relationSale, //关联报价
+					specificationDetail,
 				};
 			});
 		} else if (location.pathname.includes("add")) {

@@ -288,6 +288,7 @@ const PreProductionManage: React.FC = () => {
 						otherFile,
 						relationFileData,
 						quotationBegin,
+						technicalSheet
 					} = curContractForm;
 
 					const form = {
@@ -306,6 +307,7 @@ const PreProductionManage: React.FC = () => {
 						otherFile,
 						relationFileData,
 						quotationBegin,
+						specificationDetail:technicalSheet,
 						status: SPLProductStatusMap.ProStart,
 					};
 					setCurProject(form);

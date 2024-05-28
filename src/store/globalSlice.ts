@@ -175,6 +175,20 @@ export const selectIsManager = (state: RootState) => {
 	});
 	return res;
 };
+export const selectIsProduct = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "product") {
+			res = true;
+		}
+	});
+	return res;
+};
 export const selectIsTech = (state: RootState) => {
 	const { user } = state.global;
 	const { roles } = user;

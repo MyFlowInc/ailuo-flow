@@ -24,6 +24,7 @@ import {
 	selectAllUser,
 	selectIsFinance,
 	selectIsManager,
+	selectIsProduct,
 	selectUser,
 } from "../../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -212,6 +213,8 @@ const renderFooter = (props: any) => {
 	const routerParams = useParams() as any;
 	const history = useHistory()
 	const isFinance = useAppSelector(selectIsFinance);
+	const isManage = useAppSelector(selectIsManager);
+	const isProduct = useAppSelector(selectIsProduct);
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -254,7 +257,7 @@ const renderFooter = (props: any) => {
 		}
 	};
 
-	if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+	if (!_.find(accessList, { relationUserId: user.id }) && !isManage && !isProduct) {
 		return null;
 	}
 	
@@ -536,6 +539,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isFinance = useAppSelector(selectIsFinance);
+	const isProduct = useAppSelector(selectIsProduct);
 	const [hasAccess, setHasAccess] = useState(false);
 
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
@@ -545,7 +549,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			isManager && curProject.status !== SPLProductStatusMap.ProReviewing
 				? false
 				: disabled;
-		if (isFinance) {
+		if (!isProduct && !isManager) {
 			disabled = true;
 		}
 		const newCol = showDstColumns.map((item: any) => {

@@ -28,6 +28,7 @@ import {
 	selectAllUser,
 	selectIsFinance,
 	selectIsManager,
+	selectIsProduct,
 	selectUser,
 	setCurSaleForm,
 } from "../../../store/globalSlice";
@@ -237,6 +238,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
+	const isProduct = useAppSelector(selectIsProduct);
 	const isFinance = useAppSelector(selectIsFinance);
 	const { curProject, setIsShowApproveModal3, freshData } = useContext(
 		PreProductionContext,
@@ -244,7 +246,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 
 	const setAllDisabled = (disabled: boolean) => {
 		// disabled = isManager ? false : disabled;
-		if (isFinance) {
+		if (!isManager && !isProduct) {
 			disabled = true;
 		}
 		const newCol = showDstColumns.map((item: any) => {
@@ -646,7 +648,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			}
 		}, [curProject, accessList]);
 
-		if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+		if (!_.find(accessList, { relationUserId: user.id }) && !isManager && !isProduct) {
 			return null;
 		}
 

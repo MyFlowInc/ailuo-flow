@@ -25,7 +25,7 @@ import warnSvg from "../../Sale/assets/warning.svg";
 import TextArea from "antd/es/input/TextArea";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import { useAppSelector } from "../../../store/hooks";
-import { selectIsFinance, selectUser } from "../../../store/globalSlice";
+import { selectIsFinance, selectIsManager, selectIsProduct, selectUser } from "../../../store/globalSlice";
 
 export interface DataType {
 	key: React.Key;
@@ -207,6 +207,8 @@ const renderFooter = (props: any) => {
 	} = props;
 
 	const isFinance = useAppSelector(selectIsFinance);
+	const isProduct = useAppSelector(selectIsProduct);
+	const isManage = useAppSelector(selectIsManager);
 
 	const [approveModal, setApproveModal] = useState(false);
 	const [rejectModal, setRejectModal] = useState(false);
@@ -263,7 +265,7 @@ const renderFooter = (props: any) => {
 		}
 	}, [curProject, accessList]);
 
-	if (!_.find(accessList, { relationUserId: user.id }) && isFinance) {
+	if (!_.find(accessList, { relationUserId: user.id }) && !isProduct && !isManage) {
 		return null;
 	}
 

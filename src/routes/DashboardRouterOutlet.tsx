@@ -116,7 +116,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		}
 		return (
 			<Modal
-				key={"renderSaleViewModal"}
+				key={"renderSaleViewModal" + location.pathname}
 				open={isSaleModalViewOpen}
 				onCancel={() => setSaleId(undefined)}
 				modalRender={() => (
@@ -141,7 +141,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		}
 		return (
 			<Modal
-				key={"renderContractViewModal"}
+				key={"renderContractViewModal" + location.pathname}
 				open={isContractModalViewOpen}
 				onCancel={() => setContractId(undefined)}
 				modalRender={() => (
@@ -166,7 +166,7 @@ const DashboardRouterOutlet: React.FC = () => {
 		}
 		return (
 			<Modal
-				key={"renderTechViewModal"}
+				key={"renderTechViewModal" + location.pathname}
 				open={isTechModalViewOpen}
 				onCancel={() => setTechId(undefined)}
 				modalRender={() => (
@@ -302,10 +302,7 @@ const DashboardRouterOutlet: React.FC = () => {
 									</Route>
 
 									{/* 我的代办测试路由 */}
-									<Route
-										path="/dashboard/my-agent-page"
-										exact={true}
-									>
+									<Route path="/dashboard/my-agent-page" exact={true}>
 										<MyAgentPage />
 									</Route>
 

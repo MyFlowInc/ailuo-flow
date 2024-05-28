@@ -460,8 +460,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			setApproveModal(false);
 
 			const { id } = user;
-			await getAclList("pro_change");
-			const item = _.find(accessList, { relationUserId: id });
+			const accessList2 = await getAclList();
+			const item = _.find(accessList2, { relationUserId: id });
 			if (!item) {
 				return;
 			}
@@ -607,16 +607,17 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		const [accessList, setAccessList] = useState<any[]>([]);
 		const [isReviewing, setIsReviewing] = useState(false);
 
-		const getAclList = async (audittype: string) => {
+		const getAclList = async () => {
 			try {
 				let params: any = {
 					pageNum: 1,
 					pageSize: 10,
 					projectSaleId: curProject.id,
-					audittype,
+					audittype:'change_review',
 				};
 				const res = await flowApproveInfo(params);
 				setAccessList(_.get(res, "data.record") || []);
+				return _.get(res, "data.record") || []
 			} catch (error) {
 				console.log(error);
 			}
@@ -631,7 +632,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 		};
 
 		useEffect(() => {
-			getAclList("change_review");
+			getAclList();
 		}, []);
 
 		// 判断是否是 审核中

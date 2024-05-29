@@ -486,6 +486,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				if (project.status !== "ended") {
 					// 没进入下一步都是待审核
 					setIsReviewing(true);
+				} else {
+					setIsReviewing(false);
 				}
 
 				freshData();
@@ -646,6 +648,8 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 				if (item.status !== "product_start") {
 					// 是否是审核中判断
 					setIsReviewing(true);
+				} else {
+					setIsReviewing(false);
 				}
 			}
 		}, [curProject, accessList]);

@@ -82,6 +82,8 @@ const ApproveConfirm: (p: {
 			if (project.status !== "sub_workshop") {
 				// 没进入下一步都是待审核
 				setIsReviewing(true);
+			} else {
+				setIsReviewing(false);
 			}
 			freshData();
 			// if (project.status === "materials") {
@@ -262,6 +264,8 @@ const renderFooter = (props: any) => {
 			if (item.status !== "product_start") {
 				// 是否是审核中判断
 				setIsReviewing(true);
+			} else {
+				setIsReviewing(false);
 			}
 		}
 	}, [curProject, accessList]);

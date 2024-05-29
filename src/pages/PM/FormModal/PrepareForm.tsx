@@ -84,6 +84,8 @@ const ApproveConfirm: (p: any) => any = ({
 			if (project.status !== "materials") {
 				// 没进入下一步都是待审核
 				setIsReviewing(true);
+			} else {
+				setIsReviewing(false);
 			}
 
 			if (project.status === "materials") {
@@ -232,6 +234,8 @@ const renderFooter = (props: any) => {
 			if (item.status !== "product_start") {
 				// 是否是审核中判断
 				setIsReviewing(true);
+			} else {
+				setIsReviewing(false);
 			}
 		}
 	}, [curProject, accessList]);

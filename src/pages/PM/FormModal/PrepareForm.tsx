@@ -44,6 +44,7 @@ import { useHistory, useLocation, useParams } from "react-router";
 import { finalApproveEdit } from "../../../api/ailuo/approve";
 import ModeSelectTable from "../ModeSelectTable";
 import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/TypeAttachment";
+import { isJsonStr } from "../../../util";
 
 const ApproveConfirm: (p: any) => any = ({
 	approveModal,
@@ -209,9 +210,10 @@ const renderFooter = (props: any) => {
 		freshData,
 		accessList,
 		setForm,
+		inputForm,
 	} = props;
 	const routerParams = useParams() as any;
-	const history = useHistory()
+	const history = useHistory();
 	const isFinance = useAppSelector(selectIsFinance);
 	const isManage = useAppSelector(selectIsManager);
 	const isProduct = useAppSelector(selectIsProduct);
@@ -250,17 +252,22 @@ const renderFooter = (props: any) => {
 			routerParams.splId === "addfromcontract" ||
 			routerParams.splId === "add"
 		) {
-			setForm({})
+			setForm({});
+			inputForm.resetFields();
 		} else if (routerParams.splId) {
-			await splProjectRemove({ id: routerParams.splId })
+			await splProjectRemove({ id: routerParams.splId });
 			history.push("/");
 		}
 	};
 
-	if (!_.find(accessList, { relationUserId: user.id }) && !isManage && !isProduct) {
+	if (
+		!_.find(accessList, { relationUserId: user.id }) &&
+		!isManage &&
+		!isProduct
+	) {
 		return null;
 	}
-	
+
 	if (step === SPLProductStatusMap.ProStart) {
 		// 立项准备
 		return (
@@ -566,6 +573,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (_.isEmpty(curProject)) {
 			return;
 		}
+		inputForm.resetFields()
 		if (location.pathname.includes("addfromcontract")) {
 			console.log("router from addfromcontract");
 			const {
@@ -672,7 +680,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			}
 			// 创建
 			form.status = SPLProductStatusMap.ProStart;
-			if (form.typeSelection) {
+			if (form.typeSelection && !isJsonStr(form.typeSelection)) {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 			}
 			const res = await splFolderFileCreate(excludeNull(form));
@@ -708,7 +716,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 			}
 			try {
 				// form.status = SPLProductStatusMap.ProReviewing;
-				if (form.typeSelection) {
+				if (form.typeSelection && !isJsonStr(form.typeSelection)) {
 					form.typeSelection = JSON.stringify(form.typeSelection);
 				}
 				delete params.updateTime;
@@ -775,6 +783,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					freshData,
 					accessList,
 					setForm,
+					inputForm,
 				})}
 			</div>
 		</CustomModalRoot>

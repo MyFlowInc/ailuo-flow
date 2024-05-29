@@ -19,3 +19,15 @@ export const randomString = (len = 13) => {
 	}
 	return pwd;
 };
+
+//判断是否是json字符串
+export const isJsonStr = (str: any) => {
+	try {
+		if (JSON.parse(str) instanceof Object) {
+			return true;
+		}
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+};

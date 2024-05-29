@@ -49,6 +49,7 @@ import SPLModeSelect from "./SPLModeSelect";
 import { DataType } from "./DataConfig";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import ModeSelectTable from "../ModeSelectTable";
+import { isJsonStr } from "../../../util";
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -385,7 +386,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			}
 			// 创建
 			form.status = SPLProductStatusMap.ProReviewing;
-			if (form.typeSelection) {
+			if (form.typeSelection && !isJsonStr(form.typeSelection)) {
 				form.typeSelection = JSON.stringify(form.typeSelection);
 			}
 		} catch (error) {
@@ -408,7 +409,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 			}
 			try {
 				// form.status = SPLProductStatusMap.ProReviewing;
-				if (form.typeSelection) {
+				if (form.typeSelection && !isJsonStr(form.typeSelection)) {
 					form.typeSelection = JSON.stringify(form.typeSelection);
 				}
 				delete params.updateTime;

@@ -26,6 +26,7 @@ import TextArea from "antd/es/input/TextArea";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import { useAppSelector } from "../../../store/hooks";
 import { selectIsFinance, selectIsManager, selectIsProduct, selectUser } from "../../../store/globalSlice";
+import { isJsonStr } from "../../../util";
 
 export interface DataType {
 	key: React.Key;
@@ -452,7 +453,7 @@ const DataConfig: React.FC<any> = (props: any) => {
 				return;
 			}
 			try {
-				if (form.typeSelection) {
+				if (form.typeSelection && !isJsonStr(form.typeSelection)) {
 					form.typeSelection = JSON.stringify(form.typeSelection);
 				}
 				delete params.updateTime;

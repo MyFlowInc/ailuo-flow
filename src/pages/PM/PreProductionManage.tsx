@@ -21,6 +21,7 @@ import ApproveModal2 from "./FormModal/ApproveModal2";
 import { WarningOutlined } from "@ant-design/icons";
 import ApproveModal3 from "./FormModal/ApproveModal3";
 import HistoryModal from "./FormModal/HistoryModal";
+import { isJsonStr } from "../../util";
 const DashboardRoot = styled.div`
 	width: 100%;
 	height: 100%;
@@ -73,7 +74,9 @@ const InfoCard = (props: any) => {
 	const getTotalNum = () => {
 		let totalNum = 0;
 		try {
-			const list = JSON.parse(typeSelection);
+			const list = isJsonStr(typeSelection)
+				? JSON.parse(typeSelection)
+				: typeSelection;
 			list.forEach((item: any) => {
 				totalNum += +item.num;
 			});
@@ -83,11 +86,14 @@ const InfoCard = (props: any) => {
 	const getTotalPrice = () => {
 		let totalPrice = 0;
 		try {
-			const list = JSON.parse(typeSelection);
+			const list = isJsonStr(typeSelection)
+				? JSON.parse(typeSelection)
+				: typeSelection;
 			list.forEach((item: any) => {
 				totalPrice += +item.num * +item.price;
 			});
 		} catch (error) {}
+
 		return totalPrice;
 	};
 	const openModal = () => {
@@ -288,7 +294,7 @@ const PreProductionManage: React.FC = () => {
 						otherFile,
 						relationFileData,
 						quotationBegin,
-						technicalSheet
+						technicalSheet,
 					} = curContractForm;
 
 					const form = {
@@ -307,7 +313,7 @@ const PreProductionManage: React.FC = () => {
 						otherFile,
 						relationFileData,
 						quotationBegin,
-						specificationDetail:technicalSheet,
+						specificationDetail: technicalSheet,
 						status: SPLProductStatusMap.ProStart,
 					};
 					setCurProject(form);

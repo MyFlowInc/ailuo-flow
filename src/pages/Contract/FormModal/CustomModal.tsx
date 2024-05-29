@@ -322,13 +322,15 @@ export const columns: any = [
 	},
 	{
 		title: "关联技术评审",
-		dataIndex: "relateTechProcess",
+		// dataIndex: "relateTechProcess",
+		dataIndex: "relateReview",
 		key: "relateTechProcess",
 		type: NumFieldType.RelationTechView,
 	},
 	{
 		title: "关联报价",
-		dataIndex: "relateQuote",
+		// dataIndex: "relateQuote",
+		dataIndex: "relateSale",
 		key: "relateQuote",
 		type: NumFieldType.RelationSaleView,
 	},
@@ -610,6 +612,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				relationSale,
 				exportItem,
 				modeTrade,
+				relationReview,
 			} = curSaleForm;
 			setForm((v: any) => {
 				return {
@@ -625,8 +628,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					payType,
 					exportItem,
 					modeTrade,
-					relationReview: id + "", // 关联技术
-					relationSale: relationSale, // 关联报价
+					// relationReview: id + "", // 关联技术
+					// relationSale: relationSale, // 关联报价
+					relationReview: relationReview, // 关联技术
+					relationSale: id + "", // 关联报价
 				};
 			});
 			dispatch(setCurSaleForm({}));
@@ -634,7 +639,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	}, [curSaleForm]);
 	// 初始化form数据
 	useEffect(() => {
-		inputForm.resetFields()
+		inputForm.resetFields();
 		if (!open) {
 			setForm({});
 			return;

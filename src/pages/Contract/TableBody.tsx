@@ -86,7 +86,7 @@ const columns: any = [
 		dataIndex: "uuid",
 		key: "uuid",
 		render: (text: string, record: any) => {
-			return <span>{record.name}</span>;
+			return <span>{record.uuid}</span>;
 		},
 	},
 	{

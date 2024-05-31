@@ -578,7 +578,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 		if (_.isEmpty(curProject)) {
 			return;
 		}
-		inputForm.resetFields()
+		inputForm.resetFields();
 		if (location.pathname.includes("addfromcontract")) {
 			console.log("router from addfromcontract");
 			const {
@@ -607,9 +607,9 @@ const PrepareForm: React.FC<any> = (props: any) => {
 					phone,
 					salesManager,
 					uuid, // 合同编号
-					relationFileData,
+					relationFileData: uuid,
 					contractTime,
-					quotationBegin,
+					quotationBegin: contractTime,
 					typeSelection,
 					quotationEnd,
 					otherFile, //合同附件

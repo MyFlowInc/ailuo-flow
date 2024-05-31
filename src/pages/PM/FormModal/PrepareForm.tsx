@@ -226,6 +226,7 @@ const renderFooter = (props: any) => {
 
 	// 判断是否是 审核中
 	useEffect(() => {
+		setIsReviewing(false);
 		if (!_.isEmpty(accessList)) {
 			const item = _.find(accessList, { relationUserId: user.id });
 			if (!item) {
@@ -636,6 +637,7 @@ const PrepareForm: React.FC<any> = (props: any) => {
 
 	// 控制 只读和编辑
 	useEffect(() => {
+		setHasAccess(false);
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}

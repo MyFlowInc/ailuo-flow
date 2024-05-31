@@ -640,6 +640,7 @@ const UpdateWorkshop: React.FC<any> = (props: any) => {
 
 		// 判断是否是 审核中
 		useEffect(() => {
+			setIsReviewing(false);
 			if (!_.isEmpty(accessList)) {
 				const item = _.find(accessList, { relationUserId: user.id });
 				if (!item) {

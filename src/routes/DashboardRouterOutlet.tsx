@@ -34,6 +34,7 @@ import SplDatabase from "../pages/SPL/SplDatabase";
 import PreProductionManage from "../pages/PM/PreProductionManage";
 import { DashboardRouterOutletContext } from "../context";
 import MyAgentPage from "../pages/MyAgentPage/MyAgentPage";
+import PurchaseManage from "../pages/PMS/PurchaseManage";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -313,6 +314,10 @@ const DashboardRouterOutlet: React.FC = () => {
 									{/* 我的合同审核 */}
 									<Route path="/dashboard/setting" exact={true}>
 										<Setting />
+									</Route>
+									{/* 请购管理 */}
+									<Route path="/dashboard/pms/pur-manage" exact={true}>
+										<PurchaseManage />
 									</Route>
 								</Switch>
 							</div>

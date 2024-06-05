@@ -211,20 +211,40 @@ export const SPLProductStatusList = [
 	{
 		id: "1785128711080505346",
 		label: "预生产变更中",
-		value: "pro_change"
-	}
+		value: "pro_change",
+	},
 ];
 export enum SPLProductStatusMap {
-	ProStart = 'pro_start',
+	ProStart = "pro_start",
 	ProReviewing = "pro_reviewing",
 	ProReviewFailed = "pro_review_failed",
 	Materials = "materials",
 	MaterialsRev = "materials_rev",
 	SubWorkshop = "sub_workshop",
 	Ended = "ended",
-	ProChange = 'pro_change',
-	ChangeReview = 'change_review',
+	ProChange = "pro_change",
+	ChangeReview = "change_review",
 }
+
+export enum PurchaseTypeMap {
+	BackupWarehouse = "backup_warehouse",
+	Order = "order",
+	MachiningCenter = "machining_center",
+	Warehouse = "warehouse",
+	Workshop = "workshop",
+	AfterSales = "after_sales",
+	Other = "other",
+}
+
+export const PurchaseTypeMapDict = {
+	backup_warehouse: "备库用",
+	order: "订单用",
+	machining_center: "加工中心用",
+	warehouse: "仓库用",
+	workshop: "车间用",
+	after_sales: "售后用",
+	other: "其他部门用",
+};
 
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
 	return Promise.resolve(SaleStatus);

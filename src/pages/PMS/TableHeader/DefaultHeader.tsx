@@ -1,17 +1,11 @@
 import React from "react";
 import { ConfigProvider, Button } from "antd";
 import styled from "styled-components";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { blueButtonTheme } from "../../../theme/theme";
 import EditFilled from "../../../assets/icons/EditFilled";
 import HeaderToolBar from "./HeaderToolBar";
-import { AddRecordModal } from "../RecordModal";
 
-import {
-	selectIsShowSaleModal,
-	setIsShowSaleModal,
-} from "../../../store/globalSlice";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 
 interface DefaultHeaderRootProps {
 	isShow: boolean;
@@ -42,14 +36,14 @@ interface DefaultHeaderProps {
 }
 
 const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
-	const dispatch = useAppDispatch();
 	const location = useLocation();
+	const history = useHistory();
 	const { pathname } = location;
 
-	const isShowSaleModal = useAppSelector(selectIsShowSaleModal);
-	const setOpen = (value: boolean) => {
-		dispatch(setIsShowSaleModal(value));
+	const handleNew = () => {
+		history.push("/dashboard/pms/pur-manage/new");
 	};
+
 	const HeaderButtonView = () => {
 		if (pathname === "/dashboard/pms/pur-manage") {
 			return (
@@ -57,7 +51,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 					<Button
 						type="primary"
 						icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />}
-						onClick={() => setOpen(true)}
+						onClick={handleNew}
 					>
 						新建请购单
 					</Button>
@@ -66,13 +60,13 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 		}
 		return <div></div>;
 	};
+
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
 			{HeaderButtonView()}
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>
-			<AddRecordModal open={isShowSaleModal} setOpen={setOpen} />
 		</DefaultHeaderRoot>
 	);
 };

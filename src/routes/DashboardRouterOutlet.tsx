@@ -35,6 +35,7 @@ import PreProductionManage from "../pages/PM/PreProductionManage";
 import { DashboardRouterOutletContext } from "../context";
 import MyAgentPage from "../pages/MyAgentPage/MyAgentPage";
 import PurchaseManage from "../pages/PMS/PurchaseManage";
+import PurchaseRecordView from "../pages/PMS/PurchaseRecordView";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -318,6 +319,9 @@ const DashboardRouterOutlet: React.FC = () => {
 									{/* 请购管理 */}
 									<Route path="/dashboard/pms/pur-manage" exact={true}>
 										<PurchaseManage />
+									</Route>
+									<Route path="/dashboard/pms/pur-manage/:purId" exact={true}>
+										<PurchaseRecordView />
 									</Route>
 								</Switch>
 							</div>

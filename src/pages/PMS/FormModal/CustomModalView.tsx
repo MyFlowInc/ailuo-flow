@@ -1060,7 +1060,6 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 								form={form}
 								setForm={setForm}
 								dstColumns={showDstColumns}
-								modalType="edit"
 							/>
 						) : (
 							<NoFieldData />

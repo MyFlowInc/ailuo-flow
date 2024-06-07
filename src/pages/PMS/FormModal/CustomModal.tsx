@@ -1097,7 +1097,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							form={form}
 							setForm={setForm}
 							dstColumns={showDstColumns}
-							modalType={modalType}
 						/>
 					) : (
 						<NoFieldData />

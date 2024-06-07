@@ -15,7 +15,7 @@ interface CellEditorProps {
 	setForm: (value: any) => void;
 }
 
-const CellEditor: React.FC<CellEditorProps> = props => {
+const CellEditor: React.FC<CellEditorProps> = (props) => {
 	const { cell, form, setForm } = props;
 	let rules: any;
 
@@ -28,9 +28,10 @@ const CellEditor: React.FC<CellEditorProps> = props => {
 		case NumFieldType.Phone:
 			rules = [
 				{
-					pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
-					message: "请输入有效的手机号码."
-				}
+					pattern:
+						/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+					message: "请输入有效的手机号码.",
+				},
 			];
 			break;
 		case NumFieldType.Member:
@@ -46,7 +47,7 @@ const CellEditor: React.FC<CellEditorProps> = props => {
 
 	return (
 		<CellEditorRoot>
-			<Form.Item name={cell.key} rules={rules}>
+			<Form.Item name={cell.key} rules={rules} className="!mb-0">
 				<TypeEditor {...{ cell, form, setForm }} />
 			</Form.Item>
 		</CellEditorRoot>
@@ -73,7 +74,7 @@ const CellLabelRoot = styled.div`
 		}
 
 		.cell-drag-text {
-			width: 100px;
+			width: 120px;
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
@@ -95,7 +96,7 @@ const CellEditorWrap = styled.div`
 	align-items: center;
 	height: "12px";
 	line-height: 12px;
-	margin: 12px 0 24px 0px;
+	margin: 12px 0;
 	padding: 0;
 `;
 
@@ -103,10 +104,13 @@ interface CellEditorContextProps {
 	dstColumns: any[];
 	form: { [id: string]: string };
 	setForm: (value: any) => void;
-	modalType: string;
 }
 
-const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
+const CellEditorContext: React.FC<CellEditorContextProps> = ({
+	dstColumns,
+	form,
+	setForm,
+}) => {
 	const [columns, setColumns] = useState<any[]>(dstColumns);
 
 	useEffect(() => {
@@ -120,9 +124,9 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 					return item.render(item, "field_" + item.key, form, setForm);
 				}
 				if (item.showCtrlKey) {
-					const isShow = form[item.showCtrlKey]
-					if (isShow !== 'show') {
-						return null
+					const isShow = form[item.showCtrlKey];
+					if (isShow !== "show") {
+						return null;
 					}
 				}
 				return (
@@ -130,7 +134,11 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 						<CellLabelRoot>
 							<div className="cell-label-title">
 								<div className="cell-drag-text">
-									<div>{item.title}</div>
+									{item.renderTitle ? (
+										item.renderTitle(item)
+									) : (
+										<div>{item.title}</div>
+									)}
 								</div>
 							</div>
 						</CellLabelRoot>

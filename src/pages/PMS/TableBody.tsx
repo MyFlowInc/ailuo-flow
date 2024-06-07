@@ -111,7 +111,7 @@ const columns: any = [
 		type: NumFieldType.DateTime,
 		render: (text: string, record: any) => {
 			const format = record.expectedDeliverytime
-				? dayjs(record.expectedDeliverytime).format("YYYY-MM-DD")
+				? dayjs(record.expectedDeliverytime).format("YYYY年M月D日")
 				: "";
 			return <div>{format}</div>;
 		},

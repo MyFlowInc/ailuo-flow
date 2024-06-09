@@ -28,15 +28,14 @@ const PurchaseManage: React.FC = () => {
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
 			await saleProjectRemove(id);
-			await fetchSaleList();
+			await fetchPurchaseList();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const [tableDataSource, setTableDataSource] = useState<any[]>([]);
 
-	// 获取销售列表
-	const fetchSaleList: IfetchSaleList = async (options: any = {}) => {
+	const fetchPurchaseList: IfetchSaleList = async (options: any = {}) => {
 		try {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
@@ -64,13 +63,13 @@ const PurchaseManage: React.FC = () => {
 	};
 
 	useEffect(() => {
-		fetchSaleList();
+		fetchPurchaseList();
 	}, []);
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<PurchaseManageContext.Provider
-				value={{ fetchSaleList, tableDataSource, setTableDataSource }}
+				value={{ fetchPurchaseList, tableDataSource, setTableDataSource }}
 			>
 				<DashboardRoot>
 					{/* 表头 */}

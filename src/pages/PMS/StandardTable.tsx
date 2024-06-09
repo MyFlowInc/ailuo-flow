@@ -12,6 +12,7 @@ import _ from "lodash";
 import { PurchaseManageContext } from "./PurchaseManage";
 import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
+import { useHistory } from "react-router";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -40,6 +41,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	setEditFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
+	const history = useHistory()
 
 	const handleDeleteRecord = async (text: string, record: any) => {
 		Modal.confirm({
@@ -58,8 +60,8 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
-		setEditFlowItemRecord(record);
-		setOpen(true);
+		console.log(record);
+		history.push(`/dashboard/pms/pur-manage/${record.id}`)
 	};
 
 	return (

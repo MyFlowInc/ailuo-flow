@@ -246,6 +246,25 @@ export const PurchaseTypeMapDict = {
 	other: "其他部门用",
 };
 
+export enum PurchaseStatusEnum {
+	Start = "start",
+	InProcurement = "in_procurement",
+	Over = "over",
+	NotStart = "not_start",
+}
+
+export enum PurchaseItemStatusEnum {
+	Approved = "approved",
+	Reject = "reject",
+	TobeTested = "tobe_tested",
+	Todo = "todo",
+}
+
+export enum PurchaseItemWarehousingsStatusEnum {
+	Yes = "yes", //已入库
+	Or = "or", //未入库
+}
+
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
 	return Promise.resolve(SaleStatus);
 }

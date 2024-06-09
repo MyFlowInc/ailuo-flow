@@ -66,6 +66,7 @@ export const NumFieldType = {
 	RelationSaleView: 29, // 关联报价
 	MultiFixSelect: 30,
 	RelationTechView: 31, // 关联技术评审
+	MultiSelectForLabel: 32, //显示label的多选
 	DeniedField: 999, // no permission column
 	TextOnly: 9999, //只显示文字 不能修改
 };

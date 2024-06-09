@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import StandardTable from "./StandardTable";
-import { EditRecordModal } from "./RecordModal";
 import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import {
@@ -46,11 +45,16 @@ const columns: any = [
 		dataIndex: "type",
 		key: "type",
 		render: (text: string, record: any) => {
+			const typeList = record.type?.split(",") || [];
 			return (
 				<div>
-					<Tag color="#f4f7fe" style={{ color: "#000" }}>
-						{PurchaseTypeMapDict[record.type as PurchaseTypeMap] || ""}
-					</Tag>
+					{typeList.map((item: PurchaseTypeMap, index: number) => {
+						return (
+							<Tag color="#f4f7fe" style={{ color: "#000" }} key={index}>
+								{PurchaseTypeMapDict[item] || ""}
+							</Tag>
+						);
+					})}
 				</div>
 			);
 		},
@@ -131,11 +135,6 @@ const TableBody: React.FC<FlowTableProps> = ({
 				columns={dstColumns}
 				setOpen={setOpen}
 				{...rest}
-			/>
-			<EditRecordModal
-				open={open}
-				setOpen={setOpen}
-				editFlowItemRecord={editFlowItemRecord}
 			/>
 		</FlowTableRoot>
 	);

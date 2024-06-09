@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import type { GetRef, InputRef } from "antd";
 import { Button, Form, Input, Popconfirm, Table } from "antd";
 import PlusSvg from "./assets/plus.svg";
+import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
+import { useAppSelector } from "../../store/hooks";
+import { selectUser } from "../../store/globalSlice";
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -105,78 +108,63 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 type EditableTableProps = Parameters<typeof Table>[0];
 
 interface DataType {
-	key: React.Key;
+	id: number;
 	name: string;
-	age: string;
-	address: string;
+	type: string;
+	content: string;
+	deliveryTime: string;
 }
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
 const PurchaseMilestone: React.FC = () => {
-	const [dataSource, setDataSource] = useState<DataType[]>([
-		{
-			key: "0",
-			name: "Edward King 0",
-			age: "32",
-			address: "London, Park Lane no. 0",
-		},
-		{
-			key: "1",
-			name: "Edward King 1",
-			age: "32",
-			address: "London, Park Lane no. 1",
-		},
-	]);
+	const user = useAppSelector(selectUser);
 
-	const [count, setCount] = useState(2);
+	const [dataSource, setDataSource] = useState<DataType[]>([]);
+	const [isShowMilestoneRecordModal, setIsShowMilestoneRecordModal] =
+		useState(false);
+	const [currentItem, setCurrentItem] = useState({});
+	const [modalType, setModalType] = useState<"add" | "edit">("add");
 
-	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter((item) => item.key !== key);
+	const handleDelete = (id: number) => {
+		const newData = dataSource.filter((item) => item.id !== id);
 		setDataSource(newData);
 	};
 
 	const defaultColumns: (ColumnTypes[number] & {
-		editable?: boolean;
 		dataIndex: string;
 	})[] = [
 		{
 			title: "时间",
-			dataIndex: "时间",
-			editable: true,
+			dataIndex: "createTime",
 		},
 		{
 			title: "人员",
-			dataIndex: "人员",
+			dataIndex: "name",
 		},
 		{
 			title: "类型",
-			dataIndex: "类型",
+			dataIndex: "type",
 		},
 		{
 			title: "描述",
-			dataIndex: "描述",
+			dataIndex: "content",
 		},
 		{
 			title: "是否影响交期",
-			dataIndex: "是否影响交期",
+			dataIndex: "deliveryTime",
 		},
 	];
 
 	const handleAdd = () => {
-		const newData: DataType = {
-			key: count,
-			name: `Edward King ${count}`,
-			age: "32",
-			address: `London, Park Lane no. ${count}`,
-		};
-		setDataSource([...dataSource, newData]);
-		setCount(count + 1);
+		setIsShowMilestoneRecordModal(true);
+		setCurrentItem({ deliveryTime: "no", name: user.username });
+		setModalType("add");
 	};
 
 	const handleSave = (row: DataType) => {
 		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.key === item.key);
+		const index = newData.findIndex((item) => row.id === item.id);
 		const item = newData[index];
 		newData.splice(index, 1, {
 			...item,
@@ -184,29 +172,6 @@ const PurchaseMilestone: React.FC = () => {
 		});
 		setDataSource(newData);
 	};
-
-	const components = {
-		body: {
-			row: EditableRow,
-			cell: EditableCell,
-		},
-	};
-
-	const columns = defaultColumns.map((col) => {
-		if (!col.editable) {
-			return col;
-		}
-		return {
-			...col,
-			onCell: (record: DataType) => ({
-				record,
-				editable: col.editable,
-				dataIndex: col.dataIndex,
-				title: col.title,
-				handleSave,
-			}),
-		};
-	});
 
 	return (
 		<div className="mt-4">
@@ -219,13 +184,17 @@ const PurchaseMilestone: React.FC = () => {
 			</div>
 
 			<Table
-				components={components}
-				rowClassName={() => "editable-row"}
 				bordered
 				dataSource={dataSource}
-				columns={columns as ColumnTypes}
+				columns={defaultColumns as ColumnTypes}
 				pagination={false}
 			/>
+			<MilestoneRecordModal
+				open={isShowMilestoneRecordModal}
+				setOpen={setIsShowMilestoneRecordModal}
+				formItem={currentItem}
+				modalType={modalType}
+			></MilestoneRecordModal>
 		</div>
 	);
 };

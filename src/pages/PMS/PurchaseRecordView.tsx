@@ -1,26 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CartSvg from "./assets/cart.svg";
-import { Button, ConfigProvider, Form, Tag, Tooltip } from "antd";
+import {
+	Affix,
+	Button,
+	ConfigProvider,
+	Form,
+	Tag,
+	Tooltip,
+	message,
+} from "antd";
 import {
 	LeftOutlined,
 	WarningFilled,
 	WarningOutlined,
 } from "@ant-design/icons";
-import { greyButtonTheme } from "../../theme/theme";
-import { useHistory } from "react-router";
+import { blueButtonTheme, greyButtonTheme } from "../../theme/theme";
+import { useHistory, useParams } from "react-router";
 import CellEditorContext from "./FormModal/CellEditorContext";
 import { NoFieldData } from "./FormModal/NoFieldData";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
-import PurchaseRequistionTable from "./PurchaseRequistionTable";
+import PurchaseItemTable from "./PurchaseItemTable";
 import PurchaseMilestone from "./PurchaseMilestone";
+import { purRequisition, savePurRequisition } from "../../api/ailuo/pms";
+import {
+	PurchaseStatusEnum,
+	PurchaseTypeMap,
+	PurchaseTypeMapDict,
+} from "../../api/ailuo/dict";
 
 const columns = [
 	{
 		title: "请购类型",
 		dataIndex: "type",
 		key: "type",
-		type: NumFieldType.MultiFixSelect,
+		type: NumFieldType.MultiSelectForLabel,
 		dictCode: "procurement",
+		rules: [{ required: true, message: "请选择请购类型" }],
 	},
 	{
 		title: "关联项目名称",
@@ -52,10 +67,20 @@ const columns = [
 		type: NumFieldType.DateTime,
 	},
 	{
-		title: "申请日期",
+		title: "创建日期",
 		dataIndex: "createTime",
 		key: "createTime",
-		type: NumFieldType.DateTime,
+		renderContent: (value: any, form: any, setForm: any) => {
+			return (
+				<div>
+					{value ? (
+						value
+					) : (
+						<span className="text-gray-400">根据新建时间自动生成</span>
+					)}
+				</div>
+			);
+		},
 	},
 	{
 		title: "规格",
@@ -68,6 +93,7 @@ const columns = [
 		dataIndex: "code",
 		key: "code",
 		type: NumFieldType.SingleText,
+		rules: [{ required: true, message: "请输入编号" }],
 	},
 	{
 		title: "来料检完成时间",
@@ -91,7 +117,13 @@ const columns = [
 			form: any,
 			setForm: (value: any) => void,
 		) => {
-			return <PurchaseRequistionTable key={"pur-requisition" + key} />;
+			return (
+				<PurchaseItemTable
+					key={"pur-requisition" + key}
+					form={form}
+					setForm={setForm}
+				/>
+			);
 		},
 	},
 	{
@@ -113,56 +145,175 @@ interface PurchaseRecordViewProps {}
 
 const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const history = useHistory();
+	const params = useParams() as any;
 	const [inputForm] = Form.useForm();
+
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [form, setForm] = useState<any>({});
 
+	const saveValidate = () => {
+		if (!form.type) {
+			message.warning("请选择请购类型!");
+			return false;
+		}
+		if (!form.code) {
+			message.warning("请输入编号!");
+			return false;
+		}
+		if (form.type.includes(PurchaseTypeMap.Order) && !form.relationProject) {
+			message.warning("请选择关联项目名称!");
+			return false;
+		}
+		return true;
+	};
+
+	const handleSave = async () => {
+		inputForm.setFieldsValue(form);
+		try {
+			await inputForm.validateFields();
+
+			if (!saveValidate()) {
+				return;
+			}
+
+			const params = {
+				...form,
+				type: form.type.join(","),
+			};
+			const res = await savePurRequisition(params);
+			console.log(res);
+			if (res.code == 200) {
+				message.success("保存成功!");
+				history.push("/dashboard/pms/pur-manage");
+			} else {
+				message.error(res.msg);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const fetchData = async () => {
+		setForm({});
+		inputForm.resetFields();
+		if (params.purId !== "new") {
+			console.log(params.purId);
+			const res = await purRequisition({ id: params.purId });
+			let temp = res.data.record[0];
+			temp = {
+				...temp,
+				type: temp.type?.split(",") || [],
+			};
+			console.log(temp);
+			setForm(temp);
+			inputForm.setFieldsValue(temp);
+		}
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, [params.purId]);
+
 	const StatusView = () => {
-		return (
-			<div className="flex items-center mt-2">
-				<div className="flex items-center">
-					<div className="mr-2 text-[#848484]">状态: </div>
-					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
-						{"未启动"}
-					</Tag>
+		if (form.status === PurchaseStatusEnum.Start) {
+			return (
+				<div className="flex items-center mt-2">
+					<div className="flex items-center">
+						<div className="mr-2 text-[#848484]">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"采购项添加中"}
+						</Tag>
+					</div>
+					<div className="flex  items-center ml-4">
+						<div className="mr-2 text-[#848484]">操作: </div>
+						<Tag
+							className="cursor-pointer"
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={() => {}}
+						>
+							{"开始采购"}
+						</Tag>
+					</div>
 				</div>
-				<div className="flex  items-center ml-4">
-					<div className="mr-2 text-[#848484]">操作: </div>
-					<Tag
-						className="cursor-pointer"
-						color={"#D4F3F2"}
-						style={{ color: "#000" }}
-						onClick={() => {}}
-					>
-						{"添加采购项"}
-					</Tag>
+			);
+		} else {
+			return (
+				<div className="flex items-center mt-2">
+					<div className="flex items-center">
+						<div className="mr-2 text-[#848484]">状态: </div>
+						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+							{"未启动"}
+						</Tag>
+					</div>
+					<div className="flex  items-center ml-4">
+						<div className="mr-2 text-[#848484]">操作: </div>
+						<Tag
+							className="cursor-pointer"
+							color={"#D4F3F2"}
+							style={{ color: "#000" }}
+							onClick={async () => {
+								try {
+									if (saveValidate()) {
+										const params = {
+											...form,
+											type: form.type.join(","),
+										};
+										const res = await savePurRequisition(params);
+										if (res.code == 200) {
+											history.push(`/dashboard/pms/pur-manage/${res.data}`);
+										} else {
+											message.error(res.msg);
+										}
+									}
+								} catch (error) {}
+							}}
+						>
+							{"添加采购项"}
+						</Tag>
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
 	};
 
 	return (
-    <div>
-			<div className="flex items-center">
-				<img src={CartSvg} alt="" />
-				<div className="font-bold text-lg ml-3">请购管理</div>
-				<ConfigProvider theme={greyButtonTheme}>
-					<Button
-						className="ml-4"
-						type="primary"
-						icon={<LeftOutlined />}
-						onClick={() => history.goBack()}
-					>
-						返回
-					</Button>
-				</ConfigProvider>
+		<div className="w-full">
+			<div className="bg-white fixed top-9 z-10 w-full pr-[286px]">
+				<div className="flex items-center">
+					<img src={CartSvg} alt="" />
+					<div className="font-bold text-lg ml-3">请购管理</div>
+					<ConfigProvider theme={greyButtonTheme}>
+						<Button
+							className="ml-4"
+							type="primary"
+							icon={<LeftOutlined />}
+							onClick={() => history.goBack()}
+						>
+							返回
+						</Button>
+					</ConfigProvider>
+				</div>
+				<div className="flex items-center justify-between pl-3">
+					<div>
+						<div className="text-lg">新建请购单</div>
+						{StatusView()}
+					</div>
+					<div>
+						<ConfigProvider theme={greyButtonTheme}>
+							<Button type="primary" onClick={()=>history.push("/dashboard/pms/pur-manage")}>取消</Button>
+						</ConfigProvider>
+						<ConfigProvider theme={blueButtonTheme}>
+							<Button type="primary" className="ml-4" onClick={handleSave}>
+								保存
+							</Button>
+						</ConfigProvider>
+					</div>
+				</div>
 			</div>
-			<div className="pl-3 mt-4">
-				<div className="text-lg">新建请购单</div>
-				{StatusView()}
+			<div className="pl-3 mt-4 pt-14">
 				<Form
 					form={inputForm}
-					name="recordForm"
 					colon={false}
 					wrapperCol={{ flex: 1 }}
 					preserve={false}

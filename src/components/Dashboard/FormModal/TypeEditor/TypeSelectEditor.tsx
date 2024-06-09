@@ -17,6 +17,7 @@ const LabelRoot = styled.div`
 interface TypeSelectEditorProps {
 	mode?: "multiple";
 	fixed?: boolean;
+	label?: boolean;
 	cell: any;
 	form: any;
 	setForm: any;
@@ -26,7 +27,7 @@ let index = 0;
 const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 	props: TypeSelectEditorProps,
 ) => {
-	const { mode, fixed, cell, form, setForm } = props;
+	const { mode, fixed, cell, form, setForm, label } = props;
 
 	const [items, setItems] = useState<string[]>([]);
 	const [name, setName] = useState("");
@@ -189,7 +190,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 			mode={mode}
 			value={value}
 			onChange={handleSelectChange}
-			optionLabelProp="value"
+			optionLabelProp={label ? "label" : "value"}
 			dropdownRender={fixed ? undefined : dropdownRender}
 			options={items.map((item: any) => ({
 				label: <Label item={item.label} fixed={fixed} />,

@@ -152,6 +152,11 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 		case NumFieldType.TextOnly:
 			CellEditor = <div>{rest.form[cell.dataIndex]}</div>
 			break;
+		case NumFieldType.MultiSelectForLabel:
+			CellEditor = (
+				<TypeSelectEditor mode="multiple" label fixed cell={cell} {...rest} />
+			);
+			break;
 		default:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;
 	}

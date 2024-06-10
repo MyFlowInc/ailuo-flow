@@ -21,7 +21,11 @@ import { NoFieldData } from "./FormModal/NoFieldData";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import PurchaseItemTable from "./PurchaseItemTable";
 import PurchaseMilestone from "./PurchaseMilestone";
-import { purRequisition, savePurRequisition } from "../../api/ailuo/pms";
+import {
+	purRequisition,
+	savePurRequisition,
+	updatePurRequisition,
+} from "../../api/ailuo/pms";
 import {
 	PurchaseStatusEnum,
 	PurchaseTypeMap,
@@ -121,7 +125,8 @@ const columns = [
 				<PurchaseItemTable
 					key={"pur-requisition" + key}
 					form={form}
-					setForm={setForm}
+          setForm={setForm}
+          disabled={column.disabled}
 				/>
 			);
 		},
@@ -136,7 +141,13 @@ const columns = [
 			form: any,
 			setForm: (value: any) => void,
 		) => {
-			return <PurchaseMilestone key={"pur-milestone" + key} />;
+			return (
+				<PurchaseMilestone
+					key={"pur-milestone" + key}
+					form={form}
+					setForm={setForm}
+				/>
+			);
 		},
 	},
 ];
@@ -150,6 +161,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [form, setForm] = useState<any>({});
+	const [disabled, setDisabled] = useState(false);
 
 	const saveValidate = () => {
 		if (!form.type) {
@@ -175,12 +187,20 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			if (!saveValidate()) {
 				return;
 			}
+			let res: any = {};
 
-			const params = {
-				...form,
-				type: form.type.join(","),
-			};
-			const res = await savePurRequisition(params);
+			if (params.purId == "new") {
+				res = await savePurRequisition({
+					...form,
+					type: form.type.join(","),
+				});
+			} else {
+				res = await updatePurRequisition({
+					...form,
+					type: form.type.join(","),
+				});
+			}
+
 			console.log(res);
 			if (res.code == 200) {
 				message.success("保存成功!");
@@ -210,6 +230,36 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 		}
 	};
 
+	const handlePurchaseStart = async () => {
+		const res = await updatePurRequisition({
+			status: PurchaseStatusEnum.InProcurement,
+			id: params.purId,
+		});
+		if (res.code == 200) {
+			await fetchData();
+		}
+	};
+
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled,
+			};
+		});
+		setShowDstColumns(newCol);
+	};
+
+	useEffect(() => {
+		if (form.status === PurchaseStatusEnum.InProcurement) {
+			setAllDisabled(true);
+			setDisabled(true);
+		} else {
+			setAllDisabled(false);
+			setDisabled(false);
+		}
+	}, [form.status]);
+
 	useEffect(() => {
 		fetchData();
 	}, [params.purId]);
@@ -220,7 +270,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 				<div className="flex items-center mt-2">
 					<div className="flex items-center">
 						<div className="mr-2 text-[#848484]">状态: </div>
-						<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
 							{"采购项添加中"}
 						</Tag>
 					</div>
@@ -230,9 +280,20 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 							className="cursor-pointer"
 							color={"#D4F3F2"}
 							style={{ color: "#000" }}
-							onClick={() => {}}
+							onClick={handlePurchaseStart}
 						>
 							{"开始采购"}
+						</Tag>
+					</div>
+				</div>
+			);
+		} else if (form.status === PurchaseStatusEnum.InProcurement) {
+			return (
+				<div className="flex items-center mt-2">
+					<div className="flex items-center">
+						<div className="mr-2 text-[#848484]">状态: </div>
+						<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+							{"采购中"}
 						</Tag>
 					</div>
 				</div>
@@ -288,7 +349,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 							className="ml-4"
 							type="primary"
 							icon={<LeftOutlined />}
-							onClick={() => history.goBack()}
+							onClick={() => history.push("/dashboard/pms/pur-manage")}
 						>
 							返回
 						</Button>
@@ -296,12 +357,19 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 				</div>
 				<div className="flex items-center justify-between pl-3">
 					<div>
-						<div className="text-lg">新建请购单</div>
+						<div className="text-lg">
+							{params.purId === "new" ? "新建请购单" : "编辑请购单"}
+						</div>
 						{StatusView()}
 					</div>
 					<div>
 						<ConfigProvider theme={greyButtonTheme}>
-							<Button type="primary" onClick={()=>history.push("/dashboard/pms/pur-manage")}>取消</Button>
+							<Button
+								type="primary"
+								onClick={() => history.push("/dashboard/pms/pur-manage")}
+							>
+								取消
+							</Button>
 						</ConfigProvider>
 						<ConfigProvider theme={blueButtonTheme}>
 							<Button type="primary" className="ml-4" onClick={handleSave}>

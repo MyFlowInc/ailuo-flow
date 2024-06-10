@@ -1,24 +1,38 @@
-import { Button, ConfigProvider, Table } from "antd";
-import React, { useState } from "react";
-import { TableTheme } from "../../theme/theme";
+import { Button, ConfigProvider, Modal, Table, Tag, message } from "antd";
+import React, { useEffect, useState } from "react";
+import { TableTheme, greyButtonTheme } from "../../theme/theme";
 import EditFilled from "../../assets/icons/EditFilled";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 import PlusSvg from "./assets/plus.svg";
 import { PurchaseItemRecordModal } from "./FormModal/PurchaseItemRecordModal";
-import { PurchaseStatusEnum } from "../../api/ailuo/dict";
+import {
+	PurchaseItemStatusEnum,
+	PurchaseStatusEnum,
+} from "../../api/ailuo/dict";
+import {
+	getPurChaseItemList,
+	removePurchaseItem,
+	updatePurchaseItem,
+} from "../../api/ailuo/pms";
+import { useParams } from "react-router";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 
 interface PurchaseItemTableProps {
 	form: any;
+	disabled: boolean;
 	setForm: (value: any) => void;
 }
 
 const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	form,
+	disabled,
 	setForm,
 }) => {
-	const [dataSource, setDataSource] = useState([{}]);
+	const params = useParams<any>();
+
+	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
-	const [currentItem, setCurrentItem] = useState({});
+	const [currentItem, setCurrentItem] = useState<any>({});
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
 
 	const handleEdit = (item: any) => {
@@ -27,87 +41,139 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		setIsShowRequistionModal(true);
 	};
 
+	const handleDelete = async (item: any) => {
+		if (disabled) {
+			return;
+		}
+		Modal.confirm({
+			title: "是否确认删除?",
+			icon: <ExclamationCircleFilled />,
+			okText: "确认",
+			okType: "danger",
+			cancelText: "取消",
+			async onOk() {
+				const res = await removePurchaseItem({ id: item.id });
+				if (res.code == 200) {
+					await fetchData();
+					message.success("删除成功");
+				}
+			},
+			onCancel() {
+				console.log("Cancel");
+			},
+		});
+	};
+
+	const handleTest = async (item: any) => {
+		if (
+			form.status == PurchaseStatusEnum.Start ||
+			form.status == PurchaseStatusEnum.NotStart
+		) {
+			return;
+		}
+		await updatePurchaseItem({
+			id: item.id,
+			status: PurchaseItemStatusEnum.TobeTested,
+		});
+		await fetchData();
+	};
+
 	const defaultColumns: any[] = [
 		{
-			width: 60,
 			title: "序号",
-			dataIndex: "index",
-			key: "index",
-			render: (text: any, record: any, index: number) => {
-				return <span>{index + 1}</span>;
-			},
+			dataIndex: "number",
+			key: "number",
 		},
 		{
-			width: 90,
 			title: "物料名称",
-			dataIndex: "物料名称",
-			key: "物料名称",
+			dataIndex: "name",
+			key: "name",
 		},
 		{
-			width: 90,
 			title: "规格",
-			dataIndex: "规格",
-			key: "规格",
+			dataIndex: "specifications",
+			key: "specifications",
 		},
 		{
-			width: 90,
 			title: "材质/品牌",
-			dataIndex: "材质/品牌",
-			key: "材质/品牌",
+			dataIndex: "brand",
+			key: "brand",
 		},
 		{
-			width: 90,
-			title: "单位文字",
-			dataIndex: "单位文字",
-			key: "单位文字",
+			title: "单位",
+			dataIndex: "unit",
+			key: "unit",
 		},
 		{
-			width: 90,
 			title: "采购数量",
-			dataIndex: "采购数量",
-			key: "采购数量",
+			dataIndex: "quantity",
+			key: "quantity",
 		},
 		{
-			width: 90,
 			title: "订单/使用部门",
-			dataIndex: "订单/使用部门",
-			key: "订单/使用部门",
+			dataIndex: "orderDepartment",
+			key: "orderDepartment",
 		},
 		{
-			width: 90,
 			title: "用途",
-			dataIndex: "用途",
-			key: "用途",
+			dataIndex: "purpose",
+			key: "purpose",
 		},
 		{
-			width: 90,
 			title: "备注",
-			dataIndex: "备注",
-			key: "备注",
+			dataIndex: "remark",
+			key: "remark",
 		},
 		{
-			width: 90,
 			title: "来料检",
 			dataIndex: "来料检",
 			key: "来料检",
+			render: (text: string, record: any) => {
+				if (record.status === PurchaseItemStatusEnum.Todo) {
+					return (
+						<Tag
+							color={"#F2F3F5"}
+							style={{ color: "#707683", cursor: "pointer" }}
+							onClick={() => handleTest(record)}
+						>
+							请检
+						</Tag>
+					);
+				} else if (record.status === PurchaseItemStatusEnum.TobeTested) {
+					return (
+						<Tag
+							color={"#FFEEE3"}
+							style={{ color: "#707683", cursor: "pointer" }}
+						>
+							请检中
+						</Tag>
+					);
+				}
+			},
 		},
 		{
-			width: 90,
 			title: "入库",
 			dataIndex: "入库",
 			key: "入库",
+			render: (text: string, record: any) => {
+				return <div></div>;
+			},
 		},
 		{
-			width: 90,
 			title: "来料检完成时间",
-			dataIndex: "来料检完成时间",
-			key: "来料检完成时间",
+			dataIndex: "incomingCompletiontime",
+			key: "incomingCompletiontime",
+			render: (text: string, record: any) => {
+				return <div></div>;
+			},
 		},
 		{
-			width: 90,
 			title: "入库完成时间",
-			dataIndex: "入库完成时间",
-			key: "入库完成时间",
+			dataIndex: "warehousingCompletiontime",
+			key: "warehousingCompletiontime",
+			render: (text: string, record: any) => {
+				return <div></div>;
+			},
 		},
 		{
 			width: 90,
@@ -129,6 +195,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
+							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
 				);
@@ -137,17 +204,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	];
 
 	const columns = defaultColumns.map((col: any) => {
-		if (!col.editable) {
-			return col;
-		}
 		return {
 			...col,
-			onCell: (record: any) => ({
-				record,
-				editable: col.editable,
-				dataIndex: col.dataIndex,
-				title: col.title,
-			}),
 		};
 	});
 
@@ -156,6 +214,21 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		setCurrentItem({});
 		setIsShowRequistionModal(true);
 	};
+
+	const fetchData = async () => {
+		const res = await getPurChaseItemList({
+			pageNum: 1,
+			pageSize: 9999999,
+			relationRequisition: params.purId,
+		});
+		if (res.code == 200) {
+			setDataSource(res.data.record);
+		}
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, [params.purId]);
 
 	return (
 		<div className="mt-4">
@@ -181,6 +254,9 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				setOpen={setIsShowRequistionModal}
 				formItem={currentItem}
 				modalType={modalType}
+				fetchData={fetchData}
+				disabled={disabled}
+				purchaseForm={form}
 			></PurchaseItemRecordModal>
 		</div>
 	);

@@ -145,7 +145,7 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({
 							</div>
 						</CellLabelRoot>
 						{item.renderContent ? (
-							item.renderContent(form[item.dataIndex], form, setForm)
+							item.renderContent(form[item.dataIndex], form, setForm, item)
 						) : (
 							<CellEditor cell={item} form={form} setForm={setForm} />
 						)}

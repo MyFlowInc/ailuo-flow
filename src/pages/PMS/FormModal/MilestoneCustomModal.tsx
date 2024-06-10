@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Radio } from "antd";
+import { ConfigProvider, Form, Button, Radio, message } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { RadioChangeEvent } from "antd/lib";
+import { saveMilestone, updateMilestone } from "../../../api/ailuo/pms";
+import { useParams } from "react-router";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -48,13 +50,6 @@ const CustomModalRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {
-	title: string;
-	open: boolean;
-	setOpen: (value: boolean) => void;
-	modalType: string;
-	formItem?: any | undefined;
-}
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -66,7 +61,67 @@ const excludeNull = (obj: any) => {
 	return result;
 };
 
-const CustomModalContext = React.createContext({});
+const columns: any = [
+	{
+		title: "时间",
+		dataIndex: "createTime",
+		key: "createTime",
+		renderContent: (value: any, form: any, setForm: any) => {
+			return (
+				<div>
+					{value ? (
+						value
+					) : (
+						<span className="text-gray-400">根据新建时间自动生成</span>
+					)}
+				</div>
+			);
+		},
+	},
+	{
+		title: "人员",
+		dataIndex: "name",
+		key: "name",
+		type: NumFieldType.TextOnly,
+	},
+	{
+		title: "类型",
+		dataIndex: "type",
+		key: "type",
+		type: NumFieldType.SingleText,
+	},
+	{
+		title: "描述",
+		dataIndex: "content",
+		key: "content",
+		type: NumFieldType.Text,
+	},
+	{
+		title: "是否影响交期",
+		dataIndex: "deliveryTime",
+		key: "deliveryTime",
+		renderContent: (value: any, form: any, setForm: any) => {
+			const onChange = (e: RadioChangeEvent) => {
+				setForm({ ...form, deliveryTime: e.target.value });
+			};
+			return (
+				<Radio.Group onChange={onChange} value={value}>
+					<Radio value={"yes"}>是</Radio>
+					<Radio value={"no"}>否</Radio>
+				</Radio.Group>
+			);
+		},
+	},
+];
+
+interface CustomModalProps {
+	title: string;
+	open: boolean;
+	setOpen: (value: boolean) => void;
+	modalType: string;
+	formItem?: any | undefined;
+	fetchData: () => void;
+}
 
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
@@ -74,63 +129,35 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	formItem,
+	fetchData,
 }) => {
-	const columns: any = [
-		{
-			title: "时间",
-			dataIndex: "createTime",
-			key: "createTime",
-			renderContent: (value: any, form: any, setForm: any) => {
-				return (
-					<div>
-						{value ? (
-							value
-						) : (
-							<span className="text-gray-400">根据新建时间自动生成</span>
-						)}
-					</div>
-				);
-			},
-		},
-		{
-			title: "人员",
-			dataIndex: "name",
-			key: "name",
-			type: NumFieldType.TextOnly,
-		},
-		{
-			title: "类型",
-			dataIndex: "type",
-			key: "type",
-			type: NumFieldType.SingleText,
-		},
-		{
-			title: "描述",
-			dataIndex: "content",
-			key: "content",
-			type: NumFieldType.Text,
-		},
-		{
-			title: "是否影响交期",
-			dataIndex: "deliveryTime",
-			key: "deliveryTime",
-			renderContent: (value: any, form: any, setForm: any) => {
-				const onChange = (e: RadioChangeEvent) => {
-					setForm({ ...form, deliveryTime: e.target.value });
-				};
-				return (
-					<Radio.Group onChange={onChange} value={value}>
-						<Radio value={"yes"}>是</Radio>
-						<Radio value={"no"}>否</Radio>
-					</Radio.Group>
-				);
-			},
-		},
-	];
+	const params = useParams<any>();
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+
+	const handleSave = async () => {
+		try {
+			let res: any = {};
+			if (form.id) {
+				res = await updateMilestone(
+					excludeNull({ ...form, relationRequisition: params.purId }),
+				);
+			} else {
+				res = await saveMilestone(
+					excludeNull({ ...form, relationRequisition: params.purId }),
+				);
+			}
+			if (res.code == 200) {
+				await fetchData();
+				message.success("保存成功");
+				setOpen(false);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	// 初始化form数据
 	useEffect(() => {
@@ -158,7 +185,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</Button>
 					</ConfigProvider>
 					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary">保存</Button>
+						<Button type="primary" onClick={handleSave}>
+							保存
+						</Button>
 					</ConfigProvider>
 				</div>
 			</div>

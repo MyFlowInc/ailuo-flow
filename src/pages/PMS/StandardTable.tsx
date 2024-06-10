@@ -36,9 +36,7 @@ interface StandardTableActionProps {
 const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	text,
 	record,
-	setOpen,
 	deleteFlowItem,
-	setEditFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
 	const history = useHistory()

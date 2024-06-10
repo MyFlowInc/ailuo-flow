@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, message } from "antd";
 
 import { dashboardTheme } from "../../theme/theme";
 import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
@@ -9,7 +9,7 @@ import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
 import { IfetchSaleList } from "./types";
-import { purRequisition } from "../../api/ailuo/pms";
+import { purRequisition, removePurRequisition } from "../../api/ailuo/pms";
 
 export const PurchaseManageContext = React.createContext<any>({});
 
@@ -27,7 +27,8 @@ const PurchaseManage: React.FC = () => {
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
-			await saleProjectRemove(id);
+			await removePurRequisition({ id });
+			message.success("删除成功");
 			await fetchPurchaseList();
 		} catch (error) {
 			console.log(error);

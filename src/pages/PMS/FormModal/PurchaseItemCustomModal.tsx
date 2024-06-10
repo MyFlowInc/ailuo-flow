@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button } from "antd";
+import { ConfigProvider, Form, Button, message, Tag } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import ApproveButton from "../../../BaseUI/Button/Approve";
+import { savePurchaseItem, updatePurchaseItem } from "../../../api/ailuo/pms";
+import useMessage from "antd/es/message/useMessage";
+import { useParams } from "react-router";
+import { PurchaseItemStatusEnum, PurchaseStatusEnum } from "../../../api/ailuo/dict";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -48,13 +52,6 @@ const CustomModalRoot = styled.div`
 	}
 `;
 
-interface CustomModalProps {
-	title: string;
-	open: boolean;
-	setOpen: (value: boolean) => void;
-	modalType: string;
-	formItem?: any | undefined;
-}
 const excludeNull = (obj: any) => {
 	const result: any = {};
 	Object.keys(obj).forEach((key) => {
@@ -65,107 +62,19 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-export const columns: any = [
-	{
-		title: "序号",
-		dataIndex: "number",
-		key: "number",
-		type: NumFieldType.Number,
-	},
-	{
-		title: "物料名称",
-		dataIndex: "name",
-		key: "name",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "规格",
-		dataIndex: "specifications",
-		key: "specifications",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "材质/品牌",
-		dataIndex: "brand",
-		key: "brand",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "单位",
-		dataIndex: "unit",
-		key: "unit",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "采购数量",
-		dataIndex: "quantity",
-		key: "quantity",
-		type: NumFieldType.Number,
-	},
-	{
-		title: "订单/使用部门",
-		dataIndex: "order",
-		key: "order",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "用途",
-		dataIndex: "purpose",
-		key: "purpose",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "备注",
-		dataIndex: "remarks",
-		key: "remarks",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "来料检",
-		dataIndex: "来料检",
-		key: "来料检",
-		type: NumFieldType.SingleText,
-		renderContent: (value: any, form: any, setForm: any) => {
-			return (
-				<div>
-					<ConfigProvider theme={greyButtonTheme}>
-						<Button type="primary">请检</Button>
-					</ConfigProvider>
-				</div>
-			);
-		},
-	},
-	{
-		title: "入库",
-		dataIndex: "入库",
-		key: "入库",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return (
-				<div>
-					<ApproveButton />
-				</div>
-			);
-		},
-	},
-	{
-		title: "来料检完成时间",
-		dataIndex: "incomingCompletiontime",
-		key: "incomingCompletiontime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return <div></div>;
-		},
-	},
-	{
-		title: "入库完成时间",
-		dataIndex: "warehousingCompletiontime",
-		key: "warehousingCompletiontime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return <div></div>;
-		},
-	},
-];
 
 const CustomModalContext = React.createContext({});
+
+interface CustomModalProps {
+	title: string;
+	open: boolean;
+	disabled: boolean;
+	modalType: string;
+	formItem?: any | undefined;
+	setOpen: (value: boolean) => void;
+	fetchData: () => void;
+	purchaseForm: any;
+}
 
 const CustomModal: React.FC<CustomModalProps> = ({
 	title,
@@ -173,16 +82,190 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	formItem,
+	fetchData,
+	disabled,
+	purchaseForm,
 }) => {
+	const columns: any = [
+		{
+			title: "序号",
+			dataIndex: "number",
+			key: "number",
+			type: NumFieldType.Number,
+		},
+		{
+			title: "物料名称",
+			dataIndex: "name",
+			key: "name",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "规格",
+			dataIndex: "specifications",
+			key: "specifications",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "材质/品牌",
+			dataIndex: "brand",
+			key: "brand",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "单位",
+			dataIndex: "unit",
+			key: "unit",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "采购数量",
+			dataIndex: "quantity",
+			key: "quantity",
+			type: NumFieldType.Number,
+		},
+		{
+			title: "订单/使用部门",
+			dataIndex: "orderDepartment",
+			key: "orderDepartment",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "用途",
+			dataIndex: "purpose",
+			key: "purpose",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "备注",
+			dataIndex: "remark",
+			key: "remark",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "来料检",
+			dataIndex: "来料检",
+			key: "来料检",
+			type: NumFieldType.SingleText,
+			renderContent: (value: any, form: any, setForm: any) => {
+				if (form.status === PurchaseItemStatusEnum.Todo) {
+					return (
+						<Tag
+							color={"#F2F3F5"}
+							style={{ color: "#707683", cursor: "pointer" }}
+							onClick={() => handleTest(form)}
+						>
+							请检
+						</Tag>
+					);
+				} else if (form.status === PurchaseItemStatusEnum.TobeTested) {
+					return (
+						<Tag
+							color={"#FFEEE3"}
+							style={{ color: "#707683", cursor: "pointer" }}
+						>
+							请检中
+						</Tag>
+					);
+				}
+			},
+		},
+		{
+			title: "入库",
+			dataIndex: "入库",
+			key: "入库",
+			renderContent: (value: any, form: any, setForm: any) => {
+				return (
+					<div>
+						<ApproveButton />
+					</div>
+				);
+			},
+		},
+		{
+			title: "来料检完成时间",
+			dataIndex: "incomingCompletiontime",
+			key: "incomingCompletiontime",
+			renderContent: (value: any, form: any, setForm: any) => {
+				return <div></div>;
+			},
+		},
+		{
+			title: "入库完成时间",
+			dataIndex: "warehousingCompletiontime",
+			key: "warehousingCompletiontime",
+			renderContent: (value: any, form: any, setForm: any) => {
+				return <div></div>;
+			},
+		},
+	];
+
+	const params = useParams<any>();
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+
+	const handleTest = async (item: any) => {
+		if (
+			purchaseForm.status == PurchaseStatusEnum.Start ||
+			purchaseForm.status == PurchaseStatusEnum.NotStart
+		) {
+			return;
+		}
+		setOpen(false)
+		await updatePurchaseItem({
+			id: item.id,
+			status: PurchaseItemStatusEnum.TobeTested,
+		});
+		await fetchData();
+	};
+
+	const handleSave = async () => {
+		if (disabled) {
+			setOpen(false);
+		}
+		let res: any = {};
+		if (form.id) {
+			res = await updatePurchaseItem({
+				...form,
+				relationRequisition: params.purId,
+			});
+		} else {
+			res = await savePurchaseItem({
+				...form,
+				relationRequisition: params.purId,
+			});
+		}
+
+		if (res.code == 200) {
+			await fetchData();
+			message.success("保存成功");
+			setOpen(false);
+		}
+	};
+
+	const setAllDisabled = (disabled: boolean) => {
+		const newCol = showDstColumns.map((item: any) => {
+			return {
+				...item,
+				disabled,
+			};
+		});
+		setShowDstColumns(newCol);
+	};
+
+	useEffect(() => {
+		setAllDisabled(disabled);
+	}, [disabled]);
+
 	// 初始化form数据
 	useEffect(() => {
 		if (!open) {
 			setForm({});
 			inputForm.resetFields();
 			return;
+		} else {
+			setForm({ ...formItem });
+			inputForm.setFieldsValue({ ...formItem });
 		}
 	}, [open]);
 
@@ -201,7 +284,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</Button>
 					</ConfigProvider>
 					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary">保存</Button>
+						<Button type="primary" onClick={handleSave}>
+							保存
+						</Button>
 					</ConfigProvider>
 				</div>
 			</div>

@@ -5,10 +5,11 @@ import PlusSvg from "./assets/plus.svg";
 import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
-
-type FormInstance<T> = GetRef<typeof Form<T>>;
-
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+import { PurchaseStatusEnum } from "../../api/ailuo/dict";
+import { useParams } from "react-router";
+import { getMilestoneList } from "../../api/ailuo/pms";
+import DeleteFilled from "../../assets/icons/DeleteFilled";
+import EditFilled from "../../assets/icons/EditFilled";
 
 interface Item {
 	key: string;
@@ -16,94 +17,6 @@ interface Item {
 	age: string;
 	address: string;
 }
-
-interface EditableRowProps {
-	index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-	const [form] = Form.useForm();
-	return (
-		<Form form={form} component={false}>
-			<EditableContext.Provider value={form}>
-				<tr {...props} />
-			</EditableContext.Provider>
-		</Form>
-	);
-};
-
-interface EditableCellProps {
-	title: React.ReactNode;
-	editable: boolean;
-	dataIndex: keyof Item;
-	record: Item;
-	handleSave: (record: Item) => void;
-}
-
-const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-	title,
-	editable,
-	children,
-	dataIndex,
-	record,
-	handleSave,
-	...restProps
-}) => {
-	const [editing, setEditing] = useState(false);
-	const inputRef = useRef<InputRef>(null);
-	const form = useContext(EditableContext)!;
-
-	useEffect(() => {
-		if (editing) {
-			inputRef.current?.focus();
-		}
-	}, [editing]);
-
-	const toggleEdit = () => {
-		setEditing(!editing);
-		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-	};
-
-	const save = async () => {
-		try {
-			const values = await form.validateFields();
-
-			toggleEdit();
-			handleSave({ ...record, ...values });
-		} catch (errInfo) {
-			console.log("Save failed:", errInfo);
-		}
-	};
-
-	let childNode = children;
-
-	if (editable) {
-		childNode = editing ? (
-			<Form.Item
-				style={{ margin: 0 }}
-				name={dataIndex}
-				rules={[
-					{
-						required: true,
-						message: `${title} is required.`,
-					},
-				]}
-			>
-				<Input ref={inputRef} onPressEnter={save} onBlur={save} />
-			</Form.Item>
-		) : (
-			<div
-				className="editable-cell-value-wrap"
-				style={{ paddingRight: 24 }}
-				onClick={toggleEdit}
-			>
-				{children}
-			</div>
-		);
-	}
-
-	return <td {...restProps}>{childNode}</td>;
-};
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
@@ -117,8 +30,14 @@ interface DataType {
 
 type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
-const PurchaseMilestone: React.FC = () => {
+interface PurchaseMilestoneProps {
+	form: any;
+	setForm: (value: any) => void;
+}
+
+const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 	const user = useAppSelector(selectUser);
+	const params = useParams<any>();
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [isShowMilestoneRecordModal, setIsShowMilestoneRecordModal] =
@@ -129,6 +48,12 @@ const PurchaseMilestone: React.FC = () => {
 	const handleDelete = (id: number) => {
 		const newData = dataSource.filter((item) => item.id !== id);
 		setDataSource(newData);
+	};
+
+	const handleEdit = (item: any) => {
+		setCurrentItem(item);
+		setIsShowMilestoneRecordModal(true);
+		setModalType("edit");
 	};
 
 	const defaultColumns: (ColumnTypes[number] & {
@@ -153,6 +78,37 @@ const PurchaseMilestone: React.FC = () => {
 		{
 			title: "是否影响交期",
 			dataIndex: "deliveryTime",
+			render: (text, record) => {
+				return <div>{text == "yes" ? "是" : "否"}</div>;
+			},
+		},
+		{
+			width: 90,
+			title: "操作",
+			dataIndex: "action",
+			key: "action",
+			render: (text: any, record: any, index: number) => {
+				return (
+					!record.remark && (
+						<div className="flex items-center justify-around">
+							<Button
+								type="text"
+								color="#717682"
+								icon={<EditFilled />}
+								className="text-[#717682]"
+								onClick={() => handleEdit(record)}
+							></Button>
+							<Button
+								type="text"
+								color="#717682"
+								icon={<DeleteFilled />}
+								className="text-[#717682]"
+								onClick={() => handleDelete(record)}
+							></Button>
+						</div>
+					)
+				);
+			},
 		},
 	];
 
@@ -162,25 +118,32 @@ const PurchaseMilestone: React.FC = () => {
 		setModalType("add");
 	};
 
-	const handleSave = (row: DataType) => {
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.id === item.id);
-		const item = newData[index];
-		newData.splice(index, 1, {
-			...item,
-			...row,
+	const fetchData = async () => {
+		const res = await getMilestoneList({
+			pageNum: 1,
+			pageSize: 999999,
+			relatedProject: params.purId,
 		});
-		setDataSource(newData);
+		if (res.code == 200) {
+			console.log(res.data.record);
+			setDataSource(res.data.record);
+		}
 	};
+
+	useEffect(() => {
+		fetchData();
+	}, [params.purId]);
 
 	return (
 		<div className="mt-4">
 			<div className="mb-2 flex items-center">
 				<span className="mr-6">重要事件</span>
-				<div className="flex items-center cursor-pointer" onClick={handleAdd}>
-					<img src={PlusSvg} alt="" className="mr-2" />
-					<span className="text-[#707683]">添加重要事件</span>
-				</div>
+				{form?.status == PurchaseStatusEnum.Start && (
+					<div className="flex items-center cursor-pointer" onClick={handleAdd}>
+						<img src={PlusSvg} alt="" className="mr-2" />
+						<span className="text-[#707683]">添加重要事件</span>
+					</div>
+				)}
 			</div>
 
 			<Table
@@ -194,6 +157,7 @@ const PurchaseMilestone: React.FC = () => {
 				setOpen={setIsShowMilestoneRecordModal}
 				formItem={currentItem}
 				modalType={modalType}
+				fetchData={fetchData}
 			></MilestoneRecordModal>
 		</div>
 	);

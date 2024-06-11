@@ -10,7 +10,11 @@ import ApproveButton from "../../../BaseUI/Button/Approve";
 import { savePurchaseItem, updatePurchaseItem } from "../../../api/ailuo/pms";
 import useMessage from "antd/es/message/useMessage";
 import { useParams } from "react-router";
-import { PurchaseItemStatusEnum, PurchaseStatusEnum } from "../../../api/ailuo/dict";
+import {
+	PurchaseItemStatusEnum,
+	PurchaseItemWarehousingsStatusEnum,
+	PurchaseStatusEnum,
+} from "../../../api/ailuo/dict";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -174,28 +178,34 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			dataIndex: "入库",
 			key: "入库",
 			renderContent: (value: any, form: any, setForm: any) => {
-				return (
-					<div>
-						<ApproveButton />
-					</div>
-				);
+				if (form.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
+					return <ApproveButton />;
+				}
+				if (form.status === PurchaseItemStatusEnum.Approved) {
+					return (
+						<Tag
+							color={"#F2F3F5"}
+							style={{ color: "#707683", cursor: "pointer" }}
+							onClick={() => handleInStorage(form)}
+						>
+							入库
+						</Tag>
+					);
+				}
+				return null;
 			},
 		},
 		{
 			title: "来料检完成时间",
 			dataIndex: "incomingCompletiontime",
 			key: "incomingCompletiontime",
-			renderContent: (value: any, form: any, setForm: any) => {
-				return <div></div>;
-			},
+			type: NumFieldType.TextOnly,
 		},
 		{
 			title: "入库完成时间",
 			dataIndex: "warehousingCompletiontime",
 			key: "warehousingCompletiontime",
-			renderContent: (value: any, form: any, setForm: any) => {
-				return <div></div>;
-			},
+			type: NumFieldType.TextOnly,
 		},
 	];
 
@@ -211,10 +221,20 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		) {
 			return;
 		}
-		setOpen(false)
+		setOpen(false);
 		await updatePurchaseItem({
 			id: item.id,
 			status: PurchaseItemStatusEnum.TobeTested,
+			relationRequisition: params.purId,
+		});
+		await fetchData();
+	};
+
+	const handleInStorage = async (item: any) => {
+		setOpen(false);
+		await updatePurchaseItem({
+			id: item.id,
+			warehousing: PurchaseItemWarehousingsStatusEnum.Yes,
 		});
 		await fetchData();
 	};

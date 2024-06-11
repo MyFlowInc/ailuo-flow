@@ -217,32 +217,32 @@ const ModeSelectTable: React.FC = (props: any) => {
 			editable: true,
 			dataIndex: "num",
 		},
-		{
-			editable: true,
-			title: "单价",
-			dataIndex: "price",
-			render: (text: any, record: any) => {
-				return (
-					<div className="flex items-center justify-around">
-						{record.price}
-						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
-					</div>
-				);
-			},
-		},
-		{
-			title: "总价",
-			width: 100,
-			dataIndex: "total",
-			render: (text: any, record: any) => {
-				return (
-					<div className="flex items-center justify-around">
-						{+record.num * +record.price}
-						<CloseCircleFilled onClick={() => handleDelete(record.key)} />
-					</div>
-				);
-			},
-		},
+		// {
+		// 	editable: true,
+		// 	title: "单价",
+		// 	dataIndex: "price",
+		// 	render: (text: any, record: any) => {
+		// 		return (
+		// 			<div className="flex items-center justify-around">
+		// 				{record.price}
+		// 				<CloseCircleFilled onClick={() => handleDelete(record.key)} />
+		// 			</div>
+		// 		);
+		// 	},
+		// },
+		// {
+		// 	title: "总价",
+		// 	width: 100,
+		// 	dataIndex: "total",
+		// 	render: (text: any, record: any) => {
+		// 		return (
+		// 			<div className="flex items-center justify-around">
+		// 				{+record.num * +record.price}
+		// 				<CloseCircleFilled onClick={() => handleDelete(record.key)} />
+		// 			</div>
+		// 		);
+		// 	},
+		// },
 	];
 	const defaultColumnsTech: any = [
 		{

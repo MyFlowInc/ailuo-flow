@@ -18,10 +18,10 @@ const Search: React.FC<SearchProps> = ({ columns }) => {
 	const [form] = Form.useForm();
 	const options = columns;
 	const [inputValue, setInputValue] = useState<string>("");
-	const [selectValue, setSelectValue] = useState<string>("name");
-	const { fetchSaleList } = useContext(PurchaseManageContext);
+	const [selectValue, setSelectValue] = useState<string>("type");
+	const { fetchPurchaseList } = useContext(PurchaseManageContext);
 	const handleSearch = async () => {
-		await fetchSaleList({
+		await fetchPurchaseList({
 			search: {
 				[selectValue]: inputValue.trim(),
 			},

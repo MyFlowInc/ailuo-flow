@@ -1,12 +1,13 @@
 import { Button, ConfigProvider, Modal, Table, Tag, message } from "antd";
 import React, { useEffect, useState } from "react";
-import { TableTheme, greyButtonTheme } from "../../theme/theme";
+import { BlueTableTheme, TableTheme, greyButtonTheme } from "../../theme/theme";
 import EditFilled from "../../assets/icons/EditFilled";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 import PlusSvg from "./assets/plus.svg";
 import { PurchaseItemRecordModal } from "./FormModal/PurchaseItemRecordModal";
 import {
 	PurchaseItemStatusEnum,
+	PurchaseItemWarehousingsStatusEnum,
 	PurchaseStatusEnum,
 } from "../../api/ailuo/dict";
 import {
@@ -16,6 +17,7 @@ import {
 } from "../../api/ailuo/pms";
 import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import ApproveButton from "../../BaseUI/Button/Approve";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -74,9 +76,18 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		await updatePurchaseItem({
 			id: item.id,
 			status: PurchaseItemStatusEnum.TobeTested,
+			relationRequisition: params.purId,
 		});
 		await fetchData();
 	};
+
+	const handleInStorage = async (item: any) => {
+		await updatePurchaseItem({
+			id: item.id,
+			warehousing: PurchaseItemWarehousingsStatusEnum.Yes,
+		});
+		await fetchData();
+	}
 
 	const defaultColumns: any[] = [
 		{
@@ -153,10 +164,24 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		},
 		{
 			title: "入库",
-			dataIndex: "入库",
-			key: "入库",
+			dataIndex: "warehousing",
+			key: "warehousing",
 			render: (text: string, record: any) => {
-				return <div></div>;
+				if (record.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
+					return <ApproveButton />;
+				}
+				if (record.status === PurchaseItemStatusEnum.Approved) {
+					return (
+						<Tag
+							color={"#F2F3F5"}
+							style={{ color: "#707683", cursor: "pointer" }}
+							onClick={() => handleInStorage(form)}
+						>
+							入库
+						</Tag>
+					);
+				}
+				return null;
 			},
 		},
 		{
@@ -241,7 +266,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 					</div>
 				)}
 			</div>
-			<ConfigProvider theme={TableTheme}>
+			<ConfigProvider theme={BlueTableTheme}>
 				<Table
 					size="small"
 					pagination={false}

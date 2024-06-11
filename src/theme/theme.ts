@@ -37,6 +37,39 @@ export const TableTheme = {
 	},
 };
 
+export const BlueTableTheme = {
+	token: {
+		controlHeight: 27,
+		fontSize: 12,
+		fontFamily: `"Harmony_Sans_Medium", sans-serif`,
+	},
+	components: {
+		Table: {
+			fontSize: 12,
+			headerBg: "#F3F7FF",
+			headerColor: "#3D3D3D",
+			fontWeightStrong: 400,
+		},
+	},
+};
+
+export const BlueTableNoRadiusTheme = {
+	token: {
+		controlHeight: 27,
+		fontSize: 12,
+		fontFamily: `"Harmony_Sans_Medium", sans-serif`,
+	},
+	components: {
+		Table: {
+			fontSize: 12,
+			headerBg: "#F3F7FF",
+			headerColor: "#3D3D3D",
+			fontWeightStrong: 400,
+			headerBorderRadius: 0,
+		},
+	},
+};
+
 export const navsideTheme = {
 	token: {
 		controlHeight: 27,

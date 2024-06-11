@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import {
+	ExclamationCircleFilled,
+	EyeFilled,
+	EyeOutlined,
+} from "@ant-design/icons";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 
 import type { ColumnsType } from "antd/es/table";
@@ -9,7 +13,7 @@ import type { TableRowSelection } from "antd/es/table/interface";
 import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import { PurchaseManageContext } from "./QualityControl";
+import { QualityControlContext } from "./QualityControl";
 import { selectIsFinance } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
@@ -41,24 +45,23 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	const isFinance = useAppSelector(selectIsFinance);
 	const history = useHistory();
 
-	const handleDeleteRecord = async (text: string, record: any) => {
-		Modal.confirm({
-			title: "是否确认删除?",
-			icon: <ExclamationCircleFilled />,
-			okText: "确认",
-			okType: "danger",
-			cancelText: "取消",
-			onOk() {
-				deleteFlowItem(record.id);
-			},
-			onCancel() {
-				console.log("Cancel");
-			},
-		});
+	const handleViewRecord = async (text: string, record: any) => {
+		// Modal.confirm({
+		// 	title: "是否确认删除?",
+		// 	icon: <ExclamationCircleFilled />,
+		// 	okText: "确认",
+		// 	okType: "danger",
+		// 	cancelText: "取消",
+		// 	onOk() {
+		// 		deleteFlowItem(record.id);
+		// 	},
+		// 	onCancel() {
+		// 		console.log("Cancel");
+		// 	},
+		// });
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
-		console.log(record);
 		history.push(`/dashboard/pms/pur-manage/${record.id}`);
 	};
 
@@ -79,7 +82,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 			<Button
 				type="text"
 				icon={
-					<DeleteFilled
+					<EyeFilled
 						style={{
 							fontSize: "12px",
 							color: `${isFinance ? "#d9d9d9" : "#707683"}`,
@@ -87,7 +90,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					/>
 				}
 				disabled={isFinance}
-				onClick={() => handleDeleteRecord(text, record)}
+				onClick={() => handleViewRecord(text, record)}
 			/>
 		</Space>
 	);
@@ -120,7 +123,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 }) => {
 	const [tableColumns, setTableColumns] = useState<ColumnsType<any>>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-	const { fetchSaleList } = useContext(PurchaseManageContext);
+	const { fetchPurchaseList } = useContext(QualityControlContext);
 	const isFinance = useAppSelector(selectIsFinance);
 
 	const getTableColumns = () => {
@@ -179,7 +182,7 @@ const StandardTable: React.FC<StandardTableProps> = ({
 	const pageNumChange = (page: number, pageSize: number) => {
 		curPage.current.pageNum = page;
 		setTimeout(() => {
-			fetchSaleList();
+			fetchPurchaseList();
 		});
 	};
 

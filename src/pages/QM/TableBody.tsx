@@ -43,11 +43,25 @@ const columns: any = [
 		width: 200,
 		dataIndex: "nodeName",
 		key: "nodeName",
+		render: (text: string, record: any) => {
+			return (
+				<div>
+					<span>{record.nodeName}</span>
+				</div>
+			);
+		},
 	},
 	{
 		title: "检验项名称",
 		dataIndex: "name",
 		key: "name",
+		render: (text: string, record: any) => {
+			return (
+				<div>
+					<span>{record.name}</span>
+				</div>
+			);
+		},
 	},
 	{
 		title: "发起请检时间",
@@ -62,14 +76,28 @@ const columns: any = [
 		},
 	},
 	{
-		title: "检验项名称",
+		title: "请检类型",
 		dataIndex: "type",
 		key: "type",
+		render: (text: string, record: any) => {
+			return (
+				<div>
+					<span>{record.type}</span>
+				</div>
+			);
+		},
 	},
 	{
-		title: "检验项名称",
-		dataIndex: "type",
-		key: "type",
+		title: "检验结果",
+		dataIndex: "status",
+		key: "status",
+		render: (text: string, record: any) => {
+			return (
+				<div>
+					<span>{record.status}</span>
+				</div>
+			);
+		},
 	},
 	{
 		title: "完成请检时间",

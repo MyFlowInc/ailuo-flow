@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ConfigProvider, message } from "antd";
-
 import { dashboardTheme } from "../../theme/theme";
-import { saleProjectList, saleProjectRemove } from "../../api/ailuo/sale";
 import { DashboardRoot } from "./styles";
 import { BaseLoading } from "../../BaseUI/BaseLoading";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import _ from "lodash";
 import { IfetchSaleList } from "./types";
-import { purRequisition, removePurRequisition } from "../../api/ailuo/pms";
+import { purQualitycontrol, removePurQualitycontrol } from "../../api/ailuo/qm";
 
-export const PurchaseManageContext = React.createContext<any>({});
+export const QualityControlContext = React.createContext<any>({});
 
 const QualityControl: React.FC = () => {
 	const [loading, setLoading] = useState(false);
@@ -27,7 +25,7 @@ const QualityControl: React.FC = () => {
 
 	const deleteFlowItemHandler = async (id: number) => {
 		try {
-			await removePurRequisition({ id });
+			await removePurQualitycontrol({ id });
 			message.success("删除成功");
 			await fetchPurchaseList();
 		} catch (error) {
@@ -51,7 +49,7 @@ const QualityControl: React.FC = () => {
 					...options.search,
 				};
 			}
-			const res = await purRequisition(params);
+			const res = await purQualitycontrol(params);
 			const list = _.get(res, "data.record") || [];
 			list.forEach((item: any) => {
 				item.key = item.id;
@@ -69,7 +67,7 @@ const QualityControl: React.FC = () => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<PurchaseManageContext.Provider
+			<QualityControlContext.Provider
 				value={{ fetchPurchaseList, tableDataSource, setTableDataSource }}
 			>
 				<DashboardRoot>
@@ -89,7 +87,7 @@ const QualityControl: React.FC = () => {
 						setSelectedRows={setSelectedRows}
 					/>
 				</DashboardRoot>
-			</PurchaseManageContext.Provider>
+			</QualityControlContext.Provider>
 		</ConfigProvider>
 	);
 };

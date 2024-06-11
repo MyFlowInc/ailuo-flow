@@ -41,6 +41,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 	const { pathname } = location;
 	return (
 		<DefaultHeaderRoot isShow={hasSelected}>
+			<div></div>
 			<div className="default-header-right">
 				<HeaderToolBar />
 			</div>

@@ -36,6 +36,7 @@ import { DashboardRouterOutletContext } from "../context";
 import MyAgentPage from "../pages/MyAgentPage/MyAgentPage";
 import PurchaseManage from "../pages/PMS/PurchaseManage";
 import PurchaseRecordView from "../pages/PMS/PurchaseRecordView";
+import QualityControl from "../pages/QM/QualityControl";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -322,6 +323,11 @@ const DashboardRouterOutlet: React.FC = () => {
 									</Route>
 									<Route path="/dashboard/pms/pur-manage/:purId" exact={true}>
 										<PurchaseRecordView />
+									</Route>
+
+									{/* 质量管理 */}
+									<Route path="/dashboard/qm/pur-qualitycontrol" exact={true}>
+										<QualityControl />
 									</Route>
 								</Switch>
 							</div>

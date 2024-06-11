@@ -1,15 +1,26 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import type { GetRef, InputRef } from "antd";
-import { Button, Form, Input, Popconfirm, Table } from "antd";
+import {
+	Button,
+	ConfigProvider,
+	Form,
+	Input,
+	Modal,
+	Popconfirm,
+	Table,
+	message,
+} from "antd";
 import PlusSvg from "./assets/plus.svg";
 import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
 import { PurchaseStatusEnum } from "../../api/ailuo/dict";
 import { useParams } from "react-router";
-import { getMilestoneList } from "../../api/ailuo/pms";
+import { getMilestoneList, removeMilestone } from "../../api/ailuo/pms";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 import EditFilled from "../../assets/icons/EditFilled";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import { BlueTableNoRadiusTheme, BlueTableTheme } from "../../theme/theme";
 
 interface Item {
 	key: string;
@@ -45,9 +56,24 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 	const [currentItem, setCurrentItem] = useState({});
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
 
-	const handleDelete = (id: number) => {
-		const newData = dataSource.filter((item) => item.id !== id);
-		setDataSource(newData);
+	const handleDelete = (item: any) => {
+		Modal.confirm({
+			title: "是否确认删除?",
+			icon: <ExclamationCircleFilled />,
+			okText: "确认",
+			okType: "danger",
+			cancelText: "取消",
+			async onOk() {
+				const res = await removeMilestone({ id: item.id });
+				if (res.code == 200) {
+					await fetchData();
+					message.success("删除成功");
+				}
+			},
+			onCancel() {
+				console.log("Cancel");
+			},
+		});
 	};
 
 	const handleEdit = (item: any) => {
@@ -145,13 +171,16 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 					</div>
 				)}
 			</div>
+			<ConfigProvider theme={BlueTableNoRadiusTheme}>
+				<Table
+					bordered
+					size="small"
+					dataSource={dataSource}
+					columns={defaultColumns as ColumnTypes}
+					pagination={false}
+				/>
+			</ConfigProvider>
 
-			<Table
-				bordered
-				dataSource={dataSource}
-				columns={defaultColumns as ColumnTypes}
-				pagination={false}
-			/>
 			<MilestoneRecordModal
 				open={isShowMilestoneRecordModal}
 				setOpen={setIsShowMilestoneRecordModal}

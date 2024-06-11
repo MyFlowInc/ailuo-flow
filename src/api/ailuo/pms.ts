@@ -81,6 +81,14 @@ export function saveMilestone(data: any) {
 	});
 }
 
+export function removeMilestone(params: any) {
+	return apiCall({
+		url: "api/sys/purImportantevents/remove",
+		method: "delete",
+		params,
+	});
+}
+
 export function updateMilestone(data: any) {
 	return apiCall({
 		url: "api/sys/purImportantevents/edit",

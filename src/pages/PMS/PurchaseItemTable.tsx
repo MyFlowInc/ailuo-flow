@@ -76,6 +76,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		await updatePurchaseItem({
 			id: item.id,
 			status: PurchaseItemStatusEnum.TobeTested,
+			relationRequisition: params.purId,
 		});
 		await fetchData();
 	};

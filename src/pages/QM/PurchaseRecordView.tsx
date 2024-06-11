@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CartSvg from "./assets/cart.svg";
-import {
-	Affix,
-	Button,
-	ConfigProvider,
-	Form,
-	Tag,
-	Tooltip,
-	message,
-} from "antd";
+import { Form, Tag, Tooltip, message } from "antd";
 import {
 	LeftOutlined,
 	WarningFilled,
@@ -26,11 +17,7 @@ import {
 	savePurRequisition,
 	updatePurRequisition,
 } from "../../api/ailuo/pms";
-import {
-	PurchaseStatusEnum,
-	PurchaseTypeMap,
-	PurchaseTypeMapDict,
-} from "../../api/ailuo/dict";
+import { PurchaseStatusEnum, PurchaseTypeMap } from "../../api/ailuo/dict";
 
 const columns = [
 	{
@@ -125,8 +112,8 @@ const columns = [
 				<PurchaseItemTable
 					key={"pur-requisition" + key}
 					form={form}
-          setForm={setForm}
-          disabled={column.disabled}
+					setForm={setForm}
+					disabled={true}
 				/>
 			);
 		},
@@ -146,6 +133,7 @@ const columns = [
 					key={"pur-milestone" + key}
 					form={form}
 					setForm={setForm}
+					disabled={true}
 				/>
 			);
 		},
@@ -155,8 +143,10 @@ const columns = [
 interface PurchaseRecordViewProps {}
 
 const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
+	const params = {
+		purId: 20,
+	};
 	const history = useHistory();
-	const params = useParams() as any;
 	const [inputForm] = Form.useForm();
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
@@ -179,44 +169,10 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 		return true;
 	};
 
-	const handleSave = async () => {
-		inputForm.setFieldsValue(form);
-		try {
-			await inputForm.validateFields();
-
-			if (!saveValidate()) {
-				return;
-			}
-			let res: any = {};
-
-			if (params.purId == "new") {
-				res = await savePurRequisition({
-					...form,
-					type: form.type.join(","),
-				});
-			} else {
-				res = await updatePurRequisition({
-					...form,
-					type: form.type.join(","),
-				});
-			}
-
-			console.log(res);
-			if (res.code == 200) {
-				message.success("保存成功!");
-				history.push("/dashboard/pms/pur-manage");
-			} else {
-				message.error(res.msg);
-			}
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
 	const fetchData = async () => {
 		setForm({});
 		inputForm.resetFields();
-		if (params.purId !== "new") {
+		if (params.purId) {
 			console.log(params.purId);
 			const res = await purRequisition({ id: params.purId });
 			let temp = res.data.record[0];
@@ -340,63 +296,22 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 
 	return (
 		<div className="w-full">
-			<div className="bg-white fixed top-9 z-10 w-full pr-[286px]">
-				<div className="flex items-center">
-					<img src={CartSvg} alt="" />
-					<div className="font-bold text-lg ml-3">请购管理</div>
-					<ConfigProvider theme={greyButtonTheme}>
-						<Button
-							className="ml-4"
-							type="primary"
-							icon={<LeftOutlined />}
-							onClick={() => history.push("/dashboard/pms/pur-manage")}
-						>
-							返回
-						</Button>
-					</ConfigProvider>
-				</div>
-				<div className="flex items-center justify-between pl-3">
-					<div>
-						<div className="text-lg">
-							{params.purId === "new" ? "新建请购单" : "编辑请购单"}
-						</div>
-						{StatusView()}
-					</div>
-					<div>
-						<ConfigProvider theme={greyButtonTheme}>
-							<Button
-								type="primary"
-								onClick={() => history.push("/dashboard/pms/pur-manage")}
-							>
-								取消
-							</Button>
-						</ConfigProvider>
-						<ConfigProvider theme={blueButtonTheme}>
-							<Button type="primary" className="ml-4" onClick={handleSave}>
-								保存
-							</Button>
-						</ConfigProvider>
-					</div>
-				</div>
-			</div>
-			<div className="pl-3 mt-4 pt-14">
-				<Form
-					form={inputForm}
-					colon={false}
-					wrapperCol={{ flex: 1 }}
-					preserve={false}
-				>
-					{showDstColumns.length > 0 ? (
-						<CellEditorContext
-							form={form}
-							setForm={setForm}
-							dstColumns={showDstColumns}
-						/>
-					) : (
-						<NoFieldData />
-					)}
-				</Form>
-			</div>
+			<Form
+				form={inputForm}
+				colon={false}
+				wrapperCol={{ flex: 1 }}
+				preserve={false}
+			>
+				{showDstColumns.length > 0 ? (
+					<CellEditorContext
+						form={form}
+						setForm={setForm}
+						dstColumns={showDstColumns}
+					/>
+				) : (
+					<NoFieldData />
+				)}
+			</Form>
 		</div>
 	);
 };

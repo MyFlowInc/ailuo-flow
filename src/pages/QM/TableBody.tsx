@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import StandardTable from "./StandardTable";
-import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
-import {
-	PurchaseTypeMap,
-	PurchaseTypeMapDict,
-	SaleStatus,
-} from "../../api/ailuo/dict";
+import { QualityMapDict } from "../../api/ailuo/dict";
 import _ from "lodash";
 import dayjs from "dayjs";
+
+import rightPng from "./assets/RIGHT.png";
+import wrongPng from "./assets/WRONG.png";
+import { EditRecordModal } from "./RecordModal";
 
 const FlowTableRoot = styled.div`
 	width: 100%;
@@ -80,9 +79,10 @@ const columns: any = [
 		dataIndex: "type",
 		key: "type",
 		render: (text: string, record: any) => {
+			const res = _.get(QualityMapDict, record.type) || record.type;
 			return (
 				<div>
-					<span>{record.type}</span>
+					<span>{res}</span>
 				</div>
 			);
 		},
@@ -92,6 +92,27 @@ const columns: any = [
 		dataIndex: "status",
 		key: "status",
 		render: (text: string, record: any) => {
+			if (record.status === "tobe_tested") {
+				return (
+					<div>
+						<span>{"待检验"}</span>
+					</div>
+				);
+			}
+			if (record.status === "reject") {
+				return (
+					<div>
+						<img src={wrongPng} alt="" />
+					</div>
+				);
+			}
+			if (record.status === "approved") {
+				return (
+					<div>
+						<img src={rightPng} alt="" />
+					</div>
+				);
+			}
 			return (
 				<div>
 					<span>{record.status}</span>
@@ -119,13 +140,22 @@ const TableBody: React.FC<FlowTableProps> = ({
 	const { tableDataSource } = rest;
 	const [dstColumns] = useState<any>(columns);
 	const [open, setOpen] = useState<boolean>(false);
+
+	const [modalType, setModalType] = useState<"add" | "edit" | "view">("view");
 	return (
 		<FlowTableRoot>
 			<StandardTable
 				datasource={tableDataSource}
 				columns={dstColumns}
 				setOpen={setOpen}
+				setModalType={setModalType}
 				{...rest}
+			/>
+			<EditRecordModal
+				modalType={modalType}
+				open={open}
+				setOpen={setOpen}
+				editFlowItemRecord={editFlowItemRecord}
 			/>
 		</FlowTableRoot>
 	);

@@ -31,6 +31,7 @@ interface StandardTableActionProps {
 	text: string;
 	record: any;
 	setOpen: (v: boolean) => void;
+	setModalType: (v: "view" | "edit" | "add") => void;
 	deleteFlowItem: (id: number) => void;
 	setEditFlowItemRecord: (v: any) => void;
 
@@ -40,29 +41,23 @@ interface StandardTableActionProps {
 const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	text,
 	record,
-	deleteFlowItem,
+	setOpen,
+	setModalType,
+	setEditFlowItemRecord,
 }) => {
 	const isFinance = useAppSelector(selectIsFinance);
 	const history = useHistory();
 
 	const handleViewRecord = async (text: string, record: any) => {
-		// Modal.confirm({
-		// 	title: "是否确认删除?",
-		// 	icon: <ExclamationCircleFilled />,
-		// 	okText: "确认",
-		// 	okType: "danger",
-		// 	cancelText: "取消",
-		// 	onOk() {
-		// 		deleteFlowItem(record.id);
-		// 	},
-		// 	onCancel() {
-		// 		console.log("Cancel");
-		// 	},
-		// });
+		setEditFlowItemRecord(record);
+		setModalType("view");
+		setOpen(true);
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
-		history.push(`/dashboard/pms/pur-manage/${record.id}`);
+		setModalType("edit");
+		setEditFlowItemRecord(record);
+		setOpen(true);
 	};
 
 	return (
@@ -98,13 +93,13 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 interface StandardTableProps {
 	tableDataSource: any[];
-
 	curPage: React.MutableRefObject<{
 		pageNum: number;
 		pageSize: number;
 		total: number;
 	}>;
 	setOpen: (v: boolean) => void;
+	setModalType: (v: "view" | "edit" | "add") => void;
 	setEditFlowItemRecord: (v: any) => void;
 	deleteFlowItem: (id: number) => void;
 	columns: any[];
@@ -116,7 +111,6 @@ interface StandardTableProps {
 const StandardTable: React.FC<StandardTableProps> = ({
 	columns,
 	datasource,
-
 	setSelectedRows,
 	curPage,
 	...rest

@@ -175,32 +175,32 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				return <div></div>;
 			},
 		},
-		{
-			width: 90,
-			title: "操作",
-			dataIndex: "action",
-			key: "action",
-			render: (text: any, record: any, index: number) => {
-				return (
-					<div className="flex items-center justify-around">
-						<Button
-							type="text"
-							color="#717682"
-							icon={<EditFilled />}
-							className="text-[#717682]"
-							onClick={() => handleEdit(record)}
-						></Button>
-						<Button
-							type="text"
-							color="#717682"
-							icon={<DeleteFilled />}
-							className="text-[#717682]"
-							onClick={() => handleDelete(record)}
-						></Button>
-					</div>
-				);
-			},
-		},
+		// {
+		// 	width: 90,
+		// 	title: "操作",
+		// 	dataIndex: "action",
+		// 	key: "action",
+		// 	render: (text: any, record: any, index: number) => {
+		// 		return (
+		// 			<div className="flex items-center justify-around">
+		// 				<Button
+		// 					type="text"
+		// 					color="#717682"
+		// 					icon={<EditFilled />}
+		// 					className="text-[#717682]"
+		// 					onClick={() => handleEdit(record)}
+		// 				></Button>
+		// 				<Button
+		// 					type="text"
+		// 					color="#717682"
+		// 					icon={<DeleteFilled />}
+		// 					className="text-[#717682]"
+		// 					onClick={() => handleDelete(record)}
+		// 				></Button>
+		// 			</div>
+		// 		);
+		// 	},
+		// },
 	];
 
 	const columns = defaultColumns.map((col: any) => {

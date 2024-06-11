@@ -33,9 +33,13 @@ type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 interface PurchaseMilestoneProps {
 	form: any;
 	setForm: (value: any) => void;
+	disabled: boolean;
 }
 
-const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
+const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({
+	form,
+	disabled = false,
+}) => {
 	const user = useAppSelector(selectUser);
 	const params = useParams<any>();
 
@@ -82,34 +86,37 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 				return <div>{text == "yes" ? "是" : "否"}</div>;
 			},
 		},
-		{
-			width: 90,
-			title: "操作",
-			dataIndex: "action",
-			key: "action",
-			render: (text: any, record: any, index: number) => {
-				return (
-					!record.remark && (
-						<div className="flex items-center justify-around">
-							<Button
-								type="text"
-								color="#717682"
-								icon={<EditFilled />}
-								className="text-[#717682]"
-								onClick={() => handleEdit(record)}
-							></Button>
-							<Button
-								type="text"
-								color="#717682"
-								icon={<DeleteFilled />}
-								className="text-[#717682]"
-								onClick={() => handleDelete(record)}
-							></Button>
-						</div>
-					)
-				);
-			},
-		},
+		// {
+		// 	width: 90,
+		// 	title: "操作",
+		// 	dataIndex: "action",
+		// 	key: "action",
+		// 	render: (text: any, record: any, index: number) => {
+		// 		if (disabled) {
+		// 			return;
+		// 		}
+		// 		return (
+		// 			!record.remark && (
+		// 				<div className="flex items-center justify-around">
+		// 					<Button
+		// 						type="text"
+		// 						color="#717682"
+		// 						icon={<EditFilled />}
+		// 						className="text-[#717682]"
+		// 						onClick={() => handleEdit(record)}
+		// 					></Button>
+		// 					<Button
+		// 						type="text"
+		// 						color="#717682"
+		// 						icon={<DeleteFilled />}
+		// 						className="text-[#717682]"
+		// 						onClick={() => handleDelete(record)}
+		// 					></Button>
+		// 				</div>
+		// 			)
+		// 		);
+		// 	},
+		// },
 	];
 
 	const handleAdd = () => {

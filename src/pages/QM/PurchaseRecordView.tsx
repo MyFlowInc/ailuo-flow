@@ -18,7 +18,7 @@ import {
 	updatePurRequisition,
 } from "../../api/ailuo/pms";
 import { PurchaseStatusEnum, PurchaseTypeMap } from "../../api/ailuo/dict";
-
+import _ from "lodash";
 const columns = [
 	{
 		title: "请购类型",
@@ -140,11 +140,13 @@ const columns = [
 	},
 ];
 
-interface PurchaseRecordViewProps {}
+interface PurchaseRecordViewProps {
+	record: any;
+}
 
-const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
+const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record }) => {
 	const params = {
-		purId: 20,
+		purId: _.get(record, "relatedRequisition"),
 	};
 	const history = useHistory();
 	const [inputForm] = Form.useForm();
@@ -218,7 +220,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 
 	useEffect(() => {
 		fetchData();
-	}, [params.purId]);
+	}, [record]);
 
 	const StatusView = () => {
 		if (form.status === PurchaseStatusEnum.Start) {

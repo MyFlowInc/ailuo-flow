@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-import { Table, Space, Button, Modal, Pagination } from "antd";
+import { Table, Space, Button, Modal, Pagination, message } from "antd";
 import {
 	ExclamationCircleFilled,
 	EyeFilled,
@@ -49,6 +49,10 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	const history = useHistory();
 
 	const handleViewRecord = async (text: string, record: any) => {
+		if (!record.relatedRequisition) {
+			message.warning("该数据未绑定请购单");
+			return;
+		}
 		setEditFlowItemRecord(record);
 		setModalType("view");
 		setOpen(true);

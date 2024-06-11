@@ -72,89 +72,40 @@ const excludeNull = (obj: any) => {
 const columns: any = (mode: "1" | "2", setMode: any) => {
 	const defaultColumns = [
 		{
-			title: "项目名称",
+			title: "节点名称",
+			width: 200,
+			dataIndex: "nodeName",
+			key: "nodeName",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "检验项名称",
 			width: 200,
 			dataIndex: "name",
 			key: "name",
-			fixed: "left",
-			type: NumFieldType.RelationSaleView,
-		},
-		{
-			title: "分析结果",
-			width: 200,
-			dataIndex: "result",
-			key: "result",
 			type: NumFieldType.SingleText,
-			render: (column: any, key: string, form: any, setForm: any) => {
-				const { result } = form;
-				const onChange = (e: any) => {
-					setMode(e.target.value);
-					setForm({ ...form, result: e.target.value });
-				};
-				const [disabled, setDisabled] = useState(false);
-				useEffect(() => {
-					if (_.get(column, "disabled")) {
-						setDisabled(true);
-					} else {
-						setDisabled(false);
-					}
-				}, [column]);
-
-				return (
-					<div className="w-full" key={"result_" + key}>
-						<div className="flex mb-4">
-							<div style={{ width: "100px" }}>分析结果</div>
-							<Radio.Group
-								disabled={disabled}
-								onChange={onChange}
-								value={result}
-							>
-								<Space direction="vertical">
-									<Radio value={"1"}>常规产品，无特殊改动</Radio>
-									<Radio value={"2"}>非常规产品，填写分析意见</Radio>
-								</Space>
-							</Radio.Group>
-						</div>
-					</div>
-				);
-			},
 		},
 		{
-			title: "关联报价",
-			dataIndex: "relateQuote",
-			key: "relateQuote",
-			type: NumFieldType.RelationSaleView,
+			title: "发起请检时间",
+			dataIndex: "createTime",
+			key: "createTime",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "请检类型",
+			dataIndex: "type",
+			key: "type",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "完成请检时间",
+			dataIndex: "updateTime",
+			key: "updateTime",
+			type: NumFieldType.SingleText,
 		},
 	];
 
-	if (mode === "2") {
-		const idx = _.findIndex(defaultColumns, { title: "分析结果" });
-		const extraColumns: any = [
-			{
-				title: "选型分析",
-				dataIndex: "selectionAnalysis",
-				key: "selectionAnalysis",
-				type: NumFieldType.Text,
-			},
-			{
-				title: "生产分析",
-				dataIndex: "productionAnalysis",
-				key: "productionAnalysis",
-				type: NumFieldType.Text,
-			},
-			{
-				title: "附件",
-				dataIndex: "attach",
-				key: "attach",
-				type: NumFieldType.Attachment,
-			},
-		];
-
-		defaultColumns.splice(idx + 1, 0, ...extraColumns);
-		return defaultColumns;
-	} else {
-		return defaultColumns;
-	}
+	return defaultColumns;
 };
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -304,7 +255,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					style={{ height: "800px", marginTop: "24px" }}
 					className="overflow-auto"
 				>
-					<PurchaseRecordView />
+					<PurchaseRecordView record={editFlowItemRecord} />
 				</div>
 			</CustomModalRoot>
 		);

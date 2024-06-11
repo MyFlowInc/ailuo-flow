@@ -97,3 +97,10 @@ export function updateMilestone(data: any) {
 	});
 }
 
+export function getRelationProject() {
+	return apiCall({
+		url: "api/sys/splProject/selectByRelationProject",
+		method: "get",
+	});
+}
+

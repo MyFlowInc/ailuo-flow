@@ -23,6 +23,7 @@ import TypePhone from "./TypePhone";
 import TypeText from "./TypeText";
 import TypeRelationSaleView from "./TypeRelationSaleView";
 import TypeRelationTechView from "./TypeRelationTechView";
+import TypeRelationProject from "./TypeRelationProject";
 
 export const FieldTypeList = [
 	{
@@ -156,6 +157,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({ cell, ...rest }) => {
 			CellEditor = (
 				<TypeSelectEditor mode="multiple" label fixed cell={cell} {...rest} />
 			);
+			break;
+		case NumFieldType.RelationProject:
+			CellEditor = <TypeRelationProject cell={cell} {...rest} />;
 			break;
 		default:
 			CellEditor = <TypeSingleText cell={cell} {...rest} />;

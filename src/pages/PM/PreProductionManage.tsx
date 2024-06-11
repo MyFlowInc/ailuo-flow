@@ -188,7 +188,7 @@ const InfoCard = (props: any) => {
 					<div className="flex  flex-col">
 						<div className="item-col">
 							<div>总价</div>
-							<div className="content"> {getTotalPrice()}</div>
+							{/* <div className="content"> {getTotalPrice()}</div> */}
 						</div>
 						<div className="item-col">
 							<div>总数量</div>

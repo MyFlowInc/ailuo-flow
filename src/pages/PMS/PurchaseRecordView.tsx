@@ -5,6 +5,7 @@ import {
 	Button,
 	ConfigProvider,
 	Form,
+	Select,
 	Tag,
 	Tooltip,
 	message,
@@ -22,6 +23,7 @@ import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import PurchaseItemTable from "./PurchaseItemTable";
 import PurchaseMilestone from "./PurchaseMilestone";
 import {
+	getRelationProject,
 	purRequisition,
 	savePurRequisition,
 	updatePurRequisition,
@@ -45,8 +47,7 @@ const columns = [
 		title: "关联项目名称",
 		dataIndex: "relationProject",
 		key: "relationProject",
-		type: NumFieldType.SingleFixSelect,
-		dictCode: "procurement",
+		type: NumFieldType.RelationProject,
 		renderTitle: () => {
 			return (
 				<div>
@@ -125,8 +126,8 @@ const columns = [
 				<PurchaseItemTable
 					key={"pur-requisition" + key}
 					form={form}
-          setForm={setForm}
-          disabled={column.disabled}
+					setForm={setForm}
+					disabled={column.disabled}
 				/>
 			);
 		},

@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, SyntheticEvent } from "react";
 import styled from "styled-components";
-import { ConfigProvider, Form, Button, Tag, Radio, Space, message } from "antd";
+import {
+	ConfigProvider,
+	Form,
+	Button,
+	Tag,
+	Radio,
+	Space,
+	message,
+	Input,
+} from "antd";
 import { NoFieldData } from "./NoFieldData";
 import { useAppSelector } from "../../../store/hooks";
 import CellEditorContext from "./CellEditorContext";
@@ -9,6 +18,12 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { selectIsManager } from "../../../store/globalSlice";
 import PurchaseRecordView from "../PurchaseRecordView";
+import { QualityStatusMapDict } from "../../../api/ailuo/dict";
+import RightPng from "../assets/RIGHT.png";
+import WrongPng from "../assets/WRONG.png";
+import { QualityControlContext } from "../QualityControl";
+import { updatePurQualitycontrol } from "../../../api/ailuo/qm";
+const { TextArea } = Input;
 
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -77,6 +92,7 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 			dataIndex: "nodeName",
 			key: "nodeName",
 			type: NumFieldType.SingleText,
+			disabled: true,
 		},
 		{
 			title: "检验项名称",
@@ -84,23 +100,83 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 			dataIndex: "name",
 			key: "name",
 			type: NumFieldType.SingleText,
+			disabled: true,
 		},
 		{
 			title: "发起请检时间",
 			dataIndex: "createTime",
 			key: "createTime",
 			type: NumFieldType.SingleText,
+			disabled: true,
 		},
 		{
 			title: "请检类型",
 			dataIndex: "type",
 			key: "type",
+			disabled: true,
 			type: NumFieldType.SingleText,
+		},
+		{
+			title: "检验结果",
+			dataIndex: "status",
+			key: "status",
+			render: (
+				column: any,
+				key: string,
+				form: any,
+				setForm: (value: any) => void,
+			) => {
+				const { status } = form;
+				const onChange = (e: any) => {
+					setForm({
+						...form,
+						[column.dataIndex]: e.target.value,
+					});
+				};
+				const onChangeContent = (event: SyntheticEvent) => {
+					const target = event.target as HTMLInputElement;
+					const value = target.value;
+					setForm({
+						...form,
+						remark: value,
+					});
+				};
+				return (
+					<div key={"name_" + key} className="w-full">
+						<div className="flex">
+							<div style={{ width: "120px" }}>检验结果</div>
+							<Radio.Group
+								className="flex-1"
+								onChange={onChange}
+								value={status}
+							>
+								<Radio value={"approved"}>
+									<img src={RightPng} />
+								</Radio>
+								<Radio value={"reject"}>
+									<img src={WrongPng} />
+								</Radio>
+							</Radio.Group>
+						</div>
+						{status === "reject" && (
+							<div className="flex mt-4">
+								<div style={{ width: "120px" }}>检验意见</div>
+								<TextArea
+									defaultValue={form.remark}
+									onChange={onChangeContent}
+									rows={4}
+								/>
+							</div>
+						)}
+					</div>
+				);
+			},
 		},
 		{
 			title: "完成请检时间",
 			dataIndex: "updateTime",
 			key: "updateTime",
+			disabled: true,
 			type: NumFieldType.SingleText,
 		},
 	];
@@ -121,10 +197,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
-	const isManager = useAppSelector(selectIsManager);
+
+	const { fetchPurchaseList } = useContext(QualityControlContext);
 
 	const setAllDisabled = (disabled: boolean) => {
-		// disabled = isManager ? false : disabled;	// 经理例外
 		const newCol = showDstColumns.map((item: any) => {
 			return {
 				...item,
@@ -139,7 +215,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (_.isEmpty(showDstColumns)) {
 			return;
 		}
-		setAllDisabled(true);
+		// if (modalType === "edit") {
+		// 	setAllDisabled(false);
+		// 	return;
+		// }
+		// setAllDisabled(true);
 	}, [form.status, open]);
 	// esc handler
 	useEffect(() => {
@@ -164,7 +244,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
 			setForm(temp);
-			console.log(11, "rest", temp.result);
 			setMode(temp.result || "");
 			inputForm.setFieldsValue(temp);
 		}
@@ -190,18 +269,23 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 	// 更新记录
 	const updateRecord = async () => {
-		const { recordId, id, ...rest } = form;
+		const { recordId, id, status, ...rest } = form;
 		inputForm.setFieldsValue(rest);
 		const params = {
 			id,
+			status,
 			...rest,
 		};
 		delete params.createTime;
 		delete params.deleted;
 		delete params.updateTime;
-
+		if (!status) {
+			return;
+		}
 		try {
 			await inputForm.validateFields();
+			await updatePurQualitycontrol(excludeNull(params));
+			await fetchPurchaseList();
 			setOpen(false);
 		} catch (error) {
 			console.log(error);

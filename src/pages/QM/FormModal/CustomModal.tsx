@@ -339,7 +339,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					style={{ height: "800px", marginTop: "24px" }}
 					className="overflow-auto"
 				>
-					<PurchaseRecordView record={editFlowItemRecord} />
+					<PurchaseRecordView record={editFlowItemRecord} open={open} />
 				</div>
 			</CustomModalRoot>
 		);

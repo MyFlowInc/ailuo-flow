@@ -18,6 +18,8 @@ import {
 import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import ApproveButton from "../../BaseUI/Button/Approve";
+import RightPng from "../QM/assets/RIGHT.png";
+import WrongPng from "../QM/assets/WRONG.png";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -162,7 +164,17 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 						</Tag>
 					);
 				} else if (record.status === PurchaseItemStatusEnum.Approve) {
-					return '通过'
+					return (
+						<div className="text-center">
+							<img src={RightPng} alt="" />
+						</div>
+					);
+				} else if (record.status === PurchaseItemStatusEnum.Reject) {
+					return (
+						<div className="text-center">
+							<img src={WrongPng} alt="" />
+						</div>
+					);
 				}
 			},
 		},

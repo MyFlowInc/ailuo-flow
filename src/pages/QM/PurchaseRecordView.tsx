@@ -142,9 +142,10 @@ const columns = [
 
 interface PurchaseRecordViewProps {
 	record: any;
+	open: boolean;
 }
 
-const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record }) => {
+const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record,open }) => {
 	const params = {
 		purId: _.get(record, "relatedRequisition"),
 	};
@@ -174,9 +175,8 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record }) => {
 	const fetchData = async () => {
 		setForm({});
 		inputForm.resetFields();
-		if (params.purId) {
-			console.log(params.purId);
-			const res = await purRequisition({ id: params.purId });
+		if (record.relatedRequisition) {
+			const res = await purRequisition({ id: record.relatedRequisition });
 			let temp = res.data.record[0];
 			temp = {
 				...temp,

@@ -16,6 +16,8 @@ import {
 } from "../../api/ailuo/pms";
 import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
+import RightPng from "./assets/RIGHT.png";
+import WrongPng from "./assets/WRONG.png";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -129,26 +131,12 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			dataIndex: "来料检",
 			key: "来料检",
 			render: (text: string, record: any) => {
-				if (record.status === PurchaseItemStatusEnum.Todo) {
-					return (
-						<Tag
-							color={"#F2F3F5"}
-							style={{ color: "#707683", cursor: "pointer" }}
-							onClick={() => handleTest(record)}
-						>
-							请检
-						</Tag>
-					);
-				} else if (record.status === PurchaseItemStatusEnum.TobeTested) {
-					return (
-						<Tag
-							color={"#FFEEE3"}
-							style={{ color: "#707683", cursor: "pointer" }}
-						>
-							请检中
-						</Tag>
-					);
-				}
+				return (
+					<div>
+						<img className="mr-2 cursor-pointer" src={RightPng} alt="" />
+						<img className="cursor-pointer" src={WrongPng} alt="" />
+					</div>
+				);
 			},
 		},
 		{
@@ -219,7 +207,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		const res = await getPurChaseItemList({
 			pageNum: 1,
 			pageSize: 9999999,
-			relationRequisition: params.purId,
+			relationRequisition: form.id,
 		});
 		if (res.code == 200) {
 			setDataSource(res.data.record);
@@ -228,7 +216,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 
 	useEffect(() => {
 		fetchData();
-	}, [params.purId]);
+	}, [form.id]);
 
 	return (
 		<div className="mt-4">

@@ -77,6 +77,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			id: item.id,
 			status: PurchaseItemStatusEnum.TobeTested,
 			relationRequisition: params.purId,
+			relationProject: form.relationProject,
 		});
 		await fetchData();
 	};
@@ -87,7 +88,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			warehousing: PurchaseItemWarehousingsStatusEnum.Yes,
 		});
 		await fetchData();
-	}
+	};
 
 	const defaultColumns: any[] = [
 		{
@@ -241,6 +242,10 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	};
 
 	const fetchData = async () => {
+		if (params.purId == "new") {
+			setDataSource([]);
+			return;
+		}
 		const res = await getPurChaseItemList({
 			pageNum: 1,
 			pageSize: 9999999,

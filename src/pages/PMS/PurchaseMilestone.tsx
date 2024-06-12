@@ -145,6 +145,10 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 	};
 
 	const fetchData = async () => {
+		if (params.purId == "new") {
+			setDataSource([]);
+			return;
+		}
 		const res = await getMilestoneList({
 			pageNum: 1,
 			pageSize: 999999,

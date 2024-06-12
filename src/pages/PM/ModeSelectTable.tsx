@@ -376,7 +376,7 @@ const ModeSelectTable: React.FC = (props: any) => {
 						bordered
 						dataSource={dataSource}
 						columns={columns as ColumnTypes}
-						summary={summary}
+						// summary={summary}
 					/>
 				</ConfigProvider>
 			</div>

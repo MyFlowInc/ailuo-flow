@@ -6,7 +6,6 @@ import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import ApproveButton from "../../../BaseUI/Button/Approve";
 import { savePurchaseItem, updatePurchaseItem } from "../../../api/ailuo/pms";
 import useMessage from "antd/es/message/useMessage";
 import { useParams } from "react-router";
@@ -15,6 +14,10 @@ import {
 	PurchaseItemWarehousingsStatusEnum,
 	PurchaseStatusEnum,
 } from "../../../api/ailuo/dict";
+import RightPng from "../../QM/assets/RIGHT.png";
+import WrongPng from "../../QM/assets/WRONG.png";
+import { useAppSelector } from "../../../store/hooks";
+import { selectIsStorage } from "../../../store/globalSlice";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -170,6 +173,24 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							请检中
 						</Tag>
 					);
+				} else if (form.status === PurchaseItemStatusEnum.Approve) {
+					return (
+						<div className="text-center">
+							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
+						</div>
+					);
+				} else if (form.status === PurchaseItemStatusEnum.Reject) {
+					return (
+						<div className="flex text-center">
+							<img src={WrongPng} alt="" className="mr-1" />
+							<Tag
+								color={"#FFEEE3"}
+								style={{ color: "#707683", cursor: "pointer" }}
+							>
+								重检
+							</Tag>
+						</div>
+					);
 				}
 			},
 		},
@@ -179,7 +200,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			key: "入库",
 			renderContent: (value: any, form: any, setForm: any) => {
 				if (form.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
-					return <ApproveButton />;
+					return <img src={RightPng} alt="" className="w-[15px] h-[15px]" />;
 				}
 				if (form.status === PurchaseItemStatusEnum.Approve) {
 					return (
@@ -210,6 +231,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	];
 
 	const params = useParams<any>();
+	const isStorage = useAppSelector(selectIsStorage);
+
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
@@ -233,6 +256,14 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 
 	const handleInStorage = async (item: any) => {
+		if (!isStorage) {
+			message.warning("只有仓储部门可以入库");
+			return;
+		}
+		if (item.status !== PurchaseItemStatusEnum.Approve) {
+			message.warning("只有已检的物料才能入库");
+			return;
+		}
 		setOpen(false);
 		await updatePurchaseItem({
 			id: item.id,

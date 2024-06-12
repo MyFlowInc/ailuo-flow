@@ -4,6 +4,7 @@ import StandardTable from "./StandardTable";
 import { Tag } from "antd";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 import {
+	PurchaseStatusEnum,
 	PurchaseTypeMap,
 	PurchaseTypeMapDict,
 	SaleStatus,
@@ -64,16 +65,31 @@ const columns: any = [
 		dataIndex: "status",
 		key: "status",
 		render: (text: string, record: any) => {
-			const { status } = record;
-			let item = _.find(SaleStatus, { value: status });
-			if (!item) {
-				item = SaleStatus[0];
+			if (record.status === PurchaseStatusEnum.NotStart) {
+				return (
+					<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+						{"未启动"}
+					</Tag>
+				);
+			} else if (record.status === PurchaseStatusEnum.Start) {
+				return (
+					<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+						{"采购项添加中"}
+					</Tag>
+				);
+			} else if (record.status === PurchaseStatusEnum.InProcurement) {
+				return (
+					<Tag color={"#FFEEE3"} style={{ color: "#000" }}>
+						{"采购中"}
+					</Tag>
+				);
+			} else if (record.status === PurchaseStatusEnum.Over) {
+				return (
+					<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+						{"测试通过"}
+					</Tag>
+				);
 			}
-			return (
-				<Tag color={item.color} style={{ color: "#000" }}>
-					{item.label}
-				</Tag>
-			);
 		},
 	},
 	{

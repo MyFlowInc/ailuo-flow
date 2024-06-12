@@ -260,33 +260,34 @@ export enum PurchaseItemStatusEnum {
 	Todo = "todo",
 }
 
-export const  PurchaseItemStatusMapDict = {
+export const PurchaseItemStatusMapDict = {
 	approve: "通过",
 	reject: "重检",
 	tobe_tested: "请检中",
 	todo: "请检",
-}
-
-
+};
 
 export enum PurchaseItemWarehousingsStatusEnum {
 	Yes = "yes", //已入库
 	Or = "or", //未入库
 }
 
-export const  QualityStatusMapDict = {
+export const QualityStatusMapDict = {
 	tobe_tested: "待检验",
 	reject: "驳回",
 	approved: "	通过",
-}
-export const  QualityMapDict = {
+};
+export const QualityMapDict = {
 	incoming: "来料检",
 	warehousing: "入库检",
 	machining: "加工检",
-	assembling:"装配检"
-}
+	assembling: "装配检",
+};
 
-
+export const MilestoneTypeDict = {
+	adopt: "系统",
+	exception: "系统异常",
+};
 
 export function dictFlowStatus(): Promise<IFlowStatus[]> {
 	return Promise.resolve(SaleStatus);

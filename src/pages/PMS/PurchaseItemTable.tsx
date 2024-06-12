@@ -17,7 +17,6 @@ import {
 } from "../../api/ailuo/pms";
 import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import ApproveButton from "../../BaseUI/Button/Approve";
 import RightPng from "../QM/assets/RIGHT.png";
 import WrongPng from "../QM/assets/WRONG.png";
 
@@ -85,7 +84,22 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		await fetchData();
 	};
 
+	const handleReTest = async (item: any) => {
+		await updatePurchaseItem({
+			id: item.id,
+			status: PurchaseItemStatusEnum.TobeTested,
+			relationRequisition: params.purId,
+			relationProject: form.relationProject,
+			name: item.name,
+		});
+		await fetchData();
+	};
+
 	const handleInStorage = async (item: any) => {
+		if (item.status !== PurchaseItemStatusEnum.Approve) {
+			message.warning("只有已检的物料才能入库");
+			return;
+		}
 		await updatePurchaseItem({
 			id: item.id,
 			warehousing: PurchaseItemWarehousingsStatusEnum.Yes,
@@ -166,13 +180,24 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				} else if (record.status === PurchaseItemStatusEnum.Approve) {
 					return (
 						<div className="text-center">
-							<img src={RightPng} alt="" />
+							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
 						</div>
 					);
 				} else if (record.status === PurchaseItemStatusEnum.Reject) {
 					return (
-						<div className="text-center">
-							<img src={WrongPng} alt="" />
+						<div className="flex items-center text-center">
+							<img
+								src={WrongPng}
+								alt=""
+								className="mr-1 w-[15px] h-[15px] flex-shrink-0"
+							/>
+							<Tag
+								color={"#F2F3F5"}
+								style={{ color: "#707683", cursor: "pointer" }}
+								onClick={() => handleReTest(record)}
+							>
+								重检
+							</Tag>
 						</div>
 					);
 				}
@@ -184,7 +209,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			key: "warehousing",
 			render: (text: string, record: any) => {
 				if (record.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
-					return <ApproveButton />;
+					return <img src={RightPng} alt="" className="w-[15px] h-[15px]" />;
 				}
 				if (record.status === PurchaseItemStatusEnum.Approve) {
 					return (
@@ -204,17 +229,11 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			title: "来料检完成时间",
 			dataIndex: "incomingCompletiontime",
 			key: "incomingCompletiontime",
-			render: (text: string, record: any) => {
-				return <div></div>;
-			},
 		},
 		{
 			title: "入库完成时间",
 			dataIndex: "warehousingCompletiontime",
 			key: "warehousingCompletiontime",
-			render: (text: string, record: any) => {
-				return <div></div>;
-			},
 		},
 		{
 			width: 90,

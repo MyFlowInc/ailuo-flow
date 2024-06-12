@@ -163,10 +163,10 @@ const columns: any = (
 								value={status}
 							>
 								<Radio value={"approve"}>
-									<img src={RightPng} />
+									<img src={RightPng} className="w-[15px] h-[15px]" />
 								</Radio>
 								<Radio value={"reject"}>
-									<img src={WrongPng} />
+									<img src={WrongPng} className="w-[15px] h-[15px]" />
 								</Radio>
 							</Radio.Group>
 						</div>

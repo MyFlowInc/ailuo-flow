@@ -218,4 +218,19 @@ export const selectIsFinance = (state: RootState) => {
 	return res;
 };
 
+export const selectIsStorage = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "storage") {
+			res = true;
+		}
+	});
+	return res;
+};
+
 export default globalSlice.reducer;

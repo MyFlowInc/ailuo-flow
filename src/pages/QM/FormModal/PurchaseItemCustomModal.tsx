@@ -6,11 +6,11 @@ import CellEditorContext from "./CellEditorContext";
 import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import ApproveButton from "../../../BaseUI/Button/Approve";
 import { savePurchaseItem, updatePurchaseItem } from "../../../api/ailuo/pms";
 import useMessage from "antd/es/message/useMessage";
 import { useParams } from "react-router";
 import { PurchaseItemStatusEnum, PurchaseStatusEnum } from "../../../api/ailuo/dict";
+import RightPng from '../assets/RIGHT.png'
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -176,7 +176,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			renderContent: (value: any, form: any, setForm: any) => {
 				return (
 					<div>
-						<ApproveButton />
+						<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
 					</div>
 				);
 			},

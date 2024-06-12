@@ -142,7 +142,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				return (
 					<div>
 						<img
-							className="mr-2 cursor-pointer"
+							className="mr-2 cursor-pointer w-[15px] h-[15px]"
 							src={RightPng}
 							alt=""
 							onClick={() => {
@@ -151,7 +151,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							}}
 						/>
 						<img
-							className="cursor-pointer"
+							className="cursor-pointer w-[15px] h-[15px]"
 							src={WrongPng}
 							alt=""
 							onClick={() => {
@@ -175,17 +175,11 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			title: "来料检完成时间",
 			dataIndex: "incomingCompletiontime",
 			key: "incomingCompletiontime",
-			render: (text: string, record: any) => {
-				return <div></div>;
-			},
 		},
 		{
 			title: "入库完成时间",
 			dataIndex: "warehousingCompletiontime",
 			key: "warehousingCompletiontime",
-			render: (text: string, record: any) => {
-				return <div></div>;
-			},
 		},
 	];
 

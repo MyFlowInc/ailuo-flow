@@ -5,7 +5,9 @@ import { getRelationProject } from "../../../../api/ailuo/pms";
 
 const TypeRelationProject: React.FC<any> = ({ cell, form, setForm }) => {
 	const [options, setOptions] = useState<any>([]);
-	const handleChange = () => {};
+	const handleChange = (value: any) => {
+		setForm({ ...form, relationProject: value });
+	};
 	const fetchData = async () => {
 		const res = await getRelationProject();
 		if (res.code == 200) {
@@ -27,6 +29,7 @@ const TypeRelationProject: React.FC<any> = ({ cell, form, setForm }) => {
 				disabled={cell.disabled}
 				className="w-full"
 				onChange={handleChange}
+				value={Number(form.relationProject) || null}
 				notFoundContent={null}
 				options={options}
 			/>

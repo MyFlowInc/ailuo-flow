@@ -14,7 +14,7 @@ import PlusSvg from "./assets/plus.svg";
 import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useAppSelector } from "../../store/hooks";
 import { selectUser } from "../../store/globalSlice";
-import { PurchaseStatusEnum } from "../../api/ailuo/dict";
+import { MilestoneTypeDict, PurchaseStatusEnum } from "../../api/ailuo/dict";
 import { useParams } from "react-router";
 import { getMilestoneList, removeMilestone } from "../../api/ailuo/pms";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
@@ -96,6 +96,9 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 		{
 			title: "类型",
 			dataIndex: "type",
+			render: (text: "adopt" | "exception", record: any, index: number) => {
+				return <div>{MilestoneTypeDict[text]}</div>;
+			},
 		},
 		{
 			title: "描述",

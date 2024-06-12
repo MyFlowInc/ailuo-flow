@@ -32,8 +32,7 @@ const columns = [
 		title: "关联项目名称",
 		dataIndex: "relationProject",
 		key: "relationProject",
-		type: NumFieldType.SingleFixSelect,
-		dictCode: "procurement",
+		type: NumFieldType.RelationProject,
 		renderTitle: () => {
 			return (
 				<div>

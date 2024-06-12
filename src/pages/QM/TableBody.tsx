@@ -102,14 +102,14 @@ const columns: any = [
 			if (record.status === "reject") {
 				return (
 					<div>
-						<img src={wrongPng} alt="" />
+						<img src={wrongPng} alt="" className="w-[15px] h-[15px]"/>
 					</div>
 				);
 			}
 			if (record.status === "approve") {
 				return (
 					<div>
-						<img src={rightPng} alt="" />
+						<img src={rightPng} alt="" className="w-[15px] h-[15px]"/>
 					</div>
 				);
 			}

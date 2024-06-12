@@ -1,5 +1,5 @@
 import { Button, ConfigProvider, Modal, Table, Tag, message } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TableTheme, greyButtonTheme } from "../../theme/theme";
 import EditFilled from "../../assets/icons/EditFilled";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
@@ -18,6 +18,8 @@ import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import RightPng from "./assets/RIGHT.png";
 import WrongPng from "./assets/WRONG.png";
+import { EditRecordModal } from "./RecordModal";
+import { QualityControlContext } from "./QualityControl";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -32,10 +34,16 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 }) => {
 	const params = useParams<any>();
 
+	const { editFlowItemRecord } = useContext(QualityControlContext);
+
 	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
 	const [currentItem, setCurrentItem] = useState<any>({});
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
+	const [isShowEditRecordModal, setIsShowEditRecordModal] = useState(false);
+	const [defaultStatus, setDefaultStatus] = useState<"approve" | "reject">(
+		"approve",
+	);
 
 	const handleEdit = (item: any) => {
 		setModalType("edit");
@@ -133,8 +141,24 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			render: (text: string, record: any) => {
 				return (
 					<div>
-						<img className="mr-2 cursor-pointer" src={RightPng} alt="" />
-						<img className="cursor-pointer" src={WrongPng} alt="" />
+						<img
+							className="mr-2 cursor-pointer"
+							src={RightPng}
+							alt=""
+							onClick={() => {
+								setDefaultStatus("approve");
+								setIsShowEditRecordModal(true);
+							}}
+						/>
+						<img
+							className="cursor-pointer"
+							src={WrongPng}
+							alt=""
+							onClick={() => {
+								setDefaultStatus("reject");
+								setIsShowEditRecordModal(true);
+							}}
+						/>
 					</div>
 				);
 			},
@@ -163,32 +187,6 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				return <div></div>;
 			},
 		},
-		// {
-		// 	width: 90,
-		// 	title: "操作",
-		// 	dataIndex: "action",
-		// 	key: "action",
-		// 	render: (text: any, record: any, index: number) => {
-		// 		return (
-		// 			<div className="flex items-center justify-around">
-		// 				<Button
-		// 					type="text"
-		// 					color="#717682"
-		// 					icon={<EditFilled />}
-		// 					className="text-[#717682]"
-		// 					onClick={() => handleEdit(record)}
-		// 				></Button>
-		// 				<Button
-		// 					type="text"
-		// 					color="#717682"
-		// 					icon={<DeleteFilled />}
-		// 					className="text-[#717682]"
-		// 					onClick={() => handleDelete(record)}
-		// 				></Button>
-		// 			</div>
-		// 		);
-		// 	},
-		// },
 	];
 
 	const columns = defaultColumns.map((col: any) => {
@@ -246,6 +244,13 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				disabled={disabled}
 				purchaseForm={form}
 			></PurchaseItemRecordModal>
+			<EditRecordModal
+				modalType={"edit"}
+				open={isShowEditRecordModal}
+				setOpen={setIsShowEditRecordModal}
+				editFlowItemRecord={editFlowItemRecord}
+				defaultStatus={defaultStatus}
+			></EditRecordModal>
 		</div>
 	);
 };

@@ -68,7 +68,12 @@ const QualityControl: React.FC = () => {
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<QualityControlContext.Provider
-				value={{ fetchPurchaseList, tableDataSource, setTableDataSource }}
+				value={{
+					fetchPurchaseList,
+					tableDataSource,
+					setTableDataSource,
+					editFlowItemRecord,
+				}}
 			>
 				<DashboardRoot>
 					{/* 表头 */}

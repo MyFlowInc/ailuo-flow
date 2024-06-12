@@ -71,6 +71,7 @@ interface CustomModalProps {
 	open: boolean;
 	setOpen: (value: boolean) => void;
 	modalType: string;
+	defaultStatus?: "approve" | "reject";
 	editFlowItemRecord?: any | undefined;
 	children?: React.ReactNode;
 }
@@ -84,7 +85,11 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = (mode: "1" | "2", setMode: any) => {
+const columns: any = (
+	mode: "1" | "2",
+	setMode: any,
+	defaultStatus?: "approve" | "reject",
+) => {
 	const defaultColumns = [
 		{
 			title: "节点名称",
@@ -126,7 +131,14 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 				form: any,
 				setForm: (value: any) => void,
 			) => {
-				const { status } = form;
+				let { status } = form;
+				if (defaultStatus) {
+					status = defaultStatus;
+					setForm({
+						...form,
+						status: defaultStatus,
+					});
+				}
 				const onChange = (e: any) => {
 					setForm({
 						...form,
@@ -190,6 +202,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	open,
 	setOpen,
 	editFlowItemRecord,
+	defaultStatus,
 }) => {
 	const [mode, setMode] = useState<"" | "1" | "2">(""); // 未选择  常规  非常规
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
@@ -255,7 +268,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (!open) {
 			return;
 		}
-		setShowDstColumns(columns(mode, setMode));
+		setShowDstColumns(columns(mode, setMode, defaultStatus));
 	}, [open, mode]);
 
 	// 新增记录

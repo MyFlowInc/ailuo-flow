@@ -150,7 +150,7 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 								onChange={onChange}
 								value={status}
 							>
-								<Radio value={"approved"}>
+								<Radio value={"approve"}>
 									<img src={RightPng} />
 								</Radio>
 								<Radio value={"reject"}>
@@ -160,7 +160,7 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 						</div>
 						{status === "reject" && (
 							<div className="flex mt-4">
-								<div style={{ width: "120px" }}>检验意见</div>
+								<div style={{ width: "120px", flexShrink: 0 }}>检验意见</div>
 								<TextArea
 									defaultValue={form.remark}
 									onChange={onChangeContent}

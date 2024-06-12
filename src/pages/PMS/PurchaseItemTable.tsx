@@ -78,6 +78,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			status: PurchaseItemStatusEnum.TobeTested,
 			relationRequisition: params.purId,
 			relationProject: form.relationProject,
+			name: item.name,
 		});
 		await fetchData();
 	};
@@ -160,6 +161,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							请检中
 						</Tag>
 					);
+				} else if (record.status === PurchaseItemStatusEnum.Approved) {
+					return '通过'
 				}
 			},
 		},

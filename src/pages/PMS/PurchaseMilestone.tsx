@@ -152,7 +152,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 		const res = await getMilestoneList({
 			pageNum: 1,
 			pageSize: 999999,
-			relatedProject: params.purId,
+			relationRequisition: params.purId,
 		});
 		if (res.code == 200) {
 			console.log(res.data.record);

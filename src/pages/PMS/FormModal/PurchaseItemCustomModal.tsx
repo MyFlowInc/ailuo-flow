@@ -227,6 +227,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 			status: PurchaseItemStatusEnum.TobeTested,
 			relationRequisition: params.purId,
 			relationProject: purchaseForm.relationProject,
+			name: item.name,
 		});
 		await fetchData();
 	};

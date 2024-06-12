@@ -106,7 +106,7 @@ const columns: any = [
 					</div>
 				);
 			}
-			if (record.status === "approved") {
+			if (record.status === "approve") {
 				return (
 					<div>
 						<img src={rightPng} alt="" />

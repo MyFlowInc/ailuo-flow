@@ -181,7 +181,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				if (form.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
 					return <ApproveButton />;
 				}
-				if (form.status === PurchaseItemStatusEnum.Approved) {
+				if (form.status === PurchaseItemStatusEnum.Approve) {
 					return (
 						<Tag
 							color={"#F2F3F5"}

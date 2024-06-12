@@ -254,14 +254,14 @@ export enum PurchaseStatusEnum {
 }
 
 export enum PurchaseItemStatusEnum {
-	Approved = "approved",
+	Approve = "approve",
 	Reject = "reject",
 	TobeTested = "tobe_tested",
 	Todo = "todo",
 }
 
 export const  PurchaseItemStatusMapDict = {
-	approved: "通过",
+	approve: "通过",
 	reject: "重检",
 	tobe_tested: "请检中",
 	todo: "请检",

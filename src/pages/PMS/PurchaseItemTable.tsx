@@ -161,7 +161,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							请检中
 						</Tag>
 					);
-				} else if (record.status === PurchaseItemStatusEnum.Approved) {
+				} else if (record.status === PurchaseItemStatusEnum.Approve) {
 					return '通过'
 				}
 			},
@@ -174,7 +174,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				if (record.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
 					return <ApproveButton />;
 				}
-				if (record.status === PurchaseItemStatusEnum.Approved) {
+				if (record.status === PurchaseItemStatusEnum.Approve) {
 					return (
 						<Tag
 							color={"#F2F3F5"}

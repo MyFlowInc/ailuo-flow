@@ -33,6 +33,8 @@ import {
 	PurchaseTypeMap,
 	PurchaseTypeMapDict,
 } from "../../api/ailuo/dict";
+import { useAppSelector } from "../../store/hooks";
+import { selectUser } from "../../store/globalSlice";
 
 const columns = [
 	{
@@ -64,6 +66,7 @@ const columns = [
 		dataIndex: "requestor",
 		key: "requestor",
 		type: NumFieldType.SingleText,
+		defaultDisabled: true,
 	},
 	{
 		title: "申请日期",
@@ -158,6 +161,7 @@ interface PurchaseRecordViewProps {}
 const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const history = useHistory();
 	const params = useParams() as any;
+	const user = useAppSelector(selectUser);
 	const [inputForm] = Form.useForm();
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
@@ -215,7 +219,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	};
 
 	const fetchData = async () => {
-		setForm({});
+		setForm({ requestor: user.username });
 		inputForm.resetFields();
 		if (params.purId !== "new") {
 			console.log(params.purId);
@@ -225,7 +229,6 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 				...temp,
 				type: temp.type?.split(",") || [],
 			};
-			console.log(temp);
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
 		}
@@ -243,6 +246,12 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 
 	const setAllDisabled = (disabled: boolean) => {
 		const newCol = showDstColumns.map((item: any) => {
+			if (item.defaultDisabled) {
+				return {
+					...item,
+					disabled: true,
+				};
+			}
 			return {
 				...item,
 				disabled,

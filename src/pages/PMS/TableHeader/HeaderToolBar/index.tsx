@@ -18,12 +18,6 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = ({}) => {
 		{ label: "状态", key: "status", value: "status" },
 		{ label: "关联项目名称", key: "relationProject", value: "relationProject" },
 		{ label: "请购人", key: "requestor", value: "requestor" },
-		{ label: "创建时间", key: "createTime", value: "createTime" },
-		{
-			label: "预计交期",
-			key: "expectedDeliverytime",
-			value: "expectedDeliverytime",
-		},
 	];
 	const records = [] as any;
 	return (

@@ -10,9 +10,10 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { PurchaseManageContext } from "./PurchaseManage";
-import { selectIsFinance } from "../../store/globalSlice";
+import { selectIsFinance, selectIsManager } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
+import { PurchaseStatusEnum } from "../../api/ailuo/dict";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -38,10 +39,13 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	record,
 	deleteFlowItem,
 }) => {
-	const isFinance = useAppSelector(selectIsFinance);
-	const history = useHistory()
+	const isManager = useAppSelector(selectIsManager);
+	const history = useHistory();
 
 	const handleDeleteRecord = async (text: string, record: any) => {
+		if (record.status !== PurchaseStatusEnum.Start && !isManager) {
+			return;
+		}
 		Modal.confirm({
 			title: "是否确认删除?",
 			icon: <ExclamationCircleFilled />,
@@ -58,8 +62,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
-		console.log(record);
-		history.push(`/dashboard/pms/pur-manage/${record.id}`)
+		history.push(`/dashboard/pms/pur-manage/${record.id}`);
 	};
 
 	return (
@@ -70,7 +73,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<EditFilled
 						style={{
 							fontSize: "12px",
-							color: `${!true ? "#d9d9d9" : "#707683"}`,
+							color: `#707683`,
 						}}
 					/>
 				}
@@ -82,11 +85,10 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<DeleteFilled
 						style={{
 							fontSize: "12px",
-							color: `${isFinance ? "#d9d9d9" : "#707683"}`,
+							color: `#707683`,
 						}}
 					/>
 				}
-				disabled={isFinance}
 				onClick={() => handleDeleteRecord(text, record)}
 			/>
 		</Space>

@@ -86,11 +86,7 @@ const excludeNull = (obj: any) => {
 	});
 	return result;
 };
-const columns: any = (
-	mode: "1" | "2",
-	setMode: any,
-	defaultStatus?: "approve" | "reject",
-) => {
+const columns: any = (mode: "1" | "2", setMode: any) => {
 	const defaultColumns = [
 		{
 			title: "节点名称",
@@ -148,13 +144,6 @@ const columns: any = (
 				setForm: (value: any) => void,
 			) => {
 				let { status } = form;
-				if (defaultStatus) {
-					status = defaultStatus;
-					setForm({
-						...form,
-						status: defaultStatus,
-					});
-				}
 				const onChange = (e: any) => {
 					setForm({
 						...form,
@@ -272,7 +261,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		}
 		if (modalType === "edit" && editFlowItemRecord) {
 			const { key, ...temp } = editFlowItemRecord;
-			setForm(temp);
+			setForm({ ...temp, status: defaultStatus ? defaultStatus : temp.status });
 			setMode(temp.result || "");
 			inputForm.setFieldsValue(temp);
 		}
@@ -284,7 +273,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		if (!open) {
 			return;
 		}
-		setShowDstColumns(columns(mode, setMode, defaultStatus));
+		setShowDstColumns(columns(mode, setMode));
 	}, [open, mode]);
 
 	// 新增记录

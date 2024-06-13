@@ -19,6 +19,8 @@ import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import RightPng from "../QM/assets/RIGHT.png";
 import WrongPng from "../QM/assets/WRONG.png";
+import { useAppSelector } from "../../store/hooks";
+import { selectIsStorage } from "../../store/globalSlice";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -32,6 +34,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	setForm,
 }) => {
 	const params = useParams<any>();
+	const isStorage = useAppSelector(selectIsStorage);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
@@ -96,6 +99,10 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	};
 
 	const handleInStorage = async (item: any) => {
+		if (!isStorage) {
+			message.warning("只有仓储部门可以入库");
+			return;
+		}
 		if (item.status !== PurchaseItemStatusEnum.Approve) {
 			message.warning("只有已检的物料才能入库");
 			return;

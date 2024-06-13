@@ -18,11 +18,12 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { selectIsManager } from "../../../store/globalSlice";
 import PurchaseRecordView from "../PurchaseRecordView";
-import { QualityStatusMapDict } from "../../../api/ailuo/dict";
+import { QualityMapDict, QualityStatusMapDict } from "../../../api/ailuo/dict";
 import RightPng from "../assets/RIGHT.png";
 import WrongPng from "../assets/WRONG.png";
 import { QualityControlContext } from "../QualityControl";
 import { updatePurQualitycontrol } from "../../../api/ailuo/qm";
+import { render } from "@testing-library/react";
 const { TextArea } = Input;
 
 const CustomModalRoot = styled.div`
@@ -119,7 +120,22 @@ const columns: any = (
 			dataIndex: "type",
 			key: "type",
 			disabled: true,
-			type: NumFieldType.SingleText,
+			render: (
+				column: any,
+				key: string,
+				form: any,
+				setForm: (value: any) => void,
+			) => {
+				return (
+					<div key={"name_" + key} className="w-full mb-3">
+						<div className="flex">
+							<div style={{ width: "120px", flexShrink: 0 }}>请检类型</div>
+							{/* @ts-ignore */}
+							<Input value={QualityMapDict[form.type]} disabled></Input>
+						</div>
+					</div>
+				);
+			},
 		},
 		{
 			title: "检验结果",

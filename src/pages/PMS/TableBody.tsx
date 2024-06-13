@@ -89,6 +89,12 @@ const columns: any = [
 						{"测试通过"}
 					</Tag>
 				);
+			} else if (record.status === PurchaseStatusEnum.Received) {
+				return (
+					<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+						{"已入库"}
+					</Tag>
+				);
 			}
 		},
 	},

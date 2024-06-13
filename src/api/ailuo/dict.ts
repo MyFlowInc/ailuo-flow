@@ -247,10 +247,11 @@ export const PurchaseTypeMapDict = {
 };
 
 export enum PurchaseStatusEnum {
+	NotStart = "not_start",
 	Start = "start",
 	InProcurement = "in_procurement",
 	Over = "over",
-	NotStart = "not_start",
+	Received = 'received'
 }
 
 export enum PurchaseItemStatusEnum {

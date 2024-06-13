@@ -310,6 +310,17 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 					</div>
 				</div>
 			);
+		} else if (form.status === PurchaseStatusEnum.Received) {
+			return (
+				<div className="flex items-center mt-2">
+					<div className="flex items-center">
+						<div className="mr-2 text-[#848484]">状态: </div>
+						<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+							{"已入库"}
+						</Tag>
+					</div>
+				</div>
+			);
 		} else {
 			return (
 				<div className="flex items-center mt-2">

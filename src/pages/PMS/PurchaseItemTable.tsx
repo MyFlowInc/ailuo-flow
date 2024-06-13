@@ -216,7 +216,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 						<Tag
 							color={"#F2F3F5"}
 							style={{ color: "#707683", cursor: "pointer" }}
-							onClick={() => handleInStorage(form)}
+							onClick={() => handleInStorage(record)}
 						>
 							入库
 						</Tag>

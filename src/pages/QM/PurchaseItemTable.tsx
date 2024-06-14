@@ -220,7 +220,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			pageNum: 1,
 			pageSize: 9999999,
 			// relationRequisition: form.id,
-			id: editFlowItemRecord.id,
+			id: editFlowItemRecord.relatedItem,
 		});
 		if (res.code == 200) {
 			setDataSource(res.data.record);

@@ -77,10 +77,6 @@ const CellLabelRoot = styled.div`
 
 		.cell-drag-text {
 			width: 120px;
-			white-space: nowrap;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			height: fit-content;
 		}
 	}
 

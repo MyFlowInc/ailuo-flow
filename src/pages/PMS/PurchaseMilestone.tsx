@@ -96,9 +96,6 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 		{
 			title: "类型",
 			dataIndex: "type",
-			render: (text: "adopt" | "exception", record: any, index: number) => {
-				return <div>{MilestoneTypeDict[text]}</div>;
-			},
 		},
 		{
 			title: "描述",

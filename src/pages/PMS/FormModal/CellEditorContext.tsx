@@ -80,6 +80,7 @@ const CellLabelRoot = styled.div`
 			white-space: nowrap;
 			text-overflow: ellipsis;
 			overflow: hidden;
+			height: fit-content;
 		}
 	}
 

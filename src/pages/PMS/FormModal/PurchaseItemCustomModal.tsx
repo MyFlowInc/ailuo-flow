@@ -320,10 +320,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		} else {
 			setForm({ ...formItem });
 			inputForm.setFieldsValue({ ...formItem });
-			if (formItem.status === PurchaseItemStatusEnum.TobeTested) {
-				setAllDisabled(true);
-			} else {
+			if (formItem.status === PurchaseItemStatusEnum.Todo || !formItem.status) {
 				setAllDisabled(false);
+			} else {
+				setAllDisabled(true);
 			}
 		}
 	}, [open]);

@@ -40,6 +40,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	const isPurchase = useAppSelector(selectIsPurchase);
 
 	const [dataSource, setDataSource] = useState([]);
+	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
 	const [currentItem, setCurrentItem] = useState<any>({});
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
@@ -141,7 +142,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			title: "来料检",
 			dataIndex: "来料检",
 			key: "来料检",
-			render: (text: string, record: any) => {
+			render: (text: string, record: any, index: number) => {
 				if (isPurchase) {
 					return null;
 				}
@@ -165,6 +166,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 								src={RightPng}
 								alt=""
 								onClick={() => {
+									setCurrentIndex(index);
 									setDefaultStatus("approve");
 									setIsShowEditRecordModal(true);
 								}}
@@ -174,6 +176,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 								src={WrongPng}
 								alt=""
 								onClick={() => {
+									setCurrentIndex(index);
 									setDefaultStatus("reject");
 									setIsShowEditRecordModal(true);
 								}}
@@ -259,6 +262,11 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				setOpen={setIsShowEditRecordModal}
 				editFlowItemRecord={editFlowItemRecord}
 				defaultStatus={defaultStatus}
+				setPurchaseItemForm={(params: any) => {
+					// @ts-ignore
+					dataSource[currentIndex].status = params.status;
+					setDataSource([...dataSource]);
+				}}
 			></EditRecordModal>
 		</div>
 	);

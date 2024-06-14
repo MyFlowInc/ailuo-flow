@@ -145,12 +145,6 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({
 		<div className="mt-4">
 			<div className="mb-2 flex items-center">
 				<span className="mr-6">重要事件</span>
-				{form?.status == PurchaseStatusEnum.Start && (
-					<div className="flex items-center cursor-pointer" onClick={handleAdd}>
-						<img src={PlusSvg} alt="" className="mr-2" />
-						<span className="text-[#707683]">添加重要事件</span>
-					</div>
-				)}
 			</div>
 
 			<Table

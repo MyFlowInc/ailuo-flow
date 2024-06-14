@@ -18,7 +18,11 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { selectIsManager } from "../../../store/globalSlice";
 import PurchaseRecordView from "../PurchaseRecordView";
-import { QualityMapDict, QualityStatusMapDict } from "../../../api/ailuo/dict";
+import {
+	PurchaseItemStatusEnum,
+	QualityMapDict,
+	QualityStatusMapDict,
+} from "../../../api/ailuo/dict";
 import RightPng from "../assets/RIGHT.png";
 import WrongPng from "../assets/WRONG.png";
 import { QualityControlContext } from "../QualityControl";
@@ -75,6 +79,7 @@ interface CustomModalProps {
 	defaultStatus?: "approve" | "reject";
 	editFlowItemRecord?: any | undefined;
 	children?: React.ReactNode;
+	setPurchaseItemForm?: (a: any) => void;
 }
 const excludeNull = (obj: any) => {
 	const result: any = {};
@@ -208,6 +213,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	setOpen,
 	editFlowItemRecord,
 	defaultStatus,
+	setPurchaseItemForm,
 }) => {
 	const [mode, setMode] = useState<"" | "1" | "2">(""); // 未选择  常规  非常规
 	const [showDstColumns, setShowDstColumns] = useState<any>([]);
@@ -311,6 +317,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 
 	const handleSaveRecord = () => {
+		setPurchaseItemForm && setPurchaseItemForm({ status: form.status || null });
+		
 		inputForm.setFieldsValue(form);
 		if (modalType === "add") {
 			createRecord();

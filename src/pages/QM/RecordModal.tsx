@@ -8,10 +8,18 @@ interface EditRecordModalProps {
 	editFlowItemRecord: any | undefined;
 	modalType: "add" | "edit" | "view";
 	defaultStatus?: "approve" | "reject";
+	setPurchaseItemForm?: (a: any) => void;
 }
 
 export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
-	const { editFlowItemRecord, open, setOpen, modalType, defaultStatus } = props;
+	const {
+		editFlowItemRecord,
+		open,
+		setOpen,
+		modalType,
+		defaultStatus,
+		setPurchaseItemForm,
+	} = props;
 	const params = {
 		title: "检验单",
 		open,
@@ -19,6 +27,7 @@ export const EditRecordModal: React.FC<EditRecordModalProps> = (props) => {
 		modalType,
 		editFlowItemRecord,
 		defaultStatus,
+		setPurchaseItemForm,
 	};
 	console.log("modalType", modalType);
 	const modalRender = () => CustomModal(params);

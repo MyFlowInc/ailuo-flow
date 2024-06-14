@@ -20,6 +20,8 @@ import RightPng from "./assets/RIGHT.png";
 import WrongPng from "./assets/WRONG.png";
 import { EditRecordModal } from "./RecordModal";
 import { QualityControlContext } from "./QualityControl";
+import { selectIsPurchase } from "../../store/globalSlice";
+import { useAppSelector } from "../../store/hooks";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -35,6 +37,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	const params = useParams<any>();
 
 	const { editFlowItemRecord } = useContext(QualityControlContext);
+	const isPurchase = useAppSelector(selectIsPurchase);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
@@ -139,6 +142,9 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			dataIndex: "来料检",
 			key: "来料检",
 			render: (text: string, record: any) => {
+				if (isPurchase) {
+					return null;
+				}
 				return (
 					<div>
 						<img

@@ -14,7 +14,7 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { QualityControlContext } from "./QualityControl";
-import { selectIsFinance } from "../../store/globalSlice";
+import { selectIsFinance, selectIsPurchase } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
 
@@ -45,7 +45,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	setModalType,
 	setEditFlowItemRecord,
 }) => {
-	const isFinance = useAppSelector(selectIsFinance);
+	const isPurchase = useAppSelector(selectIsPurchase);
 	const history = useHistory();
 
 	const handleViewRecord = async (text: string, record: any) => {
@@ -72,10 +72,11 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<EditFilled
 						style={{
 							fontSize: "12px",
-							color: `${!true ? "#d9d9d9" : "#707683"}`,
+							color: `${isPurchase ? "#d9d9d9" : "#707683"}`,
 						}}
 					/>
 				}
+				disabled={isPurchase}
 				onClick={() => handleEditRecord(text, record)}
 			/>
 			<Button
@@ -84,11 +85,9 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					<EyeFilled
 						style={{
 							fontSize: "12px",
-							color: `${isFinance ? "#d9d9d9" : "#707683"}`,
 						}}
 					/>
 				}
-				disabled={isFinance}
 				onClick={() => handleViewRecord(text, record)}
 			/>
 		</Space>

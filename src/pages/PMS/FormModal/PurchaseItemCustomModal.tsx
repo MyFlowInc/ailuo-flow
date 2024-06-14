@@ -186,6 +186,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 							<Tag
 								color={"#F2F3F5"}
 								style={{ color: "#707683", cursor: "pointer" }}
+								onClick={() => handleReTest(form)}
 							>
 								重检
 							</Tag>
@@ -254,6 +255,17 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		});
 		await fetchData();
 	};
+	const handleReTest = async (item:any) => {
+		setOpen(false);
+		await updatePurchaseItem({
+			id: item.id,
+			status: PurchaseItemStatusEnum.TobeTested,
+			relationRequisition: params.purId,
+			relationProject: purchaseForm.relationProject,
+			name: item.name,
+		});
+		await fetchData();
+	};
 
 	const handleInStorage = async (item: any) => {
 		if (!isStorage) {
@@ -274,8 +286,16 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	};
 
 	const handleSave = async () => {
-		if (disabled) {
+		if (
+			!(
+				formItem.status === PurchaseItemStatusEnum.Todo ||
+				!formItem.status ||
+				formItem.status === PurchaseItemStatusEnum.Reject
+			)
+		) {
+			message.warning("只有待检的物料才能保存");
 			setOpen(false);
+			return;
 		}
 		let res: any = {};
 		if (form.id) {
@@ -320,7 +340,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		} else {
 			setForm({ ...formItem });
 			inputForm.setFieldsValue({ ...formItem });
-			if (formItem.status === PurchaseItemStatusEnum.Todo || !formItem.status) {
+			if (
+				formItem.status === PurchaseItemStatusEnum.Todo ||
+				!formItem.status ||
+				formItem.status === PurchaseItemStatusEnum.Reject
+			) {
 				setAllDisabled(false);
 			} else {
 				setAllDisabled(true);

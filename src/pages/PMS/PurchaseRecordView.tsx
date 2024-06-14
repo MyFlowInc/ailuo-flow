@@ -34,7 +34,7 @@ import {
 	PurchaseTypeMapDict,
 } from "../../api/ailuo/dict";
 import { useAppSelector } from "../../store/hooks";
-import { selectUser } from "../../store/globalSlice";
+import { selectIsQuality, selectUser } from "../../store/globalSlice";
 
 const columns = [
 	{
@@ -172,6 +172,8 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const history = useHistory();
 	const params = useParams() as any;
 	const user = useAppSelector(selectUser);
+	const isQuality = useAppSelector(selectIsQuality)
+
 	const [inputForm] = Form.useForm();
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
@@ -277,6 +279,11 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 		} else {
 			setAllDisabled(false);
 			setDisabled(false);
+		}
+
+		if (isQuality) {
+			setAllDisabled(true);
+			setDisabled(true);
 		}
 	}, [form.status]);
 

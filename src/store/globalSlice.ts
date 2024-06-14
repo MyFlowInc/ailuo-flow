@@ -248,4 +248,19 @@ export const selectIsPurchase = (state: RootState) => {
 	return res;
 };
 
+export const selectIsQuality = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "quality") {
+			res = true;
+		}
+	});
+	return res;
+};
+
 export default globalSlice.reducer;

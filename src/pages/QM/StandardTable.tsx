@@ -50,7 +50,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 
 	const handleViewRecord = async (text: string, record: any) => {
 		if (!record.relatedRequisition) {
-			message.warning("该数据未绑定请购单");
+			message.warning("请购单已被删除!");
 			return;
 		}
 		setEditFlowItemRecord(record);

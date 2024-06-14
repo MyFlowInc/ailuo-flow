@@ -145,28 +145,42 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 				if (isPurchase) {
 					return null;
 				}
-				return (
-					<div>
-						<img
-							className="mr-2 cursor-pointer w-[15px] h-[15px]"
-							src={RightPng}
-							alt=""
-							onClick={() => {
-								setDefaultStatus("approve");
-								setIsShowEditRecordModal(true);
-							}}
-						/>
-						<img
-							className="cursor-pointer w-[15px] h-[15px]"
-							src={WrongPng}
-							alt=""
-							onClick={() => {
-								setDefaultStatus("reject");
-								setIsShowEditRecordModal(true);
-							}}
-						/>
-					</div>
-				);
+				if (record.status === PurchaseItemStatusEnum.Approve) {
+					return (
+						<div>
+							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
+						</div>
+					);
+				} else if (record.status === PurchaseItemStatusEnum.Reject) {
+					return (
+						<div>
+							<img src={WrongPng} alt="" className=" w-[15px] h-[15px] " />
+						</div>
+					);
+				} else {
+					return (
+						<div>
+							<img
+								className="mr-2 cursor-pointer w-[15px] h-[15px]"
+								src={RightPng}
+								alt=""
+								onClick={() => {
+									setDefaultStatus("approve");
+									setIsShowEditRecordModal(true);
+								}}
+							/>
+							<img
+								className="cursor-pointer w-[15px] h-[15px]"
+								src={WrongPng}
+								alt=""
+								onClick={() => {
+									setDefaultStatus("reject");
+									setIsShowEditRecordModal(true);
+								}}
+							/>
+						</div>
+					);
+				}
 			},
 		},
 		{

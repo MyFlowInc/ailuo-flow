@@ -17,6 +17,7 @@ import { QualityControlContext } from "./QualityControl";
 import { selectIsFinance, selectIsPurchase } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
+import { PurchaseItemStatusEnum, QualityMapDict } from "../../api/ailuo/dict";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -59,6 +60,11 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
+		if (record.status !== PurchaseItemStatusEnum.TobeTested) {
+			// @ts-ignore
+			message.warning(`该${QualityMapDict[record.type]}已被检验`);
+			return;
+		}
 		setModalType("edit");
 		setEditFlowItemRecord(record);
 		setOpen(true);

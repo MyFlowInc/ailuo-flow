@@ -382,7 +382,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 
 	return (
 		<div className="w-full">
-			<div className="bg-white fixed top-9 z-10 w-full pr-[286px]">
+			<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">
 				<div className="flex items-center">
 					<img src={CartSvg} alt="" />
 					<div className="font-bold text-lg ml-3">请购管理</div>

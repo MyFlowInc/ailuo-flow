@@ -187,13 +187,13 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 					);
 				} else if (record.status === PurchaseItemStatusEnum.Approve) {
 					return (
-						<div className="text-center">
+						<div className="">
 							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
 						</div>
 					);
 				} else if (record.status === PurchaseItemStatusEnum.Reject) {
 					return (
-						<div className="flex items-center text-center">
+						<div className="flex items-center">
 							<img
 								src={WrongPng}
 								alt=""

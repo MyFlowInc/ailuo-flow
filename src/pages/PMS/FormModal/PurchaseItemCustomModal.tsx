@@ -181,10 +181,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					);
 				} else if (form.status === PurchaseItemStatusEnum.Reject) {
 					return (
-						<div className="flex text-center">
-							<img src={WrongPng} alt="" className="mr-1" />
+						<div className="flex text-center items-center">
+							<img src={WrongPng} alt="" className="mr-1 w-[15px] h-[15px]" />
 							<Tag
-								color={"#FFEEE3"}
+								color={"#F2F3F5"}
 								style={{ color: "#707683", cursor: "pointer" }}
 							>
 								重检

@@ -220,7 +220,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		<div className="mt-4">
 			<div className="mb-2 flex items-center">
 				<span className="mr-6">采购清单</span>
-				{form?.status == PurchaseStatusEnum.Start && (
+				{(form?.status == PurchaseStatusEnum.Start ||
+					form?.status == PurchaseStatusEnum.InProcurement) && (
 					<div className="flex items-center cursor-pointer" onClick={handleNew}>
 						<img src={PlusSvg} alt="" className="mr-2" />
 						<span className="text-[#707683]">添加采购项目</span>

@@ -107,7 +107,17 @@ const columns = [
 		title: "来料检完成时间",
 		dataIndex: "checkCompletiontime",
 		key: "checkCompletiontime",
-		type: NumFieldType.DateTime,
+		renderContent: (value: any, form: any, setForm: any) => {
+			return (
+				<div>
+					{value ? (
+						value
+					) : (
+						<span className="text-gray-400">系统自动生成</span>
+					)}
+				</div>
+			);
+		},
 	},
 	{
 		title: "预计交期",

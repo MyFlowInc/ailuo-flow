@@ -191,8 +191,8 @@ const columns: any = (mode: "1" | "2", setMode: any) => {
 		},
 		{
 			title: "完成请检时间",
-			dataIndex: "updateTime",
-			key: "updateTime",
+			dataIndex: "completeInspection",
+			key: "completeInspection",
 			disabled: true,
 			type: NumFieldType.SingleText,
 		},

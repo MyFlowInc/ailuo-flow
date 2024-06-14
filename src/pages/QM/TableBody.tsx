@@ -102,14 +102,14 @@ const columns: any = [
 			if (record.status === "reject") {
 				return (
 					<div>
-						<img src={wrongPng} alt="" className="w-[15px] h-[15px]"/>
+						<img src={wrongPng} alt="" className="w-[15px] h-[15px]" />
 					</div>
 				);
 			}
 			if (record.status === "approve") {
 				return (
 					<div>
-						<img src={rightPng} alt="" className="w-[15px] h-[15px]"/>
+						<img src={rightPng} alt="" className="w-[15px] h-[15px]" />
 					</div>
 				);
 			}
@@ -122,12 +122,12 @@ const columns: any = [
 	},
 	{
 		title: "完成请检时间",
-		dataIndex: "updateTime",
-		key: "updateTime",
+		dataIndex: "completeInspection",
+		key: "completeInspection",
 		type: NumFieldType.DateTime,
 		render: (text: string, record: any) => {
-			const format = record.updateTime
-				? dayjs(record.updateTime).format("YYYY年M月D日 HH:mm")
+			const format = record.completeInspection
+				? dayjs(record.completeInspection).format("YYYY年M月D日 HH:mm")
 				: "";
 			return <div>{format}</div>;
 		},

@@ -10,7 +10,7 @@ interface HeaderToolBarProps {
 	children?: React.ReactNode;
 }
 
-const HeaderToolBar: React.FC<HeaderToolBarProps> = ({}) => {
+const HeaderToolBar: React.FC<HeaderToolBarProps> = ({ }) => {
 	// const dstColumns = useAppSelector(selectCurTableColumn);
 	// const records = useAppSelector(selectCurTableRecords);
 	const dstColumns = [
@@ -18,7 +18,7 @@ const HeaderToolBar: React.FC<HeaderToolBarProps> = ({}) => {
 		{ label: "检验项名称", key: "name", value: "name" },
 		{ label: "发起请检时间", key: "createTime", value: "createTime" },
 		{ label: "请检类型", key: "type", value: "type" },
-		{ label: "完成请检时间", key: "updateTime", value: "updateTime" },
+		{ label: "完成请检时间", key: "completeInspection", value: "completeInspection" },
 	];
 	const records = [] as any;
 	return (

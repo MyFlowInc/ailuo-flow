@@ -205,7 +205,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 		const res = await getPurChaseItemList({
 			pageNum: 1,
 			pageSize: 9999999,
-			relationRequisition: form.id,
+			// relationRequisition: form.id,
+			id: editFlowItemRecord.id,
 		});
 		if (res.code == 200) {
 			setDataSource(res.data.record);

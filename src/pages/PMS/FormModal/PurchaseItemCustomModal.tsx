@@ -307,9 +307,9 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		setShowDstColumns(newCol);
 	};
 
-	useEffect(() => {
-		setAllDisabled(disabled);
-	}, [disabled]);
+	// useEffect(() => {
+	// 	setAllDisabled(disabled);
+	// }, [disabled]);
 
 	// 初始化form数据
 	useEffect(() => {
@@ -320,6 +320,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		} else {
 			setForm({ ...formItem });
 			inputForm.setFieldsValue({ ...formItem });
+			if (formItem.status === PurchaseItemStatusEnum.TobeTested) {
+				setAllDisabled(true);
+			} else {
+				setAllDisabled(false);
+			}
 		}
 	}, [open]);
 

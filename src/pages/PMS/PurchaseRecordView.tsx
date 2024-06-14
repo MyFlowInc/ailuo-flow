@@ -273,7 +273,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	};
 
 	useEffect(() => {
-		if (form.status === PurchaseStatusEnum.InProcurement) {
+		if (form.status != PurchaseStatusEnum.Start && form.status) {
 			setAllDisabled(true);
 			setDisabled(true);
 		} else {

@@ -10,6 +10,7 @@ import { useParams } from "react-router";
 import { getMilestoneList } from "../../api/ailuo/pms";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 import EditFilled from "../../assets/icons/EditFilled";
+import { QualityControlContext } from "./QualityControl";
 
 interface Item {
 	key: string;
@@ -42,6 +43,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({
 }) => {
 	const user = useAppSelector(selectUser);
 	const params = useParams<any>();
+	const { editFlowItemRecord } = useContext(QualityControlContext);
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [isShowMilestoneRecordModal, setIsShowMilestoneRecordModal] =
@@ -129,7 +131,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({
 		const res = await getMilestoneList({
 			pageNum: 1,
 			pageSize: 999999,
-			relatedProject: params.purId,
+			relationRequisition: editFlowItemRecord.relatedRequisition,
 		});
 		if (res.code == 200) {
 			console.log(res.data.record);
@@ -139,7 +141,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({
 
 	useEffect(() => {
 		fetchData();
-	}, [params.purId]);
+	}, [form.id]);
 
 	return (
 		<div className="mt-4">

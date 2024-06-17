@@ -20,7 +20,7 @@ import { ExclamationCircleFilled } from "@ant-design/icons";
 import RightPng from "../QM/assets/RIGHT.png";
 import WrongPng from "../QM/assets/WRONG.png";
 import { useAppSelector } from "../../store/hooks";
-import { selectIsStorage } from "../../store/globalSlice";
+import { selectIsQuality, selectIsStorage } from "../../store/globalSlice";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -35,6 +35,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 }) => {
 	const params = useParams<any>();
 	const isStorage = useAppSelector(selectIsStorage);
+	const isQuality = useAppSelector(selectIsQuality);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
@@ -73,7 +74,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	const handleTest = async (item: any) => {
 		if (
 			form.status == PurchaseStatusEnum.Start ||
-			form.status == PurchaseStatusEnum.NotStart
+			form.status == PurchaseStatusEnum.NotStart ||
+			isQuality
 		) {
 			return;
 		}
@@ -88,6 +90,9 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	};
 
 	const handleReTest = async (item: any) => {
+		if (isQuality) {
+			return;
+		}
 		await updatePurchaseItem({
 			id: item.id,
 			status: PurchaseItemStatusEnum.TobeTested,

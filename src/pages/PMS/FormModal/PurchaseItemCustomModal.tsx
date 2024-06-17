@@ -17,7 +17,7 @@ import {
 import RightPng from "../../QM/assets/RIGHT.png";
 import WrongPng from "../../QM/assets/WRONG.png";
 import { useAppSelector } from "../../../store/hooks";
-import { selectIsStorage } from "../../../store/globalSlice";
+import { selectIsQuality, selectIsStorage } from "../../../store/globalSlice";
 const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
@@ -233,6 +233,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const params = useParams<any>();
 	const isStorage = useAppSelector(selectIsStorage);
+	const isQuality = useAppSelector(selectIsQuality);
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
@@ -241,7 +242,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	const handleTest = async (item: any) => {
 		if (
 			purchaseForm.status == PurchaseStatusEnum.Start ||
-			purchaseForm.status == PurchaseStatusEnum.NotStart
+			purchaseForm.status == PurchaseStatusEnum.NotStart ||
+			isQuality
 		) {
 			return;
 		}
@@ -255,7 +257,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		});
 		await fetchData();
 	};
-	const handleReTest = async (item:any) => {
+	const handleReTest = async (item: any) => {
+		if (isQuality) {
+			return;
+		}
 		setOpen(false);
 		await updatePurchaseItem({
 			id: item.id,

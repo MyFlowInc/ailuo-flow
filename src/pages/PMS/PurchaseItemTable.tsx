@@ -261,6 +261,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							color="#717682"
 							icon={<EditFilled />}
 							className="text-[#717682]"
+							disabled={form.status !== PurchaseStatusEnum.Start}
 							onClick={() => handleEdit(record)}
 						></Button>
 						<Button
@@ -268,6 +269,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
+							disabled={form.status !== PurchaseStatusEnum.Start}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>

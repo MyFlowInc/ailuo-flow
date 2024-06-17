@@ -170,8 +170,9 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 		<div className="mt-4">
 			<div className="mb-2 flex items-center">
 				<span className="mr-6">重要事件</span>
-				{(form?.status == PurchaseStatusEnum.Start ||
-					form?.status == PurchaseStatusEnum.InProcurement) &&
+				{(form?.status === PurchaseStatusEnum.Over ||
+					form?.status === PurchaseStatusEnum.Start ||
+					form?.status === PurchaseStatusEnum.InProcurement) &&
 					!isQuality && (
 						<div
 							className="flex items-center cursor-pointer"

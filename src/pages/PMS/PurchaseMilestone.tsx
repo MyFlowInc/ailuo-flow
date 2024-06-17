@@ -13,7 +13,7 @@ import {
 import PlusSvg from "./assets/plus.svg";
 import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useAppSelector } from "../../store/hooks";
-import { selectUser } from "../../store/globalSlice";
+import { selectIsQuality, selectUser } from "../../store/globalSlice";
 import { MilestoneTypeDict, PurchaseStatusEnum } from "../../api/ailuo/dict";
 import { useParams } from "react-router";
 import { getMilestoneList, removeMilestone } from "../../api/ailuo/pms";
@@ -48,6 +48,7 @@ interface PurchaseMilestoneProps {
 
 const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 	const user = useAppSelector(selectUser);
+	const isQuality = useAppSelector(selectIsQuality);
 	const params = useParams<any>();
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -115,7 +116,8 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 			key: "action",
 			render: (text: any, record: any, index: number) => {
 				return (
-					!record.remark && (
+					!record.remark &&
+					!isQuality && (
 						<div className="flex items-center justify-around">
 							<Button
 								type="text"
@@ -169,12 +171,16 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 			<div className="mb-2 flex items-center">
 				<span className="mr-6">重要事件</span>
 				{(form?.status == PurchaseStatusEnum.Start ||
-					form?.status == PurchaseStatusEnum.InProcurement) && (
-					<div className="flex items-center cursor-pointer" onClick={handleAdd}>
-						<img src={PlusSvg} alt="" className="mr-2" />
-						<span className="text-[#707683]">添加重要事件</span>
-					</div>
-				)}
+					form?.status == PurchaseStatusEnum.InProcurement) &&
+					!isQuality && (
+						<div
+							className="flex items-center cursor-pointer"
+							onClick={handleAdd}
+						>
+							<img src={PlusSvg} alt="" className="mr-2" />
+							<span className="text-[#707683]">添加重要事件</span>
+						</div>
+					)}
 			</div>
 			<ConfigProvider theme={BlueTableNoRadiusTheme}>
 				<Table

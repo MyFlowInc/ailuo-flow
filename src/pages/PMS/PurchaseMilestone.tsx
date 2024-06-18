@@ -21,6 +21,7 @@ import DeleteFilled from "../../assets/icons/DeleteFilled";
 import EditFilled from "../../assets/icons/EditFilled";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { BlueTableNoRadiusTheme, BlueTableTheme } from "../../theme/theme";
+import { PurchaseRecordViewContext } from "./PurchaseRecordView";
 
 interface Item {
 	key: string;
@@ -50,6 +51,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 	const user = useAppSelector(selectUser);
 	const isQuality = useAppSelector(selectIsQuality);
 	const params = useParams<any>();
+	const { updateMilestoneCount } = useContext(PurchaseRecordViewContext);
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [isShowMilestoneRecordModal, setIsShowMilestoneRecordModal] =
@@ -164,7 +166,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 
 	useEffect(() => {
 		fetchData();
-	}, [params.purId]);
+	}, [params.purId, updateMilestoneCount]);
 
 	return (
 		<div className="mt-4">

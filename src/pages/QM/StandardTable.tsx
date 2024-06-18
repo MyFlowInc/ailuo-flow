@@ -14,7 +14,7 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { QualityControlContext } from "./QualityControl";
-import { selectIsFinance, selectIsPurchase } from "../../store/globalSlice";
+import { selectIsFinance, selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
 import { PurchaseItemStatusEnum, QualityMapDict } from "../../api/ailuo/dict";
@@ -47,6 +47,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	setEditFlowItemRecord,
 }) => {
 	const isPurchase = useAppSelector(selectIsPurchase);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 	const history = useHistory();
 
 	const handleViewRecord = async (text: string, record: any) => {
@@ -60,6 +61,10 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
+		if (isWorkshop) {
+			message.warning("车间人员无法编辑!");
+			return
+		}
 		if (record.status !== PurchaseItemStatusEnum.TobeTested) {
 			// @ts-ignore
 			message.warning(`该${QualityMapDict[record.type]}已被检验`);

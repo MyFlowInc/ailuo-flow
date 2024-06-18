@@ -20,7 +20,7 @@ import RightPng from "./assets/RIGHT.png";
 import WrongPng from "./assets/WRONG.png";
 import { EditRecordModal } from "./RecordModal";
 import { QualityControlContext } from "./QualityControl";
-import { selectIsPurchase } from "../../store/globalSlice";
+import { selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 
 interface PurchaseItemTableProps {
@@ -38,6 +38,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 
 	const { editFlowItemRecord } = useContext(QualityControlContext);
 	const isPurchase = useAppSelector(selectIsPurchase);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -166,6 +167,10 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 								src={RightPng}
 								alt=""
 								onClick={() => {
+									if (isWorkshop) {
+										message.warning("车间人员无法编辑!");
+										return
+									}
 									setCurrentIndex(index);
 									setDefaultStatus("approve");
 									setIsShowEditRecordModal(true);
@@ -176,6 +181,10 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 								src={WrongPng}
 								alt=""
 								onClick={() => {
+									if (isWorkshop) {
+										message.warning("车间人员无法编辑!");
+										return
+									}
 									setCurrentIndex(index);
 									setDefaultStatus("reject");
 									setIsShowEditRecordModal(true);

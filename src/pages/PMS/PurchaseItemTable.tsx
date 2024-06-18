@@ -1,5 +1,5 @@
 import { Button, ConfigProvider, Modal, Table, Tag, message } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BlueTableTheme, TableTheme, greyButtonTheme } from "../../theme/theme";
 import EditFilled from "../../assets/icons/EditFilled";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
@@ -21,6 +21,7 @@ import RightPng from "../QM/assets/RIGHT.png";
 import WrongPng from "../QM/assets/WRONG.png";
 import { useAppSelector } from "../../store/hooks";
 import { selectIsQuality, selectIsStorage } from "../../store/globalSlice";
+import { PurchaseRecordViewContext } from "./PurchaseRecordView";
 
 interface PurchaseItemTableProps {
 	form: any;
@@ -36,6 +37,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	const params = useParams<any>();
 	const isStorage = useAppSelector(selectIsStorage);
 	const isQuality = useAppSelector(selectIsQuality);
+
+	const { fetchPurchaseRecordViewData,addUpdateMilestoneCount } = useContext(PurchaseRecordViewContext);
 
 	const [dataSource, setDataSource] = useState([]);
 	const [isShowRequistionModal, setIsShowRequistionModal] = useState(false);
@@ -118,6 +121,8 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			relationRequisition: params.purId,
 		});
 		await fetchData();
+		await fetchPurchaseRecordViewData()
+		addUpdateMilestoneCount()
 	};
 
 	const defaultColumns: any[] = [

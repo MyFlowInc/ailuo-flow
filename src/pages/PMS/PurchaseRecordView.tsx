@@ -36,6 +36,8 @@ import {
 import { useAppSelector } from "../../store/hooks";
 import { selectIsQuality, selectUser } from "../../store/globalSlice";
 
+export const PurchaseRecordViewContext = React.createContext<any>({});
+
 const columns = [
 	{
 		title: "请购类型",
@@ -110,11 +112,7 @@ const columns = [
 		renderContent: (value: any, form: any, setForm: any) => {
 			return (
 				<div>
-					{value ? (
-						value
-					) : (
-						<span className="text-gray-400">系统自动生成</span>
-					)}
+					{value ? value : <span className="text-gray-400">系统自动生成</span>}
 				</div>
 			);
 		},
@@ -172,13 +170,18 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const history = useHistory();
 	const params = useParams() as any;
 	const user = useAppSelector(selectUser);
-	const isQuality = useAppSelector(selectIsQuality)
+	const isQuality = useAppSelector(selectIsQuality);
 
 	const [inputForm] = Form.useForm();
 
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [form, setForm] = useState<any>({});
 	const [disabled, setDisabled] = useState(false);
+	const [updateMilestoneCount, setUpdateMilestoneCount] = useState(0);
+
+	const addUpdateMilestoneCount = () => {
+		setUpdateMilestoneCount(updateMilestoneCount + 1);
+	};
 
 	const saveValidate = () => {
 		if (!form.type) {
@@ -234,7 +237,6 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 		setForm({ requestor: user.username });
 		inputForm.resetFields();
 		if (params.purId !== "new") {
-			console.log(params.purId);
 			const res = await purRequisition({ id: params.purId });
 			let temp = res.data.record[0];
 			temp = {
@@ -388,65 +390,73 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	};
 
 	return (
-		<div className="w-full">
-			<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">
-				<div className="flex items-center mb-2">
-					<img src={CartSvg} alt="" />
-					<div className="font-bold text-lg ml-3">请购管理</div>
-					<ConfigProvider theme={greyButtonTheme}>
-						<Button
-							className="ml-4"
-							type="primary"
-							icon={<LeftOutlined />}
-							onClick={() => history.push("/dashboard/pms/pur-manage")}
-						>
-							返回
-						</Button>
-					</ConfigProvider>
-				</div>
-				<div className="flex items-center justify-between pl-3">
-					<div>
-						<div className="text-lg">
-							{params.purId === "new" ? "新建请购单" : "编辑请购单"}
-						</div>
-						{StatusView()}
-					</div>
-					<div>
+		<PurchaseRecordViewContext.Provider
+			value={{
+				fetchPurchaseRecordViewData: fetchData,
+				addUpdateMilestoneCount,
+				updateMilestoneCount,
+			}}
+		>
+			<div className="w-full">
+				<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">
+					<div className="flex items-center mb-2">
+						<img src={CartSvg} alt="" />
+						<div className="font-bold text-lg ml-3">请购管理</div>
 						<ConfigProvider theme={greyButtonTheme}>
 							<Button
+								className="ml-4"
 								type="primary"
+								icon={<LeftOutlined />}
 								onClick={() => history.push("/dashboard/pms/pur-manage")}
 							>
-								取消
-							</Button>
-						</ConfigProvider>
-						<ConfigProvider theme={blueButtonTheme}>
-							<Button type="primary" className="ml-4" onClick={handleSave}>
-								保存
+								返回
 							</Button>
 						</ConfigProvider>
 					</div>
+					<div className="flex items-center justify-between pl-3">
+						<div>
+							<div className="text-lg">
+								{params.purId === "new" ? "新建请购单" : "编辑请购单"}
+							</div>
+							{StatusView()}
+						</div>
+						<div>
+							<ConfigProvider theme={greyButtonTheme}>
+								<Button
+									type="primary"
+									onClick={() => history.push("/dashboard/pms/pur-manage")}
+								>
+									取消
+								</Button>
+							</ConfigProvider>
+							<ConfigProvider theme={blueButtonTheme}>
+								<Button type="primary" className="ml-4" onClick={handleSave}>
+									保存
+								</Button>
+							</ConfigProvider>
+						</div>
+					</div>
+				</div>
+				<div className="pl-3 mt-4 pt-14">
+					<Form
+						form={inputForm}
+						colon={false}
+						wrapperCol={{ flex: 1 }}
+						preserve={false}
+					>
+						{showDstColumns.length > 0 ? (
+							<CellEditorContext
+								form={form}
+								setForm={setForm}
+								dstColumns={showDstColumns}
+							/>
+						) : (
+							<NoFieldData />
+						)}
+					</Form>
 				</div>
 			</div>
-			<div className="pl-3 mt-4 pt-14">
-				<Form
-					form={inputForm}
-					colon={false}
-					wrapperCol={{ flex: 1 }}
-					preserve={false}
-				>
-					{showDstColumns.length > 0 ? (
-						<CellEditorContext
-							form={form}
-							setForm={setForm}
-							dstColumns={showDstColumns}
-						/>
-					) : (
-						<NoFieldData />
-					)}
-				</Form>
-			</div>
-		</div>
+		</PurchaseRecordViewContext.Provider>
 	);
 };
 

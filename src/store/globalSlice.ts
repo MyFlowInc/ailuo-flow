@@ -263,4 +263,19 @@ export const selectIsQuality = (state: RootState) => {
 	return res;
 };
 
+export const selectIsWorkshop = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "workshop") {
+			res = true;
+		}
+	});
+	return res;
+};
+
 export default globalSlice.reducer;

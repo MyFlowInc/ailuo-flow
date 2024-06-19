@@ -76,7 +76,7 @@ const PMList = (props: any) => {
 							}
 							if (item.type === "work_shop") {
 								item.title = "车间管理";
-								item.path = "/dashboard/pre-product-manage/" + item.id;
+								item.path = "/dashboard/work-shop-manage/" + item.id;
 							}
 							return item;
 						});

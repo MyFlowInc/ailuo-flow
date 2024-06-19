@@ -66,19 +66,6 @@ const PMList = (props: any) => {
 				children.forEach((child: any) => {
 					child.key = "product_root_" + child.id;
 					child.title = child.name;
-					// let newChildren = [];
-					// if (child.children.splProjects) {
-					// 	// newChildren.push({
-					// 	// 	...child.children.splProjects,
-					// 	// 	title: "预生产管理",
-					// 	// 	path:
-					// 	// 		"/dashboard/pre-product-manage/" +
-					// 	// 		child.children.splProjects.id,
-					// 	// });
-					// 	newChildren.push(child.children.splProjects);
-					// }
-
-					// child.children = newChildren
 
 					if (!_.isEmpty(child.children)) {
 						child.children = child.children.map((item: any) => {

@@ -37,6 +37,7 @@ import MyAgentPage from "../pages/MyAgentPage/MyAgentPage";
 import PurchaseManage from "../pages/PMS/PurchaseManage";
 import PurchaseRecordView from "../pages/PMS/PurchaseRecordView";
 import QualityControl from "../pages/QM/QualityControl";
+import WorkshopManage from "../pages/PM/WorkshopManage";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -302,6 +303,10 @@ const DashboardRouterOutlet: React.FC = () => {
 										exact={true}
 									>
 										<PreProductionManage />
+									</Route>
+									{/* 预生产管理 */}
+									<Route path="/dashboard/work-shop-manage/:wspId" exact={true}>
+										<WorkshopManage />
 									</Route>
 
 									{/* 我的代办测试路由 */}

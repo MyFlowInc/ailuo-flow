@@ -116,6 +116,7 @@ const RoundImg = (props: {
 	return (
 		<div
 			style={{
+				minWidth: "20px",
 				width: props.width,
 				height: props.height,
 				borderRadius: "50%",
@@ -151,16 +152,18 @@ const WorkshopCard = (props: {
 						backgroundColor={cardInfo.imgColor}
 						src={cardInfo.imgSrc}
 					/>
-					<span>{cardInfo.title}</span>
-					<Button
-						style={{}}
-						type="primary"
-						onClick={() => {
-							history.push(location.pathname + "/" + props.stage);
-						}}
-					>
-						进入
-					</Button>
+					<span style={{ minWidth: "30%" }}>{cardInfo.title}</span>
+					<Flex style={{ width: "100%" }} justify={"flex-end"}>
+						<Button
+							style={{ float: "right" }}
+							type="primary"
+							onClick={() => {
+								history.push(location.pathname + "/" + props.stage);
+							}}
+						>
+							进入
+						</Button>
+					</Flex>
 				</Flex>
 				<Flex gap={5}>
 					<span>状态</span>

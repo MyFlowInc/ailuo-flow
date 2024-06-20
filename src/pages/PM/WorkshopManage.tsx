@@ -1,9 +1,12 @@
-import { Button, Card, ConfigProvider, Flex, Space, Tag } from "antd";
+import { Button, Card, ConfigProvider, Flex, Space, Tag, message } from "antd";
 import { blueButtonTheme, dashboardTheme } from "../../theme/theme";
 import categorySvg from "./assets/Category.svg";
 import { getWorkshopManagement } from "../../api/ailuo/workshop";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import WorkShopFullDataModal from "./FormModal/WorkShopFullDataModal";
+
+export const WorkshopManageContext = React.createContext<any>({});
 
 const RoundImg = (props: {
 	width: string;
@@ -37,14 +40,6 @@ const WorkshopCard = (props: {
 	enterButtonHandler: () => void;
 }) => {
 	const params: any = useParams();
-	const fetchWorkshop = async () => {
-		const resp = await getWorkshopManagement({ id: params.wspId });
-		const data = resp.data;
-		console.log(data);
-	};
-	useEffect(() => {
-		fetchWorkshop();
-	}, []);
 	return (
 		<Card styles={{ body: { padding: "10px" } }} style={{ width: "19%" }}>
 			<Flex gap={10} vertical>
@@ -81,68 +76,98 @@ const WorkshopCard = (props: {
 };
 
 const WorkshopManage: React.FC = () => {
-	return (
-		<ConfigProvider theme={dashboardTheme}>
-			<Space style={{ width: "100%" }} direction="vertical" size={40}>
-				<Flex align="center" gap={15}>
-					<Flex align="center" gap={5}>
-						<RoundImg
-							width="20px"
-							height="20px"
-							backgroundColor="blue"
-							src={categorySvg}
-						/>
+	const params = useParams<{ wspId: string }>();
 
-						<span>总仪表盘</span>
+	const [isShowFullDataModal, setIsShowFullDataModal] = useState(false);
+	const [workShopInfo, setWorkShopInfo] = useState({});
+
+	const handleViewFullData = () => {
+		setIsShowFullDataModal(true);
+	};
+
+	const fetchWorkshop = async () => {
+		const resp = await getWorkshopManagement({ id: params.wspId });
+		if (resp.code == 200) {
+			setWorkShopInfo(resp.data);
+		} else {
+			message.error(resp.msg);
+		}
+	};
+
+	useEffect(() => {
+		fetchWorkshop();
+	}, [params.wspId]);
+
+	return (
+		<WorkshopManageContext.Provider value={{ workShopInfo }}>
+			<ConfigProvider theme={dashboardTheme}>
+				<Space style={{ width: "100%" }} direction="vertical" size={40}>
+					<Flex align="center" gap={15}>
+						<Flex align="center" gap={5}>
+							<RoundImg
+								width="20px"
+								height="20px"
+								backgroundColor="blue"
+								src={categorySvg}
+							/>
+
+							<span>总仪表盘</span>
+						</Flex>
+						<ConfigProvider theme={blueButtonTheme}>
+							<Button type="primary" onClick={handleViewFullData}>
+								查看完整资料包
+							</Button>
+						</ConfigProvider>
 					</Flex>
-					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary">查看完整资料包</Button>
-					</ConfigProvider>
-				</Flex>
-				<Flex style={{ width: "100%" }} justify={"space-between"}>
-					<WorkshopCard
-						iconSrc={categorySvg}
-						status=""
-						actions={["开始备料"]}
-						actionHandler={() => {}}
-						enterButtonHandler={() => {}}
-						title="备料"
-					></WorkshopCard>
-					<WorkshopCard
-						iconSrc={categorySvg}
-						status=""
-						actions={[]}
-						actionHandler={() => {}}
-						enterButtonHandler={() => {}}
-						title="加工"
-					></WorkshopCard>
-					<WorkshopCard
-						iconSrc={categorySvg}
-						status=""
-						actions={[]}
-						actionHandler={() => {}}
-						enterButtonHandler={() => {}}
-						title="装配"
-					></WorkshopCard>
-					<WorkshopCard
-						iconSrc={categorySvg}
-						status=""
-						actions={[]}
-						actionHandler={() => {}}
-						enterButtonHandler={() => {}}
-						title="调试"
-					></WorkshopCard>
-					<WorkshopCard
-						iconSrc={categorySvg}
-						status=""
-						actions={[]}
-						actionHandler={() => {}}
-						enterButtonHandler={() => {}}
-						title="出厂检验"
-					></WorkshopCard>
-				</Flex>
-			</Space>
-		</ConfigProvider>
+					<Flex style={{ width: "100%" }} justify={"space-between"}>
+						<WorkshopCard
+							iconSrc={categorySvg}
+							status=""
+							actions={["开始备料"]}
+							actionHandler={() => {}}
+							enterButtonHandler={() => {}}
+							title="备料"
+						></WorkshopCard>
+						<WorkshopCard
+							iconSrc={categorySvg}
+							status=""
+							actions={[]}
+							actionHandler={() => {}}
+							enterButtonHandler={() => {}}
+							title="加工"
+						></WorkshopCard>
+						<WorkshopCard
+							iconSrc={categorySvg}
+							status=""
+							actions={[]}
+							actionHandler={() => {}}
+							enterButtonHandler={() => {}}
+							title="装配"
+						></WorkshopCard>
+						<WorkshopCard
+							iconSrc={categorySvg}
+							status=""
+							actions={[]}
+							actionHandler={() => {}}
+							enterButtonHandler={() => {}}
+							title="调试"
+						></WorkshopCard>
+						<WorkshopCard
+							iconSrc={categorySvg}
+							status=""
+							actions={[]}
+							actionHandler={() => {}}
+							enterButtonHandler={() => {}}
+							title="出厂检验"
+						></WorkshopCard>
+					</Flex>
+				</Space>
+				<WorkShopFullDataModal
+					open={isShowFullDataModal}
+					setOpen={setIsShowFullDataModal}
+				></WorkShopFullDataModal>
+			</ConfigProvider>
+		</WorkshopManageContext.Provider>
 	);
 };
 

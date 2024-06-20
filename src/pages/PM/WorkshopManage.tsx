@@ -89,7 +89,7 @@ const WorkshopManage: React.FC = () => {
 		const resp = await getWorkshopManagement({ id: params.wspId });
 		if (resp.code == 200) {
 			setWorkShopInfo(resp.data);
-			console.log('workshopInfo', resp.data);
+			console.log("workshopInfo", resp.data);
 		} else {
 			message.error(resp.msg);
 		}

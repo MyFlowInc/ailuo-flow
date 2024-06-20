@@ -79,7 +79,7 @@ const WorkshopManage: React.FC = () => {
 	const params = useParams<{ wspId: string }>();
 
 	const [isShowFullDataModal, setIsShowFullDataModal] = useState(false);
-	const [workShopInfo, setWorkShopInfo] = useState({});
+	const [workshopInfo, setWorkShopInfo] = useState({});
 
 	const handleViewFullData = () => {
 		setIsShowFullDataModal(true);
@@ -89,6 +89,7 @@ const WorkshopManage: React.FC = () => {
 		const resp = await getWorkshopManagement({ id: params.wspId });
 		if (resp.code == 200) {
 			setWorkShopInfo(resp.data);
+			console.log('workshopInfo', resp.data);
 		} else {
 			message.error(resp.msg);
 		}
@@ -99,7 +100,7 @@ const WorkshopManage: React.FC = () => {
 	}, [params.wspId]);
 
 	return (
-		<WorkshopManageContext.Provider value={{ workShopInfo }}>
+		<WorkshopManageContext.Provider value={{ workshopInfo }}>
 			<ConfigProvider theme={dashboardTheme}>
 				<Space style={{ width: "100%" }} direction="vertical" size={40}>
 					<Flex align="center" gap={15}>

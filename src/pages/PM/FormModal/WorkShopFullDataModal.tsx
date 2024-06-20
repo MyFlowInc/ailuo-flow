@@ -1,5 +1,5 @@
 import { ConfigProvider, Form, Input, Modal } from "antd";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import ModeSelectTable from "../ModeSelectTable";
 import CellEditorContext from "./CellEditorContext";
@@ -7,6 +7,7 @@ import { NoFieldData } from "./NoFieldData";
 import { TableTheme } from "../../../theme/theme";
 import SPLModeSelect from "./SPLModeSelect";
 import { SPLProductStatusMap } from "../../../api/ailuo/dict";
+import { WorkshopManageContext } from "../WorkshopManage";
 
 interface DataType {
 	key: React.Key;
@@ -158,10 +159,21 @@ const WorkShopFullDataModal: React.FC<WorkShopFullDataModalProps> = ({
 	open,
 	setOpen,
 }) => {
+	const { workshopInfo } = useContext(WorkshopManageContext);
+
 	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
+
+	const fetchData = async () => {
+		
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, [workshopInfo.relationProject]);
+
 	return (
 		<Modal
 			title="完整资料包"

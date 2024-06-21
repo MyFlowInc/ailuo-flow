@@ -5,6 +5,7 @@ import {
 	Button,
 	ConfigProvider,
 	Form,
+	Input,
 	Select,
 	Tag,
 	Tooltip,
@@ -15,26 +16,27 @@ import {
 	WarningFilled,
 	WarningOutlined,
 } from "@ant-design/icons";
-import { blueButtonTheme, greyButtonTheme } from "../../theme/theme";
 import { useHistory, useParams } from "react-router";
 import CellEditorContext from "./FormModal/CellEditorContext";
 import { NoFieldData } from "./FormModal/NoFieldData";
-import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
+import { NumFieldType } from "../../../../components/Dashboard/TableColumnRender";
 import PurchaseItemTable from "./PurchaseItemTable";
-import PurchaseMilestone from "./PurchaseMilestone";
-import {
-	getRelationProject,
-	purRequisition,
-	savePurRequisition,
-	updatePurRequisition,
-} from "../../api/ailuo/pms";
+import { useAppSelector } from "../../../../store/hooks";
+import { selectIsQuality, selectUser } from "../../../../store/globalSlice";
 import {
 	PurchaseStatusEnum,
 	PurchaseTypeMap,
-	PurchaseTypeMapDict,
-} from "../../api/ailuo/dict";
-import { useAppSelector } from "../../store/hooks";
-import { selectIsQuality, selectUser } from "../../store/globalSlice";
+} from "../../../../api/ailuo/dict";
+import {
+	purRequisition,
+	savePurRequisition,
+	updatePurRequisition,
+} from "../../../../api/ailuo/pms";
+import { blueButtonTheme, greyButtonTheme } from "../../../../theme/theme";
+import PurchaseMilestone from "./PurchaseMilestone";
+import { getStore } from "../../../../store";
+import { splProjectList } from "../../../../api/ailuo/spl-pre-product";
+import _ from "lodash";
 
 export const PurchaseRecordViewContext = React.createContext<any>({});
 
@@ -45,13 +47,22 @@ const columns = [
 		key: "type",
 		type: NumFieldType.MultiSelectForLabel,
 		dictCode: "procurement",
-		rules: [{ required: true, message: "请选择请购类型" }],
+		rules: [
+			{ required: true, message: "请选择请购类型" },
+			({ getFieldValue }: any) => ({
+				validator(_: any, value: any) {
+					if (value.includes("order")) {
+						return Promise.resolve();
+					}
+					return Promise.reject(new Error("请购类型必须包含订单用"));
+				},
+			}),
+		],
 	},
 	{
 		title: "关联项目名称",
-		dataIndex: "relationProject",
-		key: "relationProject",
-		type: NumFieldType.RelationProject,
+		dataIndex: "projectName",
+		key: "projectName",
 		renderTitle: () => {
 			return (
 				<div>
@@ -61,6 +72,9 @@ const columns = [
 					</Tooltip>
 				</div>
 			);
+		},
+		renderContent: (value: any) => {
+			return <Input className="w-full" value={value} disabled></Input>;
 		},
 	},
 	{
@@ -171,6 +185,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const params = useParams() as any;
 	const user = useAppSelector(selectUser);
 	const isQuality = useAppSelector(selectIsQuality);
+	const curWorkshop = { ...getStore("global.curWorkshop") };
 
 	const [inputForm] = Form.useForm();
 
@@ -192,10 +207,6 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			message.warning("请输入编号!");
 			return false;
 		}
-		if (form.type.includes(PurchaseTypeMap.Order) && !form.relationProject) {
-			message.warning("请选择关联项目名称!");
-			return false;
-		}
 		return true;
 	};
 
@@ -208,11 +219,14 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 				return;
 			}
 			let res: any = {};
-
+			const projectInfo = JSON.parse(
+				localStorage.getItem("projectInfo") || "{}",
+			);
 			if (params.purId == "new") {
 				res = await savePurRequisition({
 					...form,
 					type: form.type.join(","),
+					relationProject: projectInfo.id,
 				});
 			} else {
 				res = await updatePurRequisition({
@@ -224,7 +238,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			console.log(res);
 			if (res.code == 200) {
 				message.success("保存成功!");
-				history.push("/dashboard/pms/pur-manage");
+				history.goBack();
 			} else {
 				message.error(res.msg);
 			}
@@ -234,7 +248,6 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	};
 
 	const fetchData = async () => {
-		setForm({ requestor: user.username });
 		inputForm.resetFields();
 		if (params.purId !== "new") {
 			const res = await purRequisition({ id: params.purId });
@@ -245,6 +258,19 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			};
 			setForm(temp);
 			inputForm.setFieldsValue(temp);
+		} else {
+			const res = await splProjectList({
+				id: curWorkshop.relationProject,
+				pageNum: 1,
+				pageSize: 100,
+			});
+			const projectInfo = _.get(res, "data.record[0]");
+			localStorage.setItem("projectInfo", JSON.stringify(projectInfo));
+			setForm({
+				requestor: user.username,
+				projectName: projectInfo.name,
+				type: [PurchaseTypeMap.Order],
+			});
 		}
 	};
 
@@ -400,8 +426,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			<div className="w-full">
 				<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">
 					<div className="flex items-center mb-2">
-						<img src={CartSvg} alt="" />
-						<div className="font-bold text-lg ml-3">请购管理</div>
+						<div className="font-bold text-lg ml-3">备料</div>
 						<ConfigProvider theme={greyButtonTheme}>
 							<Button
 								className="ml-4"
@@ -422,10 +447,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 						</div>
 						<div>
 							<ConfigProvider theme={greyButtonTheme}>
-								<Button
-									type="primary"
-									onClick={() => history.goBack()}
-								>
+								<Button type="primary" onClick={() => history.goBack()}>
 									取消
 								</Button>
 							</ConfigProvider>

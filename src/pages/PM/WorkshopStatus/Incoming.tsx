@@ -1,57 +1,60 @@
 import { Button, ConfigProvider, Pagination, Table, Tag } from "antd";
 import React, { useRef, useState } from "react";
 import { LeftOutlined } from "@ant-design/icons";
-import { useHistory } from "react-router";
-import { greyButtonTheme } from "../../../theme/theme";
+import { useHistory, useParams } from "react-router";
+import { blueButtonTheme, greyButtonTheme } from "../../../theme/theme";
 import TableColumnRender from "../../../components/Dashboard/TableColumnRender";
+import PurchaseTable from "./IncomingPurchase/PurchaseTable";
+import EditFilled from "../../../assets/icons/EditFilled";
+import { getStore } from "../../../store";
 
 const StatusView = () => {
+	const curWorkshop = { ...getStore("global.curWorkshop") };
+	const params = useParams<any>()
+	const history = useHistory();
 	return (
 		<div className="flex items-center mt-2">
 			<div className="flex items-center">
 				<div className="mr-2 text-[#848484]">状态: </div>
-				<Tag color={"#E8F2FF"} style={{ color: "#000" }}>
+				<Tag
+					className="flex items-center"
+					color={"#E8F2FF"}
+					style={{ color: "#000", height: "27px" }}
+				>
 					{"未启动"}
 				</Tag>
 			</div>
 			<div className="flex  items-center ml-4">
 				<div className="mr-2 text-[#848484]">操作: </div>
 				<Tag
-					className="cursor-pointer"
+					className="cursor-pointer flex items-center"
 					color={"#D4F3F2"}
-					style={{ color: "#000" }}
+					style={{ color: "#000", height: "27px" }}
 				>
 					{"开始备料"}
 				</Tag>
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						className="ml-4"
+						type="primary"
+						icon={<EditFilled></EditFilled>}
+						onClick={() =>
+							history.push(
+								`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/new`,
+							)
+						}
+					>
+						新建请购单
+					</Button>
+				</ConfigProvider>
 			</div>
 		</div>
 	);
 };
 
-const tableColumns: any = [
-	{
-		title: "请购类型",
-		width: 200,
-		dataIndex: "请购类型",
-		key: "请购类型",
-		render: (text: string, record: any) => {
-			return <div></div>;
-		},
-	},
-	{
-		title: "状态",
-		width: 200,
-		dataIndex: "状态",
-		key: "状态",
-		render: (text: string, record: any) => {
-			return <div></div>;
-		},
-	},
-];
+interface IncomingProps {}
 
-interface WorkshopStockViewProps {}
-
-const Incoming: React.FC<WorkshopStockViewProps> = () => {
+const Incoming: React.FC<IncomingProps> = () => {
 	const history = useHistory();
 
 	const [datasource, setDatasource] = useState([]);
@@ -83,26 +86,8 @@ const Incoming: React.FC<WorkshopStockViewProps> = () => {
 					<div>{StatusView()}</div>
 				</div>
 			</div>
-			<Table
-				size="small"
-				pagination={false}
-				components={{
-					body: {
-						cell: TableColumnRender,
-					},
-				}}
-				columns={tableColumns}
-				dataSource={datasource}
-				scroll={{ x: true, y: `calc(100vh - 240px)` }}
-			/>
-			<div className="flex items-center justify-end mt-4">
-				<Pagination
-					current={curPage.current.pageNum}
-					total={curPage.current.total}
-					pageSize={curPage.current.pageSize}
-					showTotal={(total) => `共 ${total} 条`}
-					onChange={pageNumChange}
-				/>
+			<div className="mt-16">
+				<PurchaseTable></PurchaseTable>
 			</div>
 		</div>
 	);

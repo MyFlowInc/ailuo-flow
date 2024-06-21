@@ -43,6 +43,7 @@ import Machining from "../pages/PM/WorkshopStatus/Machining";
 import Assembling from "../pages/PM/WorkshopStatus/Assembling";
 import Debugging from "../pages/PM/WorkshopStatus/Debugging";
 import FactoryProduction from "../pages/PM/WorkshopStatus/FactoryProduction";
+import WorkshopPurchaseRecordView from '../pages/PM/WorkshopStatus/IncomingPurchase/PurchaseRecordView'
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -315,11 +316,15 @@ const DashboardRouterOutlet: React.FC = () => {
 									</Route>
 									{/* 备料管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/incoming"
+										path="/dashboard/work-shop-manage/:wspId/:projectId/incoming"
 										exact={true}
 									>
 										<Incoming />
 									</Route>
+									<Route path="/dashboard/work-shop-manage/:wspId/incoming/purchase/:purId" exact={true}>
+										<WorkshopPurchaseRecordView />
+									</Route>
+
 									{/* 加工管理 */}
 									<Route
 										path="/dashboard/work-shop-manage/:wspId/machining"

@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
-import DeleteFilled from "../../assets/icons/DeleteFilled";
 
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import EditFilled from "../../assets/icons/EditFilled";
-import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
-import { PurchaseManageContext } from "./PurchaseManage";
-import { selectIsFinance, selectIsManager } from "../../store/globalSlice";
-import { useAppSelector } from "../../store/hooks";
-import { useHistory } from "react-router";
-import { PurchaseStatusEnum } from "../../api/ailuo/dict";
+import { useAppSelector } from "../../../../store/hooks";
+import {
+	selectIsFinance,
+	selectIsManager,
+} from "../../../../store/globalSlice";
+import { useHistory, useParams } from "react-router";
+import { PurchaseStatusEnum } from "../../../../api/ailuo/dict";
+import DeleteFilled from "../../../../assets/icons/DeleteFilled";
+import { ExclamationCircleFilled } from "@ant-design/icons";
+import EditFilled from "../../../../assets/icons/EditFilled";
+import { PurchaseManageContext } from "./PurchaseTable";
+import TableColumnRender from "../../../../components/Dashboard/TableColumnRender";
 
 const StandardTableRoot = styled.div`
 	opacity: 1;
@@ -41,6 +44,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 }) => {
 	const isManager = useAppSelector(selectIsManager);
 	const history = useHistory();
+	const params = useParams<any>();
 
 	const handleDeleteRecord = async (text: string, record: any) => {
 		if (record.status !== PurchaseStatusEnum.Start && !isManager) {
@@ -62,7 +66,9 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {
-		history.push(`/dashboard/pms/pur-manage/${record.id}`);
+		history.push(
+			`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/${record.id}`,
+		);
 	};
 
 	return (

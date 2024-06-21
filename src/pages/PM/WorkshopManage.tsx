@@ -135,6 +135,7 @@ const WorkshopCard = (props: {
 	id: string;
 	stage: Stage;
 	status: Status;
+	workshopInfo: any;
 	fetchWorkshop: () => void;
 }) => {
 	const cardInfo = getCardInfoByStage(props.stage);
@@ -158,7 +159,13 @@ const WorkshopCard = (props: {
 							style={{ float: "right" }}
 							type="primary"
 							onClick={() => {
-								history.push(location.pathname + "/" + props.stage);
+								history.push(
+									location.pathname +
+										"/" +
+										props.workshopInfo.relationProject +
+										"/" +
+										props.stage,
+								);
 							}}
 						>
 							进入
@@ -264,6 +271,7 @@ const WorkshopManage: React.FC = () => {
 									status={info.status}
 									fetchWorkshop={fetchWorkshop}
 									key={info.stage}
+									workshopInfo={workshopInfo}
 								></WorkshopCard>
 							);
 						})}

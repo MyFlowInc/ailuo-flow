@@ -230,12 +230,6 @@ const WorkshopManage: React.FC = () => {
 		}
 	};
 
-	const handleStock = (action: string) => {
-		if (action == "开始备料") {
-			console.log("开始备料");
-		}
-	};
-
 	useEffect(() => {
 		fetchWorkshop();
 	}, [params.wspId]);

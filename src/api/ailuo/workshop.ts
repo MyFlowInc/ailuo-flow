@@ -17,6 +17,43 @@ interface UpdateWorkshopManagementReq {
 	factoryproductionStatus?: string;
 }
 
+interface GetImportantEventsReq {
+	pageNum: number;
+	pageSize: number;
+	relationRequisition?: string;
+	relatedStock?: string;
+	relatedAssembling?: string;
+	relatedMachining?: string;
+	relatedWorkshop?: string;
+	deliveryTime?: string;
+}
+
+interface GetPurMachiningReq {
+	type: string;
+	relatedProjects: string;
+	pageNum: number;
+	pageSize: number;
+}
+
+interface SavePurMachiningReq {
+	type: string;
+	endTime?: string;
+	expectedTime?: string;
+	workerName?: string;
+	number?: string;
+	status?: string;
+	relatedWorkshopstatus: string;
+	relatedProject: string;
+	relatedManage: string;
+}
+
+export function getImportantEvents(params: GetImportantEventsReq) {
+	return apiCall({
+		url: "api/sys/purImportantevents/page",
+		method: "get",
+		params: params,
+	});
+}
 export function getWorkshopManagement(params: Params) {
 	return apiCall({
 		url: "api/sys/workshopManagement/management",
@@ -29,6 +66,22 @@ export function updateWorkshopStatus(data: UpdateWorkshopStatusReq) {
 	return apiCall({
 		url: "api/sys/purWorkshopstatus/edit",
 		method: "put",
+		data,
+	});
+}
+
+export function getPurMachining(params: GetPurMachiningReq) {
+	return apiCall({
+		url: "api/sys/purMachining/page",
+		method: "get",
+		params,
+	});
+}
+
+export function savePurMachining(data: SavePurMachiningReq) {
+	return apiCall({
+		url: "api/sys/purMachining/save",
+		method: "post",
 		data,
 	});
 }

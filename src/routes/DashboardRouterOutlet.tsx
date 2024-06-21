@@ -343,7 +343,7 @@ const DashboardRouterOutlet: React.FC = () => {
 									</Route>
 									{/* 出厂管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/factoryproduction"
+										path="/dashboard/work-shop-manage/:wspId/factory_production"
 										exact={true}
 									>
 										<FactoryProduction />

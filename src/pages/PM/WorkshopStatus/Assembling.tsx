@@ -93,7 +93,7 @@ const Assembling: React.FC = () => {
 			<div className="flex items-center justify-between mt-4">
 				<div>
 					<StatusView
-						id={workshop.id}
+						id={workshop.children[2].id}
 						status={workshop.children[2].status}
 						fecthWorkshop={fetchWorkshop}
 					/>

@@ -38,6 +38,7 @@ import PurchaseManage from "../pages/PMS/PurchaseManage";
 import PurchaseRecordView from "../pages/PMS/PurchaseRecordView";
 import QualityControl from "../pages/QM/QualityControl";
 import WorkshopManage from "../pages/PM/WorkshopManage";
+import WorkshopStockView from "../pages/PM/WorkshopStockView";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -304,11 +305,13 @@ const DashboardRouterOutlet: React.FC = () => {
 									>
 										<PreProductionManage />
 									</Route>
-									{/* 预生产管理 */}
+									{/* 车间管理 */}
 									<Route path="/dashboard/work-shop-manage/:wspId" exact={true}>
 										<WorkshopManage />
 									</Route>
-
+									<Route path="/dashboard/work-shop-stock" exact={true}>
+										<WorkshopStockView />
+									</Route>
 									{/* 我的代办测试路由 */}
 									<Route path="/dashboard/my-agent-page" exact={true}>
 										<MyAgentPage />

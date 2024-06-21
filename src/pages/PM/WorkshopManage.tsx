@@ -3,7 +3,7 @@ import { blueButtonTheme, dashboardTheme } from "../../theme/theme";
 import categorySvg from "./assets/Category.svg";
 import { getWorkshopManagement } from "../../api/ailuo/workshop";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import WorkShopFullDataModal from "./FormModal/WorkShopFullDataModal";
 
 export const WorkshopManageContext = React.createContext<any>({});
@@ -77,6 +77,7 @@ const WorkshopCard = (props: {
 
 const WorkshopManage: React.FC = () => {
 	const params = useParams<{ wspId: string }>();
+	const history = useHistory();
 
 	const [isShowFullDataModal, setIsShowFullDataModal] = useState(false);
 	const [workshopInfo, setWorkShopInfo] = useState({});
@@ -92,6 +93,12 @@ const WorkshopManage: React.FC = () => {
 			console.log("workshopInfo", resp.data);
 		} else {
 			message.error(resp.msg);
+		}
+	};
+
+	const handleStock = (action: string) => {
+		if (action == "开始备料") {
+			console.log("开始备料");
 		}
 	};
 
@@ -125,8 +132,10 @@ const WorkshopManage: React.FC = () => {
 							iconSrc={categorySvg}
 							status=""
 							actions={["开始备料"]}
-							actionHandler={() => {}}
-							enterButtonHandler={() => {}}
+							actionHandler={(action) => handleStock(action)}
+							enterButtonHandler={() => {
+								history.push("/dashboard/work-shop-stock");
+							}}
 							title="备料"
 						></WorkshopCard>
 						<WorkshopCard

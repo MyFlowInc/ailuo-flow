@@ -1,7 +1,17 @@
-import { Button, Card, ConfigProvider, Flex, Space, Tag, message } from "antd";
+import {
+	Button,
+	Card,
+	ConfigProvider,
+	Flex,
+	Space,
+	Table,
+	Tag,
+	message,
+} from "antd";
 import { blueButtonTheme, dashboardTheme } from "../../theme/theme";
 import categorySvg from "./assets/Category.svg";
 import {
+	getImportantEvents,
 	getWorkshopManagement,
 	updateWorkshopManagementStatus,
 	updateWorkshopStatus,
@@ -22,20 +32,44 @@ import {
 
 export const WorkshopManageContext = React.createContext<any>({});
 
-const getNextActionsByTypeAndStatus = (stage: Stage, status: Status) => {
-	if (stage !== "machining") {
-		return statusActionsMap.common[status];
-	} else {
-		//加工要质检，流程不同
-		return statusActionsMap.machining[status];
-	}
+const defaultColumns: any = [
+	{
+		title: "时间",
+		dataIndex: "createTime",
+		width: "15%",
+	},
+	{
+		title: "人员",
+		dataIndex: "name",
+		width: "15%",
+	},
+	{
+		title: "类型",
+		dataIndex: "type",
+		width: "15%",
+	},
+	{
+		title: "描述",
+		dataIndex: "content",
+		width: "40%",
+	},
+	{
+		title: "是否影响交期",
+		dataIndex: "deliveryTime",
+		width: "15%",
+		render: () => <span>是</span>,
+	},
+];
+
+export const getNextActionsByTypeAndStatus = (stage: Stage, status: Status) => {
+	return statusActionsMap.common[status];
 };
 
 const getCardInfoByStage = (stage: Stage) => {
 	return stageCardInfoMap[stage];
 };
 
-const getLabel = (
+export const getLabel = (
 	stage: Stage,
 	status: Status,
 	labelType: "statusLabel" | "actionLabel",
@@ -43,11 +77,11 @@ const getLabel = (
 	return typeStatusTagLabelMap[stage][labelType][status];
 };
 
-const updateStatusByStage = async (
+export const updateStatusByStage = async (
 	id: string,
 	stage: Stage,
 	status: Status,
-	refreshWorkshop: () => void,
+	refreshWorkshop?: () => void,
 ) => {
 	let res: any;
 	//调用接口不一样。。
@@ -61,13 +95,13 @@ const updateStatusByStage = async (
 		});
 	}
 	if (!res.success) {
-		console.error(stage + " 状态更新失败！有工单未完成！");
-	} else {
+		message.error(stage + " 状态更新失败！有工单未完成！");
+	} else if (refreshWorkshop) {
 		refreshWorkshop();
 	}
 };
 
-const getTagColorByStatus = (status: Status) => {
+export const getTagColorByStatus = (status: Status) => {
 	switch (status) {
 		case "not_start":
 			return "#E8F2FF";
@@ -179,6 +213,7 @@ const WorkshopCard = (props: {
 						{cardActions.map((action: any) => {
 							return (
 								<Tag
+									className="cursor-pointer"
 									key={action}
 									color="#D4F3F2"
 									onClick={() => {
@@ -207,11 +242,11 @@ const WorkshopCard = (props: {
 
 const WorkshopManage: React.FC = () => {
 	const params = useParams<{ wspId: string }>();
-	const history = useHistory();
 
 	const [isShowFullDataModal, setIsShowFullDataModal] = useState(false);
 	const [workshopInfo, setWorkShopInfo] = useState({});
 	const [workshopCardInfo, setWorkshopCardInfo] = useState<any>([]);
+	const [importantEvents, setImportantEvents] = useState<any[]>([]);
 	const dispatch = useAppDispatch();
 
 	const handleViewFullData = () => {
@@ -224,7 +259,20 @@ const WorkshopManage: React.FC = () => {
 			setWorkShopInfo(resp.data);
 			setWorkshopCardInfo(getWorkshopCardInfo(resp.data));
 			dispatch(setCurWorkshop(resp.data));
-			console.log("workshopInfo", resp.data);
+		} else {
+			message.error(resp.msg);
+		}
+	};
+
+	const getWorkshopImportantEvents = async () => {
+		const resp = await getImportantEvents({
+			pageNum: 1,
+			pageSize: 9999,
+			deliveryTime: "yes",
+			relatedWorkshop: params.wspId,
+		});
+		if (resp.code == 200) {
+			setImportantEvents(resp.data.record);
 		} else {
 			message.error(resp.msg);
 		}
@@ -232,6 +280,7 @@ const WorkshopManage: React.FC = () => {
 
 	useEffect(() => {
 		fetchWorkshop();
+		getWorkshopImportantEvents();
 	}, [params.wspId]);
 
 	return (
@@ -267,6 +316,17 @@ const WorkshopManage: React.FC = () => {
 								></WorkshopCard>
 							);
 						})}
+					</Flex>
+					<Flex gap={20} vertical>
+						<span>重要事件</span>
+						<Table
+							rowKey={"id"}
+							size="small"
+							pagination={false}
+							bordered
+							dataSource={importantEvents}
+							columns={defaultColumns}
+						/>
 					</Flex>
 				</Space>
 				<WorkShopFullDataModal

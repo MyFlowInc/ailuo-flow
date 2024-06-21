@@ -20,14 +20,6 @@ export const statusActionsMap = {
 		tobe_tested: [],
 		over: [],
 	},
-	//加工
-	machining: {
-		not_start: ["start"],
-		//？加工质检流程？
-		start: ["over"],
-		over: [],
-		tobe_tested: ["start"],
-	},
 };
 
 export type TypeStatusTagLabelMap = Record<Stage, any>;
@@ -47,12 +39,12 @@ export const typeStatusTagLabelMap: TypeStatusTagLabelMap = {
 	machining: {
 		statusLabel: {
 			not_start: "未开始",
-			start: "质检中",
-			over: "完成质检",
+			start: "加工中",
+			over: "完成加工",
 		},
 		actionLabel: {
 			start: "开始加工",
-			over: "加工完成",
+			over: "完成加工",
 		},
 	},
 	assembling: {

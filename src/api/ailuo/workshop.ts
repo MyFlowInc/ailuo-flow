@@ -17,6 +17,24 @@ interface UpdateWorkshopManagementReq {
 	factoryproductionStatus?: string;
 }
 
+interface getImportantEventsReq {
+	pageNum: number;
+	pageSize: number;
+	relationRequisition?: string;
+	relatedStock?: string;
+	relatedAssembling?: string;
+	relatedMachining?: string;
+	relatedWorkshop?: string;
+	deliveryTime?: string;
+}
+
+export function getImportantEvents(params: getImportantEventsReq) {
+	return apiCall({
+		url: "api/sys/purImportantevents/page",
+		method: "get",
+		params: params,
+	});
+}
 export function getWorkshopManagement(params: Params) {
 	return apiCall({
 		url: "api/sys/workshopManagement/management",

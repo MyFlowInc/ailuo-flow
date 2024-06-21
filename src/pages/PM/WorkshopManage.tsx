@@ -85,7 +85,7 @@ export const updateStatusByStage = async (
 ) => {
 	let res: any;
 	//调用接口不一样。。
-	if (stage === "debugging" || stage === "factoryproduction") {
+	if (stage === "debugging" || stage === "factory_production") {
 		res = await updateWorkshopManagementStatus(id, stage, status);
 	} else {
 		res = await updateWorkshopStatus({
@@ -134,7 +134,7 @@ const getWorkshopCardInfo = (workshopInfo: any) => {
 		},
 		{
 			id: workshopInfo.id,
-			stage: "factoryproduction",
+			stage: "factory_production",
 			status: workshopInfo.factoryproductionStatus ?? "not_start",
 		},
 	);

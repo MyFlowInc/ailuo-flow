@@ -11,7 +11,7 @@ export type Stage =
 	| "machining"
 	| "assembling"
 	| "debugging"
-	| "factoryproduction";
+	| "factory_production";
 
 export const statusActionsMap = {
 	common: {
@@ -69,7 +69,7 @@ export const typeStatusTagLabelMap: TypeStatusTagLabelMap = {
 			over: "完成调试",
 		},
 	},
-	factoryproduction: {
+	factory_production: {
 		statusLabel: {
 			not_start: "未开始",
 			start: "出厂检验中",
@@ -103,7 +103,7 @@ export const stageCardInfoMap = {
 		imgSrc: debugging,
 		imgColor: "#F1FDEE",
 	},
-	factoryproduction: {
+	factory_production: {
 		title: "出厂检验",
 		imgSrc: factorypoduction,
 		imgColor: "#FFF5D4",

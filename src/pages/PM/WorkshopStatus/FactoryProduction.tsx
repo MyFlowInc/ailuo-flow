@@ -22,7 +22,7 @@ const StatusView = (props: {
 	status: Status;
 	fecthWorkshop: () => void;
 }) => {
-	const stage: Stage = "factoryproduction";
+	const stage: Stage = "factory_production";
 	const action = getNextActionsByTypeAndStatus(
 		stage,
 		props.status,

@@ -16,6 +16,7 @@ import {
 	getLabel,
 	updateStatusByStage,
 } from "../WorkshopManage";
+import ItemTable from "../ItemTable";
 const StatusView = (props: {
 	id: string;
 	status: Status;
@@ -99,6 +100,7 @@ const Machining: React.FC = () => {
 					/>
 				</div>
 			</div>
+			<ItemTable workshopInfo={workshop} stage="machining"></ItemTable>
 		</div>
 	);
 };

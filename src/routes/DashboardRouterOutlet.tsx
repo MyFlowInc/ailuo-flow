@@ -43,7 +43,7 @@ import Machining from "../pages/PM/WorkshopStatus/Machining";
 import Assembling from "../pages/PM/WorkshopStatus/Assembling";
 import Debugging from "../pages/PM/WorkshopStatus/Debugging";
 import FactoryProduction from "../pages/PM/WorkshopStatus/FactoryProduction";
-import WorkshopPurchaseRecordView from '../pages/PM/WorkshopStatus/IncomingPurchase/PurchaseRecordView'
+import WorkshopPurchaseRecordView from "../pages/PM/WorkshopStatus/IncomingPurchase/PurchaseRecordView";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -321,34 +321,37 @@ const DashboardRouterOutlet: React.FC = () => {
 									>
 										<Incoming />
 									</Route>
-									<Route path="/dashboard/work-shop-manage/:wspId/incoming/purchase/:purId" exact={true}>
+									<Route
+										path="/dashboard/work-shop-manage/:wspId/incoming/purchase/:purId"
+										exact={true}
+									>
 										<WorkshopPurchaseRecordView />
 									</Route>
 
 									{/* 加工管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/machining"
+										path="/dashboard/work-shop-manage/:wspId/:projectId/machining"
 										exact={true}
 									>
 										<Machining />
 									</Route>
 									{/* 装配管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/assembling"
+										path="/dashboard/work-shop-manage/:wspId/:projectId/assembling"
 										exact={true}
 									>
 										<Assembling />
 									</Route>
 									{/* 调试管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/debugging"
+										path="/dashboard/work-shop-manage/:wspId/:projectId/debugging"
 										exact={true}
 									>
 										<Debugging />
 									</Route>
 									{/* 出厂管理 */}
 									<Route
-										path="/dashboard/work-shop-manage/:wspId/factory_production"
+										path="/dashboard/work-shop-manage/:wspId/:projectId/factory_production"
 										exact={true}
 									>
 										<FactoryProduction />

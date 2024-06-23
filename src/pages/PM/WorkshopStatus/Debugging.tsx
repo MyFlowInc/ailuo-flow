@@ -25,6 +25,7 @@ import { useAppDispatch } from "../../../store/hooks";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import _ from "lodash";
+import MilestoneTable from "./Milestone/MilestoneTable";
 
 const StatusView = (props: {
 	id: string;
@@ -114,6 +115,7 @@ const Debugging: React.FC = () => {
 					/>
 				</div>
 			</div>
+			<MilestoneTable workshopType="debugging"></MilestoneTable>
 		</div>
 	);
 };

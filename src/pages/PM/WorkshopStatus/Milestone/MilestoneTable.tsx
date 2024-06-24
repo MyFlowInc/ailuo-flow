@@ -26,6 +26,7 @@ import {
 	blueButtonTheme,
 } from "../../../../theme/theme";
 import { useSelector } from "react-redux";
+import { Status } from "../../types";
 
 interface Item {
 	key: string;
@@ -48,9 +49,13 @@ type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 
 interface MilestoneTableProps {
 	workshopType: string;
+	status: Status;
 }
 
-const MilestoneTable: React.FC<MilestoneTableProps> = ({ workshopType }) => {
+const MilestoneTable: React.FC<MilestoneTableProps> = ({
+	workshopType,
+	status,
+}) => {
 	const workshop = useSelector((state) => (state as any).global.curWorkshop);
 	const user = useAppSelector(selectUser);
 	const isQuality = useAppSelector(selectIsQuality);
@@ -172,12 +177,12 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({ workshopType }) => {
 	}, [params.wspId]);
 
 	useEffect(() => {
-		if (workshop.debuggingStatus === "start") {
+		if (status === "start") {
 			setDisabled(false);
 		} else {
 			setDisabled(true);
 		}
-	}, [workshop.debuggingStatus]);
+	}, [status]);
 
 	return (
 		<div className="mt-4">

@@ -115,7 +115,10 @@ const Debugging: React.FC = () => {
 					/>
 				</div>
 			</div>
-			<MilestoneTable workshopType="debugging"></MilestoneTable>
+			<MilestoneTable
+				status={workshop.debuggingStatus}
+				workshopType="debugging"
+			></MilestoneTable>
 		</div>
 	);
 };

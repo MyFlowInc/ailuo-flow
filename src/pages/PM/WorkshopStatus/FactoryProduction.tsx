@@ -16,6 +16,7 @@ import {
 	getLabel,
 	updateStatusByStage,
 } from "../WorkshopManage";
+import MilestoneTable from "./Milestone/MilestoneTable";
 
 const StatusView = (props: {
 	id: string;
@@ -101,6 +102,10 @@ const FactoryProduction: React.FC = () => {
 					/>
 				</div>
 			</div>
+			<MilestoneTable
+				status={workshop.factoryproductionStatus}
+				workshopType="factory_production"
+			></MilestoneTable>
 		</div>
 	);
 };

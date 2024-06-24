@@ -18,7 +18,7 @@ interface EditRecordModalProps {
 	modalType: "add" | "edit" | "view";
 	columns: any;
 	type: Stage;
-	workshopStatus: Status;
+	workshopStatusId: string;
 	projectId: string;
 	fetchTable: any;
 }
@@ -82,7 +82,7 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 		setOpen,
 		modalType,
 		type,
-		workshopStatus,
+		workshopStatusId,
 		projectId,
 		fetchTable,
 	} = props;
@@ -96,7 +96,7 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				type: type,
 				relatedManage: params.wspId,
 				relatedProject: projectId,
-				relatedWorkshopstatus: workshopStatus,
+				relatedWorkshopstatus: workshopStatusId,
 				expectedTime: form.expectedTime
 					? dayjs(form.expectedTime).format("YYYY-MM-DD")
 					: "",
@@ -124,6 +124,8 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 			let formWithShowKey = {
 				...editFlowItemRecord,
 				showStartTime: "hide",
+				showAction: "hide",
+				showStatus: "hide",
 				showWorkerName: type === "assembling" ? "show" : "hide",
 				showNumber: type === "machining" ? "show" : "hide",
 				showExpectedTime: type === "machining" ? "show" : "hide",

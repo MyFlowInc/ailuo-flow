@@ -11,7 +11,7 @@ import { useHistory, useParams } from "react-router";
 import { getStore } from "../../../store";
 import { LeftOutlined } from "@ant-design/icons";
 import TableColumnRender from "../../../components/Dashboard/TableColumnRender";
-import { greyButtonTheme } from "../../../theme/theme";
+import { TableTheme, greyButtonTheme } from "../../../theme/theme";
 import {
 	getLabel,
 	getNextActionsByTypeAndStatus,
@@ -115,10 +115,12 @@ const Debugging: React.FC = () => {
 					/>
 				</div>
 			</div>
-			<MilestoneTable
-				status={workshop.debuggingStatus}
-				workshopType="debugging"
-			></MilestoneTable>
+			<ConfigProvider theme={TableTheme}>
+				<MilestoneTable
+					status={workshop.debuggingStatus}
+					workshopType="debugging"
+				></MilestoneTable>
+			</ConfigProvider>
 		</div>
 	);
 };

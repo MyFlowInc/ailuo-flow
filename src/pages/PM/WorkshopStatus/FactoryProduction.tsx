@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 import { getWorkshopManagement } from "../../../api/ailuo/workshop";
 import { setCurWorkshop } from "../../../store/globalSlice";
 import { useAppDispatch } from "../../../store/hooks";
-import { greyButtonTheme } from "../../../theme/theme";
+import { TableTheme, greyButtonTheme } from "../../../theme/theme";
 import { Stage, Status } from "../types";
 import {
 	getNextActionsByTypeAndStatus,
@@ -102,10 +102,12 @@ const FactoryProduction: React.FC = () => {
 					/>
 				</div>
 			</div>
-			<MilestoneTable
-				status={workshop.factoryproductionStatus}
-				workshopType="factory_production"
-			></MilestoneTable>
+			<ConfigProvider theme={TableTheme}>
+				<MilestoneTable
+					status={workshop.factoryproductionStatus}
+					workshopType="factory_production"
+				></MilestoneTable>
+			</ConfigProvider>
 		</div>
 	);
 };

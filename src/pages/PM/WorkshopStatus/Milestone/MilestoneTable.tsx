@@ -172,12 +172,12 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		switch (workshopType) {
 			case "machining": {
 				request.relatedMachining = workshopId;
-				workshopType = "";
+				request.workshopType = "";
 				break;
 			}
 			case "assembling": {
 				request.relatedAssembling = workshopId;
-				workshopType = "";
+				request.workshopType = "";
 				break;
 			}
 		}

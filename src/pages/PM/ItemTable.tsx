@@ -17,7 +17,11 @@ import WrongPng from "./assets/WRONG.png";
 import { selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { Stage, Status } from "./types";
-import { getPurMachining, removePurMachining } from "../../api/ailuo/workshop";
+import {
+	getPurMachining,
+	removePurMachining,
+	updatePurMachining,
+} from "../../api/ailuo/workshop";
 import ItemModal from "./FormModal/ItemModal";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
@@ -62,16 +66,11 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 	};
 
 	const handleTest = async (item: any) => {
-		if (
-			status == PurchaseStatusEnum.Start ||
-			status == PurchaseStatusEnum.NotStart
-		) {
-			return;
-		}
-		// await updatePurchaseItem({
-		// 	id: item.id,
-		// 	status: PurchaseItemStatusEnum.TobeTested,
-		// });
+		await updatePurMachining({
+			...item,
+			id: item.id,
+			status: PurchaseItemStatusEnum.TobeTested,
+		});
 		await fetchData();
 	};
 
@@ -114,51 +113,50 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 		},
 		{
 			title: stage === "machining" ? "加工检" : "装配检",
-			dataIndex: "status",
+			dataIndex: "加工检",
 			key: "加工检",
-			render: (text: string, record: any, index: number) => {
-				if (isPurchase) {
-					return null;
-				}
-				if (record.status === PurchaseItemStatusEnum.Approve) {
+			showCtrlKey: "showStatus",
+			render: (_text: string, record: any) => {
+				if (record.status === PurchaseItemStatusEnum.Todo) {
 					return (
-						<div>
+						<Tag
+							color={"#F2F3F5"}
+							style={{ color: "#707683", cursor: "pointer" }}
+							onClick={() => handleTest(record)}
+						>
+							请检
+						</Tag>
+					);
+				} else if (record.status === PurchaseItemStatusEnum.TobeTested) {
+					return (
+						<Tag
+							color={"#FFEEE3"}
+							style={{ color: "#707683", cursor: "pointer" }}
+						>
+							请检中
+						</Tag>
+					);
+				} else if (record.status === PurchaseItemStatusEnum.Approve) {
+					return (
+						<div className="">
 							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
 						</div>
 					);
 				} else if (record.status === PurchaseItemStatusEnum.Reject) {
 					return (
-						<div>
-							<img src={WrongPng} alt="" className=" w-[15px] h-[15px] " />
-						</div>
-					);
-				} else {
-					return (
-						<div>
+						<div className="flex items-center">
 							<img
-								className="mr-2 cursor-pointer w-[15px] h-[15px]"
-								src={RightPng}
-								alt=""
-								onClick={() => {
-									if (isWorkshop) {
-										message.warning("车间人员无法编辑!");
-										return;
-									}
-									setCurrentIndex(index);
-								}}
-							/>
-							<img
-								className="cursor-pointer w-[15px] h-[15px]"
 								src={WrongPng}
 								alt=""
-								onClick={() => {
-									if (isWorkshop) {
-										message.warning("车间人员无法编辑!");
-										return;
-									}
-									setCurrentIndex(index);
-								}}
+								className="mr-1 w-[15px] h-[15px] flex-shrink-0"
 							/>
+							<Tag
+								color={"#F2F3F5"}
+								style={{ color: "#707683", cursor: "pointer" }}
+								onClick={() => handleTest(record)}
+							>
+								重检
+							</Tag>
 						</div>
 					);
 				}
@@ -175,6 +173,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			title: "操作",
 			dataIndex: "action",
 			key: "action",
+			showCtrlKey: "showAction",
 			render: (text: any, record: any, index: number) => {
 				return (
 					<div className="flex items-center justify-around">
@@ -183,7 +182,9 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							color="#717682"
 							icon={<EditFilled />}
 							className="text-[#717682]"
-							disabled={getCurrentSatus() !== "start"}
+							disabled={
+								getCurrentStatus() !== "start" || record.status !== "todo"
+							}
 							onClick={() => handleEdit(record)}
 						></Button>
 						<Button
@@ -191,7 +192,9 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
-							disabled={getCurrentSatus() !== "start"}
+							disabled={
+								getCurrentStatus() !== "start" || record.status !== "todo"
+							}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
@@ -205,9 +208,6 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			...col,
 		};
 	});
-
-	const formColumns = columns.slice(0, columns.length - 1);
-
 	const handleNew = () => {
 		setModalType("add");
 		setCurrentItem({});
@@ -226,11 +226,18 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 		}
 	};
 
-	const getCurrentSatus = () => {
+	const getCurrentStatus = () => {
 		if (stage === "machining") {
 			return workshopInfo.children?.[1]?.status;
 		}
 		return workshopInfo.children?.[2]?.status;
+	};
+
+	const getCurrentWorkShopStatusId = () => {
+		if (stage === "machining") {
+			return workshopInfo.children?.[1]?.id;
+		}
+		return workshopInfo.children?.[2]?.id;
 	};
 
 	useEffect(() => {
@@ -242,7 +249,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			<div className="mt-8">
 				<Flex gap={20} vertical>
 					<ConfigProvider theme={TableTheme}>
-						{getCurrentSatus() === "start" && (
+						{getCurrentStatus() === "start" && (
 							<Button
 								style={{ width: "100px" }}
 								type={"primary"}
@@ -253,11 +260,13 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							</Button>
 						)}
 						<Table
+							bordered
 							rowKey={"id"}
 							size="small"
 							pagination={false}
 							dataSource={dataSource}
 							columns={columns}
+							scroll={{ y: "70vh" }}
 						/>
 					</ConfigProvider>
 				</Flex>
@@ -265,9 +274,9 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 					editFlowItemRecord={currentItem}
 					fetchTable={fetchData}
 					projectId={workshopInfo.relationProject}
-					workshopStatus={getCurrentSatus()}
+					workshopStatusId={getCurrentWorkShopStatusId()}
 					type={stage}
-					columns={formColumns}
+					columns={columns}
 					open={isShowModal}
 					setOpen={setIsShowModal}
 					modalType={modalType}

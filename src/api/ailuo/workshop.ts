@@ -122,7 +122,7 @@ export function updateWorkshopManagementStatus(
 	};
 	if (stage === "debugging") {
 		data.debuggingStatus = status;
-	} else if (stage === "factoryproduction") {
+	} else if (stage === "factory_production") {
 		data.factoryproductionStatus = status;
 	} else {
 		return new Promise((resolve) => {

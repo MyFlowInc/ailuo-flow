@@ -122,6 +122,7 @@ interface CustomModalProps {
 	formItem?: any | undefined;
 	fetchData: () => void;
 	workshopType: string;
+	workshopId?: string;
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -132,6 +133,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	formItem,
 	fetchData,
 	workshopType,
+	workshopId,
 }) => {
 	const params = useParams<any>();
 
@@ -143,13 +145,26 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		try {
 			let res: any = {};
 			if (form.id) {
-				res = await updateMilestone(
-					excludeNull({ ...form, relatedWorkshop: params.wspId, workshopType }),
-				);
+				res = await updateMilestone(excludeNull({ ...form }));
 			} else {
-				res = await saveMilestone(
-					excludeNull({ ...form, relatedWorkshop: params.wspId, workshopType }),
-				);
+				let request: any = {
+					...form,
+					relatedWorkshop: params.wspId,
+					workshopType,
+				};
+				switch (workshopType) {
+					case "machining": {
+						request.relatedMachining = workshopId;
+						workshopType = "";
+						break;
+					}
+					case "assembling": {
+						request.relatedAssembling = workshopId;
+						workshopType = "";
+						break;
+					}
+				}
+				res = await saveMilestone(excludeNull(request));
 			}
 			if (res.code == 200) {
 				await fetchData();

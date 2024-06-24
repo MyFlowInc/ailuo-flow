@@ -50,11 +50,13 @@ type ColumnTypes = Exclude<EditableTableProps["columns"], undefined>;
 interface MilestoneTableProps {
 	workshopType: string;
 	status: Status;
+	workshopId?: string;
 }
 
 const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	workshopType,
 	status,
+	workshopId,
 }) => {
 	const workshop = useSelector((state) => (state as any).global.curWorkshop);
 	const user = useAppSelector(selectUser);
@@ -161,12 +163,25 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	};
 
 	const fetchData = async () => {
-		const res = await getMilestoneList({
+		let request: any = {
 			pageNum: 1,
 			pageSize: 999999,
 			relatedWorkshop: params.wspId,
 			workshopType,
-		});
+		};
+		switch (workshopType) {
+			case "machining": {
+				request.relatedMachining = workshopId;
+				workshopType = "";
+				break;
+			}
+			case "assembling": {
+				request.relatedAssembling = workshopId;
+				workshopType = "";
+				break;
+			}
+		}
+		const res = await getMilestoneList(request);
 		if (res.code == 200) {
 			setDataSource(res.data.record);
 		}
@@ -174,7 +189,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 
 	useEffect(() => {
 		fetchData();
-	}, [params.wspId]);
+	}, [workshopId]);
 
 	useEffect(() => {
 		if (status === "start") {
@@ -217,6 +232,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 				modalType={modalType}
 				fetchData={fetchData}
 				workshopType={workshopType}
+				workshopId={workshopId}
 			></MilestoneRecordModal>
 		</div>
 	);

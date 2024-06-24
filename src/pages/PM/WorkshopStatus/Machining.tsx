@@ -17,6 +17,7 @@ import {
 	updateStatusByStage,
 } from "../WorkshopManage";
 import ItemTable from "../ItemTable";
+import MilestoneTable from "./Milestone/MilestoneTable";
 const StatusView = (props: {
 	id: string;
 	status: Status;
@@ -101,6 +102,11 @@ const Machining: React.FC = () => {
 				</div>
 			</div>
 			<ItemTable workshopInfo={workshop} stage="machining"></ItemTable>
+			<MilestoneTable
+				workshopType="machining"
+				status={workshop.children?.[1]?.status}
+				workshopId={workshop.children?.[1]?.id}
+			></MilestoneTable>
 		</div>
 	);
 };

@@ -47,6 +47,16 @@ interface SavePurMachiningReq {
 	relatedManage: string;
 }
 
+interface UpdatePurMachiningReq {
+	type?: string;
+	endTime?: string;
+	expectedTime?: string;
+	workerName?: string;
+	number?: string;
+	status?: string;
+	id: string;
+}
+
 export function getImportantEvents(params: GetImportantEventsReq) {
 	return apiCall({
 		url: "api/sys/purImportantevents/page",
@@ -83,6 +93,22 @@ export function savePurMachining(data: SavePurMachiningReq) {
 		url: "api/sys/purMachining/save",
 		method: "post",
 		data,
+	});
+}
+
+export function updatePurMachining(data: UpdatePurMachiningReq) {
+	return apiCall({
+		url: "api/sys/purMachining/edit",
+		method: "put",
+		data,
+	});
+}
+
+export function removePurMachining(params: Params) {
+	return apiCall({
+		url: "api/sys/purMachining/remove",
+		method: "delete",
+		params,
 	});
 }
 

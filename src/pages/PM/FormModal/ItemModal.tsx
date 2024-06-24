@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Button, ConfigProvider, Flex, Form, Modal, message } from "antd";
 import CellEditorContext from "./CellEditorContext";
 import { NoFieldData } from "./NoFieldData";
-import { useForm } from "antd/es/form/Form";
 import { greyButtonTheme } from "../../../theme/theme";
-import { savePurMachining } from "../../../api/ailuo/workshop";
+import {
+	savePurMachining,
+	updatePurMachining,
+} from "../../../api/ailuo/workshop";
 import { Stage, Status } from "../types";
 import { useParams } from "react-router";
 import dayjs from "dayjs";
@@ -45,7 +47,6 @@ const FormTitle = (props: { title: string; setOpen: any; handleSave: any }) => {
 };
 
 const ItemInfoForm = (props: {
-	inputForm: any;
 	columns: any;
 	form: any;
 	setForm: any;
@@ -54,7 +55,6 @@ const ItemInfoForm = (props: {
 	return (
 		<div className="overflow-y-auto">
 			<Form
-				form={props.inputForm}
 				name="itemsForm"
 				colon={false}
 				wrapperCol={{ flex: 1 }}
@@ -86,13 +86,13 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 		projectId,
 		fetchTable,
 	} = props;
-	const [inputForm] = useForm();
 	const [form, setForm] = useState<any>({});
 	const params = useParams<{ wspId: string }>();
 
 	const handleSave = async () => {
+		let res;
 		if (modalType === "add") {
-			const res = await savePurMachining({
+			res = await savePurMachining({
 				type: type,
 				relatedManage: params.wspId,
 				relatedProject: projectId,
@@ -103,17 +103,33 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				endTime: form.endTime ? dayjs(form.endTime).format("YYYY-MM-DD") : "",
 				...form,
 			});
-			if (res.code === 200) {
-				fetchTable();
-				setOpen(false);
-				message.success("保存成功");
-			}
-		} else {
+		} else if (modalType === "edit") {
+			res = await updatePurMachining({
+				expectedTime: form.expectedTime
+					? dayjs(form.expectedTime).format("YYYY-MM-DD")
+					: "",
+				endTime: form.endTime ? dayjs(form.endTime).format("YYYY-MM-DD") : "",
+				...form,
+			});
+		}
+		if (res.code === 200) {
+			fetchTable();
+			setOpen(false);
+			message.success("保存成功");
 		}
 	};
 
 	useEffect(() => {
-		setForm({ startTime: "hide" });
+		if (editFlowItemRecord) {
+			let formWithShowKey = {
+				...editFlowItemRecord,
+				showStartTime: "hide",
+				showWorkerName: type === "assembling" ? "show" : "hide",
+				showNumber: type === "machining" ? "show" : "hide",
+				showExpectedTime: type === "machining" ? "show" : "hide",
+			};
+			setForm(formWithShowKey);
+		}
 	}, [open]);
 
 	return (
@@ -122,7 +138,7 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				<FormTitle
 					handleSave={handleSave}
 					setOpen={setOpen}
-					title="添加投料"
+					title={modalType === "add" ? "添加投料" : "编辑投料"}
 				></FormTitle>
 			}
 			width={"40%"}
@@ -135,7 +151,6 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				form={form}
 				setForm={setForm}
 				columns={props.columns}
-				inputForm={inputForm}
 			></ItemInfoForm>
 		</Modal>
 	);

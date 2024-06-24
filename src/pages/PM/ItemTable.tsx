@@ -17,7 +17,7 @@ import WrongPng from "./assets/WRONG.png";
 import { selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { Stage, Status } from "./types";
-import { getPurMachining } from "../../api/ailuo/workshop";
+import { getPurMachining, removePurMachining } from "../../api/ailuo/workshop";
 import ItemModal from "./FormModal/ItemModal";
 import { NumFieldType } from "../../components/Dashboard/TableColumnRender";
 
@@ -52,14 +52,11 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			okType: "danger",
 			cancelText: "取消",
 			async onOk() {
-				// const res = await removePurchaseItem({ id: item.id });
-				// if (res.code == 200) {
-				// 	await fetchData();
-				// 	message.success("删除成功");
-				// }
-			},
-			onCancel() {
-				console.log("Cancel");
+				const res = await removePurMachining({ id: item.id });
+				if (res.code == 200) {
+					await fetchData();
+					message.success("删除成功");
+				}
 			},
 		});
 	};
@@ -80,7 +77,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 
 	const defaultColumns: any[] = [
 		{
-			title: "投料模块名称",
+			title: stage === "machining" ? "投料模块名称" : "模块名称",
 			dataIndex: "name",
 			key: "name",
 			type: NumFieldType.SingleText,
@@ -90,22 +87,34 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			dataIndex: "number",
 			key: "number",
 			type: NumFieldType.Number,
+			hidden: stage === "assembling",
+			showCtrlKey: "showNumber",
 		},
 		{
-			title: "投料开始时间",
+			title: stage === "machining" ? "投料开始时间" : "开始总装时间",
 			dataIndex: "createTime",
 			key: "createTime",
-			showCtrlKey: "startTime",
+			showCtrlKey: "showStartTime",
 		},
 		{
 			title: "预计加工结束时间",
 			dataIndex: "expectedTime",
 			key: "expectedTime",
 			type: NumFieldType.DateTime,
+			hidden: stage === "assembling",
+			showCtrlKey: "showExpectedTime",
 		},
 		{
-			title: "加工检",
-			dataIndex: "加工检",
+			title: "总装人员",
+			dataIndex: "workerName",
+			key: "workerName",
+			type: NumFieldType.SingleText,
+			showCtrlKey: "showWorkerName",
+			hidden: stage === "machining",
+		},
+		{
+			title: stage === "machining" ? "加工检" : "装配检",
+			dataIndex: "status",
 			key: "加工检",
 			render: (text: string, record: any, index: number) => {
 				if (isPurchase) {
@@ -156,7 +165,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			},
 		},
 		{
-			title: "加工检完成时间",
+			title: stage === "machining" ? "加工检完成时间" : "装配完成时间",
 			dataIndex: "endTime",
 			key: "endTime",
 			type: NumFieldType.DateTime,
@@ -240,7 +249,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 								icon={<EditOutlined />}
 								onClick={handleNew}
 							>
-								添加投料
+								{stage === "machining" ? "添加投料" : "添加装配项"}
 							</Button>
 						)}
 						<Table
@@ -253,6 +262,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 					</ConfigProvider>
 				</Flex>
 				<ItemModal
+					editFlowItemRecord={currentItem}
 					fetchTable={fetchData}
 					projectId={workshopInfo.relationProject}
 					workshopStatus={getCurrentSatus()}

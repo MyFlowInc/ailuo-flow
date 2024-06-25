@@ -15,7 +15,7 @@ interface UpdateWorkshopManagementReq {
 	id: string;
 	debuggingStatus?: string;
 	factoryproductionStatus?: string;
-	relatedProjects?: string;
+	relationProject?: string;
 }
 
 interface GetImportantEventsReq {
@@ -121,7 +121,7 @@ export function updateWorkshopManagementStatus(
 ) {
 	let data: UpdateWorkshopManagementReq = {
 		id: id,
-		relatedProjects: relatedProjectsId,
+		relationProject: relatedProjectsId,
 	};
 	if (stage === "debugging") {
 		data.debuggingStatus = status;

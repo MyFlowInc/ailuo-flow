@@ -93,7 +93,12 @@ export const updateStatusByStage = async (
 		let res: any;
 		//调用接口不一样。。
 		if (stage === "debugging" || stage === "factory_production") {
-			res = await updateWorkshopManagementStatus(id, stage, status);
+			res = await updateWorkshopManagementStatus(
+				id,
+				stage,
+				status,
+				relatedProjectsId,
+			);
 		} else {
 			res = await updateWorkshopStatus({
 				id: id,

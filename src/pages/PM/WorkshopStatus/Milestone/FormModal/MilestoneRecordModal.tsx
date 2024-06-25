@@ -10,6 +10,7 @@ interface MilestoneRecordModalProps {
 	fetchData: () => void;
 	workshopType: string;
 	workshopId?: string;
+	readonly: boolean;
 }
 
 export const MilestoneRecordModal: React.FC<MilestoneRecordModalProps> = (
@@ -23,6 +24,7 @@ export const MilestoneRecordModal: React.FC<MilestoneRecordModalProps> = (
 		fetchData,
 		workshopType,
 		workshopId,
+		readonly,
 	} = props;
 
 	const params = {
@@ -34,6 +36,7 @@ export const MilestoneRecordModal: React.FC<MilestoneRecordModalProps> = (
 		fetchData,
 		workshopType,
 		workshopId,
+		readonly,
 	};
 
 	const modalRender = () => MilestoneCustomModal(params);

@@ -21,9 +21,15 @@ interface EditRecordModalProps {
 	workshopStatusId: string;
 	projectId: string;
 	fetchTable: any;
+	readonly: boolean;
 }
 
-const FormTitle = (props: { title: string; setOpen: any; handleSave: any }) => {
+const FormTitle = (props: {
+	title: string;
+	setOpen: any;
+	handleSave: any;
+	readonly: boolean;
+}) => {
 	return (
 		<Flex align="center">
 			<span style={{ minWidth: "10%" }}>{props.title}</span>
@@ -38,7 +44,11 @@ const FormTitle = (props: { title: string; setOpen: any; handleSave: any }) => {
 						取消
 					</Button>
 				</ConfigProvider>
-				<Button onClick={props.handleSave} type={"primary"}>
+				<Button
+					disabled={props.readonly}
+					onClick={props.handleSave}
+					type={"primary"}
+				>
 					保存
 				</Button>
 			</Flex>
@@ -85,9 +95,11 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 		workshopStatusId,
 		projectId,
 		fetchTable,
+		readonly,
 	} = props;
 	const [form, setForm] = useState<any>({});
 	const params = useParams<{ wspId: string }>();
+	const [formColumns, setFormColumns] = useState(props.columns);
 
 	const handleSave = async () => {
 		let res;
@@ -132,12 +144,22 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 			};
 			setForm(formWithShowKey);
 		}
+		if (readonly) {
+			setFormColumns(
+				props.columns.map((col: any) => {
+					return { ...col, disabled: true };
+				}),
+			);
+		} else {
+			setFormColumns(props.columns);
+		}
 	}, [open]);
 
 	return (
 		<Modal
 			title={
 				<FormTitle
+					readonly={readonly}
 					handleSave={handleSave}
 					setOpen={setOpen}
 					title={modalType === "add" ? "添加投料" : "编辑投料"}
@@ -152,7 +174,7 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				modalType={modalType}
 				form={form}
 				setForm={setForm}
-				columns={props.columns}
+				columns={formColumns}
 			></ItemInfoForm>
 		</Modal>
 	);

@@ -123,6 +123,7 @@ interface CustomModalProps {
 	fetchData: () => void;
 	workshopType: string;
 	workshopId?: string;
+	readonly: boolean;
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -134,6 +135,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	fetchData,
 	workshopType,
 	workshopId,
+	readonly,
 }) => {
 	const params = useParams<any>();
 
@@ -185,6 +187,15 @@ const CustomModal: React.FC<CustomModalProps> = ({
 		}
 		setForm(formItem);
 		inputForm.setFieldsValue(formItem);
+		if (readonly) {
+			setShowDstColumns(
+				columns.map((col: any) => {
+					return { ...col, disabled: true };
+				}),
+			);
+		} else {
+			setShowDstColumns(columns);
+		}
 	}, [open]);
 
 	return (
@@ -202,7 +213,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						</Button>
 					</ConfigProvider>
 					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={handleSave}>
+						<Button disabled={readonly} type="primary" onClick={handleSave}>
 							保存
 						</Button>
 					</ConfigProvider>

@@ -15,7 +15,12 @@ import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useParams } from "react-router";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import { useAppSelector } from "../../../../store/hooks";
-import { selectIsQuality, selectUser } from "../../../../store/globalSlice";
+import {
+	selectIsManager,
+	selectIsQuality,
+	selectIsWorkshop,
+	selectUser,
+} from "../../../../store/globalSlice";
 import { PurchaseRecordViewContext } from "../IncomingPurchase/PurchaseRecordView";
 import { getMilestoneList, removeMilestone } from "../../../../api/ailuo/pms";
 import EditFilled from "../../../../assets/icons/EditFilled";
@@ -58,11 +63,10 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	status,
 	workshopId,
 }) => {
-	const workshop = useSelector((state) => (state as any).global.curWorkshop);
 	const user = useAppSelector(selectUser);
-	const isQuality = useAppSelector(selectIsQuality);
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 	const params = useParams<any>();
-	const { updateMilestoneCount } = useContext(PurchaseRecordViewContext);
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
 	const [isShowMilestoneRecordModal, setIsShowMilestoneRecordModal] =
@@ -70,6 +74,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	const [currentItem, setCurrentItem] = useState({});
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
 	const [disabled, setDisabled] = useState(false);
+	const [readonly, setReadonly] = useState(true);
 
 	const handleDelete = (item: any) => {
 		Modal.confirm({
@@ -95,6 +100,11 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		setCurrentItem(item);
 		setIsShowMilestoneRecordModal(true);
 		setModalType("edit");
+		if (isManager || !disabled) {
+			setReadonly(false);
+		} else {
+			setReadonly(true);
+		}
 	};
 
 	const defaultColumns: (ColumnTypes[number] & {
@@ -130,15 +140,13 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 			key: "action",
 			render: (text: any, record: any, index: number) => {
 				return (
-					!record.remark &&
-					!isQuality && (
+					!record.remark && (
 						<div className="flex items-center justify-around">
 							<Button
 								type="text"
 								color="#717682"
 								icon={<EditFilled />}
 								className="text-[#717682]"
-								disabled={disabled}
 								onClick={() => handleEdit(record)}
 							></Button>
 							<Button
@@ -160,6 +168,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		setIsShowMilestoneRecordModal(true);
 		setCurrentItem({ deliveryTime: "no", name: user.username });
 		setModalType("add");
+		setReadonly(false);
 	};
 
 	const fetchData = async () => {
@@ -192,7 +201,8 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	}, [workshopId]);
 
 	useEffect(() => {
-		if (status === "start") {
+		//只有开始阶段车间可以更改 或者 经理任何时候都能更改
+		if ((status === "start" && isWorkshop) || isManager) {
 			setDisabled(false);
 		} else {
 			setDisabled(true);
@@ -203,14 +213,16 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		<div className="mt-4">
 			{!disabled && (
 				<ConfigProvider theme={blueButtonTheme}>
-					<Button
-						className="mb-4"
-						type="primary"
-						icon={<EditFilled></EditFilled>}
-						onClick={handleAdd}
-					>
-						新建重要事件
-					</Button>
+					{((status === "start" && isWorkshop) || isManager) && (
+						<Button
+							className="mb-4"
+							type="primary"
+							icon={<EditFilled></EditFilled>}
+							onClick={handleAdd}
+						>
+							新建重要事件
+						</Button>
+					)}
 				</ConfigProvider>
 			)}
 
@@ -233,6 +245,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 				fetchData={fetchData}
 				workshopType={workshopType}
 				workshopId={workshopId}
+				readonly={readonly}
 			></MilestoneRecordModal>
 		</div>
 	);

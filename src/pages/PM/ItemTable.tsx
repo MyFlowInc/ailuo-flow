@@ -14,7 +14,7 @@ import {
 } from "@ant-design/icons";
 import RightPng from "./assets/RIGHT.png";
 import WrongPng from "./assets/WRONG.png";
-import { selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
+import { selectIsManager, selectIsWorkshop } from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { Stage, Status } from "./types";
 import {
@@ -31,20 +31,34 @@ interface ItemTableProps {
 }
 
 const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
-	const params = useParams<any>();
-
-	const isPurchase = useAppSelector(selectIsPurchase);
+	const isManager = useAppSelector(selectIsManager);
 	const isWorkshop = useAppSelector(selectIsWorkshop);
 
 	const [dataSource, setDataSource] = useState([]);
-	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isShowModal, setIsShowModal] = useState(false);
 	const [currentItem, setCurrentItem] = useState<any>({});
+	const [readonly, setReadonly] = useState(true);
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
+
+	const shouldDisabled = (status: any) => {
+		let disabled = true;
+		if (isWorkshop && getCurrentStatus() === "start" && status === "todo") {
+			disabled = false;
+		}
+		if (isManager) {
+			disabled = false;
+		}
+		return disabled;
+	};
 
 	const handleEdit = (item: any) => {
 		setModalType("edit");
 		setCurrentItem(item);
+		if (isManager || !shouldDisabled(item.status)) {
+			setReadonly(false);
+		} else {
+			setReadonly(true);
+		}
 		setIsShowModal(true);
 	};
 
@@ -182,9 +196,6 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							color="#717682"
 							icon={<EditFilled />}
 							className="text-[#717682]"
-							disabled={
-								getCurrentStatus() !== "start" || record.status !== "todo"
-							}
 							onClick={() => handleEdit(record)}
 						></Button>
 						<Button
@@ -192,9 +203,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
-							disabled={
-								getCurrentStatus() !== "start" || record.status !== "todo"
-							}
+							disabled={shouldDisabled(record.status)}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
@@ -212,6 +221,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 		setModalType("add");
 		setCurrentItem({});
 		setIsShowModal(true);
+		setReadonly(false);
 	};
 
 	const fetchData = async () => {
@@ -249,7 +259,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			<div className="mt-8">
 				<Flex gap={20} vertical>
 					<ConfigProvider theme={TableTheme}>
-						{getCurrentStatus() === "start" && (
+						{((getCurrentStatus() === "start" && isWorkshop) || isManager) && (
 							<Button
 								style={{ width: "100px" }}
 								type={"primary"}
@@ -280,6 +290,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 					open={isShowModal}
 					setOpen={setIsShowModal}
 					modalType={modalType}
+					readonly={readonly}
 				></ItemModal>
 			</div>
 		</ConfigProvider>

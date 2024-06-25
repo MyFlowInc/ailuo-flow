@@ -138,6 +138,7 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				showStartTime: "hide",
 				showAction: "hide",
 				showStatus: "hide",
+				showEndTime: "hide",
 				showWorkerName: type === "assembling" ? "show" : "hide",
 				showNumber: type === "machining" ? "show" : "hide",
 				showExpectedTime: type === "machining" ? "show" : "hide",

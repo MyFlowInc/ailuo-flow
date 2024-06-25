@@ -181,6 +181,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			dataIndex: "endTime",
 			key: "endTime",
 			type: NumFieldType.DateTime,
+			showCtrlKey: "showEndTime",
 		},
 		{
 			width: 90,

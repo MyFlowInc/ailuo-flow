@@ -26,6 +26,7 @@ const StatusView = (props: {
 	id: string;
 	status: Status;
 	fecthWorkshop: () => void;
+	relatedProjectId: string;
 }) => {
 	const stage: Stage = "assembling";
 	const isManager = useAppSelector(selectIsManager);
@@ -57,8 +58,9 @@ const StatusView = (props: {
 								props.id,
 								stage,
 								action,
-								props.fecthWorkshop,
 								isManager || isWorkshop,
+								props.fecthWorkshop,
+								props.relatedProjectId,
 							);
 						}}
 					>
@@ -110,6 +112,7 @@ const Assembling: React.FC = () => {
 						id={workshop.children?.[2]?.id}
 						status={workshop.children?.[2]?.status}
 						fecthWorkshop={fetchWorkshop}
+						relatedProjectId={workshop.relationProject}
 					/>
 				</div>
 			</div>

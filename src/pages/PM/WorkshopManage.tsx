@@ -85,8 +85,9 @@ export const updateStatusByStage = async (
 	id: string,
 	stage: Stage,
 	status: Status,
-	refreshWorkshop?: () => void,
 	valid = false,
+	refreshWorkshop?: () => void,
+	relatedProjectsId?: string,
 ) => {
 	if (valid) {
 		let res: any;
@@ -98,6 +99,7 @@ export const updateStatusByStage = async (
 				id: id,
 				type: stage,
 				status: status,
+				relatedProjects: relatedProjectsId,
 			});
 		}
 		if (!res.success) {
@@ -239,8 +241,9 @@ const WorkshopCard = (props: {
 											props.id,
 											props.stage,
 											action as Status,
-											props.fetchWorkshop,
 											isManager || isWorkshop,
+											props.fetchWorkshop,
+											props.workshopInfo.relationProject,
 										);
 									}}
 								>

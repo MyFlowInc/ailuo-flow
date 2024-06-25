@@ -25,6 +25,7 @@ import MilestoneTable from "./Milestone/MilestoneTable";
 const StatusView = (props: {
 	id: string;
 	status: Status;
+	relatedProjectId: string;
 	fecthWorkshop: () => void;
 }) => {
 	const stage: Stage = "machining";
@@ -57,8 +58,9 @@ const StatusView = (props: {
 								props.id,
 								stage,
 								action,
-								props.fecthWorkshop,
 								isWorkshop || isManager,
+								props.fecthWorkshop,
+								props.relatedProjectId,
 							);
 						}}
 					>
@@ -111,6 +113,7 @@ const Machining: React.FC = () => {
 						id={workshop.children?.[1]?.id}
 						status={workshop.children?.[1]?.status}
 						fecthWorkshop={fetchWorkshop}
+						relatedProjectId={workshop.relationProject}
 					/>
 				</div>
 			</div>

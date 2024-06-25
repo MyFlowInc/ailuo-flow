@@ -65,8 +65,8 @@ const StatusView = (props: {
 								props.id,
 								"debugging",
 								action,
-								props.fecthWorkshop,
 								isManager || isWorkshop,
+								props.fecthWorkshop,
 							);
 						}}
 					>

@@ -54,7 +54,7 @@ export const typeStatusTagLabelMap: TypeStatusTagLabelMap = {
 			over: "完成总装",
 		},
 		actionLabel: {
-			start: "开始备料",
+			start: "开始总装",
 			over: "完成总装",
 		},
 	},

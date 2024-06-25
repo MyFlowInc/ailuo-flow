@@ -30,7 +30,7 @@ interface GetImportantEventsReq {
 
 interface GetPurMachiningReq {
 	type: string;
-	relatedProjects: string;
+	relatedProject: string;
 	pageNum: number;
 	pageSize: number;
 }

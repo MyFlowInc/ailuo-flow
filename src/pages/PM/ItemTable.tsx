@@ -219,7 +219,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 			pageNum: 1,
 			pageSize: 9999999,
 			type: stage,
-			relatedProjects: workshopInfo.relationProject,
+			relatedProject: workshopInfo.relationProject,
 		});
 		if (res.code == 200) {
 			setDataSource(res.data.record);

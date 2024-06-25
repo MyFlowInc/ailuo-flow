@@ -20,8 +20,12 @@ import {
 } from "../WorkshopManage";
 import { Status } from "../types";
 import { getWorkshopManagement } from "../../../api/ailuo/workshop";
-import { setCurWorkshop } from "../../../store/globalSlice";
-import { useAppDispatch } from "../../../store/hooks";
+import {
+	selectIsManager,
+	selectIsWorkshop,
+	setCurWorkshop,
+} from "../../../store/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import _ from "lodash";
@@ -32,6 +36,8 @@ const StatusView = (props: {
 	status: Status;
 	fecthWorkshop: () => void;
 }) => {
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 	const action = getNextActionsByTypeAndStatus(
 		"debugging",
 		props.status,
@@ -60,6 +66,7 @@ const StatusView = (props: {
 								"debugging",
 								action,
 								props.fecthWorkshop,
+								isManager || isWorkshop,
 							);
 						}}
 					>

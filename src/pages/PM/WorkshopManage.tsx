@@ -20,8 +20,12 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router";
 import WorkShopFullDataModal from "./FormModal/WorkShopFullDataModal";
 import React from "react";
-import { useAppDispatch } from "../../store/hooks";
-import { setCurWorkshop } from "../../store/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {
+	selectIsManager,
+	selectIsWorkshop,
+	setCurWorkshop,
+} from "../../store/globalSlice";
 import {
 	Stage,
 	Status,
@@ -82,22 +86,27 @@ export const updateStatusByStage = async (
 	stage: Stage,
 	status: Status,
 	refreshWorkshop?: () => void,
+	valid = false,
 ) => {
-	let res: any;
-	//调用接口不一样。。
-	if (stage === "debugging" || stage === "factory_production") {
-		res = await updateWorkshopManagementStatus(id, stage, status);
+	if (valid) {
+		let res: any;
+		//调用接口不一样。。
+		if (stage === "debugging" || stage === "factory_production") {
+			res = await updateWorkshopManagementStatus(id, stage, status);
+		} else {
+			res = await updateWorkshopStatus({
+				id: id,
+				type: stage,
+				status: status,
+			});
+		}
+		if (!res.success) {
+			message.error(stage + " 状态更新失败！有工单未完成！");
+		} else if (refreshWorkshop) {
+			refreshWorkshop();
+		}
 	} else {
-		res = await updateWorkshopStatus({
-			id: id,
-			type: stage,
-			status: status,
-		});
-	}
-	if (!res.success) {
-		message.error(stage + " 状态更新失败！有工单未完成！");
-	} else if (refreshWorkshop) {
-		refreshWorkshop();
+		message.error("只有车间人员和经理可更改状态");
 	}
 };
 
@@ -176,6 +185,8 @@ const WorkshopCard = (props: {
 	const cardActions = getNextActionsByTypeAndStatus(props.stage, props.status);
 	const history = useHistory();
 	const location = useLocation();
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 
 	return (
 		<Card styles={{ body: { padding: "10px" } }} style={{ width: "19%" }}>
@@ -229,6 +240,7 @@ const WorkshopCard = (props: {
 											props.stage,
 											action as Status,
 											props.fetchWorkshop,
+											isManager || isWorkshop,
 										);
 									}}
 								>

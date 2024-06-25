@@ -6,8 +6,12 @@ import _ from "lodash";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getWorkshopManagement } from "../../../api/ailuo/workshop";
-import { setCurWorkshop } from "../../../store/globalSlice";
-import { useAppDispatch } from "../../../store/hooks";
+import {
+	selectIsManager,
+	selectIsWorkshop,
+	setCurWorkshop,
+} from "../../../store/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { TableTheme, greyButtonTheme } from "../../../theme/theme";
 import { Status, Stage } from "../types";
 import {
@@ -24,6 +28,8 @@ const StatusView = (props: {
 	fecthWorkshop: () => void;
 }) => {
 	const stage: Stage = "machining";
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 	const action = getNextActionsByTypeAndStatus(
 		stage,
 		props.status,
@@ -47,7 +53,13 @@ const StatusView = (props: {
 						color={"#D4F3F2"}
 						style={{ color: "#000" }}
 						onClick={() => {
-							updateStatusByStage(props.id, stage, action, props.fecthWorkshop);
+							updateStatusByStage(
+								props.id,
+								stage,
+								action,
+								props.fecthWorkshop,
+								isWorkshop || isManager,
+							);
 						}}
 					>
 						{getLabel(stage, action, "actionLabel")}
@@ -62,6 +74,7 @@ const Machining: React.FC = () => {
 	const params = useParams<{ wspId: string }>();
 	const history = useHistory();
 	const dispatch = useAppDispatch();
+
 	const fetchWorkshop = async () => {
 		const resp = await getWorkshopManagement({ id: params.wspId });
 		if (resp.code == 200) {

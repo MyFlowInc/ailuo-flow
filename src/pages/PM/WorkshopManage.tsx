@@ -108,7 +108,7 @@ export const updateStatusByStage = async (
 			});
 		}
 		if (!res.success) {
-			message.error("状态更新失败!");
+			message.error(res.msg);
 		} else if (refreshWorkshop) {
 			refreshWorkshop();
 		}

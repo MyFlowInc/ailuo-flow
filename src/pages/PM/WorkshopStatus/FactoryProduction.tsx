@@ -1,11 +1,14 @@
-import { Layout, Button, ConfigProvider, message, Tag } from "antd";
+import { Layout, Button, ConfigProvider, message, Tag, Flex } from "antd";
 import { useHistory, useParams } from "react-router";
 import { getStore } from "../../../store";
 import { LeftOutlined } from "@ant-design/icons";
 import _ from "lodash";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getWorkshopManagement } from "../../../api/ailuo/workshop";
+import {
+	getWorkshopManagement,
+	updateInpectionForm,
+} from "../../../api/ailuo/workshop";
 import {
 	selectIsManager,
 	selectIsWorkshop,
@@ -21,6 +24,25 @@ import {
 	updateStatusByStage,
 } from "../WorkshopManage";
 import MilestoneTable from "./Milestone/MilestoneTable";
+import TypeAttachment from "../../../components/Dashboard/FormModal/TypeEditor/TypeAttachment";
+import { Attachment } from "../../../components/Dashboard/TableColumnRender";
+
+const AttachmentView = (
+	record: any,
+	key: any,
+	setDataSource: any,
+	disabled: boolean = false,
+) => {
+	return disabled ? (
+		<Attachment value={record[key]}></Attachment>
+	) : (
+		<TypeAttachment
+			setForm={setDataSource}
+			cell={{ key }}
+			form={{ [key]: record[key] }}
+		></TypeAttachment>
+	);
+};
 
 const StatusView = (props: {
 	id: string;
@@ -77,10 +99,30 @@ const FactoryProduction: React.FC = () => {
 	const params = useParams<{ wspId: string }>();
 	const history = useHistory();
 	const dispatch = useAppDispatch();
+	const [inspectionFiles, setInspectionFiles] = useState({
+		url: workshop.inspectionForm,
+	});
+
+	const updateInspectionFiles = async () => {
+		if (inspectionFiles.url !== workshop.inspectionForm) {
+			let resp = await updateInpectionForm({
+				id: workshop.id,
+				inspectionForm: inspectionFiles.url,
+				relationProject: workshop.relationProject,
+			});
+			if (resp.code == 200) {
+				fetchWorkshop();
+			} else {
+				message.error(resp.msg);
+			}
+		}
+	};
+
 	const fetchWorkshop = async () => {
 		const resp = await getWorkshopManagement({ id: params.wspId });
 		if (resp.code == 200) {
 			dispatch(setCurWorkshop(resp.data));
+			setInspectionFiles({ url: resp.data.inspectionForm });
 		} else {
 			message.error(resp.msg);
 		}
@@ -91,6 +133,10 @@ const FactoryProduction: React.FC = () => {
 			fetchWorkshop();
 		}
 	}, []);
+
+	useEffect(() => {
+		updateInspectionFiles();
+	}, [inspectionFiles]);
 
 	return (
 		<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">
@@ -116,6 +162,12 @@ const FactoryProduction: React.FC = () => {
 						relatedProjectId={workshop.relationProject}
 					/>
 				</div>
+			</div>
+			<div className="flex items-center justify-center mt-4">
+				<Flex>
+					<span>成品检验单：</span>
+					{AttachmentView(inspectionFiles, "url", setInspectionFiles)}
+				</Flex>
 			</div>
 			<ConfigProvider theme={TableTheme}>
 				<MilestoneTable

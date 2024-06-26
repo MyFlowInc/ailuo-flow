@@ -138,3 +138,15 @@ export function updateWorkshopManagementStatus(
 		data,
 	});
 }
+
+export function updateInpectionForm(data: {
+	id: string;
+	inspectionForm: string;
+	relationProject: string;
+}) {
+	return apiCall({
+		url: "api/sys/workshopManagement/edit",
+		method: "put",
+		data,
+	});
+}

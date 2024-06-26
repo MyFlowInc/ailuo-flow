@@ -201,6 +201,7 @@ const PurchaseMilestone: React.FC<PurchaseMilestoneProps> = ({ form }) => {
 				formItem={currentItem}
 				modalType={modalType}
 				fetchData={fetchData}
+				purchaseForm={form}
 			></MilestoneRecordModal>
 		</div>
 	);

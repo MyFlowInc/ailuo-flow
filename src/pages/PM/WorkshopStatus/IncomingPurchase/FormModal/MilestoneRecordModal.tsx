@@ -8,12 +8,13 @@ interface MilestoneRecordModalProps {
 	formItem: any;
 	modalType: "add" | "edit";
 	fetchData: () => void;
+	purchaseForm: any;
 }
 
 export const MilestoneRecordModal: React.FC<MilestoneRecordModalProps> = (
 	props,
 ) => {
-	const { formItem, open, setOpen, modalType, fetchData } = props;
+	const { formItem, open, setOpen, modalType, fetchData, purchaseForm } = props;
 
 	const params = {
 		title: modalType == "add" ? "新增重要事件" : "编辑重要事件",
@@ -22,6 +23,7 @@ export const MilestoneRecordModal: React.FC<MilestoneRecordModalProps> = (
 		modalType,
 		formItem,
 		fetchData,
+		purchaseForm,
 	};
 
 	const modalRender = () => MilestoneCustomModal(params);

@@ -121,6 +121,7 @@ interface CustomModalProps {
 	modalType: string;
 	formItem?: any | undefined;
 	fetchData: () => void;
+	purchaseForm: any;
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -130,6 +131,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 	setOpen,
 	formItem,
 	fetchData,
+	purchaseForm,
 }) => {
 	const params = useParams<any>();
 
@@ -146,7 +148,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				);
 			} else {
 				res = await saveMilestone(
-					excludeNull({ ...form, relationRequisition: params.purId }),
+					excludeNull({
+						...form,
+						relationRequisition: params.purId,
+						relationProject: purchaseForm.relationProject,
+					}),
 				);
 			}
 			if (res.code == 200) {

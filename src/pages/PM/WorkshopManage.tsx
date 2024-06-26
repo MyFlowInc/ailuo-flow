@@ -108,7 +108,7 @@ export const updateStatusByStage = async (
 			});
 		}
 		if (!res.success) {
-			message.error(stage + " 状态更新失败！有工单未完成！");
+			message.error("状态更新失败!");
 		} else if (refreshWorkshop) {
 			refreshWorkshop();
 		}
@@ -196,7 +196,11 @@ const WorkshopCard = (props: {
 	const isWorkshop = useAppSelector(selectIsWorkshop);
 
 	return (
-		<Card styles={{ body: { padding: "10px" } }} style={{ width: "19%" }}>
+		<Card
+			className="shadow-lg"
+			styles={{ body: { padding: "10px" } }}
+			style={{ width: "19%" }}
+		>
 			<Flex gap={20} vertical>
 				<Flex gap={10} align="center" style={{ width: "100%" }}>
 					<RoundImg
@@ -207,25 +211,27 @@ const WorkshopCard = (props: {
 					/>
 					<span style={{ minWidth: "30%" }}>{cardInfo.title}</span>
 					<Flex style={{ width: "100%" }} justify={"flex-end"}>
-						<Button
-							style={{ float: "right" }}
-							type="primary"
-							onClick={() => {
-								history.push(
-									location.pathname +
-										"/" +
-										props.workshopInfo.relationProject +
-										"/" +
-										props.stage,
-								);
-							}}
-						>
-							进入
-						</Button>
+						<ConfigProvider theme={blueButtonTheme}>
+							<Button
+								style={{ float: "right" }}
+								type="primary"
+								onClick={() => {
+									history.push(
+										location.pathname +
+											"/" +
+											props.workshopInfo.relationProject +
+											"/" +
+											props.stage,
+									);
+								}}
+							>
+								进入
+							</Button>
+						</ConfigProvider>
 					</Flex>
 				</Flex>
 				<Flex gap={5}>
-					<span>状态</span>
+					<span>状态：</span>
 					<Tag color={getTagColorByStatus(props.status)}>
 						<span style={{ color: "black" }}>
 							{getLabel(props.stage, props.status, "statusLabel")}
@@ -234,7 +240,7 @@ const WorkshopCard = (props: {
 				</Flex>
 				{cardActions.length ? (
 					<Flex gap={5}>
-						<span>操作</span>
+						<span>操作：</span>
 						{cardActions.map((action: any) => {
 							return (
 								<Tag

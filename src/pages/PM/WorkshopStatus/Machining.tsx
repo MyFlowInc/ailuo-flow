@@ -47,7 +47,7 @@ const StatusView = (props: {
 				</Tag>
 			</div>
 			{action && (
-				<div className="flex  items-center ml-4">
+				<div className="flex items-center ml-4">
 					<div className="mr-2 text-[#848484]">操作: </div>
 					<Tag
 						className="cursor-pointer"

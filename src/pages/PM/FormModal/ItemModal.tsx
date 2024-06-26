@@ -144,6 +144,9 @@ export const ItemModal: React.FC<EditRecordModalProps> = (props) => {
 				showExpectedTime: type === "machining" ? "show" : "hide",
 			};
 			setForm(formWithShowKey);
+			if (editFlowItemRecord.remark) {
+				props.columns[0].disabled = true;
+			}
 		}
 		if (readonly) {
 			setFormColumns(

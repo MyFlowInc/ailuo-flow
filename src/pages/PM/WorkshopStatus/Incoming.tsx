@@ -139,9 +139,9 @@ const Incoming: React.FC<IncomingProps> = () => {
 						/>
 					</div>
 				</div>
-			</div>
-			<div className="mt-16">
-				<PurchaseTable></PurchaseTable>
+				<div className="mt-8">
+					<PurchaseTable></PurchaseTable>
+				</div>
 			</div>
 		</div>
 	);

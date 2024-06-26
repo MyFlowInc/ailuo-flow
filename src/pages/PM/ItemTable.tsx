@@ -1,6 +1,6 @@
 import { Button, ConfigProvider, Flex, Modal, Table, Tag, message } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import { TableTheme, dashboardTheme } from "../../theme/theme";
+import { TableTheme, blueButtonTheme, dashboardTheme } from "../../theme/theme";
 import {
 	PurchaseItemStatusEnum,
 	PurchaseStatusEnum,
@@ -80,12 +80,16 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 	};
 
 	const handleTest = async (item: any) => {
-		await updatePurMachining({
-			...item,
-			id: item.id,
-			status: PurchaseItemStatusEnum.TobeTested,
-		});
-		await fetchData();
+		if ((isWorkshop && getCurrentStatus() === "start") || isManager) {
+			await updatePurMachining({
+				...item,
+				id: item.id,
+				status: PurchaseItemStatusEnum.TobeTested,
+			});
+			await fetchData();
+		} else {
+			message.error("当前状态无法请检");
+		}
 	};
 
 	const defaultColumns: any[] = [
@@ -204,7 +208,7 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
-							disabled={shouldDisabled(record.status)}
+							disabled={shouldDisabled(record.status) || record.remark}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
@@ -257,18 +261,20 @@ const ItemTable: React.FC<ItemTableProps> = ({ stage, workshopInfo }) => {
 
 	return (
 		<ConfigProvider theme={dashboardTheme}>
-			<div className="mt-8">
+			<div className="mt-8 mb-8">
 				<Flex gap={20} vertical>
 					<ConfigProvider theme={TableTheme}>
 						{((getCurrentStatus() === "start" && isWorkshop) || isManager) && (
-							<Button
-								style={{ width: "100px" }}
-								type={"primary"}
-								icon={<EditOutlined />}
-								onClick={handleNew}
-							>
-								{stage === "machining" ? "添加投料" : "添加装配项"}
-							</Button>
+							<ConfigProvider theme={blueButtonTheme}>
+								<Button
+									style={{ width: "100px" }}
+									type={"primary"}
+									icon={<EditOutlined />}
+									onClick={handleNew}
+								>
+									{stage === "machining" ? "添加投料" : "添加装配项"}
+								</Button>
+							</ConfigProvider>
 						)}
 						<Table
 							bordered

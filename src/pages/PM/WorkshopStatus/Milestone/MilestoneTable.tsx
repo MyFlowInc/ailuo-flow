@@ -3,6 +3,7 @@ import type { GetRef, InputRef } from "antd";
 import {
 	Button,
 	ConfigProvider,
+	Flex,
 	Form,
 	Input,
 	Modal,
@@ -210,21 +211,23 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	}, [status]);
 
 	return (
-		<div className="mt-4">
-			{!disabled && (
-				<ConfigProvider theme={blueButtonTheme}>
-					{((status === "start" && isWorkshop) || isManager) && (
-						<Button
-							className="mb-4"
-							type="primary"
-							icon={<EditFilled></EditFilled>}
-							onClick={handleAdd}
-						>
-							新建重要事件
-						</Button>
-					)}
-				</ConfigProvider>
-			)}
+		<div className="mt-8">
+			<Flex align="center" gap={10} className="mb-4">
+				<span>重要事件</span>
+				{!disabled && (
+					<ConfigProvider theme={blueButtonTheme}>
+						{((status === "start" && isWorkshop) || isManager) && (
+							<Button
+								type="primary"
+								icon={<EditFilled></EditFilled>}
+								onClick={handleAdd}
+							>
+								新建重要事件
+							</Button>
+						)}
+					</ConfigProvider>
+				)}
+			</Flex>
 
 			<ConfigProvider>
 				<Table

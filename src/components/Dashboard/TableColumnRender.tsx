@@ -319,7 +319,8 @@ const getFileName = (url: string) => {
 export const Attachment: React.FC<{
 	value: any;
 	children?: React.ReactNode;
-}> = ({ value }) => {
+	useFlex?: boolean;
+}> = ({ value, useFlex }) => {
 	const { setFileUrl, setIsPdfModalViewOpen } = useContext(
 		DashboardRouterOutletContext,
 	);
@@ -344,7 +345,7 @@ export const Attachment: React.FC<{
 
 	if (!_.isEmpty(fileList)) {
 		return (
-			<div>
+			<div className={useFlex ? "flex gap-3" : ""}>
 				{fileList.map((value: string, idx: number) => {
 					const suffix = value
 						.substring(value.lastIndexOf(".") + 1)

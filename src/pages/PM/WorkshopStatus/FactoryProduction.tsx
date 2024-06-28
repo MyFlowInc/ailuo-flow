@@ -1,6 +1,5 @@
-import { Layout, Button, ConfigProvider, message, Tag, Flex } from "antd";
+import { Button, ConfigProvider, message, Tag, Flex } from "antd";
 import { useHistory, useParams } from "react-router";
-import { getStore } from "../../../store";
 import { LeftOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { useEffect, useState } from "react";
@@ -34,12 +33,13 @@ const AttachmentView = (
 	disabled: boolean = false,
 ) => {
 	return disabled ? (
-		<Attachment value={record[key]}></Attachment>
+		<Attachment useFlex={true} value={record[key]}></Attachment>
 	) : (
 		<TypeAttachment
 			setForm={setDataSource}
 			cell={{ key }}
 			form={{ [key]: record[key] }}
+			useFlex={true}
 		></TypeAttachment>
 	);
 };
@@ -102,6 +102,8 @@ const FactoryProduction: React.FC = () => {
 	const [inspectionFiles, setInspectionFiles] = useState({
 		url: workshop.inspectionForm,
 	});
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 
 	const updateInspectionFiles = async () => {
 		if (inspectionFiles.url !== workshop.inspectionForm) {
@@ -116,6 +118,17 @@ const FactoryProduction: React.FC = () => {
 				message.error(resp.msg);
 			}
 		}
+	};
+
+	const shouldDisabled = (status: any) => {
+		let disabled = true;
+		if (isWorkshop && status === "start") {
+			disabled = false;
+		}
+		if (isManager) {
+			disabled = false;
+		}
+		return disabled;
 	};
 
 	const fetchWorkshop = async () => {
@@ -166,7 +179,12 @@ const FactoryProduction: React.FC = () => {
 			<div className="flex items-center justify-center mt-4">
 				<Flex>
 					<span>成品检验单：</span>
-					{AttachmentView(inspectionFiles, "url", setInspectionFiles)}
+					{AttachmentView(
+						inspectionFiles,
+						"url",
+						setInspectionFiles,
+						shouldDisabled(workshop.factoryproductionStatus),
+					)}
 				</Flex>
 			</div>
 			<ConfigProvider theme={TableTheme}>

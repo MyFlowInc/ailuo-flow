@@ -17,6 +17,7 @@ interface TypeAttachmentProps {
 	setForm: any;
 	enableSplDatabase?: boolean;
 	splDatabaseField?: string;
+	useFlex?: boolean;
 }
 
 const TypeAttachment: React.FC<TypeAttachmentProps> = (
@@ -157,7 +158,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 			...form,
 			[cell.key]: JSON.stringify(list),
 		});
-		setIsShowSplDatabaseModal(false)
+		setIsShowSplDatabaseModal(false);
 	};
 
 	const renderSplDatabaseModal = () => {
@@ -221,7 +222,7 @@ const TypeAttachment: React.FC<TypeAttachmentProps> = (
 
 	if (!_.isEmpty(fileList)) {
 		return (
-			<div>
+			<div className={props.useFlex ? "flex gap-3" : ""}>
 				{fileList.map((url, index) => {
 					return (
 						<div key={"file" + index}>

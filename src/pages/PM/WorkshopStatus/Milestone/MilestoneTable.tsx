@@ -198,16 +198,13 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	};
 
 	useEffect(() => {
-		fetchData();
-	}, [workshopId]);
-
-	useEffect(() => {
 		//只有开始阶段车间可以更改 或者 经理任何时候都能更改
 		if ((status === "start" && isWorkshop) || isManager) {
 			setDisabled(false);
 		} else {
 			setDisabled(true);
 		}
+		fetchData();
 	}, [status]);
 
 	return (

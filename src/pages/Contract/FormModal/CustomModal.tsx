@@ -1180,7 +1180,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 				</div>
 			</div>
 			{StatusView()}
-			<div className="content">
+			<div style={{ height: "60vh" }} className="content">
 				<Form
 					form={inputForm}
 					name="recordForm"

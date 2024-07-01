@@ -123,7 +123,9 @@ const Incoming: React.FC<IncomingProps> = () => {
 							className="ml-4 text-[#5966D6]"
 							type="primary"
 							icon={<LeftOutlined />}
-							onClick={() => history.goBack()}
+							onClick={() =>
+								history.push(`/dashboard/work-shop-manage/${workshop.id}`)
+							}
 						>
 							返回车间管理仪表盘
 						</Button>

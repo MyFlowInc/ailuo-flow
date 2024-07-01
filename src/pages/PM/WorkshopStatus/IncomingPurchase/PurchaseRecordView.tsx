@@ -235,10 +235,11 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 				});
 			}
 
-			console.log(res);
 			if (res.code == 200) {
 				message.success("保存成功!");
-				history.goBack();
+				history.push(
+					`/dashboard/work-shop-manage/${curWorkshop.id}/${curWorkshop.relationProject}/incoming`,
+				);
 			} else {
 				message.error(res.msg);
 			}
@@ -393,13 +394,19 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 							onClick={async () => {
 								try {
 									if (saveValidate()) {
-										const params = {
+										const projectInfo = JSON.parse(
+											localStorage.getItem("projectInfo") || "{}",
+										);
+										const apiParams = {
 											...form,
 											type: form.type.join(","),
+											relationProject: projectInfo.id,
 										};
-										const res = await savePurRequisition(params);
+										const res = await savePurRequisition(apiParams);
 										if (res.code == 200) {
-											history.push(`/dashboard/pms/pur-manage/${res.data}`);
+											history.push(
+												`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/${res.data}`,
+											);
 										} else {
 											message.error(res.msg);
 										}
@@ -432,7 +439,11 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 								className="ml-4"
 								type="primary"
 								icon={<LeftOutlined />}
-								onClick={() => history.goBack()}
+								onClick={() =>
+									history.push(
+										`/dashboard/work-shop-manage/${params.wspId}/${curWorkshop.relationProject}/incoming`,
+									)
+								}
 							>
 								返回
 							</Button>
@@ -447,7 +458,14 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 						</div>
 						<div>
 							<ConfigProvider theme={greyButtonTheme}>
-								<Button type="primary" onClick={() => history.goBack()}>
+								<Button
+									type="primary"
+									onClick={() =>
+										history.push(
+											`/dashboard/work-shop-manage/${params.wspId}/${curWorkshop.relationProject}/incoming`,
+										)
+									}
+								>
 									取消
 								</Button>
 							</ConfigProvider>

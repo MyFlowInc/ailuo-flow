@@ -71,20 +71,22 @@ const StatusView = (props: {
 					</Tag>
 				</div>
 			)}
-			<ConfigProvider theme={blueButtonTheme}>
-				<Button
-					className="ml-4"
-					type="primary"
-					icon={<EditFilled></EditFilled>}
-					onClick={() =>
-						history.push(
-							`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/new`,
-						)
-					}
-				>
-					新建请购单
-				</Button>
-			</ConfigProvider>
+			{props.status == "start" && (
+				<ConfigProvider theme={blueButtonTheme}>
+					<Button
+						className="ml-4"
+						type="primary"
+						icon={<EditFilled></EditFilled>}
+						onClick={() =>
+							history.push(
+								`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/new`,
+							)
+						}
+					>
+						新建请购单
+					</Button>
+				</ConfigProvider>
+			)}
 		</div>
 	);
 };

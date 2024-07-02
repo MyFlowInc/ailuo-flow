@@ -30,9 +30,8 @@ const columns = [
 	},
 	{
 		title: "关联项目名称",
-		dataIndex: "relationProject",
-		key: "relationProject",
-		type: NumFieldType.RelationProject,
+		dataIndex: "projectName",
+		key: "projectName",
 		renderTitle: () => {
 			return (
 				<div>

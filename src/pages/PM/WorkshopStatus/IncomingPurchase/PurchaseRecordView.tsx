@@ -22,7 +22,12 @@ import { NoFieldData } from "./FormModal/NoFieldData";
 import { NumFieldType } from "../../../../components/Dashboard/TableColumnRender";
 import PurchaseItemTable from "./PurchaseItemTable";
 import { useAppSelector } from "../../../../store/hooks";
-import { selectIsQuality, selectUser } from "../../../../store/globalSlice";
+import {
+	selectIsManager,
+	selectIsQuality,
+	selectIsWorkshop,
+	selectUser,
+} from "../../../../store/globalSlice";
 import {
 	PurchaseStatusEnum,
 	PurchaseTypeMap,
@@ -185,6 +190,8 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	const params = useParams() as any;
 	const user = useAppSelector(selectUser);
 	const isQuality = useAppSelector(selectIsQuality);
+	const isManager = useAppSelector(selectIsManager);
+	const isWorkshop = useAppSelector(selectIsWorkshop);
 	const curWorkshop = { ...getStore("global.curWorkshop") };
 
 	const [inputForm] = Form.useForm();
@@ -310,7 +317,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 			setDisabled(false);
 		}
 
-		if (isQuality) {
+		if (!isManager || !isWorkshop) {
 			setAllDisabled(true);
 			setDisabled(true);
 		}

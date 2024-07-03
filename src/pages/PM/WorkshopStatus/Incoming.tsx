@@ -71,7 +71,7 @@ const StatusView = (props: {
 					</Tag>
 				</div>
 			)}
-			{props.status == "start" && (
+			{props.status == "start" && (isManager || isWorkshop) && (
 				<ConfigProvider theme={blueButtonTheme}>
 					<Button
 						className="ml-4"

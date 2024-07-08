@@ -78,6 +78,10 @@ const PMList = (props: any) => {
 								item.title = "车间管理";
 								item.path = "/dashboard/work-shop-manage/" + item.id;
 							}
+							if (item.type === "deliver") {
+								item.title = "交付管理";
+								item.path = "/dashboard/deliver-manage/" + item.id;
+							}
 							return item;
 						});
 					}

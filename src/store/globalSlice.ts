@@ -45,6 +45,7 @@ export interface globalState {
 	curSaleForm: any; // 从sale发起创建合同 带来的form
 	curContractForm: any; // 从contract发起创建项目 带来的form
 	curWorkshop: any; //当前车间
+	curDelivery: any; //当前交付
 }
 
 const initialState: globalState = {
@@ -60,6 +61,7 @@ const initialState: globalState = {
 	curSaleForm: {},
 	curContractForm: {},
 	curWorkshop: {}, //当前车间
+	curDelivery: {}, //当前交付
 };
 
 export const fetchFlowStatus = createAsyncThunk(
@@ -126,6 +128,9 @@ export const globalSlice = createSlice({
 		setCurWorkshop: (state, action) => {
 			state.curWorkshop = action.payload;
 		},
+		setCurDelivery: (state, action) => {
+			state.curDelivery = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(freshUser.fulfilled, (state, action) => {
@@ -146,6 +151,7 @@ export const {
 	setCurSaleForm,
 	setCurContractForm,
 	setCurWorkshop,
+	setCurDelivery,
 } = globalSlice.actions;
 
 export const selectUser = (state: RootState) => state.global.user;

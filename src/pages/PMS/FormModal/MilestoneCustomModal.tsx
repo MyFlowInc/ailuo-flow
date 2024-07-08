@@ -9,7 +9,7 @@ import _ from "lodash";
 import { RadioChangeEvent } from "antd/lib";
 import { saveMilestone, updateMilestone } from "../../../api/ailuo/pms";
 import { useParams } from "react-router";
-const CustomModalRoot = styled.div`
+export const CustomModalRoot = styled.div`
 	position: relative;
 	padding: 24px 36px 24px 36px;
 	border-radius: 8px;

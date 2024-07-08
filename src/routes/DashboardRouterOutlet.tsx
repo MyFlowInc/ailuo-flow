@@ -44,6 +44,8 @@ import Assembling from "../pages/PM/WorkshopStatus/Assembling";
 import Debugging from "../pages/PM/WorkshopStatus/Debugging";
 import FactoryProduction from "../pages/PM/WorkshopStatus/FactoryProduction";
 import WorkshopPurchaseRecordView from "../pages/PM/WorkshopStatus/IncomingPurchase/PurchaseRecordView";
+import DeliverManage from "../pages/PM/DeliverManage";
+import BatchManage from "../pages/PM/BatchForm/BatchManage";
 const { Sider, Content } = Layout;
 
 const DashboardRouterOutlet: React.FC = () => {
@@ -355,6 +357,20 @@ const DashboardRouterOutlet: React.FC = () => {
 										exact={true}
 									>
 										<FactoryProduction />
+									</Route>
+									{/* 交付管理 */}
+									<Route
+										path="/dashboard/deliver-manage/:deliverId"
+										exact={true}
+									>
+										<DeliverManage />
+									</Route>
+									{/* 批次管理 */}
+									<Route
+										path="/dashboard/deliver-manage/:deliverId/batch-manage/:batchId"
+										exact={true}
+									>
+										<BatchManage />
 									</Route>
 									{/* 我的代办测试路由 */}
 									<Route path="/dashboard/my-agent-page" exact={true}>

@@ -109,3 +109,57 @@ export const stageCardInfoMap = {
 		imgColor: "#FFF5D4",
 	},
 };
+
+export const DeliverStatusActionsMap = {
+	deliver: {
+		not_start: ["start"],
+		start: ["over"],
+		over: [],
+	},
+	batch: {
+		not_start: ["start"],
+		start: ["prepare_done"],
+		prepare_done: ["delivering"],
+		delivering: ["received"],
+		received: [],
+	},
+};
+
+export type DeliverStatus = "not_start" | "start" | "over";
+
+export type BatchStatus =
+	| "not_start"
+	| "start"
+	| "prepare_done"
+	| "delivering"
+	| "received";
+export type DeliverType = "deliver" | "batch";
+type DeliverTypeStatusTagLabelMap = Record<DeliverType, any>;
+export const DeliverTypeStatusTagLabelMap: DeliverTypeStatusTagLabelMap = {
+	deliver: {
+		statusLabel: {
+			not_start: "未启动",
+			start: "处理中",
+			over: "交付完成",
+		},
+		actionLabel: {
+			start: "开始处理 ",
+			over: "完成交付",
+		},
+	},
+	batch: {
+		statusLabel: {
+			not_start: "未启动",
+			start: "资料准备中  ",
+			prepare_done: "资料准备完成",
+			delivering: "物流中",
+			received: "已签收",
+		},
+		actionLabel: {
+			start: "开始资料准备",
+			prepare_done: "完成资料准备",
+			delivering: "开始发货",
+			received: "确认签收",
+		},
+	},
+};

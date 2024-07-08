@@ -16,7 +16,7 @@ interface CellEditorProps {
 	modalType: string;
 }
 
-const CellEditor: React.FC<CellEditorProps> = props => {
+const CellEditor: React.FC<CellEditorProps> = (props) => {
 	const { cell, form, setForm, modalType } = props;
 	let rules: any;
 
@@ -29,9 +29,10 @@ const CellEditor: React.FC<CellEditorProps> = props => {
 		case NumFieldType.Phone:
 			rules = [
 				{
-					pattern: /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
-					message: "请输入有效的手机号码."
-				}
+					pattern:
+						/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+					message: "请输入有效的手机号码.",
+				},
 			];
 			break;
 		case NumFieldType.Member:
@@ -54,7 +55,7 @@ const CellEditor: React.FC<CellEditorProps> = props => {
 	);
 };
 
-const CellLabelRoot = styled.div`
+export const CellLabelRoot = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -91,7 +92,7 @@ const CellLabelRoot = styled.div`
 		opacity: 1;
 	}
 `;
-const CellEditorWrap = styled.div`
+export const CellEditorWrap = styled.div`
 	display: flex;
 	align-items: center;
 	height: "12px";
@@ -107,7 +108,12 @@ interface CellEditorContextProps {
 	modalType: string;
 }
 
-const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form, setForm, modalType }) => {
+const CellEditorContext: React.FC<CellEditorContextProps> = ({
+	dstColumns,
+	form,
+	setForm,
+	modalType,
+}) => {
 	const [columns, setColumns] = useState<any[]>(dstColumns);
 	useEffect(() => {
 		setColumns(dstColumns);
@@ -128,7 +134,12 @@ const CellEditorContext: React.FC<CellEditorContextProps> = ({ dstColumns, form,
 								</div>
 							</div>
 						</CellLabelRoot>
-						<CellEditor cell={item} form={form} setForm={setForm} modalType={modalType} />
+						<CellEditor
+							cell={item}
+							form={form}
+							setForm={setForm}
+							modalType={modalType}
+						/>
 					</CellEditorWrap>
 				);
 			})}

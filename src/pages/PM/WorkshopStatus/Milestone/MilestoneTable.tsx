@@ -14,7 +14,7 @@ import {
 import PlusSvg from "./assets/plus.svg";
 import { MilestoneRecordModal } from "./FormModal/MilestoneRecordModal";
 import { useParams } from "react-router";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import { useAppSelector } from "../../../../store/hooks";
 import {
 	selectIsManager,
@@ -214,13 +214,13 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 				{!disabled && (
 					<ConfigProvider theme={blueButtonTheme}>
 						{((status === "start" && isWorkshop) || isManager) && (
-							<Button
-								type="primary"
-								icon={<EditFilled></EditFilled>}
+							<div
+								className={["flex items-center cursor-pointer "].join("")}
 								onClick={handleAdd}
 							>
-								新建重要事件
-							</Button>
+								<PlusCircleFilled size={14} />
+								<div className="ml-2">新建重要事件</div>
+							</div>
 						)}
 					</ConfigProvider>
 				)}

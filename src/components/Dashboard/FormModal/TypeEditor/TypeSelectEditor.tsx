@@ -14,10 +14,16 @@ const LabelRoot = styled.div`
 	justify-content: space-between;
 `;
 
+type Option = {
+	value: string;
+	label: string;
+};
+
 interface TypeSelectEditorProps {
 	mode?: "multiple";
 	fixed?: boolean;
 	label?: boolean;
+	options?: Option[];
 	cell: any;
 	form: any;
 	setForm: any;
@@ -27,9 +33,9 @@ let index = 0;
 const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 	props: TypeSelectEditorProps,
 ) => {
-	const { mode, fixed, cell, form, setForm, label } = props;
+	const { mode, fixed, cell, form, setForm, label, options } = props;
 
-	const [items, setItems] = useState<string[]>([]);
+	const [items, setItems] = useState<any[]>([]);
 	const [name, setName] = useState("");
 	const [value, setValue] = useState<string[] | string>([]);
 
@@ -45,10 +51,11 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 
 	// 初始化
 	useEffect(() => {
-		if (!_.get(cell, "dictCode")) {
-			return;
+		if (_.get(cell, "dictCode")) {
+			fetchOptions(_.get(cell, "dictCode")!);
+		} else if (options) {
+			setItems(options);
 		}
-		fetchOptions(_.get(cell, "dictCode")!);
 	}, []);
 	// 刷新受控值
 	useEffect(() => {

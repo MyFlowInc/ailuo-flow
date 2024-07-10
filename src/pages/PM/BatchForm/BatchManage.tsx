@@ -182,9 +182,9 @@ const BatchManage: React.FC = () => {
 						</div>
 						<div>
 							<MilestoneTable
-								workshopType="machining"
-								status={"start"}
-								workshopId={"1"}
+								workshopType="batch"
+								status={batchForm.status}
+								workshopId={batchForm.id}
 							></MilestoneTable>
 						</div>
 					</ConfigProvider>

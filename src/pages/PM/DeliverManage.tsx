@@ -223,7 +223,11 @@ const DeliverManage: React.FC = () => {
 			key: "equipmentinformationchildren",
 			render: (record: any) => {
 				return record?.map((item: any) => {
-					return <span key={item.name}>{item.name}</span>;
+					return (
+						<Tag key={item.id} color={"#F3F7FF"} style={{ color: "#000" }}>
+							{item.name}
+						</Tag>
+					);
 				});
 			},
 		},

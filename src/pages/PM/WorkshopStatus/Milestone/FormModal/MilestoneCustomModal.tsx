@@ -165,6 +165,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
 						request.workshopType = "";
 						break;
 					}
+					case "batch": {
+						request.relatedBatch = workshopId;
+						request.workshopType = "";
+						request.relatedWorkshop = "";
+						break;
+					}
 				}
 				res = await saveMilestone(excludeNull(request));
 			}

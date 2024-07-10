@@ -190,6 +190,12 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 				request.workshopType = "";
 				break;
 			}
+			case "batch": {
+				request.relatedBatch = workshopId;
+				request.workshopType = "";
+				request.relatedWorkshop = "";
+				break;
+			}
 		}
 		const res = await getMilestoneList(request);
 		if (res.code == 200) {
@@ -234,6 +240,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 					columns={defaultColumns as ColumnTypes}
 					pagination={false}
 					scroll={{ y: "70vh" }}
+					rowKey={"id"}
 				/>
 			</ConfigProvider>
 

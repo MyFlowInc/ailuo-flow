@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, ConfigProvider, Flex, Form, Modal, message } from "antd";
 import CellEditorContext from "./CellEditorContext";
 import { NoFieldData } from "./NoFieldData";
 import { greyButtonTheme } from "../../../theme/theme";
 import { useParams } from "react-router";
 import { CustomModalRoot } from "../../PMS/FormModal/MilestoneCustomModal";
+import {
+	addDeliverInfo,
+	getEquipInfo,
+	updateDeliverInfo,
+} from "../../../api/ailuo/deliver";
+import TypeSelectEditor from "../../../components/Dashboard/FormModal/TypeEditor/TypeSelectEditor";
+import {
+	CellEditorWrap,
+	CellLabelRoot,
+} from "../../MyAgentPage/FormModal/CellEditorContext";
 
 interface EditRecordModalProps {
 	open: boolean;
@@ -12,7 +22,6 @@ interface EditRecordModalProps {
 	editFlowItemRecord?: any | undefined;
 	modalType: "add" | "edit" | "view";
 	columns: any;
-	projectId: string;
 	fetchTable: any;
 	readonly: boolean;
 }
@@ -87,32 +96,133 @@ const DeliveryModelForm = (props: {
 
 const customModalRender = (props: EditRecordModalProps) => {
 	const { editFlowItemRecord, open, setOpen, modalType, readonly } = props;
+	const params = useParams<{ deliverId: string; batchId: string }>();
 	const [form, setForm] = useState<any>({});
 	const [formColumns, setFormColumns] = useState(props.columns);
+	const [allOptions, setAllOptions] = useState<any[]>([]);
 
-	const handleSave = async () => {};
-
-	useEffect(() => {
-		if (editFlowItemRecord) {
-			let formWithShowKey = {
-				...editFlowItemRecord,
-				showAction: "hide",
-			};
-			setForm(formWithShowKey);
-			if (editFlowItemRecord.remark) {
-				props.columns[0].disabled = true;
-			}
+	const fetchOptions = async () => {
+		const resp = await getEquipInfo({
+			relationDeliver: params.deliverId,
+			relationBatch: params.batchId,
+		});
+		if (resp.success) {
+			setAllOptions(resp?.data?.record);
+		} else {
+			message.error(resp.msg);
 		}
+	};
+
+	const setColumns = () => {
+		const equipOtions = allOptions
+			?.filter((option: any) => {
+				return option.logistics === "no";
+			})
+			?.map((equip: any) => {
+				return {
+					value: equip.id,
+					label: equip.name,
+				};
+			});
+		const column = {
+			title: "发货型号",
+			dataIndex: "equipmentinformationId",
+			key: "equipmentinformationId",
+			hidden: true,
+			render: () => {
+				return (
+					<CellEditorWrap key={"field_" + "model"}>
+						<CellLabelRoot>
+							<div className="cell-label-title">
+								<div className="cell-drag-text">
+									<div>{"发货型号"}</div>
+								</div>
+							</div>
+						</CellLabelRoot>
+						<TypeSelectEditor
+							mode="multiple"
+							key={"equip-info-" + Date.now()}
+							fixed
+							form={form}
+							setForm={setForm}
+							cell={{ key: "equipmentinformationId" }}
+							options={equipOtions ?? []}
+							label
+						></TypeSelectEditor>{" "}
+					</CellEditorWrap>
+				);
+			},
+		};
 		if (readonly) {
-			setFormColumns(
-				props.columns.map((col: any) => {
+			setFormColumns([
+				column,
+				...props.columns.map((col: any) => {
 					return { ...col, disabled: true };
 				}),
-			);
+			]);
 		} else {
-			setFormColumns(props.columns);
+			setFormColumns([column, ...props.columns]);
+		}
+	};
+
+	const handleSave = async () => {
+		let resp: any;
+		const request = {
+			...form,
+			equipmentinformationId: form.equipmentinformationId
+				.map((equip: any) => equip.value)
+				.join(","),
+			relationBatch: params.batchId,
+		};
+		if (modalType === "add") {
+			resp = await addDeliverInfo(request);
+		} else {
+			resp = await updateDeliverInfo(request);
+		}
+		if (resp.success) {
+			message.success("保存成功");
+			props.fetchTable();
+			props.setOpen(false);
+		} else {
+			message.error(resp.err);
+		}
+	};
+
+	useEffect(() => {
+		if (open) {
+			if (editFlowItemRecord) {
+				let formWithShowKey = {
+					...editFlowItemRecord,
+					equipmentinformationId: editFlowItemRecord.equipmentinformationId
+						? editFlowItemRecord.equipmentinformationId
+								?.split(",")
+								.map((equip: any) => {
+									return {
+										value: equip,
+										label: allOptions.find((option: any) => {
+											return equip === option.id + "";
+										})?.name,
+									};
+								})
+						: [],
+					showAction: "hide",
+					showEquip: "hide",
+				};
+				setForm(formWithShowKey);
+			}
+		}
+	}, [allOptions]);
+
+	useEffect(() => {
+		if (open) {
+			fetchOptions();
 		}
 	}, [open]);
+
+	useEffect(() => {
+		setColumns();
+	}, [form.equipmentinformationId]);
+
 	return (
 		<CustomModalRoot>
 			<FormTitle

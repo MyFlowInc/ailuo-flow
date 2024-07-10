@@ -1,4 +1,4 @@
-import { Button, ConfigProvider, Flex, Modal, Table, message } from "antd";
+import { Button, ConfigProvider, Flex, Modal, Table, Tag, message } from "antd";
 import { dashboardTheme, TableTheme } from "../../../theme/theme";
 import { useEffect, useState } from "react";
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
@@ -11,26 +11,34 @@ import {
 import { useAppSelector } from "../../../store/hooks";
 import { selectIsManager } from "../../../store/globalSlice";
 import DeliveryInfoModal from "../FormModal/DeliveryInfoModal";
-import { render } from "@testing-library/react";
-import TypeSelectEditor from "../../../components/Dashboard/FormModal/TypeEditor/TypeSelectEditor";
 import {
-	CellEditorWrap,
-	CellLabelRoot,
-} from "../../MyAgentPage/FormModal/CellEditorContext";
+	fetchDeliverInfo,
+	removeDeliverInfo,
+	removeEquip,
+} from "../../../api/ailuo/deliver";
+import { useParams } from "react-router";
 
 const BatchDeliveryInfo: React.FC = () => {
 	const isManager = useAppSelector(selectIsManager);
-
+	const parms = useParams<{ deliverId: any; batchId: any }>();
 	const [dataSource, setDataSource] = useState();
 	const [isShowDeliveryModal, setIsShowDeliveryModal] = useState(false);
 	const [currentItem, setCurrentItem] = useState<any>({});
 	const [readonly, setReadonly] = useState(true);
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
-	const [form, setForm] = useState({ model: [] });
+
+	const fecthDeliverInfo = async () => {
+		const resp = await fetchDeliverInfo({ relationBatch: parms.batchId });
+		if (resp.success) {
+			setDataSource(resp.data.record);
+		} else {
+			message.error(resp.msg);
+		}
+	};
 
 	useEffect(() => {
-		console.log(form);
-	}, [form]);
+		fecthDeliverInfo();
+	}, []);
 
 	const shouldDisabled = (status: any) => {
 		let disabled = true;
@@ -59,10 +67,12 @@ const BatchDeliveryInfo: React.FC = () => {
 			okType: "danger",
 			cancelText: "取消",
 			async onOk() {
-				const res = { code: 200 };
+				const res = await removeDeliverInfo({ id: item.id });
 				if (res.code == 200) {
-					// await fetchData();
 					message.success("删除成功");
+					fecthDeliverInfo();
+				} else {
+					message.error(res.msg);
 				}
 			},
 		});
@@ -71,79 +81,65 @@ const BatchDeliveryInfo: React.FC = () => {
 	const handleShowDeliveryModal = (type: "add" | "edit") => {
 		setReadonly(false);
 		setModalType(type);
+		setCurrentItem({});
 		setIsShowDeliveryModal(true);
 	};
 
 	const columns: any = [
 		{
 			title: "发货型号",
-			dataIndex: "model",
-			key: "model",
-			render: () => {
-				return (
-					<CellEditorWrap key={"field_" + "model"}>
-						<CellLabelRoot>
-							<div className="cell-label-title">
-								<div className="cell-drag-text">
-									<div>{"发货型号"}</div>
-								</div>
-							</div>
-						</CellLabelRoot>
-						<TypeSelectEditor
-							mode="multiple"
-							key={"model"}
-							fixed
-							form={form}
-							setForm={setForm}
-							cell={{ key: "model" }}
-							options={[
-								{ value: "1", label: "型号1" },
-								{ value: "2", label: "型号2" },
-							]}
-						></TypeSelectEditor>{" "}
-					</CellEditorWrap>
-				);
+			dataIndex: "equipmentinformationchildren",
+			key: "equipmentinformationchildren",
+			showCtrlKey: "showEquip",
+			render: (record: any) => {
+				return record.map((equip: any) => {
+					return (
+						<Tag key={equip.id} color={"#F3F7FF"} style={{ color: "#000" }}>
+							{equip.name}
+						</Tag>
+					);
+				});
 			},
 		},
 		{
-			title: "序列号",
-			dataIndex: "serialNumber",
-			key: "serialNumber",
+			title: "序号",
+			dataIndex: "oddNumbers",
+			key: "oddNumbers",
 			type: NumFieldType.SingleText,
 		},
 		{
 			title: "发货人员",
-			dataIndex: "serialNumber",
-			key: "sender",
+			dataIndex: "consignor",
+			key: "consignor",
 			type: NumFieldType.SingleText,
 		},
 		{
 			title: "物流公司",
-			dataIndex: "serialNumber",
+			dataIndex: "company",
 			key: "company",
 			type: NumFieldType.SingleText,
 		},
 		{
 			title: "物流单号",
-			dataIndex: "serialNumber",
-			key: "trackingNumber",
+			dataIndex: "logisticsNumber",
+			key: "logisticsNumber",
 			type: NumFieldType.SingleText,
 		},
 		{
 			title: "收货人",
-			dataIndex: "serialNumber",
-			key: "receiever",
+			dataIndex: "consignee",
+			key: "consignee",
 			type: NumFieldType.SingleText,
 		},
 		{
-			title: "收获手机号",
-			dataIndex: "serialNumber",
+			title: "收货手机号",
+			dataIndex: "phone",
 			key: "phone",
 			type: NumFieldType.SingleText,
 		},
 		{
 			title: "收货地址",
-			dataIndex: "serialNumber",
+			dataIndex: "address",
 			key: "address",
 			type: NumFieldType.SingleText,
 		},
@@ -203,9 +199,8 @@ const BatchDeliveryInfo: React.FC = () => {
 					</ConfigProvider>
 				</Flex>
 				<DeliveryInfoModal
-					editFlowItemRecord={{}}
-					fetchTable={{}}
-					projectId={"372"}
+					editFlowItemRecord={currentItem}
+					fetchTable={fecthDeliverInfo}
 					columns={columns}
 					open={isShowDeliveryModal}
 					setOpen={setIsShowDeliveryModal}

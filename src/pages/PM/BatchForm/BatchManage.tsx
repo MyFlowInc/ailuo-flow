@@ -118,10 +118,6 @@ const BatchManage: React.FC = () => {
 		fetchBatchInfo();
 	}, [parms.batchId]);
 
-	useEffect(() => {
-		console.log(batchForm);
-	}, [batchForm]);
-
 	return (
 		<ConfigProvider theme={dashboardTheme}>
 			<div className="bg-white fixed top-0 z-10 w-full pr-[286px] pt-5">

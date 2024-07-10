@@ -28,7 +28,9 @@ interface RemoveBatchParam {
 
 interface GetProEquipParam {
 	relationDeliver?: string;
+	relationBatch?: string;
 	defaultIdentification?: string;
+	logistics?: string;
 }
 
 interface UpdateProEquipParam {
@@ -48,6 +50,35 @@ interface AddProEquipParam {
 	remark?: string;
 	choice?: string;
 	defaultIdentification?: string;
+}
+
+interface FetchDeliverInfoParam {
+	relationBatch?: string;
+}
+
+interface AddDeliverInfo {
+	address?: string;
+	company?: string;
+	consignee?: string;
+	consignor?: string;
+	equipmentinformationId?: string;
+	logisticsNumber?: string;
+	oddNumbers?: string;
+	phone?: string;
+	relationBatch?: string;
+}
+
+interface UpdateDeliverInfo {
+	id?: string;
+	address?: string;
+	company?: string;
+	consignee?: string;
+	consignor?: string;
+	equipmentinformationId?: string;
+	logisticsNumber?: string;
+	oddNumbers?: string;
+	phone?: string;
+	relationBatch?: string;
 }
 
 export function getDeliverManage(params: Params) {
@@ -124,6 +155,38 @@ export function addEquip(data: AddProEquipParam) {
 export function removeEquip(params: Params) {
 	return apiCall({
 		url: "api/sys/proEquipmentinformation/remove",
+		method: "delete",
+		params,
+	});
+}
+
+export function fetchDeliverInfo(params: FetchDeliverInfoParam) {
+	return apiCall({
+		url: "api/sys/proLogistics/page",
+		method: "get",
+		params,
+	});
+}
+
+export function addDeliverInfo(data: AddDeliverInfo) {
+	return apiCall({
+		url: "api/sys/proLogistics/save",
+		method: "post",
+		data,
+	});
+}
+
+export function updateDeliverInfo(data: UpdateDeliverInfo) {
+	return apiCall({
+		url: "api/sys/proLogistics/edit",
+		method: "put",
+		data,
+	});
+}
+
+export function removeDeliverInfo(params: Params) {
+	return apiCall({
+		url: "api/sys/proLogistics/remove",
 		method: "delete",
 		params,
 	});

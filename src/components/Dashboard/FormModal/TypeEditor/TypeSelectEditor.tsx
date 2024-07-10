@@ -37,7 +37,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 
 	const [items, setItems] = useState<any[]>([]);
 	const [name, setName] = useState("");
-	const [value, setValue] = useState<string[] | string>([]);
+	const [value, setValue] = useState<any[] | string>([]);
 
 	const inputRef = useRef<InputRef>(null);
 	const [disabled, setDisabled] = useState(false);
@@ -196,6 +196,7 @@ const TypeSelectEditor: React.FC<TypeSelectEditorProps> = (
 			placeholder={mode === "multiple" ? "多选框" : "单选框"}
 			mode={mode}
 			value={value}
+			labelInValue={options ? true : false}
 			onChange={handleSelectChange}
 			optionLabelProp={label ? "label" : "value"}
 			dropdownRender={fixed ? undefined : dropdownRender}

@@ -5,6 +5,7 @@ import { NoFieldData } from "./NoFieldData";
 import { greyButtonTheme } from "../../../theme/theme";
 import { useParams } from "react-router";
 import { CustomModalRoot } from "../../PMS/FormModal/MilestoneCustomModal";
+import { addEquip, updateEquip } from "../../../api/ailuo/deliver";
 
 interface EditRecordModalProps {
 	open: boolean;
@@ -12,7 +13,6 @@ interface EditRecordModalProps {
 	editFlowItemRecord?: any | undefined;
 	modalType: "add" | "edit" | "view";
 	columns: any;
-	projectId: string;
 	fetchTable: any;
 	readonly: boolean;
 }
@@ -89,8 +89,37 @@ const customModalRender = (props: EditRecordModalProps) => {
 	const { editFlowItemRecord, open, setOpen, modalType, readonly } = props;
 	const [form, setForm] = useState<any>({});
 	const [formColumns, setFormColumns] = useState(props.columns);
+	const parms = useParams<{ deliverId: any; batchId: any }>();
 
-	const handleSave = async () => {};
+	const handleSave = async () => {
+		let resp: any;
+		if (modalType === "add") {
+			resp = await addEquip({
+				relationBatch: parms.batchId,
+				relationDeliver: parms.deliverId,
+				name: form.name,
+				serialNumber: form.serialNumber,
+				remark: form.remark,
+				choice: "yes",
+				defaultIdentification: "no",
+			});
+		} else {
+			resp = await updateEquip({
+				id: form.id,
+				name: form.name,
+				serialNumber: form.serialNumber,
+				remark: form.remark,
+			});
+		}
+
+		if (resp.success) {
+			message.success("保存成功");
+			props.setOpen(false);
+			props.fetchTable();
+		} else {
+			message.error(resp.msg);
+		}
+	};
 
 	useEffect(() => {
 		if (editFlowItemRecord) {
@@ -99,9 +128,6 @@ const customModalRender = (props: EditRecordModalProps) => {
 				showAction: "hide",
 			};
 			setForm(formWithShowKey);
-			if (editFlowItemRecord.remark) {
-				props.columns[0].disabled = true;
-			}
 		}
 		if (readonly) {
 			setFormColumns(

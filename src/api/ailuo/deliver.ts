@@ -28,6 +28,26 @@ interface RemoveBatchParam {
 
 interface GetProEquipParam {
 	relationDeliver?: string;
+	defaultIdentification?: string;
+}
+
+interface UpdateProEquipParam {
+	id?: string;
+	choice?: string;
+	relationBatch?: string;
+	name?: string;
+	serialNumber?: string;
+	remark?: string;
+}
+
+interface AddProEquipParam {
+	relationBatch?: string;
+	relationDeliver?: string;
+	name?: string;
+	serialNumber?: string;
+	remark?: string;
+	choice?: string;
+	defaultIdentification?: string;
 }
 
 export function getDeliverManage(params: Params) {
@@ -75,5 +95,36 @@ export function getEquipInfo(params: GetProEquipParam) {
 		url: "api/sys/proEquipmentinformation/page",
 		method: "get",
 		params: params,
+	});
+}
+export function batchUpdateEquip(data: UpdateProEquipParam[]) {
+	return apiCall({
+		url: "api/sys/proEquipmentinformation/batchEdit",
+		method: "put",
+		data,
+	});
+}
+
+export function updateEquip(data: UpdateProEquipParam) {
+	return apiCall({
+		url: "api/sys/proEquipmentinformation/edit",
+		method: "put",
+		data,
+	});
+}
+
+export function addEquip(data: AddProEquipParam) {
+	return apiCall({
+		url: "api/sys/proEquipmentinformation/save",
+		method: "post",
+		data,
+	});
+}
+
+export function removeEquip(params: Params) {
+	return apiCall({
+		url: "api/sys/proEquipmentinformation/remove",
+		method: "delete",
+		params,
 	});
 }

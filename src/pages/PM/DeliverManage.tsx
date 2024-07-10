@@ -222,7 +222,7 @@ const DeliverManage: React.FC = () => {
 			dataIndex: "equipmentinformationchildren",
 			key: "equipmentinformationchildren",
 			render: (record: any) => {
-				return record.map((item: any) => {
+				return record?.map((item: any) => {
 					return <span key={item.name}>{item.name}</span>;
 				});
 			},

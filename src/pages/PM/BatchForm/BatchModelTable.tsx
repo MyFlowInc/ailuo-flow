@@ -12,6 +12,7 @@ import DeliveryModelModal from "../FormModal/DeliveryModelModal";
 import { useAppSelector } from "../../../store/hooks";
 import { selectIsManager } from "../../../store/globalSlice";
 import ModelSelectModal from "../FormModal/ModelSelectModal";
+import { removeEquip, updateEquip } from "../../../api/ailuo/deliver";
 
 interface BatchModelTableProp {
 	dataSource: any;
@@ -23,7 +24,6 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 ) => {
 	const isManager = useAppSelector(selectIsManager);
 
-	// const [dataSource, setDataSource] = useState();
 	const [isShowDeliveryModal, setIsShowDeliveryModal] = useState(false);
 	const [isShowSelectModal, setIsShowSelectModal] = useState(false);
 	const [currentItem, setCurrentItem] = useState<any>({});
@@ -41,7 +41,10 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 	const handleEdit = (item: any) => {
 		setModalType("edit");
 		setCurrentItem(item);
-		if (isManager || !shouldDisabled(item.status)) {
+		if (
+			(isManager || !shouldDisabled(item.status)) &&
+			item.defaultIdentification === "no"
+		) {
 			setReadonly(false);
 		} else {
 			setReadonly(true);
@@ -57,10 +60,21 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 			okType: "danger",
 			cancelText: "取消",
 			async onOk() {
-				const res = { code: 200 };
+				let res: any;
+				if (item.defaultIdentification === "yes") {
+					res = await updateEquip({
+						id: item.id,
+						choice: "no",
+						relationBatch: "",
+					});
+				} else {
+					res = await removeEquip({ id: item.id });
+				}
 				if (res.code == 200) {
-					// await fetchData();
+					await props.fetchBatchInfo();
 					message.success("删除成功");
+				} else {
+					message.error(res.msg);
 				}
 			},
 		});
@@ -74,6 +88,7 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 		setReadonly(false);
 		setModalType(type);
 		setIsShowDeliveryModal(true);
+		setCurrentItem({});
 	};
 
 	const columns: any = [
@@ -116,7 +131,7 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
-							disabled={shouldDisabled(record.status) || record.remark}
+							disabled={shouldDisabled(record.status)}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
@@ -158,9 +173,8 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 					</ConfigProvider>
 				</Flex>
 				<DeliveryModelModal
-					editFlowItemRecord={{}}
-					fetchTable={{}}
-					projectId={"372"}
+					editFlowItemRecord={currentItem}
+					fetchTable={props.fetchBatchInfo}
 					columns={columns}
 					open={isShowDeliveryModal}
 					setOpen={setIsShowDeliveryModal}

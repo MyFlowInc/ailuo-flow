@@ -3,8 +3,12 @@ import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { BatchStatus, DeliverStatusActionsMap, DeliverType } from "../types";
 import { Button, ConfigProvider, Form, Tag, message } from "antd";
-import { selectIsDeliver, selectIsManager } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import {
+	selectIsDeliver,
+	selectIsManager,
+	setCurDelivery,
+} from "../../../store/globalSlice";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
 	getLabel,
 	getTagColorByStatus,
@@ -23,7 +27,12 @@ import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import MilestoneTable from "../WorkshopStatus/Milestone/MilestoneTable";
 import BatchModelTable from "./BatchModelTable";
 import BatchDeliveryInfo from "./BatchDeliveryInfo";
-import { editBatchInfo, getBatchInfo } from "../../../api/ailuo/deliver";
+import {
+	editBatchInfo,
+	getBatchInfo,
+	getDeliverManage,
+} from "../../../api/ailuo/deliver";
+import _ from "lodash";
 
 const getDeliverNextActionsByTypeAndStatus = (status: BatchStatus) => {
 	return DeliverStatusActionsMap.batch[status];
@@ -84,7 +93,9 @@ const BatchManage: React.FC = () => {
 	const isManager = useAppSelector(selectIsManager);
 	const isDeliver = useAppSelector(selectIsDeliver);
 	const history = useHistory();
+	const dispatch = useAppDispatch();
 	const [batchForm, setBatchForm] = useState<any>({});
+
 	const batchColumn = [
 		{
 			title: "设备资料包",
@@ -94,7 +105,6 @@ const BatchManage: React.FC = () => {
 			disabled: batchForm.status !== "tobe_tested",
 		},
 	];
-	console.log(delivery);
 	const fetchBatchInfo = async () => {
 		let resp = await getBatchInfo({
 			id: parms.batchId,
@@ -102,6 +112,15 @@ const BatchManage: React.FC = () => {
 		});
 		if (resp.success) {
 			setBatchForm(resp.data.record?.[0]);
+		}
+	};
+
+	const fetchDeliver = async () => {
+		const res = await getDeliverManage({ id: parms.deliverId });
+		if (res.code == 200) {
+			dispatch(setCurDelivery(res.data.record?.[0]));
+		} else {
+			message.error(res.msg);
 		}
 	};
 
@@ -120,6 +139,9 @@ const BatchManage: React.FC = () => {
 
 	useEffect(() => {
 		fetchBatchInfo();
+		if (_.isEmpty(delivery)) {
+			fetchDeliver();
+		}
 	}, [parms.batchId]);
 
 	return (

@@ -290,4 +290,19 @@ export const selectIsWorkshop = (state: RootState) => {
 	return res;
 };
 
+export const selectIsDeliver = (state: RootState) => {
+	const { user } = state.global;
+	const { roles } = user;
+	let res = false;
+	if (!roles) {
+		return res;
+	}
+	roles.forEach((item) => {
+		if (item.code === "deliver") {
+			res = true;
+		}
+	});
+	return res;
+};
+
 export default globalSlice.reducer;

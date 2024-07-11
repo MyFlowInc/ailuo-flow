@@ -13,6 +13,7 @@ interface EditBatchInfoReq {
 	id?: string;
 	dataPackage?: string;
 	status?: string;
+	relationProject?: string;
 }
 
 interface EditDeliverManageReq {

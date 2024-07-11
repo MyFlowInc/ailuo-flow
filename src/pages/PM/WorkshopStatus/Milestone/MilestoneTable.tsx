@@ -17,6 +17,7 @@ import { useParams } from "react-router";
 import { ExclamationCircleFilled, PlusCircleFilled } from "@ant-design/icons";
 import { useAppSelector } from "../../../../store/hooks";
 import {
+	selectIsDeliver,
 	selectIsManager,
 	selectIsQuality,
 	selectIsWorkshop,
@@ -67,6 +68,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	const user = useAppSelector(selectUser);
 	const isManager = useAppSelector(selectIsManager);
 	const isWorkshop = useAppSelector(selectIsWorkshop);
+	const isDeliver = useAppSelector(selectIsDeliver);
 	const params = useParams<any>();
 
 	const [dataSource, setDataSource] = useState<DataType[]>([]);
@@ -205,7 +207,11 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 
 	useEffect(() => {
 		//只有开始阶段车间可以更改 或者 经理任何时候都能更改
-		if ((status === "start" && isWorkshop) || isManager) {
+		if (
+			((workshopType === "batch" ? status !== "over" : status === "start") &&
+				(workshopType === "batch" ? isDeliver : isWorkshop)) ||
+			isManager
+		) {
 			setDisabled(false);
 		} else {
 			setDisabled(true);
@@ -219,7 +225,11 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 				<span>重要事件</span>
 				{!disabled && (
 					<ConfigProvider theme={blueButtonTheme}>
-						{((status === "start" && isWorkshop) || isManager) && (
+						{(((workshopType === "batch"
+							? status !== "over"
+							: status === "start") &&
+							(workshopType === "batch" ? isDeliver : isWorkshop)) ||
+							isManager) && (
 							<div
 								className={["flex items-center cursor-pointer "].join("")}
 								onClick={handleAdd}

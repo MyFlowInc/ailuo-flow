@@ -1,8 +1,8 @@
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { Tag, ConfigProvider, Button, message, Table } from "antd";
 import {
+	selectIsDeliver,
 	selectIsManager,
-	selectIsWorkshop,
 	setCurDelivery,
 } from "../../store/globalSlice";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -45,7 +45,7 @@ export const updateStatusByStage = async (
 	status: DeliverStatus | BatchStatus,
 	valid = false,
 	refreshBatch?: () => void,
-	relatedProjectsId?: string,
+	relationProject?: string,
 ) => {
 	if (valid) {
 		let res: any;
@@ -54,7 +54,8 @@ export const updateStatusByStage = async (
 			//update deliver status
 			res = await editDeliverManage({ id, status });
 		} else {
-			res = await editBatchInfo({ id, status });
+			console.log(relationProject);
+			res = await editBatchInfo({ id, status, relationProject });
 		}
 		if (!res.success) {
 			message.error(res.msg);
@@ -62,7 +63,7 @@ export const updateStatusByStage = async (
 			refreshBatch();
 		}
 	} else {
-		message.error("只有车间人员和经理可更改状态");
+		message.error("只有交付人员和经理可更改状态");
 	}
 };
 
@@ -75,9 +76,10 @@ export const getTagColorByStatus = (status: DeliverStatus | BatchStatus) => {
 		case "over":
 			return "#E8FFEA";
 		//不知道啥颜色
-		case "received":
-		case "delivering":
-		case "prepare_done":
+		case "tobe_tested":
+		case "over":
+		case "in_logistics":
+		case "data_completed":
 			return "#E8FFEA";
 	}
 };
@@ -90,7 +92,7 @@ const StatusView = (props: {
 }) => {
 	const stage: DeliverType = "deliver";
 	const isManager = useAppSelector(selectIsManager);
-	const isWorkshop = useAppSelector(selectIsWorkshop);
+	const isDeliver = useAppSelector(selectIsDeliver);
 	const action = getDeliverNextActionsByTypeAndStatus(
 		props.status,
 	)?.[0] as DeliverStatus;
@@ -117,9 +119,8 @@ const StatusView = (props: {
 								props.id,
 								stage,
 								action,
-								isWorkshop || isManager,
+								isManager || isDeliver,
 								props.fecthDeliver,
-								props.relatedProjectId,
 							);
 						}}
 					>
@@ -134,6 +135,8 @@ const StatusView = (props: {
 const DeliverManage: React.FC = () => {
 	const delivery = useSelector((state) => (state as any).global.curDelivery);
 	const params = useParams<{ deliverId: string }>();
+	const isManager = useAppSelector(selectIsManager);
+	const isDeliver = useAppSelector(selectIsDeliver);
 	const history = useHistory();
 	const dispatch = useAppDispatch();
 	const location = useLocation();
@@ -177,13 +180,17 @@ const DeliverManage: React.FC = () => {
 			addTo: "true",
 			remark: delivery.remark,
 		});
-		history.push(location.pathname + "/batch-manage/" + res.data);
+		if (res.success) {
+			history.push(location.pathname + "/batch-manage/" + res.data);
+		} else {
+			message.error(res.msg);
+		}
 	};
 	const handleEdit = (record: any) => {
 		history.push(location.pathname + "/batch-manage/" + record.id);
 	};
-	const shouldDisabled = (record: any) => {
-		return false;
+	const shouldDisabled = () => {
+		return !isManager && !isDeliver;
 	};
 	const handleDelete = async (record: any) => {
 		let res = await removeBatchInfo({ id: record.id });
@@ -244,6 +251,7 @@ const DeliverManage: React.FC = () => {
 							color="#717682"
 							icon={<EditFilled />}
 							className="text-[#717682]"
+							disabled={shouldDisabled()}
 							onClick={() => handleEdit(record)}
 						></Button>
 						<Button
@@ -251,7 +259,7 @@ const DeliverManage: React.FC = () => {
 							color="#717682"
 							icon={<DeleteFilled />}
 							className="text-[#717682]"
-							disabled={shouldDisabled(record)}
+							disabled={shouldDisabled() || delivery.status === "over"}
 							onClick={() => handleDelete(record)}
 						></Button>
 					</div>
@@ -273,11 +281,13 @@ const DeliverManage: React.FC = () => {
 						fecthDeliver={fetchDeliver}
 						relatedProjectId={delivery.relationProject}
 					/>
-					{delivery.remark && (
+					{(delivery.remark === "in_batch" ||
+						(delivery.remark === "whole_batch" && dataSource.length === 0)) && (
 						<ConfigProvider theme={blueButtonTheme}>
 							<Button
 								className="ml-4"
 								type="primary"
+								disabled={delivery.status !== "start"}
 								onClick={() => addBatch(delivery.id)}
 							>
 								添加批次
@@ -286,12 +296,12 @@ const DeliverManage: React.FC = () => {
 					)}
 				</div>
 
-				{delivery.status === "start" && (
+				{delivery.status !== "not_start" && (
 					<div className="flex items-center justify-between">
 						<ConfigProvider theme={blueButtonTheme}>
 							{(!delivery.remark || delivery.remark === "whole_batch") && (
 								<Button
-									disabled={delivery.remark}
+									disabled={delivery.remark || shouldDisabled()}
 									className="ml-4"
 									type="default"
 									onClick={() => handleDeliver(delivery.id, "whole_batch")}
@@ -301,7 +311,7 @@ const DeliverManage: React.FC = () => {
 							)}
 							{(!delivery.remark || delivery.remark === "in_batch") && (
 								<Button
-									disabled={delivery.remark}
+									disabled={delivery.remark || shouldDisabled()}
 									className="ml-4"
 									type="default"
 									onClick={() => handleDeliver(delivery.id, "in_batch")}

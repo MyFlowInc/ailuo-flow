@@ -145,7 +145,7 @@ const customModalRender = (props: EditRecordModalProps) => {
 							fixed
 							form={form}
 							setForm={setForm}
-							cell={{ key: "equipmentinformationId" }}
+							cell={{ key: "equipmentinformationId", disabled: readonly }}
 							options={equipOtions ?? []}
 							label
 						></TypeSelectEditor>{" "}

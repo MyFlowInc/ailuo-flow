@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { BatchStatus, DeliverStatusActionsMap, DeliverType } from "../types";
 import { Button, ConfigProvider, Form, Tag, message } from "antd";
-import { selectIsManager, selectIsWorkshop } from "../../../store/globalSlice";
+import { selectIsDeliver, selectIsManager } from "../../../store/globalSlice";
 import { useAppSelector } from "../../../store/hooks";
 import {
 	getLabel,
@@ -37,7 +37,7 @@ const StatusView = (props: {
 }) => {
 	const stage: DeliverType = "batch";
 	const isManager = useAppSelector(selectIsManager);
-	const isWorkshop = useAppSelector(selectIsWorkshop);
+	const isDeliver = useAppSelector(selectIsDeliver);
 	const action = getDeliverNextActionsByTypeAndStatus(
 		props.status,
 	)?.[0] as BatchStatus;
@@ -64,7 +64,7 @@ const StatusView = (props: {
 								props.id,
 								stage,
 								action,
-								isWorkshop || isManager,
+								isManager || isDeliver,
 								props.fetchBatchInfo,
 								props.relatedProjectId,
 							);
@@ -81,6 +81,8 @@ const StatusView = (props: {
 const BatchManage: React.FC = () => {
 	const parms = useParams<{ deliverId: any; batchId: any }>();
 	const delivery = useSelector((state) => (state as any).global.curDelivery);
+	const isManager = useAppSelector(selectIsManager);
+	const isDeliver = useAppSelector(selectIsDeliver);
 	const history = useHistory();
 	const [batchForm, setBatchForm] = useState<any>({});
 	const batchColumn = [
@@ -89,8 +91,10 @@ const BatchManage: React.FC = () => {
 			dataIndex: "dataPackage",
 			key: "dataPackage",
 			type: NumFieldType.Attachment,
+			disabled: batchForm.status !== "tobe_tested",
 		},
 	];
+	console.log(delivery);
 	const fetchBatchInfo = async () => {
 		let resp = await getBatchInfo({
 			id: parms.batchId,
@@ -137,7 +141,11 @@ const BatchManage: React.FC = () => {
 				<div className="flex items-center justify-between mt-4">
 					<div className="text-lg">{batchForm.name}</div>
 					<ConfigProvider theme={blueButtonTheme}>
-						<Button type="primary" onClick={() => handleSave()}>
+						<Button
+							disabled={batchForm.status !== "tobe_tested"}
+							type="primary"
+							onClick={() => handleSave()}
+						>
 							保存
 						</Button>
 					</ConfigProvider>
@@ -175,10 +183,18 @@ const BatchManage: React.FC = () => {
 							<BatchModelTable
 								dataSource={batchForm.equipmentinformationchildren}
 								fetchBatchInfo={fetchBatchInfo}
+								canAddModel={
+									batchForm.status === "tobe_tested" && (isManager || isDeliver)
+								}
 							></BatchModelTable>
 						</div>
 						<div>
-							<BatchDeliveryInfo></BatchDeliveryInfo>
+							<BatchDeliveryInfo
+								canAddDeliverInfo={
+									batchForm.status === "in_logistics" &&
+									(isManager || isDeliver)
+								}
+							></BatchDeliveryInfo>
 						</div>
 						<div>
 							<MilestoneTable

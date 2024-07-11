@@ -196,7 +196,10 @@ const Menu: React.FC = () => {
 			dispatch(setUserMenus(menus));
 
 			if (menus && menus.length > 0 && location.pathname === "/dashboard") {
-				const children = menus[0].children || [];
+				let children = menus[0].children || [];
+				if (!children.length && menus.length) {
+					children = menus;
+				}
 				history.push(`/dashboard` + _.get(children, "0.path")); // 默认打开第一个路由
 			}
 		} catch (error) {

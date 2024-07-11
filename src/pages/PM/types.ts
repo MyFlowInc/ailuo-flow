@@ -117,11 +117,11 @@ export const DeliverStatusActionsMap = {
 		over: [],
 	},
 	batch: {
-		not_start: ["start"],
-		start: ["prepare_done"],
-		prepare_done: ["delivering"],
-		delivering: ["received"],
-		received: [],
+		not_start: ["tobe_tested"],
+		tobe_tested: ["data_completed"],
+		data_completed: ["in_logistics"],
+		in_logistics: ["over"],
+		over: [],
 	},
 };
 
@@ -129,10 +129,10 @@ export type DeliverStatus = "not_start" | "start" | "over";
 
 export type BatchStatus =
 	| "not_start"
-	| "start"
-	| "prepare_done"
-	| "delivering"
-	| "received";
+	| "tobe_tested"
+	| "in_logistics"
+	| "over"
+	| "data_completed";
 export type DeliverType = "deliver" | "batch";
 type DeliverTypeStatusTagLabelMap = Record<DeliverType, any>;
 export const DeliverTypeStatusTagLabelMap: DeliverTypeStatusTagLabelMap = {
@@ -150,16 +150,16 @@ export const DeliverTypeStatusTagLabelMap: DeliverTypeStatusTagLabelMap = {
 	batch: {
 		statusLabel: {
 			not_start: "未启动",
-			start: "资料准备中  ",
-			prepare_done: "资料准备完成",
-			delivering: "物流中",
-			received: "已签收",
+			tobe_tested: "资料准备中",
+			data_completed: "资料准备完成",
+			in_logistics: "物流中",
+			over: "已签收",
 		},
 		actionLabel: {
-			start: "开始资料准备",
-			prepare_done: "完成资料准备",
-			delivering: "开始发货",
-			received: "确认签收",
+			tobe_tested: "开始资料准备",
+			data_completed: "完成资料准备",
+			in_logistics: "开始发货",
+			over: "确认签收",
 		},
 	},
 };

@@ -17,6 +17,7 @@ import { removeEquip, updateEquip } from "../../../api/ailuo/deliver";
 interface BatchModelTableProp {
 	dataSource: any;
 	fetchBatchInfo: any;
+	canAddModel: boolean;
 }
 
 const BatchModelTable: React.FC<BatchModelTableProp> = (
@@ -31,20 +32,13 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 	const [modalType, setModalType] = useState<"add" | "edit">("add");
 
 	const shouldDisabled = (status: any) => {
-		let disabled = true;
-		if (isManager) {
-			disabled = false;
-		}
-		return disabled;
+		return !props.canAddModel;
 	};
 
 	const handleEdit = (item: any) => {
 		setModalType("edit");
 		setCurrentItem(item);
-		if (
-			(isManager || !shouldDisabled(item.status)) &&
-			item.defaultIdentification === "no"
-		) {
+		if (!shouldDisabled(item.status) && item.defaultIdentification === "no") {
 			setReadonly(false);
 		} else {
 			setReadonly(true);
@@ -145,20 +139,24 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 				<Flex gap={20} vertical>
 					<Flex gap={10}>
 						<span>设备资料包</span>
-						<div
-							className={["flex items-center cursor-pointer "].join("")}
-							onClick={handleSelectModal}
-						>
-							<PlusCircleFilled size={14} />
-							<div className="ml-2">添加设备</div>
-						</div>
-						<div
-							className={["flex items-center cursor-pointer "].join("")}
-							onClick={() => handleShowDeliveryModal("add")}
-						>
-							<PlusCircleFilled size={14} />
-							<div className="ml-2">添加交付材料</div>
-						</div>
+						{props.canAddModel && (
+							<div
+								className={["flex items-center cursor-pointer "].join("")}
+								onClick={handleSelectModal}
+							>
+								<PlusCircleFilled size={14} />
+								<div className="ml-2">添加设备</div>
+							</div>
+						)}
+						{props.canAddModel && (
+							<div
+								className={["flex items-center cursor-pointer "].join("")}
+								onClick={() => handleShowDeliveryModal("add")}
+							>
+								<PlusCircleFilled size={14} />
+								<div className="ml-2">添加交付材料</div>
+							</div>
+						)}
 					</Flex>
 					<ConfigProvider theme={TableTheme}>
 						<Table

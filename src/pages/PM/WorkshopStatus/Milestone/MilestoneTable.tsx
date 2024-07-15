@@ -220,7 +220,9 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 	}, [status]);
 
 	useEffect(() => {
-		fetchData();
+		if (workshopId) {
+			fetchData();
+		}
 	}, [workshopId]);
 
 	return (

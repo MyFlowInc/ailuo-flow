@@ -180,7 +180,7 @@ const BatchManage: React.FC = () => {
 						relatedProjectId={delivery.relationProject}
 					/>
 				</div>
-				<div style={{ height: "88vh", overflowY: "auto" }}>
+				<div style={{ height: "calc(100vh - 200px)", overflowY: "auto" }}>
 					<div className="flex mt-4">
 						<ProjectForm projectId={delivery.relationProject} />
 					</div>
@@ -212,6 +212,7 @@ const BatchManage: React.FC = () => {
 						</div>
 						<div>
 							<BatchDeliveryInfo
+								equips={batchForm.equipmentinformationchildren}
 								canAddDeliverInfo={
 									batchForm.status !== "not_start" &&
 									batchForm.status !== "over" &&

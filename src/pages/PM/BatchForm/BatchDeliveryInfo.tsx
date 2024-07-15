@@ -17,6 +17,7 @@ import { useParams } from "react-router";
 
 interface BatchDeliveryInfoProps {
 	canAddDeliverInfo: boolean;
+	equips: any;
 }
 
 const BatchDeliveryInfo: React.FC<BatchDeliveryInfoProps> = (
@@ -40,7 +41,7 @@ const BatchDeliveryInfo: React.FC<BatchDeliveryInfoProps> = (
 
 	useEffect(() => {
 		fecthDeliverInfo();
-	}, []);
+	}, [props.equips]);
 
 	const shouldDisabled = (status: any) => {
 		return !props.canAddDeliverInfo;

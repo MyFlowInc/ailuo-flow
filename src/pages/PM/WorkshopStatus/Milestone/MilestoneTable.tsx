@@ -223,7 +223,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		if (workshopId) {
 			fetchData();
 		}
-	}, [workshopId]);
+	}, [workshopId, status]);
 
 	return (
 		<div className="mt-8">

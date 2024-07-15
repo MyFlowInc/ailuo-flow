@@ -38,7 +38,7 @@ const BatchModelTable: React.FC<BatchModelTableProp> = (
 	const handleEdit = (item: any) => {
 		setModalType("edit");
 		setCurrentItem(item);
-		if (!shouldDisabled(item.status) && item.defaultIdentification === "no") {
+		if (!shouldDisabled(item.status)) {
 			setReadonly(false);
 		} else {
 			setReadonly(true);

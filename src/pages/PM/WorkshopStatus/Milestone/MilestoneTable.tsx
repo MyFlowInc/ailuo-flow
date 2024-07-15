@@ -132,6 +132,7 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		{
 			title: "是否影响交期",
 			dataIndex: "deliveryTime",
+			hidden: workshopType === "batch",
 			render: (text, record) => {
 				return <div>{text == "yes" ? "是" : "否"}</div>;
 			},
@@ -216,8 +217,11 @@ const MilestoneTable: React.FC<MilestoneTableProps> = ({
 		} else {
 			setDisabled(true);
 		}
-		fetchData();
 	}, [status]);
+
+	useEffect(() => {
+		fetchData();
+	}, [workshopId]);
 
 	return (
 		<div className="mt-8">

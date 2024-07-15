@@ -61,59 +61,6 @@ const excludeNull = (obj: any) => {
 	return result;
 };
 
-const columns: any = [
-	{
-		title: "时间",
-		dataIndex: "createTime",
-		key: "createTime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return (
-				<div>
-					{value ? (
-						value
-					) : (
-						<span className="text-gray-400">根据新建时间自动生成</span>
-					)}
-				</div>
-			);
-		},
-	},
-	{
-		title: "人员",
-		dataIndex: "name",
-		key: "name",
-		type: NumFieldType.TextOnly,
-	},
-	{
-		title: "类型",
-		dataIndex: "type",
-		key: "type",
-		type: NumFieldType.SingleText,
-	},
-	{
-		title: "描述",
-		dataIndex: "content",
-		key: "content",
-		type: NumFieldType.Text,
-	},
-	{
-		title: "是否影响交期",
-		dataIndex: "deliveryTime",
-		key: "deliveryTime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			const onChange = (e: RadioChangeEvent) => {
-				setForm({ ...form, deliveryTime: e.target.value });
-			};
-			return (
-				<Radio.Group onChange={onChange} value={value}>
-					<Radio value={"yes"}>是</Radio>
-					<Radio value={"no"}>否</Radio>
-				</Radio.Group>
-			);
-		},
-	},
-];
-
 interface CustomModalProps {
 	title: string;
 	open: boolean;
@@ -139,9 +86,63 @@ const CustomModal: React.FC<CustomModalProps> = ({
 }) => {
 	const params = useParams<any>();
 
-	const [showDstColumns, setShowDstColumns] = useState(columns);
 	const [inputForm] = Form.useForm();
 	const [form, setForm] = useState<any>({});
+
+	const columns: any = [
+		{
+			title: "时间",
+			dataIndex: "createTime",
+			key: "createTime",
+			renderContent: (value: any, form: any, setForm: any) => {
+				return (
+					<div>
+						{value ? (
+							value
+						) : (
+							<span className="text-gray-400">根据新建时间自动生成</span>
+						)}
+					</div>
+				);
+			},
+		},
+		{
+			title: "人员",
+			dataIndex: "name",
+			key: "name",
+			type: NumFieldType.TextOnly,
+		},
+		{
+			title: "类型",
+			dataIndex: "type",
+			key: "type",
+			type: NumFieldType.SingleText,
+		},
+		{
+			title: "描述",
+			dataIndex: "content",
+			key: "content",
+			type: NumFieldType.Text,
+		},
+		{
+			title: "是否影响交期",
+			dataIndex: "deliveryTime",
+			key: "deliveryTime",
+			showCtrlKey: workshopType === "batch" ? "showDeliveryTime" : null,
+			renderContent: (value: any, form: any, setForm: any) => {
+				const onChange = (e: RadioChangeEvent) => {
+					setForm({ ...form, deliveryTime: e.target.value });
+				};
+				return (
+					<Radio.Group onChange={onChange} value={value}>
+						<Radio value={"yes"}>是</Radio>
+						<Radio value={"no"}>否</Radio>
+					</Radio.Group>
+				);
+			},
+		},
+	];
+	const [showDstColumns, setShowDstColumns] = useState(columns);
 
 	const handleSave = async () => {
 		try {

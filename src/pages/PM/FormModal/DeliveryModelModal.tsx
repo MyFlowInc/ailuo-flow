@@ -129,6 +129,7 @@ const customModalRender = (props: EditRecordModalProps) => {
 			};
 			setForm(formWithShowKey);
 		}
+
 		if (readonly) {
 			setFormColumns(
 				props.columns.map((col: any) => {
@@ -136,7 +137,15 @@ const customModalRender = (props: EditRecordModalProps) => {
 				}),
 			);
 		} else {
-			setFormColumns(props.columns);
+			if (editFlowItemRecord.defaultIdentification === "yes") {
+				setFormColumns(
+					props.columns.map((col: any) => {
+						return { ...col, disabled: col.dataIndex !== "remark" };
+					}),
+				);
+			} else {
+				setFormColumns(props.columns);
+			}
 		}
 	}, [open]);
 	return (

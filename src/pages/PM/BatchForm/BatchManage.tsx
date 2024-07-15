@@ -213,9 +213,8 @@ const BatchManage: React.FC = () => {
 						<div>
 							<BatchDeliveryInfo
 								canAddDeliverInfo={
-									(batchForm.status === "tobe_tested" ||
-										batchForm.status === "data_completed" ||
-										batchForm.status === "in_logistics") &&
+									batchForm.status !== "not_start" &&
+									batchForm.status !== "over" &&
 									(isManager || isDeliver)
 								}
 							></BatchDeliveryInfo>

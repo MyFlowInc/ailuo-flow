@@ -193,11 +193,15 @@ const DeliverManage: React.FC = () => {
 		return !isManager && !isDeliver;
 	};
 	const handleDelete = async (record: any) => {
-		let res = await removeBatchInfo({ id: record.id });
-		if (!res.success) {
-			message.error(res.msg);
+		if (record.status === "over") {
+			message.error("已签收批次无法删除");
+		} else {
+			let res = await removeBatchInfo({ id: record.id });
+			if (!res.success) {
+				message.error(res.msg);
+			}
+			fetchBatchInfo(delivery.relationProject);
 		}
-		fetchBatchInfo(delivery.relationProject);
 	};
 
 	useEffect(() => {

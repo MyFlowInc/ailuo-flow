@@ -14,35 +14,36 @@ import PurchaseItemTable from "./PurchaseItemTable";
 import PurchaseMilestone from "./PurchaseMilestone";
 import {
 	purRequisition,
+	purRequisitionList,
 	savePurRequisition,
 	updatePurRequisition,
 } from "../../api/ailuo/pms";
 import { PurchaseStatusEnum, PurchaseTypeMap } from "../../api/ailuo/dict";
 import _ from "lodash";
 const columns = [
-	{
-		title: "请购类型",
-		dataIndex: "type",
-		key: "type",
-		type: NumFieldType.MultiSelectForLabel,
-		dictCode: "procurement",
-		rules: [{ required: true, message: "请选择请购类型" }],
-	},
-	{
-		title: "关联项目名称",
-		dataIndex: "projectName",
-		key: "projectName",
-		renderTitle: () => {
-			return (
-				<div>
-					<span className="mr-1">关联项目名称</span>
-					<Tooltip title="若没有关联项目，请勿填写此项，以免影响项目管理">
-						<WarningFilled style={{ color: "#FF0000" }} />
-					</Tooltip>
-				</div>
-			);
-		},
-	},
+	// {
+	// 	title: "请购类型",
+	// 	dataIndex: "type",
+	// 	key: "type",
+	// 	type: NumFieldType.MultiSelectForLabel,
+	// 	dictCode: "procurement",
+	// 	rules: [{ required: true, message: "请选择请购类型" }],
+	// },
+	// {
+	// 	title: "关联项目名称",
+	// 	dataIndex: "projectName",
+	// 	key: "projectName",
+	// 	renderTitle: () => {
+	// 		return (
+	// 			<div>
+	// 				<span className="mr-1">关联项目名称</span>
+	// 				<Tooltip title="若没有关联项目，请勿填写此项，以免影响项目管理">
+	// 					<WarningFilled style={{ color: "#FF0000" }} />
+	// 				</Tooltip>
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 	{
 		title: "请购人",
 		dataIndex: "requestor",
@@ -84,32 +85,28 @@ const columns = [
 		type: NumFieldType.SingleText,
 		rules: [{ required: true, message: "请输入编号" }],
 	},
+	// {
+	// 	title: "来料检完成时间",
+	// 	dataIndex: "checkCompletiontime",
+	// 	key: "checkCompletiontime",
+	// 	renderContent: (value: any, form: any, setForm: any) => {
+	// 		return (
+	// 			<div>
+	// 				{value ? value : <span className="text-gray-400">系统自动生成</span>}
+	// 			</div>
+	// 		);
+	// 	},
+	// },
+	// {
+	// 	title: "预计交期",
+	// 	dataIndex: "expectedDeliverytime",
+	// 	key: "expectedDeliverytime",
+	// 	type: NumFieldType.DateTime,
+	// },
 	{
-		title: "来料检完成时间",
-		dataIndex: "checkCompletiontime",
-		key: "checkCompletiontime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return (
-				<div>
-					{value ? (
-						value
-					) : (
-						<span className="text-gray-400">系统自动生成</span>
-					)}
-				</div>
-			);
-		},
-	},
-	{
-		title: "预计交期",
-		dataIndex: "expectedDeliverytime",
-		key: "expectedDeliverytime",
-		type: NumFieldType.DateTime,
-	},
-	{
-		title: "采购清单",
-		dataIndex: "采购清单",
-		key: "采购清单",
+		title: "入库清单",
+		dataIndex: "入库清单",
+		key: "入库清单",
 		render: (
 			column: any,
 			key: string,
@@ -126,26 +123,26 @@ const columns = [
 			);
 		},
 	},
-	{
-		title: "重要事件",
-		dataIndex: "milestone",
-		key: "milestone",
-		render: (
-			column: any,
-			key: string,
-			form: any,
-			setForm: (value: any) => void,
-		) => {
-			return (
-				<PurchaseMilestone
-					key={"pur-milestone" + key}
-					form={form}
-					setForm={setForm}
-					disabled={true}
-				/>
-			);
-		},
-	},
+	// {
+	// 	title: "重要事件",
+	// 	dataIndex: "milestone",
+	// 	key: "milestone",
+	// 	render: (
+	// 		column: any,
+	// 		key: string,
+	// 		form: any,
+	// 		setForm: (value: any) => void,
+	// 	) => {
+	// 		return (
+	// 			<PurchaseMilestone
+	// 				key={"pur-milestone" + key}
+	// 				form={form}
+	// 				setForm={setForm}
+	// 				disabled={true}
+	// 			/>
+	// 		);
+	// 	},
+	// },
 ];
 
 interface PurchaseRecordViewProps {
@@ -153,7 +150,10 @@ interface PurchaseRecordViewProps {
 	open: boolean;
 }
 
-const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record,open }) => {
+const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({
+	record,
+	open,
+}) => {
 	const params = {
 		purId: _.get(record, "relatedRequisition"),
 	};
@@ -184,8 +184,8 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = ({ record,open }) 
 		setForm({});
 		inputForm.resetFields();
 		if (record.relatedRequisition) {
-			const res = await purRequisition({ id: record.relatedRequisition });
-			let temp = res.data.record[0];
+			const res = await purRequisitionList({ id: record.relatedRequisition });
+			let temp = res.data[0];
 			temp = {
 				...temp,
 				type: temp.type?.split(",") || [],

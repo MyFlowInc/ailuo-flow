@@ -11,6 +11,7 @@ import {
 } from "../../api/ailuo/dict";
 import {
 	getPurChaseItemList,
+	getQualityItemList,
 	removePurchaseItem,
 	updatePurchaseItem,
 } from "../../api/ailuo/pms";
@@ -94,21 +95,21 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	};
 
 	const defaultColumns: any[] = [
-		{
-			title: "序号",
-			dataIndex: "number",
-			key: "number",
-		},
+		// {
+		// 	title: "序号",
+		// 	dataIndex: "number",
+		// 	key: "number",
+		// },
 		{
 			title: "物料名称",
 			dataIndex: "name",
 			key: "name",
 		},
-		{
-			title: "规格",
-			dataIndex: "specifications",
-			key: "specifications",
-		},
+		// {
+		// 	title: "规格",
+		// 	dataIndex: "specifications",
+		// 	key: "specifications",
+		// },
 		{
 			title: "材质/品牌",
 			dataIndex: "brand",
@@ -139,80 +140,80 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			dataIndex: "remark",
 			key: "remark",
 		},
-		{
-			title: "来料检",
-			dataIndex: "来料检",
-			key: "来料检",
-			render: (text: string, record: any, index: number) => {
-				if (isPurchase) {
-					return null;
-				}
-				if (record.status === PurchaseItemStatusEnum.Approve) {
-					return (
-						<div>
-							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
-						</div>
-					);
-				} else if (record.status === PurchaseItemStatusEnum.Reject) {
-					return (
-						<div>
-							<img src={WrongPng} alt="" className=" w-[15px] h-[15px] " />
-						</div>
-					);
-				} else {
-					return (
-						<div>
-							<img
-								className="mr-2 cursor-pointer w-[15px] h-[15px]"
-								src={RightPng}
-								alt=""
-								onClick={() => {
-									if (isWorkshop) {
-										message.warning("车间人员无法编辑!");
-										return
-									}
-									setCurrentIndex(index);
-									setDefaultStatus("approve");
-									setIsShowEditRecordModal(true);
-								}}
-							/>
-							<img
-								className="cursor-pointer w-[15px] h-[15px]"
-								src={WrongPng}
-								alt=""
-								onClick={() => {
-									if (isWorkshop) {
-										message.warning("车间人员无法编辑!");
-										return
-									}
-									setCurrentIndex(index);
-									setDefaultStatus("reject");
-									setIsShowEditRecordModal(true);
-								}}
-							/>
-						</div>
-					);
-				}
-			},
-		},
-		{
-			title: "入库",
-			dataIndex: "入库",
-			key: "入库",
-			render: (text: string, record: any) => {
-				return <div></div>;
-			},
-		},
-		{
-			title: "来料检完成时间",
-			dataIndex: "incomingCompletiontime",
-			key: "incomingCompletiontime",
-		},
-		{
-			title: "入库完成时间",
-			dataIndex: "warehousingCompletiontime",
-			key: "warehousingCompletiontime",
-		},
+		// {
+		// 	title: "来料检",
+		// 	dataIndex: "来料检",
+		// 	key: "来料检",
+		// 	render: (text: string, record: any, index: number) => {
+		// 		if (isPurchase) {
+		// 			return null;
+		// 		}
+		// 		if (record.status === PurchaseItemStatusEnum.Approve) {
+		// 			return (
+		// 				<div>
+		// 					<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
+		// 				</div>
+		// 			);
+		// 		} else if (record.status === PurchaseItemStatusEnum.Reject) {
+		// 			return (
+		// 				<div>
+		// 					<img src={WrongPng} alt="" className=" w-[15px] h-[15px] " />
+		// 				</div>
+		// 			);
+		// 		} else {
+		// 			return (
+		// 				<div>
+		// 					<img
+		// 						className="mr-2 cursor-pointer w-[15px] h-[15px]"
+		// 						src={RightPng}
+		// 						alt=""
+		// 						onClick={() => {
+		// 							if (isWorkshop) {
+		// 								message.warning("车间人员无法编辑!");
+		// 								return;
+		// 							}
+		// 							setCurrentIndex(index);
+		// 							setDefaultStatus("approve");
+		// 							setIsShowEditRecordModal(true);
+		// 						}}
+		// 					/>
+		// 					<img
+		// 						className="cursor-pointer w-[15px] h-[15px]"
+		// 						src={WrongPng}
+		// 						alt=""
+		// 						onClick={() => {
+		// 							if (isWorkshop) {
+		// 								message.warning("车间人员无法编辑!");
+		// 								return;
+		// 							}
+		// 							setCurrentIndex(index);
+		// 							setDefaultStatus("reject");
+		// 							setIsShowEditRecordModal(true);
+		// 						}}
+		// 					/>
+		// 				</div>
+		// 			);
+		// 		}
+		// 	},
+		// },
+		// {
+		// 	title: "入库",
+		// 	dataIndex: "入库",
+		// 	key: "入库",
+		// 	render: (text: string, record: any) => {
+		// 		return <div></div>;
+		// 	},
+		// },
+		// {
+		// 	title: "来料检完成时间",
+		// 	dataIndex: "incomingCompletiontime",
+		// 	key: "incomingCompletiontime",
+		// },
+		// {
+		// 	title: "入库完成时间",
+		// 	dataIndex: "warehousingCompletiontime",
+		// 	key: "warehousingCompletiontime",
+		// },
 	];
 
 	const columns = defaultColumns.map((col: any) => {
@@ -228,14 +229,14 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 	};
 
 	const fetchData = async () => {
-		const res = await getPurChaseItemList({
+		const res = await getQualityItemList({
 			pageNum: 1,
 			pageSize: 9999999,
-			// relationRequisition: form.id,
-			id: editFlowItemRecord.relatedItem,
+			relationRequisition: editFlowItemRecord.relatedRequisition,
+			// id: editFlowItemRecord.relatedItem,
 		});
 		if (res.code == 200) {
-			setDataSource(res.data.record);
+			setDataSource(res.data);
 		}
 	};
 

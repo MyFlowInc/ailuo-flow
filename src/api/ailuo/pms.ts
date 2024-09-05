@@ -3,7 +3,23 @@ import qs from "qs";
 
 export function purRequisition(params: any) {
 	return apiCall({
-		url: "api/sys/purRequisition/page",
+		url: "api/sys/erp/page",
+		method: "get",
+		params,
+	});
+}
+
+export function purRequisitionItem(params: any) {
+	return apiCall({
+		url: "api/sys/erp/list",
+		method: "get",
+		params,
+	});
+}
+
+export function purRequisitionList(params: any) {
+	return apiCall({
+		url: "api/sys/purRequisition/list",
 		method: "get",
 		params,
 	});
@@ -36,6 +52,14 @@ export function removePurRequisition(params: any) {
 export function getPurChaseItemList(params: any) {
 	return apiCall({
 		url: "api/sys/purItem/page",
+		method: "get",
+		params,
+	});
+}
+
+export function getQualityItemList(params: any) {
+	return apiCall({
+		url: "api/sys/purItem/list",
 		method: "get",
 		params,
 	});

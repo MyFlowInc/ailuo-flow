@@ -77,11 +77,7 @@ const StatusView = (props: {
 						className="ml-4"
 						type="primary"
 						icon={<EditFilled></EditFilled>}
-						onClick={() =>
-							history.push(
-								`/dashboard/work-shop-manage/${params.wspId}/incoming/purchase/new`,
-							)
-						}
+						onClick={() => window.open(process.env.REACT_APP_AILUO_ERP_URL)}
 					>
 						新建请购单
 					</Button>

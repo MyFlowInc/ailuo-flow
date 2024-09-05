@@ -318,7 +318,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 
 	const handleSaveRecord = () => {
 		setPurchaseItemForm && setPurchaseItemForm({ status: form.status || null });
-		
+
 		inputForm.setFieldsValue(form);
 		if (modalType === "add") {
 			createRecord();
@@ -362,7 +362,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 					</div>
 				</div>
 				<div
-					style={{ height: "500px", marginTop: "24px" }}
+					style={{ minHeight: "300px", marginTop: "24px" }}
 					className="overflow-auto"
 				>
 					<PurchaseRecordView record={editFlowItemRecord} open={open} />

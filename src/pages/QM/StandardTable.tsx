@@ -14,7 +14,11 @@ import EditFilled from "../../assets/icons/EditFilled";
 import TableColumnRender from "../../components/Dashboard/TableColumnRender";
 import _ from "lodash";
 import { QualityControlContext } from "./QualityControl";
-import { selectIsFinance, selectIsPurchase, selectIsWorkshop } from "../../store/globalSlice";
+import {
+	selectIsFinance,
+	selectIsPurchase,
+	selectIsWorkshop,
+} from "../../store/globalSlice";
 import { useAppSelector } from "../../store/hooks";
 import { useHistory } from "react-router";
 import { PurchaseItemStatusEnum, QualityMapDict } from "../../api/ailuo/dict";
@@ -63,7 +67,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	const handleEditRecord = async (text: string, record: any) => {
 		if (isWorkshop) {
 			message.warning("车间人员无法编辑!");
-			return
+			return;
 		}
 		if (record.status !== PurchaseItemStatusEnum.TobeTested) {
 			// @ts-ignore

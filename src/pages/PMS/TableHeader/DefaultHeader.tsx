@@ -51,7 +51,7 @@ const DefaultHeader: React.FC<DefaultHeaderProps> = ({ hasSelected }) => {
 					<Button
 						type="primary"
 						icon={<EditFilled style={{ fontSize: "10px", color: "#ffffff" }} />}
-						onClick={handleNew}
+						onClick={() => window.open(process.env.REACT_APP_AILUO_ERP_URL)}
 					>
 						新建请购单
 					</Button>

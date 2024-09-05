@@ -12,6 +12,7 @@ import {
 } from "../../api/ailuo/dict";
 import {
 	getPurChaseItemList,
+	purRequisitionItem,
 	removePurchaseItem,
 	updatePurchaseItem,
 } from "../../api/ailuo/pms";
@@ -129,159 +130,29 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 
 	const defaultColumns: any[] = [
 		{
-			title: "序号",
-			dataIndex: "number",
-			key: "number",
-		},
-		{
 			title: "物料名称",
-			dataIndex: "name",
-			key: "name",
-		},
-		{
-			title: "规格",
-			dataIndex: "specifications",
-			key: "specifications",
-		},
-		{
-			title: "材质/品牌",
-			dataIndex: "brand",
-			key: "brand",
+			dataIndex: "productName",
+			key: "productName",
 		},
 		{
 			title: "单位",
-			dataIndex: "unit",
-			key: "unit",
+			dataIndex: "unitName",
+			key: "unitName",
 		},
 		{
 			title: "采购数量",
-			dataIndex: "quantity",
-			key: "quantity",
+			dataIndex: "count",
+			key: "count",
 		},
 		{
-			title: "订单/使用部门",
-			dataIndex: "orderDepartment",
-			key: "orderDepartment",
-		},
-		{
-			title: "用途",
-			dataIndex: "purpose",
-			key: "purpose",
+			title: "已领料数量",
+			dataIndex: "outCount",
+			key: "outCount",
 		},
 		{
 			title: "备注",
 			dataIndex: "remark",
 			key: "remark",
-		},
-		{
-			title: "来料检",
-			dataIndex: "来料检",
-			key: "来料检",
-			render: (text: string, record: any) => {
-				if (record.status === PurchaseItemStatusEnum.Todo) {
-					return (
-						<Tag
-							color={"#F2F3F5"}
-							style={{ color: "#707683", cursor: "pointer" }}
-							onClick={() => handleTest(record)}
-						>
-							请检
-						</Tag>
-					);
-				} else if (record.status === PurchaseItemStatusEnum.TobeTested) {
-					return (
-						<Tag
-							color={"#FFEEE3"}
-							style={{ color: "#707683", cursor: "pointer" }}
-						>
-							请检中
-						</Tag>
-					);
-				} else if (record.status === PurchaseItemStatusEnum.Approve) {
-					return (
-						<div className="">
-							<img src={RightPng} alt="" className="w-[15px] h-[15px]" />
-						</div>
-					);
-				} else if (record.status === PurchaseItemStatusEnum.Reject) {
-					return (
-						<div className="flex items-center">
-							<img
-								src={WrongPng}
-								alt=""
-								className="mr-1 w-[15px] h-[15px] flex-shrink-0"
-							/>
-							<Tag
-								color={"#F2F3F5"}
-								style={{ color: "#707683", cursor: "pointer" }}
-								onClick={() => handleReTest(record)}
-							>
-								重检
-							</Tag>
-						</div>
-					);
-				}
-			},
-		},
-		{
-			title: "入库",
-			dataIndex: "warehousing",
-			key: "warehousing",
-			render: (text: string, record: any) => {
-				if (record.warehousing === PurchaseItemWarehousingsStatusEnum.Yes) {
-					return <img src={RightPng} alt="" className="w-[15px] h-[15px]" />;
-				}
-				if (record.status === PurchaseItemStatusEnum.Approve) {
-					return (
-						<Tag
-							color={"#F2F3F5"}
-							style={{ color: "#707683", cursor: "pointer" }}
-							onClick={() => handleInStorage(record)}
-						>
-							入库
-						</Tag>
-					);
-				}
-				return null;
-			},
-		},
-		{
-			title: "来料检完成时间",
-			dataIndex: "incomingCompletiontime",
-			key: "incomingCompletiontime",
-		},
-		{
-			title: "入库完成时间",
-			dataIndex: "warehousingCompletiontime",
-			key: "warehousingCompletiontime",
-		},
-		{
-			width: 90,
-			title: "操作",
-			dataIndex: "action",
-			key: "action",
-			render: (text: any, record: any, index: number) => {
-				return (
-					<div className="flex items-center justify-around">
-						<Button
-							type="text"
-							color="#717682"
-							icon={<EditFilled />}
-							className="text-[#717682]"
-							disabled={form.status !== PurchaseStatusEnum.Start}
-							onClick={() => handleEdit(record)}
-						></Button>
-						<Button
-							type="text"
-							color="#717682"
-							icon={<DeleteFilled />}
-							className="text-[#717682]"
-							disabled={form.status !== PurchaseStatusEnum.Start}
-							onClick={() => handleDelete(record)}
-						></Button>
-					</div>
-				);
-			},
 		},
 	];
 
@@ -302,13 +173,13 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			setDataSource([]);
 			return;
 		}
-		const res = await getPurChaseItemList({
+		const res = await purRequisitionItem({
 			pageNum: 1,
 			pageSize: 9999999,
-			relationRequisition: params.purId,
+			associationRequisition: params.purId,
 		});
 		if (res.code == 200) {
-			setDataSource(res.data.record);
+			setDataSource(res.data);
 		}
 	};
 

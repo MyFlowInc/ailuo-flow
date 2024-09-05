@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { Table, Space, Button, Modal, Pagination } from "antd";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, EyeFilled } from "@ant-design/icons";
 import DeleteFilled from "../../assets/icons/DeleteFilled";
 
 import type { ColumnsType } from "antd/es/table";
@@ -70,7 +70,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 			<Button
 				type="text"
 				icon={
-					<EditFilled
+					<EyeFilled
 						style={{
 							fontSize: "12px",
 							color: `#707683`,
@@ -79,7 +79,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 				}
 				onClick={() => handleEditRecord(text, record)}
 			/>
-			<Button
+			{/* <Button
 				type="text"
 				icon={
 					<DeleteFilled
@@ -90,7 +90,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					/>
 				}
 				onClick={() => handleDeleteRecord(text, record)}
-			/>
+			/> */}
 		</Space>
 	);
 };

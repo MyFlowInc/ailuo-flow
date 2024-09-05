@@ -13,7 +13,7 @@ import {
 import { useHistory, useParams } from "react-router";
 import { PurchaseStatusEnum } from "../../../../api/ailuo/dict";
 import DeleteFilled from "../../../../assets/icons/DeleteFilled";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, EyeFilled } from "@ant-design/icons";
 import EditFilled from "../../../../assets/icons/EditFilled";
 import { PurchaseManageContext } from "./PurchaseTable";
 import TableColumnRender from "../../../../components/Dashboard/TableColumnRender";
@@ -76,7 +76,7 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 			<Button
 				type="text"
 				icon={
-					<EditFilled
+					<EyeFilled
 						style={{
 							fontSize: "12px",
 							color: `#707683`,
@@ -84,18 +84,6 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 					/>
 				}
 				onClick={() => handleEditRecord(text, record)}
-			/>
-			<Button
-				type="text"
-				icon={
-					<DeleteFilled
-						style={{
-							fontSize: "12px",
-							color: `#707683`,
-						}}
-					/>
-				}
-				onClick={() => handleDeleteRecord(text, record)}
 			/>
 		</Space>
 	);

@@ -31,6 +31,7 @@ import {
 import {
 	PurchaseStatusEnum,
 	PurchaseTypeMap,
+	PurchaseTypeMapDict,
 } from "../../../../api/ailuo/dict";
 import {
 	purRequisition,
@@ -48,21 +49,15 @@ export const PurchaseRecordViewContext = React.createContext<any>({});
 const columns = [
 	{
 		title: "请购类型",
-		dataIndex: "type",
-		key: "type",
-		type: NumFieldType.MultiSelectForLabel,
-		dictCode: "procurement",
-		rules: [
-			{ required: true, message: "请选择请购类型" },
-			({ getFieldValue }: any) => ({
-				validator(_: any, value: any) {
-					if (value.includes("order")) {
-						return Promise.resolve();
-					}
-					return Promise.reject(new Error("请购类型必须包含订单用"));
-				},
-			}),
-		],
+		dataIndex: "requisitionType",
+		key: "requisitionType",
+		renderContent: (value: any, form: any, setForm: any) => {
+			return (
+				<Tag color="#f4f7fe" style={{ color: "#000" }} key={""}>
+					{PurchaseTypeMapDict[value as PurchaseTypeMap] || ""}
+				</Tag>
+			);
+		},
 	},
 	{
 		title: "关联项目名称",
@@ -84,15 +79,15 @@ const columns = [
 	},
 	{
 		title: "请购人",
-		dataIndex: "requestor",
-		key: "requestor",
+		dataIndex: "createrName",
+		key: "createrName",
 		type: NumFieldType.SingleText,
 		defaultDisabled: true,
 	},
 	{
 		title: "申请日期",
-		dataIndex: "applicationDate",
-		key: "applicationDate",
+		dataIndex: "requisitionTime",
+		key: "requisitionTime",
 		type: NumFieldType.DateTime,
 	},
 	{
@@ -113,34 +108,16 @@ const columns = [
 	},
 	{
 		title: "规格",
-		dataIndex: "specifications",
-		key: "specifications",
+		dataIndex: "annex",
+		key: "annex",
 		type: NumFieldType.Attachment,
 	},
 	{
 		title: "编号",
-		dataIndex: "code",
-		key: "code",
+		dataIndex: "requisitionCode",
+		key: "requisitionCode",
 		type: NumFieldType.SingleText,
 		rules: [{ required: true, message: "请输入编号" }],
-	},
-	{
-		title: "来料检完成时间",
-		dataIndex: "checkCompletiontime",
-		key: "checkCompletiontime",
-		renderContent: (value: any, form: any, setForm: any) => {
-			return (
-				<div>
-					{value ? value : <span className="text-gray-400">系统自动生成</span>}
-				</div>
-			);
-		},
-	},
-	{
-		title: "预计交期",
-		dataIndex: "expectedDeliverytime",
-		key: "expectedDeliverytime",
-		type: NumFieldType.DateTime,
 	},
 	{
 		title: "采购清单",
@@ -162,25 +139,25 @@ const columns = [
 			);
 		},
 	},
-	{
-		title: "重要事件",
-		dataIndex: "milestone",
-		key: "milestone",
-		render: (
-			column: any,
-			key: string,
-			form: any,
-			setForm: (value: any) => void,
-		) => {
-			return (
-				<PurchaseMilestone
-					key={"pur-milestone" + key}
-					form={form}
-					setForm={setForm}
-				/>
-			);
-		},
-	},
+	// {
+	// 	title: "重要事件",
+	// 	dataIndex: "milestone",
+	// 	key: "milestone",
+	// 	render: (
+	// 		column: any,
+	// 		key: string,
+	// 		form: any,
+	// 		setForm: (value: any) => void,
+	// 	) => {
+	// 		return (
+	// 			<PurchaseMilestone
+	// 				key={"pur-milestone" + key}
+	// 				form={form}
+	// 				setForm={setForm}
+	// 			/>
+	// 		);
+	// 	},
+	// },
 ];
 
 interface PurchaseRecordViewProps {}
@@ -328,7 +305,10 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 	}, [params.purId]);
 
 	const StatusView = () => {
-		if (form.status === PurchaseStatusEnum.Start) {
+		if (
+			form.status === PurchaseStatusEnum.Start ||
+			form.status === PurchaseStatusEnum.Erp_Start
+		) {
 			return (
 				<div className="flex items-center mt-2">
 					<div className="flex items-center">
@@ -337,7 +317,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 							{"采购项添加中"}
 						</Tag>
 					</div>
-					<div className="flex  items-center ml-4">
+					{/* <div className="flex  items-center ml-4">
 						<div className="mr-2 text-[#848484]">操作: </div>
 						<Tag
 							className="cursor-pointer"
@@ -347,7 +327,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 						>
 							{"开始采购"}
 						</Tag>
-					</div>
+					</div> */}
 				</div>
 			);
 		} else if (form.status === PurchaseStatusEnum.InProcurement) {
@@ -361,7 +341,10 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 					</div>
 				</div>
 			);
-		} else if (form.status === PurchaseStatusEnum.Over) {
+		} else if (
+			form.status === PurchaseStatusEnum.Over ||
+			form.status === PurchaseStatusEnum.Erp_Over
+		) {
 			return (
 				<div className="flex items-center mt-2">
 					<div className="flex items-center">
@@ -459,11 +442,11 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 					<div className="flex items-center justify-between pl-3">
 						<div>
 							<div className="text-lg">
-								{params.purId === "new" ? "新建请购单" : "编辑请购单"}
+								{params.purId === "new" ? "新建请购单" : "请购单"}
 							</div>
 							{StatusView()}
 						</div>
-						<div>
+						{/* <div>
 							<ConfigProvider theme={greyButtonTheme}>
 								<Button
 									type="primary"
@@ -481,7 +464,7 @@ const PurchaseRecordView: React.FC<PurchaseRecordViewProps> = () => {
 									保存
 								</Button>
 							</ConfigProvider>
-						</div>
+						</div> */}
 					</div>
 				</div>
 				<div className="pl-3 mt-4 pt-14">

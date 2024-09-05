@@ -234,6 +234,7 @@ export enum PurchaseTypeMap {
 	Workshop = "workshop",
 	AfterSales = "after_sales",
 	Other = "other",
+	erp = 10,
 }
 
 export const PurchaseTypeMapDict = {
@@ -244,6 +245,7 @@ export const PurchaseTypeMapDict = {
 	workshop: "车间用",
 	after_sales: "售后用",
 	other: "其他部门用",
+	10: "订单用",
 };
 
 export enum PurchaseStatusEnum {
@@ -251,7 +253,9 @@ export enum PurchaseStatusEnum {
 	Start = "start",
 	InProcurement = "in_procurement",
 	Over = "over",
-	Received = 'received'
+	Received = 'received',
+	Erp_Start = 10,
+	Erp_Over = 20,
 }
 
 export enum PurchaseItemStatusEnum {

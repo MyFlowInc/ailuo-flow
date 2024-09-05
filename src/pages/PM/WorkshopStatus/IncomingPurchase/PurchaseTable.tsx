@@ -45,7 +45,7 @@ const PurchaseTable: React.FC = () => {
 			let params: any = {
 				pageNum: curPage.current.pageNum,
 				pageSize: curPage.current.pageSize,
-				relationProject: routeParams.projectId,
+				associationProject: routeParams.projectId,
 			};
 			if (options.status) {
 				params.status = options.status;
@@ -54,7 +54,7 @@ const PurchaseTable: React.FC = () => {
 				params = {
 					...params,
 					...options.search,
-					relationProject: routeParams.projectId,
+					associationProject: routeParams.projectId,
 				};
 			}
 			const res = await purRequisition(params);

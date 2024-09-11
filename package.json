@@ -68,8 +68,9 @@
     "start": "react-scripts start",
     "serve": "react-scripts start",
     "build": "react-scripts build",
+    "build:dev": "react-scripts build --env-file=.env.development",
     "echo": "echo 1",
-    "deploy": "node updateTIme.js &&react-scripts build && node build.js",
+    "deploy": "node updateTIme.js &&react-scripts build --env-file=.env.development && node build.js",
     "lint": "eslint --ext .ts --ext .tsx src",
     "fix": "eslint --fix  --ext .ts --ext .tsx src",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
@@ -110,5 +111,5 @@
     "prettier": "^3.0.3"
   },
   "description": "An Ionic project",
-  "updateTime": "9/9/2024, 2:06:30 PM"
+  "updateTime": "9/9/2024, 5:18:19 PM"
 }

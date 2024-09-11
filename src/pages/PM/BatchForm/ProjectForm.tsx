@@ -12,7 +12,7 @@ interface ProjectFormProp {
 
 const ProjectForm: React.FC<ProjectFormProp> = (props: ProjectFormProp) => {
 	const batchFormColumns = columns.filter((col: any) => {
-		return col.dataIndex !== "typeSelection";
+		return col.dataIndex !== "typeSelection" && col.dataIndex !== "totalNum";
 	});
 
 	const [showDstColumns, setShowDstColumns] = useState(batchFormColumns);

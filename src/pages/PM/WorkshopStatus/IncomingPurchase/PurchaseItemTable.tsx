@@ -182,7 +182,7 @@ const PurchaseItemTable: React.FC<PurchaseItemTableProps> = ({
 			associationRequisition: params.purId,
 		});
 		if (res.code == 200) {
-			setDataSource(res.data);
+			setDataSource(res.data.map((item: any) => ({ ...item, key: item.id })));
 		}
 	};
 

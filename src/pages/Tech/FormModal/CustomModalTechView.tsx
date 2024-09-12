@@ -26,6 +26,7 @@ const CustomModalRoot = styled.div`
 		0 9px 28px 8px rgb(0 0 0 / 5%);
 	pointer-events: auto;
 	max-height: 80%;
+	height: 80vh;
 	overflow: hidden;
 	.header {
 		height: 18px;
@@ -201,7 +202,7 @@ const CustomModalTechView: React.FC<CustomModalProps> = ({
 						setMode(result);
 					}
 					console.log(111, form, result);
-				} catch (error) { }
+				} catch (error) {}
 			};
 			fetchEditFlowItemRecord();
 		}

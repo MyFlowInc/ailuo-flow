@@ -246,6 +246,8 @@ export const PurchaseTypeMapDict = {
 	after_sales: "售后用",
 	other: "其他部门用",
 	10: "订单用",
+	20: "备库用",
+	30: "其他用",
 };
 
 export enum PurchaseStatusEnum {

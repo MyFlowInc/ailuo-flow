@@ -107,9 +107,15 @@ const columns = [
 		},
 	},
 	{
+		title: "图片",
+		dataIndex: "fileUrl",
+		key: "fileUrl",
+		type: NumFieldType.Attachment,
+	},
+	{
 		title: "规格",
-		dataIndex: "annex",
-		key: "annex",
+		dataIndex: "specifications",
+		key: "specifications",
 		type: NumFieldType.Attachment,
 	},
 	{

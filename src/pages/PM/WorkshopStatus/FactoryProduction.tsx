@@ -189,6 +189,7 @@ const FactoryProduction: React.FC = () => {
 			</div>
 			<ConfigProvider theme={TableTheme}>
 				<MilestoneTable
+					workshopId={workshop.id}
 					status={workshop.factoryproductionStatus}
 					workshopType="factory_production"
 				></MilestoneTable>

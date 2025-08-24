@@ -5,6 +5,7 @@ import { noticeEdit, noticeRemove } from "../../api/ailuo/notice";
 import { useContext, useEffect, useState } from "react";
 import { ContractStatusMap, MainStatus } from "../../api/ailuo/dict";
 import { DashboardRouterOutletContext } from "../../context";
+import { useHistory } from "react-router";
 const { Paragraph } = Typography;
 
 const NotifyItemRoot = styled.div`
@@ -89,11 +90,12 @@ const NotifyItem = (props: NotifyItemProps) => {
 		setContractId,
 		setIsContractModalViewOpen,
 	} = useContext(DashboardRouterOutletContext);
+	const history = useHistory();
 	useEffect(() => {
 		try {
 			let c = JSON.parse(info.content);
 			setContent(c);
-		} catch (error) { }
+		} catch (error) {}
 	}, [info]);
 
 	const deleteHandle = async () => {
@@ -139,7 +141,7 @@ const NotifyItem = (props: NotifyItemProps) => {
 	};
 	const clickSaleHandle = (info: any) => {
 		try {
-			let { saleId, contractId } = JSON.parse(info.content);
+			let { saleId, contractId, splProjectId } = JSON.parse(info.content);
 			if (saleId) {
 				setSaleId(saleId || "");
 				setIsSaleModalViewOpen(true);
@@ -148,7 +150,10 @@ const NotifyItem = (props: NotifyItemProps) => {
 				setContractId(contractId || "");
 				setIsContractModalViewOpen(true);
 			}
-		} catch (error) { }
+			if (splProjectId) {
+				history.push(`/dashboard/pre-product-manage/${splProjectId}`);
+			}
+		} catch (error) {}
 		console.log(111, info);
 	};
 

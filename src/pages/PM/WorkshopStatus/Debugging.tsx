@@ -127,6 +127,7 @@ const Debugging: React.FC = () => {
 			</div>
 			<ConfigProvider theme={TableTheme}>
 				<MilestoneTable
+					workshopId={workshop.id}
 					status={workshop.debuggingStatus}
 					workshopType="debugging"
 				></MilestoneTable>

@@ -61,7 +61,7 @@ const CustomModalRoot = styled.div`
 		0 9px 28px 8px rgb(0 0 0 / 5%);
 	pointer-events: auto;
 	max-height: 80%;
-	height: 100%;
+	height: 80vh;
 	overflow: hidden;
 	.header {
 		height: 18px;
@@ -200,7 +200,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalNum += +item.num;
 				});
-			} catch (error) { }
+			} catch (error) {}
 
 			return (
 				<div key={"name_" + key} className="w-full mt-4">
@@ -233,7 +233,7 @@ export const columns: any = [
 				list.forEach((item: any) => {
 					totalPrice += +item.num * +item.price;
 				});
-			} catch (error) { }
+			} catch (error) {}
 			const { currency } = form;
 			let sign = "";
 			if (currency === "人民币") {
@@ -578,8 +578,15 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 						pageNum: 1,
 						pageSize: 10,
 					});
-					setForm(_.get(res, "data.record.0"));
-				} catch (error) { }
+					const formData = _.get(res, "data.record.0");
+					const parsedFormData = {
+						...formData,
+						modeTrade: JSON.parse(formData.modeTrade),
+						payType: JSON.parse(formData.payType),
+						typeSelection: JSON.parse(formData.typeSelection),
+					};
+					setForm(parsedFormData);
+				} catch (error) {}
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -742,7 +749,7 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 				if (form.payType) {
 					form.payType = JSON.stringify(form.payType);
 				}
-			} catch (error) { }
+			} catch (error) {}
 			await contractAdd(excludeNull(form));
 			await fetchContractList();
 			setOpen(false);
@@ -766,7 +773,7 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 				params.payType = JSON.stringify(params.payType);
 				delete params.updateTime;
 				delete params.createTime;
-			} catch (error) { }
+			} catch (error) {}
 			await contractEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -888,7 +895,7 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 
 			params.status = status;
 			params.relationReview = form.id;
@@ -1095,7 +1102,7 @@ const CustomContractModalView: React.FC<CustomModalProps> = ({
 									className="ml-2"
 									color={"#D4F3F2"}
 									style={{ color: "#000" }}
-									onClick={() => { }}
+									onClick={() => {}}
 								>
 									{"撤回重改"}
 								</Tag>

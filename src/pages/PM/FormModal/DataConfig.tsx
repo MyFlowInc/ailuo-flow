@@ -25,7 +25,12 @@ import warnSvg from "../../Sale/assets/warning.svg";
 import TextArea from "antd/es/input/TextArea";
 import { finalApproveEdit, flowApproveInfo } from "../../../api/ailuo/approve";
 import { useAppSelector } from "../../../store/hooks";
-import { selectIsFinance, selectIsManager, selectIsProduct, selectUser } from "../../../store/globalSlice";
+import {
+	selectIsFinance,
+	selectIsManager,
+	selectIsProduct,
+	selectUser,
+} from "../../../store/globalSlice";
 import { isJsonStr } from "../../../util";
 
 export interface DataType {
@@ -271,7 +276,11 @@ const renderFooter = (props: any) => {
 		}
 	}, [curProject, accessList]);
 
-	if (!_.find(accessList, { relationUserId: user.id }) && !isProduct && !isManage) {
+	if (
+		!_.find(accessList, { relationUserId: user.id }) &&
+		!isProduct &&
+		!isManage
+	) {
 		return null;
 	}
 
@@ -311,7 +320,10 @@ const renderFooter = (props: any) => {
 			</>
 		);
 	}
-	if (step === SPLProductStatusMap.MaterialsRev) {
+	if (
+		step === SPLProductStatusMap.MaterialsRev &&
+		_.find(accessList, { relationUserId: user.id })
+	) {
 		return (
 			<>
 				<ConfigProvider theme={redButtonTheme}>

@@ -55,13 +55,15 @@ const StandardTableAction: React.FC<StandardTableActionProps> = ({
 	const history = useHistory();
 
 	const handleViewRecord = async (text: string, record: any) => {
-		if (!record.relatedRequisition) {
-			message.warning("请购单已被删除!");
-			return;
+		if (record.type === "incoming") {
+			setEditFlowItemRecord(record);
+			setModalType("view");
+			setOpen(true);
+		} else {
+			history.push(
+				`/dashboard/work-shop-manage/${record.relatedRequisition}/${record.relatedItem}/${record.type}`,
+			);
 		}
-		setEditFlowItemRecord(record);
-		setModalType("view");
-		setOpen(true);
 	};
 
 	const handleEditRecord = async (text: string, record: any) => {

@@ -11,6 +11,7 @@ import {
 	Badge,
 	Avatar,
 	message,
+	Popconfirm,
 } from "antd";
 import { NoFieldData } from "./NoFieldData";
 import CellEditorContext from "./CellEditorContext";
@@ -23,6 +24,7 @@ import {
 import { NumFieldType } from "../../../components/Dashboard/TableColumnRender";
 import {
 	changeStatus,
+	fetchTurnTime,
 	saleProjectAdd,
 	saleProjectEdit,
 	saleProjectList,
@@ -44,11 +46,13 @@ import {
 	selectAllUser,
 	selectIsTech,
 	selectUser,
+	setCurSaleForm,
 } from "../../../store/globalSlice";
-import { useAppSelector } from "../../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import ExportProject from "../ExportProject";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { DashboardRouterOutletContext } from "../../../context";
+import { useHistory } from "react-router";
 const { TextArea } = Input;
 const CustomModalRoot = styled.div`
 	position: relative;
@@ -61,7 +65,7 @@ const CustomModalRoot = styled.div`
 		0 9px 28px 8px rgb(0 0 0 / 5%);
 	pointer-events: auto;
 	max-height: 80%;
-	height: 100%;
+	height: 80vh;
 	overflow: hidden;
 	.header {
 		height: 18px;
@@ -680,7 +684,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 						message.warning("报价单不存在, 无法查看");
 					}
 					setEditFlowItemRecord(item);
-				} catch (error) { }
+				} catch (error) {}
 			};
 			fetchEditFlowItemRecord();
 		}
@@ -736,7 +740,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 				params.typeSelection = JSON.stringify(params.typeSelection);
 				params.modeTrade = JSON.stringify(params.modeTrade);
 				params.payType = JSON.stringify(params.payType);
-			} catch (error) { }
+			} catch (error) {}
 			await saleProjectEdit(excludeNull(params));
 			setOpen(false);
 		} catch (error) {
@@ -829,11 +833,53 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 			console.log(error);
 		}
 	};
+	// 新一轮报价处理
+	const newSaleHandle = async (form: any, type: "need" | "noNeed") => {
+		try {
+			let status = "";
+			if (type == "need") {
+				//
+				status = MainStatus.Processing;
+			}
+			if (type == "noNeed") {
+				// 下一步提交终审吧
+				status = MainStatus.TechnicalOver;
+			}
+			console.log("newSaleHandle", form);
+			const { id, createTime, deleted, updateTime, ...params } = form;
+			// await notifyHandler(form, status); 	// 通知给后端做了
+			try {
+				params.typeSelection = JSON.stringify(params.typeSelection);
+				params.modeTrade = JSON.stringify(params.modeTrade);
+				params.payType = JSON.stringify(params.payType);
+			} catch (error) {}
+			try {
+				const res = await fetchTurnTime(form.name);
+				const time = _.get(res, "data.turn_time");
+				params.turnTime = time;
+			} catch (error) {
+				params.turnTime = +form.turnTime + 1;
+			}
+			params.status = status;
+			if (type == "need") {
+				params.relationReview = "";
+			}
+			// params.relationReview = form.id;
+			await saleProjectAdd(excludeNull(params));
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setOpen(false);
+		}
+	};
 	const StatusView = () => {
 		if (!form) {
 			return;
 		}
 		const { id, status } = form;
+		const history = useHistory();
+		const dispatch = useAppDispatch();
+
 		// 未启动 开始处理
 		if (id && (status === "not_started" || !status)) {
 			return (
@@ -844,7 +890,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"未启动"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer hidden">
+					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -869,7 +915,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"处理中"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer hidden">
+					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -894,6 +940,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"技术审核中"}
 						</Tag>
 					</div>
+					<div className="flex cursor-pointer"></div>
 				</div>
 			);
 		}
@@ -907,7 +954,7 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"技术审核已完成"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer hidden">
+					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
 						<Tag
 							color={"#D4F3F2"}
@@ -980,24 +1027,72 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 		// 审批通过
 		if (id && status === MainStatus.Approved) {
 			return (
-				<div className="status-operate flex">
-					<div className="flex">
-						<div className="mr-2">状态: </div>
-						<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
-							{"终审通过"}
-						</Tag>
+				<>
+					<div className="status-operate flex">
+						<div className="flex">
+							<div className="mr-2">状态: </div>
+							<Tag color={"#E8FFEA"} style={{ color: "#000" }}>
+								{"终审通过"}
+							</Tag>
+						</div>
+						<div className="flex cursor-pointer">
+							<div className="mr-2">操作: </div>
+							<Popconfirm
+								title="确认发起合同流程?"
+								onConfirm={() => {
+									console.log("form=", form);
+									dispatch(setCurSaleForm(form));
+									history.push("/dashboard/contract-manage?from=sale");
+								}}
+								okText="确认"
+								cancelText="取消"
+							>
+								<Tag
+									color={"#D4F3F2"}
+									style={{ color: "#000" }}
+									onClick={() => {}}
+								>
+									{"发起合同流程"}
+								</Tag>
+							</Popconfirm>
+						</div>
 					</div>
-					<div className="flex cursor-pointer hidden">
-						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }} onClick={() => { }}>
-							{"发起合同流程"}
-						</Tag>
+					<div className="flex cursor-pointer mb-4">
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "need");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+								{"新一轮报价（需技术审批）"}
+							</Tag>
+						</Popconfirm>
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "noNeed");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag
+								className="ml-2"
+								color={"#D4F3F2"}
+								style={{ color: "#000" }}
+								onClick={() => {}}
+							>
+								{"新一轮报价（无需技术审批）"}
+							</Tag>
+						</Popconfirm>
 					</div>
-				</div>
+				</>
 			);
 		}
 		// 审批驳回
-		if (id && status === MainStatus.ReviewFailed) {
+		if (id && [MainStatus.ReviewFailed, MainStatus.Approved].includes(status)) {
 			return (
 				<div className="status-operate flex">
 					<div className="flex">
@@ -1006,14 +1101,37 @@ const CustomModalView: React.FC<CustomModalProps> = ({
 							{"审批驳回"}
 						</Tag>
 					</div>
-					<div className="flex cursor-pointer hidden">
+					<div className="flex cursor-pointer">
 						<div className="mr-2">操作: </div>
-						<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
-							{"新一轮报价（需技术审批）"}
-						</Tag>
-						<Tag className="ml-2" color={"#D4F3F2"} style={{ color: "#000" }}>
-							{"新一轮报价（无需技术审批）"}
-						</Tag>
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "need");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag color={"#D4F3F2"} style={{ color: "#000" }}>
+								{"新一轮报价（需技术审批）"}
+							</Tag>
+						</Popconfirm>
+						<Popconfirm
+							title="是否发起新一轮报价?"
+							onConfirm={() => {
+								newSaleHandle(form, "noNeed");
+							}}
+							okText="确认"
+							cancelText="取消"
+						>
+							<Tag
+								className="ml-2"
+								color={"#D4F3F2"}
+								style={{ color: "#000" }}
+								onClick={() => {}}
+							>
+								{"新一轮报价（无需技术审批）"}
+							</Tag>
+						</Popconfirm>
 					</div>
 				</div>
 			);

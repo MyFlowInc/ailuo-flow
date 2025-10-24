@@ -212,11 +212,11 @@ const Login: React.FC = () => {
 						>
 							<AiluoLogo />
 						</div>
-						<div className="title" style={{ marginTop: 16 }}>
+						<div className="title"  style={{ marginTop: 16,width : "100%" }}>
 							<div className="logo">
 								<img src={logoSvg} className="logo-image" />
 							</div>
-							<div className="text">登录到艾罗执行器MyFlow系统</div>
+							<div className="text">艾罗执行器数字化管理系统</div>
 						</div>
 						<div className="subject">使用账户密码登陆</div>
 						<Form
@@ -280,6 +280,7 @@ const Login: React.FC = () => {
 							</div>
 						</Form>
 					</div>
+					<div className="text" title="center" style={{ marginTop: 16, width: "100%", fontSize: 11, color: "#969191ff", textAlign: "center" }}>Flow科技技术驱动</div>
 				</div>
 			</LoginRoot>
 		</ConfigProvider>

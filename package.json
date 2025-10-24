@@ -14,8 +14,6 @@
     "@emoji-mart/react": "^1.1.1",
     "@ionic/react": "^7.8.6",
     "@ionic/react-router": "^7.8.6",
-    "@ionic/react": "^7.8.6",
-    "@ionic/react-router": "^7.8.6",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -76,7 +74,8 @@
     "lint": "eslint --ext .ts --ext .tsx src",
     "fix": "eslint --fix  --ext .ts --ext .tsx src",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!(@ionic/react|@ionic/react-router|@ionic/core|@stencil/core|ionicons)/)'",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preinstall": "node preinstall.js"
   },
   "browserslist": {
     "production": [

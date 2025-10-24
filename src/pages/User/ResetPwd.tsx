@@ -218,7 +218,7 @@ const ResetPwd: React.FC = () => {
 						<div className="title">
 							<div className="text">忘记密码</div>
 						</div>
-						<div className="subject">输入 艾罗执行器MyFlow系统 绑定的邮箱</div>
+						<div className="subject">输入 艾罗执行器数字化管理系统 绑定的邮箱</div>
 						<Form
 							form={form}
 							name="normal_register"
